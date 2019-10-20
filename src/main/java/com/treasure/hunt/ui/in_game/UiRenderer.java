@@ -9,9 +9,9 @@ public abstract class UiRenderer {
 
     public void registerStrategy(Strategy strategy) {
         ObservableList<VisualisationGeometryItem> visualisationGeometryList = strategy.getVisualisationGeometryList();
-        visualisationGeometryList.addListener((ListChangeListener<? super VisualisationGeometryItem>) c -> {
-            c.getAddedSubList().forEach(this::addVisualisationGeometryItem);
-            c.getRemoved().forEach(this::removeVisualisationGeometryItem);
+        visualisationGeometryList.addListener((ListChangeListener<? super VisualisationGeometryItem>) change -> {
+            change.getAddedSubList().forEach(this::addVisualisationGeometryItem);
+            change.getRemoved().forEach(this::removeVisualisationGeometryItem);
         });
     }
 

@@ -1,12 +1,12 @@
 package com.treasure.hunt.strategy.search.implemenations;
 
-import com.treasure.hunt.strategy.hint.hints.AngelByPointHint;
+import com.treasure.hunt.strategy.hint.hints.AngleHint;
 import com.treasure.hunt.strategy.search.AbstractSearchStrategy;
 import org.locationtech.jts.geom.Point;
 
 import java.util.List;
 
-public class StrategyFromPaper extends AbstractSearchStrategy<AngelByPointHint> {
+public class StrategyFromPaper extends AbstractSearchStrategy<AngleHint> {
 
     @Override
     public void init() {
@@ -14,7 +14,7 @@ public class StrategyFromPaper extends AbstractSearchStrategy<AngelByPointHint> 
     }
 
     @Override
-    public List<Point> getNextMoves(AngelByPointHint hint, Point currentLocation) {
+    public List<Point> getNextMoves(AngleHint hint, Point currentLocation) {
         //TODO: implement
         return null;
     }

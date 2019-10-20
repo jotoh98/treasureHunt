@@ -1,7 +1,7 @@
 package com.treasure.hunt.strategy.hint.generators;
 
 import com.treasure.hunt.strategy.Strategy;
-import com.treasure.hunt.strategy.hint.hints.Hint;
+import com.treasure.hunt.strategy.hint.hints.HintAndTarget;
 import com.treasure.hunt.strategy.visualisation.VisualisationGeometryItem;
 import com.treasure.hunt.strategy.visualisation.VisualisationGeometryType;
 import javafx.collections.FXCollections;
@@ -13,7 +13,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractHintGenerator<T extends Hint> implements Strategy {
+public abstract class AbstractHintStrategy<T extends HintAndTarget> implements Strategy {
     private static VisualisationGeometryType WAY_POINT = new VisualisationGeometryType("Way points", Color.BLACK, true);
     @Getter
     protected final List<VisualisationGeometryType> availableVisualisationGeometryTypes = new ArrayList<>();
