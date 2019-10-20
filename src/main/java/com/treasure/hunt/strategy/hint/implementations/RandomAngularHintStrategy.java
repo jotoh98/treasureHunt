@@ -1,8 +1,8 @@
-package com.treasure.hunt.strategy.hint.generators.implmentations;
+package com.treasure.hunt.strategy.hint.implementations;
 
-import com.treasure.hunt.strategy.hint.generators.AbstractHintStrategy;
-import com.treasure.hunt.strategy.hint.hints.AngleHint;
-import com.treasure.hunt.strategy.hint.hints.HintAndTarget;
+import com.treasure.hunt.strategy.hint.AbstractHintGenerator;
+import com.treasure.hunt.strategy.hint.AngleHint;
+import com.treasure.hunt.strategy.hint.HintAndTarget;
 import com.treasure.hunt.strategy.visualisation.VisualisationGeometryItem;
 import com.treasure.hunt.strategy.visualisation.VisualisationGeometryType;
 import org.locationtech.jts.geom.Coordinate;
@@ -14,7 +14,7 @@ import org.locationtech.jts.geom.impl.CoordinateArraySequence;
 import java.awt.*;
 import java.util.Random;
 
-public class RandomAngularHintStrategy extends AbstractHintStrategy<HintAndTarget<AngleHint>> {
+public class RandomAngularHintStrategy extends AbstractHintGenerator<AngleHint> {
     private static final VisualisationGeometryType ANGLE_VISUALISATION = new VisualisationGeometryType("Angle of hint", Color.BLUE, true);
     private static final Random RANDOM = new Random(System.currentTimeMillis());
 

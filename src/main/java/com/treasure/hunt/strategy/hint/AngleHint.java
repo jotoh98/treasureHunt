@@ -1,4 +1,4 @@
-package com.treasure.hunt.strategy.hint.hints;
+package com.treasure.hunt.strategy.hint;
 
 import lombok.Value;
 import org.locationtech.jts.geom.Point;

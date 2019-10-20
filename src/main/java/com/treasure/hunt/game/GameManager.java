@@ -1,15 +1,15 @@
 package com.treasure.hunt.game;
 
-import com.treasure.hunt.strategy.hint.generators.AbstractHintStrategy;
-import com.treasure.hunt.strategy.search.AbstractSearchStrategy;
+import com.treasure.hunt.strategy.hint.AbstractHintGenerator;
+import com.treasure.hunt.strategy.moves.AbstractMovesGenerator;
 import com.treasure.hunt.ui.in_game.UiRenderer;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 
 @RequiredArgsConstructor
 public class GameManager {
-    private final AbstractHintStrategy hintGenerator;
-    private final AbstractSearchStrategy searchStrategy;
+    private final AbstractHintGenerator hintGenerator;
+    private final AbstractMovesGenerator searchStrategy;
     private final UiRenderer uiRenderer;
     private final GameHistory gameHistory = new GameHistory();
 
