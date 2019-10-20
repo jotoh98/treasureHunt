@@ -15,9 +15,4 @@ public class CanvasUiRenderer extends UiRenderer {
 
     }
 
-    @Override
-    protected void removeVisualisationGeometryItem(VisualisationGeometryItem visualisationGeometryItem) {
-
-    }
-
 }
