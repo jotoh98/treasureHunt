@@ -2,20 +2,14 @@ package com.treasure.hunt.ui.in_game;
 
 import com.treasure.hunt.strategy.Generator;
 import com.treasure.hunt.strategy.visualisation.VisualisationGeometryItem;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
+import io.reactivex.Observable;
 
 public abstract class UiRenderer {
 
     public void registerStrategy(Generator strategy) {
-        ObservableList<VisualisationGeometryItem> visualisationGeometryList = strategy.getVisualisationGeometryList();
-        visualisationGeometryList.addListener((ListChangeListener<? super VisualisationGeometryItem>) change -> {
-            change.getAddedSubList().forEach(this::addVisualisationGeometryItem);
-            change.getRemoved().forEach(this::removeVisualisationGeometryItem);
-        });
+        Observable<VisualisationGeometryItem> visualisationGeometryList = strategy.getVisualisationGeometryList();
+        visualisationGeometryList.subscribe(this::addVisualisationGeometryItem);
     }
 
     protected abstract void addVisualisationGeometryItem(VisualisationGeometryItem visualisationGeometryItem);
-
-    protected abstract void removeVisualisationGeometryItem(VisualisationGeometryItem visualisationGeometryItem);
 }

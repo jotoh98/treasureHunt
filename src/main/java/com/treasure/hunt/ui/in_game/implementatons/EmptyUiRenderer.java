@@ -8,9 +8,4 @@ public class EmptyUiRenderer extends UiRenderer {
     protected void addVisualisationGeometryItem(VisualisationGeometryItem visualisationGeometryItem) {
 
     }
-
-    @Override
-    protected void removeVisualisationGeometryItem(VisualisationGeometryItem visualisationGeometryItem) {
-
-    }
 }
