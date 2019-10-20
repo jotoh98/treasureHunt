@@ -21,7 +21,7 @@ public class RandomAngularHintGenerator extends AbstractHintGenerator<AngelByPoi
     protected AngelByPointHint generate(Point currentLocationOfAgent) {
         Point angleOne = new Point(null, new GeometryFactory()); //TODO: generate proper points
         Point angleTwo = new Point(null, new GeometryFactory()); //TODO: generate proper points
-        AngelByPointHint hint = new AngelByPointHint(new AngelByPointHint.AngelByPoints(angleOne, angleTwo, currentLocationOfAgent));
+        AngelByPointHint hint = new AngelByPointHint(angleOne, angleTwo, currentLocationOfAgent);
         LineString lineString = new LineString(new CoordinateArraySequence(new Coordinate[]{angleOne.getCoordinate(), currentLocationOfAgent.getCoordinate()}), new GeometryFactory()); //TODO: this is probably wrong
         VisualisationGeometryItem visualisationGeometryItem = new VisualisationGeometryItem(lineString, ANGLE_VISUALISATION);
         getVisualisationGeometryList().add(visualisationGeometryItem);

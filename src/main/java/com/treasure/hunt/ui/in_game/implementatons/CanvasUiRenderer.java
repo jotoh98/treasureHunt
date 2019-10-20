@@ -1,8 +1,15 @@
-package com.treasure.hunt.ui.in_game;
+package com.treasure.hunt.ui.in_game.implementatons;
 
 import com.treasure.hunt.strategy.visualisation.VisualisationGeometryItem;
+import com.treasure.hunt.ui.in_game.UiRenderer;
+import lombok.RequiredArgsConstructor;
 
-public class EmptyUiRenderer extends UiRenderer {
+import java.awt.*;
+
+@RequiredArgsConstructor
+public class CanvasUiRenderer extends UiRenderer {
+    private final Canvas canvas;
+
     @Override
     protected void addVisualisationGeometryItem(VisualisationGeometryItem visualisationGeometryItem) {
 
@@ -12,4 +19,5 @@ public class EmptyUiRenderer extends UiRenderer {
     protected void removeVisualisationGeometryItem(VisualisationGeometryItem visualisationGeometryItem) {
 
     }
+
 }

@@ -20,11 +20,13 @@ public abstract class AbstractHintGenerator<T extends Hint> implements Strategy 
     @Getter
     private final ObservableList<VisualisationGeometryItem> visualisationGeometryList = FXCollections.observableArrayList();
     protected Point treasureLocation;
+    protected double insecurity;
 
     protected abstract T generate(Point currentLocationOfAgent);
 
-    public void init(Point treasureLocation) {
+    public void init(Point treasureLocation, double insecurity) {
         this.treasureLocation = treasureLocation;
+        this.insecurity = insecurity;
     }
 
     public T generateHint(Point currentLocationOfAgent) {

@@ -4,7 +4,7 @@ package com.treasure.hunt.ui.main;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.strategy.hint.generators.implmentations.RandomAngularHintGenerator;
 import com.treasure.hunt.strategy.search.implemenations.StrategyFromPaper;
-import com.treasure.hunt.ui.in_game.CanvasUiRenderer;
+import com.treasure.hunt.ui.in_game.implementatons.CanvasUiRenderer;
 
 public class MainFrameController {
     private static MainFrameController single_instance = null;
