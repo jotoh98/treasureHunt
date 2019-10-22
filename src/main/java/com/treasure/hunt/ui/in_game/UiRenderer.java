@@ -1,15 +1,13 @@
 package com.treasure.hunt.ui.in_game;
 
-import com.treasure.hunt.strategy.Generator;
-import com.treasure.hunt.strategy.visualisation.VisualisationGeometryItem;
-import io.reactivex.Observable;
+import com.treasure.hunt.strategy.Product;
+import com.treasure.hunt.strategy.geom.GeometryItem;
 
 public abstract class UiRenderer {
 
-    public void registerStrategy(Generator strategy) {
-        Observable<VisualisationGeometryItem> visualisationGeometryList = strategy.getVisualisationGeometryList();
-        visualisationGeometryList.subscribe(this::addVisualisationGeometryItem);
+    public void visualizeProduct(Product product) {
+        product.getGeometryItems().forEach(this::drawItem);
     }
 
-    protected abstract void addVisualisationGeometryItem(VisualisationGeometryItem visualisationGeometryItem);
+    protected abstract void drawItem(GeometryItem geometryItem);
 }

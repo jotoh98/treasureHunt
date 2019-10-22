@@ -1,10 +1,9 @@
 package com.treasure.hunt.strategy.hint.implementations;
 
+import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.AbstractHintGenerator;
 import com.treasure.hunt.strategy.hint.AngleHint;
-import com.treasure.hunt.strategy.hint.HintAndTarget;
-import com.treasure.hunt.strategy.visualisation.VisualisationGeometryItem;
-import com.treasure.hunt.strategy.visualisation.VisualisationGeometryType;
+import com.treasure.hunt.strategy.moves.Moves;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
@@ -12,21 +11,27 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.impl.CoordinateArraySequence;
 
 import java.awt.*;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class RandomAngularHintStrategy extends AbstractHintGenerator<AngleHint> {
-    private static final VisualisationGeometryType ANGLE_VISUALISATION = new VisualisationGeometryType("Angle of hint", Color.BLUE, true);
+    public static GeometryType ANGLE_TYPE = new GeometryType(Color.BLUE, true, "Angle of hint");
     private static final Random RANDOM = new Random(System.currentTimeMillis());
 
-    @Override
-    protected HintAndTarget<AngleHint> generate(Point currentLocationOfAgent) {
+    protected AngleHint generate(Moves moves) {
+        Point currentLocationOfAgent = moves.getEndPoint().getObject();
         Point angleOne = new Point(null, new GeometryFactory()); //TODO: generate proper points
         Point angleTwo = new Point(null, new GeometryFactory()); //TODO: generate proper points
         AngleHint hint = new AngleHint(angleOne, angleTwo, currentLocationOfAgent);
         LineString lineString = new LineString(new CoordinateArraySequence(new Coordinate[]{angleOne.getCoordinate(), currentLocationOfAgent.getCoordinate()}), new GeometryFactory()); //TODO: this is probably wrong
-        VisualisationGeometryItem visualisationGeometryItem = new VisualisationGeometryItem(lineString, ANGLE_VISUALISATION);
-        getVisualisationGeometryList().add(visualisationGeometryItem);
-        return new HintAndTarget<>(hint, new Point(null, new GeometryFactory()));
+        hint.addAdditionalItem(lineString, ANGLE_TYPE);
+        return hint;
+    }
+
+    @Override
+    public List<GeometryType> getAvailableVisualisationGeometryTypes() {
+        return Collections.singletonList(ANGLE_TYPE);
     }
 
     @Override
