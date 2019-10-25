@@ -1,7 +1,8 @@
 package com.treasure.hunt.strategy.hint.implementations;
 
+import com.treasure.hunt.game.GameHistory;
 import com.treasure.hunt.strategy.geom.GeometryType;
-import com.treasure.hunt.strategy.hint.AbstractHintGenerator;
+import com.treasure.hunt.strategy.hint.Tipster;
 import com.treasure.hunt.strategy.hint.AngleHint;
 import com.treasure.hunt.strategy.moves.Moves;
 import org.locationtech.jts.geom.Coordinate;
@@ -15,11 +16,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class RandomAngularHintStrategy extends AbstractHintGenerator<AngleHint> {
+public class RandomAngularHintStrategy implements Tipster<AngleHint> {
     public static GeometryType ANGLE_TYPE = new GeometryType(Color.BLUE, true, "Angle of hint");
     private static final Random RANDOM = new Random(System.currentTimeMillis());
 
-    protected AngleHint generate(Moves moves) {
+    @Override
+    public void init(GameHistory gameHistory) {
+
+    }
+
+    public AngleHint generate(Moves moves) {
         Point currentLocationOfAgent = moves.getEndPoint().getObject();
         Point angleOne = new Point(null, new GeometryFactory()); //TODO: generate proper points
         Point angleTwo = new Point(null, new GeometryFactory()); //TODO: generate proper points
@@ -27,6 +33,11 @@ public class RandomAngularHintStrategy extends AbstractHintGenerator<AngleHint> 
         LineString lineString = new LineString(new CoordinateArraySequence(new Coordinate[]{angleOne.getCoordinate(), currentLocationOfAgent.getCoordinate()}), new GeometryFactory()); //TODO: this is probably wrong
         hint.addAdditionalItem(lineString, ANGLE_TYPE);
         return hint;
+    }
+
+    @Override
+    public AngleHint generateHint(Moves moves) {
+        return null;
     }
 
     @Override
