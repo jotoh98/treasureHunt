@@ -1,5 +1,6 @@
 package com.treasure.hunt.game;
 
+import com.treasure.hunt.strategy.Product;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
  * Thus, the shared variables needs to get locked!
  */
 public class GameHistory {
-    List<GeometryItem> history;
+    List<Product> history;
 
     public GameHistory() {
 
@@ -19,10 +20,10 @@ public class GameHistory {
     /**
      * This will allow only one Thread to access this method.
      *
-     * @param geometryItems
+     * @param product
      */
-    public synchronized void addItems(List<GeometryItem> geometryItems) {
-        this.history.addAll(geometryItems);
+    public synchronized void addItems(Product product) {
+        this.history.add(product);
     }
 
     /**
@@ -30,10 +31,12 @@ public class GameHistory {
      * Nevertheless, the GeometryItems could be accessed from both Thread at the same time.
      * But after the GameSimulation uses to only create but not read them, this will not happen.
      *
-     * @return List<GeometryItem>
+     * Every Product is a step, the Seeker or the Tipster did.
+     *
+     * @return List<Product>
      */
-    public synchronized List<GeometryItem> readItems() {
-        List<GeometryItem> list = new ArrayList<GeometryItem>();
+    public synchronized List<Product> readItems() {
+        List<Product> list = new ArrayList<>();
         list.addAll(history);
         return list;
     }

@@ -17,6 +17,12 @@ public interface Tipster<T extends Hint> {
      */
     void init(GameHistory gameHistory);
 
+    /**
+     * This should let the Tipster commit all of his created GeometryItems
+     * to the View-Thread.
+     */
+    void commitProduct();
+
     abstract T generate(Moves moves);
 
     T generateHint(Moves moves);

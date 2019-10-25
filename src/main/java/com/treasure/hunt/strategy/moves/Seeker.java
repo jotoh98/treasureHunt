@@ -19,6 +19,12 @@ public interface Seeker<T extends Hint> {
      */
     void init(Point startPosition, GameHistory gameHistory);
 
+    /**
+     * This should let the Seeker commit all of his created GeometryItems
+     * to the View-Thread.
+     */
+    void commitProduct();
+
     Moves generate(T moves, Point currentLocation);
 
     Moves getMoves(T hint, Point currentLocation);
