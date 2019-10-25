@@ -1,13 +1,12 @@
-package com.treasure.hunt.strategy.moves;
+package com.treasure.hunt.strategy.seeker;
 
-import com.treasure.hunt.strategy.Product;
+import com.treasure.hunt.strategy.hint.Product;
 import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.geom.GeometryType;
 import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.treasure.hunt.strategy.moves.AbstractMovesGenerator.WAY_POINT;
 
 public class Moves extends Product {
     private List<GeometryItem<Point>> points = new ArrayList<>();
@@ -17,7 +16,7 @@ public class Moves extends Product {
     }
 
     protected void addWayPoint(Point point) {
-        points.add(new GeometryItem<>(point, WAY_POINT));
-        addAdditionalItem(point, WAY_POINT);
+        points.add(new GeometryItem<>(point, GeometryType.WAY_POINT));
+        addAdditionalItem(point, GeometryType.WAY_POINT);
     }
 }
