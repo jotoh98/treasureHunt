@@ -1,4 +1,4 @@
-package com.treasure.hunt.ui.jts;
+package com.treasure.hunt.jts;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -6,6 +6,11 @@ import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.util.GeometricShapeFactory;
 
+/**
+ * Adding a Geometry based Circle to the jts Geometry suite.
+ *
+ * @see org.locationtech.jts.geom.Geometry
+ */
 public class Circle extends Polygon {
     double radius;
 
@@ -20,7 +25,7 @@ public class Circle extends Polygon {
     }
 
     public Circle(Coordinate coordinate, double radius, GeometryFactory geometryFactory) {
-        this(coordinate, radius, 32, geometryFactory);
+        this(coordinate, radius, 64, geometryFactory);
     }
 
     public static Circle UnitCircle(Coordinate coordinate, GeometryFactory geometryFactory) {
