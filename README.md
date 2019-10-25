@@ -32,6 +32,6 @@
 #Implementing a View
     1. Create a class "yourView" in
     src/main/java/com/treasure/hunt/ui/in_game/implementations/
-    1.1. Implement to the interface "View"
-    4. Have a look on "GeometryType" to know,
+    2. Implement to the interface "View"
+    3. Have a look on "GeometryType" to know,
     what GemoetryType you got.
