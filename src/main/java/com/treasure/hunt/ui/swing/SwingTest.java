@@ -1,12 +1,12 @@
 package com.treasure.hunt.ui.swing;
 
-import com.treasure.hunt.ui.jts.Circle;
-import org.locationtech.jts.awt.ShapeWriter;
-import org.locationtech.jts.geom.Point;
+import com.treasure.hunt.jts.Circle;
+import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.geom.GeometryType;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
-import org.locationtech.jts.geom.*;
-import org.locationtech.jts.geom.impl.CoordinateArraySequence;
-import org.locationtech.jts.util.GeometricShapeFactory;
+import org.locationtech.jts.geom.util.AffineTransformation;
 
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalLookAndFeel;
@@ -33,8 +33,31 @@ public class SwingTest extends JPanel {
         SwingUtilities.updateComponentTreeUI(frame);
     }
 
+    public static GeometryItem[] exampleGeometryItems() {
+        GeometryFactory geometryFactory = new GeometryFactory();
+
+        Circle c1 = new Circle(new Coordinate(100, 100), 50, geometryFactory);
+        Circle c2 = new Circle(new Coordinate(150, 100), 50, geometryFactory);
+        Polygon intersection = (Polygon) c1.intersection(c2);
+
+        AffineTransformation affineTransformation = new AffineTransformation().translate(0.0, 20.0);
+
+        intersection = (Polygon) affineTransformation.transform(intersection);
+
+        Polygon c3 = (Polygon) affineTransformation.transform(c1);
+
+        GeometryType intersectionType = new GeometryType(true, Color.red, Color.yellow, true, "");
+
+        return new GeometryItem[]{
+                new GeometryItem<>(c1, new GeometryType(true, Color.green)),
+                new GeometryItem<>(c2, new GeometryType(true, Color.blue)),
+                new GeometryItem<>(c3, intersectionType),
+                new GeometryItem<>(intersection, intersectionType),
+        };
+    }
+
     public void paint(Graphics graphics) {
-        Graphics2D graphics2D = (Graphics2D) graphics;
+        /*Graphics2D graphics2D = (Graphics2D) graphics;
         ShapeWriter shapeWriter = new ShapeWriter();
         GeometryFactory geometryFactory = new GeometryFactory();
         GeometricShapeFactory geometricShapeFactory = new GeometricShapeFactory();
@@ -59,7 +82,7 @@ public class SwingTest extends JPanel {
         graphics2D.draw(c_point);
         graphics2D.draw(c_triangle);
 
-        /*geometricShapeFactory.setNumPoints(12);
+        geometricShapeFactory.setNumPoints(12);
         geometricShapeFactory.setCentre(new Coordinate(120, 120));
         geometricShapeFactory.setSize(40);
 
@@ -67,16 +90,12 @@ public class SwingTest extends JPanel {
 
         Shape c_circle = shapeWriter.toShape(circle);
 
-        graphics2D.draw(c_circle);*/
+        graphics2D.draw(c_circle);
 
         Circle circle = new Circle(new Coordinate(120, 120), 10, geometryFactory);
 
         Shape new_circle = shapeWriter.toShape(circle);
 
-        graphics2D.draw(new_circle);
-    }
-
-    public void drawGeometry(Graphics2D graphics2D, Geometry geometry) {
-
+        graphics2D.draw(new_circle);*/
     }
 }

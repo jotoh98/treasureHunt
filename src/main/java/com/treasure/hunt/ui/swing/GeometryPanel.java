@@ -1,49 +1,55 @@
 package com.treasure.hunt.ui.swing;
 
-import com.treasure.hunt.ui.jts.Circle;
+import com.treasure.hunt.strategy.geom.GeometryItem;
+import lombok.AllArgsConstructor;
+import org.locationtech.jts.awt.IdentityPointTransformation;
+import org.locationtech.jts.awt.PointTransformation;
 import org.locationtech.jts.awt.ShapeWriter;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Polygon;
-import org.locationtech.jts.geom.util.AffineTransformation;
-import org.locationtech.jts.util.GeometricShapeFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 
+@AllArgsConstructor
 public class GeometryPanel extends JPanel {
-    public GeometryPanel() {
-        super();
+
+    private PointTransformation pointTransformation;
+
+    GeometryPanel() {
+        pointTransformation = new IdentityPointTransformation();
     }
 
     public void paint(Graphics graphics) {
         Graphics2D graphics2D = (Graphics2D) graphics;
-        GeometryFactory geometryFactory = new GeometryFactory();
-        AffineTransform affineTransform = new AffineTransform();
 
-        Circle c1 = new Circle(new Coordinate(100, 100), 50, geometryFactory);
-        Circle c2 = new Circle(new Coordinate(150, 100), 50, geometryFactory);
-        Polygon intersection = (Polygon) c1.intersection(c2);
+        RenderingHints renderingHints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        AffineTransformation affineTransformation = new AffineTransformation().translate(0.0, 20.0);
+        graphics2D.addRenderingHints(renderingHints);
 
-        intersection = (Polygon) affineTransformation.transform(intersection);
-
-        drawShape(graphics2D, new Geometry[]{c1, c2, intersection}, geometryFactory);
+        drawGeometryItems(graphics2D, SwingTest.exampleGeometryItems());
     }
 
-    public void drawShape(Graphics2D graphics2D, Geometry[] geometries, GeometryFactory geometryFactory) {
-        for (Geometry geometry : geometries)
-            drawShape(graphics2D, geometry, geometryFactory);
+
+    private void drawGeometryItems(Graphics2D graphics2D, GeometryItem[] geometryItems) {
+        for (GeometryItem geometryItem : geometryItems)
+            drawGeometryItem(graphics2D, geometryItem);
     }
 
-    public void drawShape(Graphics2D graphics2D, Geometry geometry, GeometryFactory geometryFactory) {
-        GeometricShapeFactory geometricShapeFactory = new GeometricShapeFactory(geometryFactory);
-        ShapeWriter shapeWriter = new ShapeWriter();
-        graphics2D.setColor(new Color(0xFF3D27));
-        graphics2D.draw(shapeWriter.toShape(geometry));
+    private void drawGeometryItem(Graphics2D graphics2D, GeometryItem geometryItem) {
+        if (!geometryItem.getType().isVisibleByDefault())
+            return;
+
+        ShapeWriter shapeWriter = new ShapeWriter(pointTransformation);
+
+
+        Shape shape = shapeWriter.toShape(geometryItem.getObject());
+
+        if (geometryItem.getType().isFilled()) {
+            graphics2D.setColor(geometryItem.getType().getFillColor());
+            graphics2D.fill(shape);
+        }
+
+        graphics2D.setColor(geometryItem.getType().getLineColor());
+        graphics2D.draw(shape);
     }
 
 }

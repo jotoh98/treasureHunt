@@ -1,5 +1,7 @@
 package com.treasure.hunt.strategy.geom;
 
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.Value;
 import org.locationtech.jts.geom.Geometry;
 
@@ -8,8 +10,16 @@ import org.locationtech.jts.geom.Geometry;
  *
  * @see GeometryType for further information about how to classifiy a geometry item.
  */
+
+@AllArgsConstructor
 @Value
 public class GeometryItem<T extends Geometry> {
-    T object;
+    @NonNull T object;
     GeometryType type;
+
+
+    public GeometryItem(@NonNull T object) {
+        this.object = object;
+        this.type = new GeometryType();
+    }
 }
