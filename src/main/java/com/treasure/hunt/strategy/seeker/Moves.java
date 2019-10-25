@@ -1,4 +1,4 @@
-package com.treasure.hunt.strategy.moves;
+package com.treasure.hunt.strategy.seeker;
 
 import com.treasure.hunt.strategy.Product;
 import com.treasure.hunt.strategy.geom.GeometryItem;
@@ -7,7 +7,7 @@ import org.locationtech.jts.geom.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.treasure.hunt.strategy.moves.Seeker.WAY_POINT;
+import static com.treasure.hunt.strategy.seeker.Seeker.WAY_POINT;
 
 public class Moves extends Product {
     private List<GeometryItem<Point>> points = new ArrayList<>();

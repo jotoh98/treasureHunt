@@ -1,12 +1,8 @@
-package com.treasure.hunt.strategy.moves;
+package com.treasure.hunt.strategy.seeker;
 
 import com.treasure.hunt.game.GameHistory;
-import com.treasure.hunt.strategy.geom.GeometryType;
-import com.treasure.hunt.strategy.hint.Hint;
+import com.treasure.hunt.strategy.tipster.Hint;
 import org.locationtech.jts.geom.Point;
-
-import java.util.List;
-
 
 public interface Seeker<T extends Hint> {
 
@@ -28,8 +24,6 @@ public interface Seeker<T extends Hint> {
     Moves generate(T moves, Point currentLocation);
 
     Moves getMoves(T hint, Point currentLocation);
-
-    List<GeometryType> getAvailableVisualisationGeometryTypes();
 
     String getDisplayName();
 }

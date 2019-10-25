@@ -1,9 +1,8 @@
-package com.treasure.hunt.strategy.hint;
+package com.treasure.hunt.strategy.tipster;
 
 import com.treasure.hunt.game.GameHistory;
 import com.treasure.hunt.strategy.geom.GeometryType;
-import com.treasure.hunt.strategy.moves.Moves;
-import org.locationtech.jts.geom.Point;
+import com.treasure.hunt.strategy.seeker.Moves;
 
 import java.util.List;
 
@@ -23,11 +22,9 @@ public interface Tipster<T extends Hint> {
      */
     void commitProduct();
 
-    abstract T generate(Moves moves);
+    T generate(Moves moves);
 
     T generateHint(Moves moves);
-
-    List<GeometryType> getAvailableVisualisationGeometryTypes();
 
     String getDisplayName();
 }

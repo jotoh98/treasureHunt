@@ -1,5 +1,5 @@
 # How to run
-    1. Install Intelij
+    1. Install IntelliJ
     2. Install the lombok plugin https://projectlombok.org/setup/intellij
     3. Enable 'annotation processing' in settings
     4. Clone project by clicking new->Project from Version Source Control

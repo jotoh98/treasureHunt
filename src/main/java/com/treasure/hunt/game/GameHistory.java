@@ -1,7 +1,6 @@
 package com.treasure.hunt.game;
 
 import com.treasure.hunt.strategy.Product;
-import com.treasure.hunt.strategy.geom.GeometryItem;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.treasure.hunt.strategy.hint;
+package com.treasure.hunt.strategy.tipster;
 
 import com.treasure.hunt.strategy.Product;
 import com.treasure.hunt.strategy.geom.GeometryItem;

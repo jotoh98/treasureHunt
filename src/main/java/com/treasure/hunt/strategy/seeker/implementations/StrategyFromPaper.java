@@ -1,10 +1,10 @@
-package com.treasure.hunt.strategy.moves.implemenations;
+package com.treasure.hunt.strategy.seeker.implementations;
 
 import com.treasure.hunt.game.GameHistory;
 import com.treasure.hunt.strategy.geom.GeometryType;
-import com.treasure.hunt.strategy.hint.AngleHint;
-import com.treasure.hunt.strategy.moves.Seeker;
-import com.treasure.hunt.strategy.moves.Moves;
+import com.treasure.hunt.strategy.tipster.AngleHint;
+import com.treasure.hunt.strategy.seeker.Seeker;
+import com.treasure.hunt.strategy.seeker.Moves;
 import org.locationtech.jts.geom.Point;
 
 import java.awt.*;
