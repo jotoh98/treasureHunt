@@ -29,4 +29,8 @@ public class GeometryType {
         this(visibleByDefault, lineColor, fillColor, true, "");
     }
 
+    public static GeometryType STANDARD() {
+        return new GeometryType(true, Color.black, "");
+    }
+
 }
