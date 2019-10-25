@@ -16,10 +16,4 @@ import org.locationtech.jts.geom.Geometry;
 public class GeometryItem<T extends Geometry> {
     @NonNull T object;
     GeometryType type;
-
-
-    public GeometryItem(@NonNull T object) {
-        this.object = object;
-        this.type = new GeometryType();
-    }
 }
