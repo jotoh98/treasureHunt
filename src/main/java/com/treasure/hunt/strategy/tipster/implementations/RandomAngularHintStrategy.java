@@ -26,8 +26,8 @@ public class RandomAngularHintStrategy implements Tipster<AngleHint> {
         Point angleOne = gf.createPoint(new Coordinate(0, 0)); //TODO: generate proper points
         Point angleTwo = gf.createPoint(new Coordinate(0, 0)); //TODO: generate proper points
         AngleHint hint = new AngleHint(angleOne, angleTwo, currentLocationOfSeeker);
-        //LineString lineString = new LineString(new CoordinateArraySequence(new Coordinate[]{angleOne.getCoordinate(), currentLocationOfSeeker.getCoordinate()}), new GeometryFactory()); //TODO: this is probably wrong
-        //hint.addAdditionalItem(lineString, ANGLE_TYPE);
+        LineString lineString = new LineString(new CoordinateArraySequence(new Coordinate[]{angleOne.getCoordinate(), currentLocationOfSeeker.getCoordinate()}), new GeometryFactory()); //TODO: this is probably wrong
+        hint.addAdditionalItem(lineString, ANGLE_TYPE);
         return hint;
     }
 

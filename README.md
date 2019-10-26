@@ -2,8 +2,8 @@
     1. Install IntelliJ
     2. Install the lombok plugin https://projectlombok.org/setup/intellij
     3. Enable 'annotation processing' in settings
-    4. Clone project by clicking new->Project from Version Source Control
-    5. Import maven project by right clicking on the pom.xml and telling Intelij to import maven project
+    4. Clone the project by clicking new->Project from Version Source Control
+    5. Import maven project by right clicking on the pom.xml and telling IntelliJ to import maven project
     6. In the maven tab at the right click the refresh symbol
     7. Click on play
 
@@ -18,6 +18,10 @@
     2. Implement to the interface "Tipster"
     
 # Implementing a View
+    Starting the GameManager with your View Class applied will
+    run it **concurrent**!
     1. Create a class "yourView" in
     src/main/java/com/treasure/hunt/view/in_game/implementations/
     2. Implement to the interface "View"
+    3. Access the Products created after each step via
+    GameHistory.giveProductsCopy()

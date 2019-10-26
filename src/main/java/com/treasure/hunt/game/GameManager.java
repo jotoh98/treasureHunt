@@ -5,7 +5,6 @@ import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.tipster.Tipster;
 import com.treasure.hunt.strategy.seeker.Seeker;
 import com.treasure.hunt.view.in_game.View;
-import lombok.AllArgsConstructor;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -13,21 +12,28 @@ import org.locationtech.jts.geom.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
+/**
+ * This is the GameManager which should be started,
+ * to start a normal game.
+ */
 public class GameManager {
 
     // final variables
-    private final GeometryFactory gf = new GeometryFactory();
-    private final GameHistory gameHistory = new GameHistory();
-    private final Seeker seeker;
-    private final Tipster tipster;
-    private final List<Thread> threads;
+    protected final GeometryFactory gf = new GeometryFactory();
+    protected final GameHistory gameHistory = new GameHistory();
+    protected final Seeker seeker;
+    protected final Tipster tipster;
+    protected final List<Thread> threads;
 
     // Game variables
-    boolean finished = false;
-    private Point seekerPos;
-    private Point treasurePos;
-    private Hint lastHint;
+    protected boolean finished = false;
+    protected Point seekerPos;
+    protected Point treasurePos;
+    protected Hint lastHint;
+    /**
+     * This tells, whether the next step is the first or not.
+     */
+    protected boolean firstStep;
 
     public GameManager(Seeker seeker, Tipster tipster, List<View> view) {
         this.seeker = seeker;
@@ -35,23 +41,29 @@ public class GameManager {
         this.threads = new ArrayList<>();
         for (int i = 0; i < view.size(); i++) {
             Thread thread = new Thread((Runnable) view, "" + i);
-            thread.start();
             threads.add(thread);
         }
-
-        seekerPos = gf.createPoint(new Coordinate(0, 0));
-        seeker.init(seekerPos, gameHistory);
-        tipster.init(gameHistory);
-
-        Moves moves = seeker.move();
-        Hint lastHint = tipster.move(moves);
     }
 
     /**
      * This simulates just one step of the simulation.
+     * The seeker begins since we want not force him,
+     * to take a initial hint, he eventually do not need,
+     * if he works randomized!
+     * <p>
+     * The first step of the seeker goes without an hint,
+     * the next will be with.
      */
     public void step() {
-        Moves moves = seeker.move(lastHint);
+        Moves moves;
+        if (firstStep)
+            moves = seeker.move();
+        else
+            moves = seeker.move(lastHint);
+        if (located()) {
+            finished = true;
+            return;
+        }
         lastHint = tipster.move(moves);
     }
 
@@ -59,8 +71,7 @@ public class GameManager {
      * This simulates the whole game, until its finished.
      */
     public void run() {
-        while (!finished)
-            step();
+        while (!finished) step();
     }
 
     /**
@@ -69,13 +80,50 @@ public class GameManager {
      * @param steps number of steps
      */
     public void run(int steps) {
-        for (int i = 0; i < steps; i++) step();
+        for (int i = 0; i < steps; i++) {
+            if (finished) break;
+            step();
+        }
     }
 
+    /**
+     * This collects every Views (Runnables).
+     *
+     * @throws InterruptedException
+     */
     // TODO handle exception
     public void quit() throws InterruptedException {
         for (Thread thread : threads) {
             thread.join();
         }
+    }
+
+    /**
+     * @return whether the performed moves by the seeker/hints from the tipster were correct.
+     */
+    protected boolean checkConsistency() {
+        // TODO implement
+        return true;
+    }
+
+    /**
+     * @return whether the seeker located the treasure successfully.
+     */
+    protected boolean located() {
+        // TODO implement
+        return false;
+    }
+
+    /**
+     * Use this to initialize seeker, tipster and
+     * start the concurrent threads.
+     */
+    protected void init() {
+        seekerPos = gf.createPoint(new Coordinate(0, 0));
+        treasurePos = gf.createPoint(new Coordinate(0, 0));
+        seeker.init(seekerPos, gameHistory);
+        tipster.init(treasurePos, gameHistory);
+        for (Thread thread : threads)
+            thread.start();
     }
 }
