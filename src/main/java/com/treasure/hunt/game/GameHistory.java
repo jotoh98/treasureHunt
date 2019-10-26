@@ -1,6 +1,6 @@
 package com.treasure.hunt.game;
 
-import com.treasure.hunt.strategy.hint.Product;
+import com.treasure.hunt.strategy.Product;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -15,7 +15,6 @@ public class GameHistory {
      * at the same time.
      */
     private Lock productsLock = new ReentrantLock();
-
     private List<Product> products;
 
     /**

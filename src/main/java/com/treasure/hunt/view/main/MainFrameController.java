@@ -4,7 +4,10 @@ package com.treasure.hunt.view.main;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.strategy.tipster.implementations.RandomAngularHintStrategy;
 import com.treasure.hunt.strategy.seeker.implemenations.StrategyFromPaper;
+import com.treasure.hunt.view.in_game.View;
 import com.treasure.hunt.view.in_game.implementatons.CanvasView;
+
+import java.util.ArrayList;
 
 public class MainFrameController {
     private static MainFrameController single_instance = null;
@@ -29,11 +32,11 @@ public class MainFrameController {
 
         gameManager = new GameManager(new StrategyFromPaper(),
                 new RandomAngularHintStrategy(),
-                new CanvasView(canvasController.getCanvas()));
-        gameManager.start();
+                new ArrayList<View>(new CanvasView(canvasController.getCanvas())));
+        gameManager.run();
     }
 
     public void onNext() {
-        gameManager.onNext();
+        gameManager.step();
     }
 }

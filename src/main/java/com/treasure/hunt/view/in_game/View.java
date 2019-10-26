@@ -1,6 +1,6 @@
 package com.treasure.hunt.view.in_game;
 
-import com.treasure.hunt.strategy.hint.Product;
+import com.treasure.hunt.strategy.Product;
 
 public interface View extends Runnable{
 

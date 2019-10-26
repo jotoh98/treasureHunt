@@ -1,7 +1,7 @@
 package com.treasure.hunt.strategy.seeker;
 
 import com.treasure.hunt.game.GameHistory;
-import com.treasure.hunt.strategy.hint.Product;
+import com.treasure.hunt.strategy.Product;
 import com.treasure.hunt.strategy.hint.Hint;
 import org.locationtech.jts.geom.Point;
 

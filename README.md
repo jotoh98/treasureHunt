@@ -16,12 +16,6 @@
     1. Create a class "yourTipser" in
     src/main/java/com/treasure/hunt/strategy/tipster/implementations/
     2. Implement to the interface "Tipster"
-
-# Implementing a Hint
-    1. Create a class "yourHint" in
-    src/main/java/com/treasure/hunt/strategy/hint/implementations/
-    2. Implement to the interface "Hint"
-    
     
 # Implementing a View
     1. Create a class "yourView" in

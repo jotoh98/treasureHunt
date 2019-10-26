@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class GameManager {
 
-    // final variavles
+    // final variables
     private final GeometryFactory gf = new GeometryFactory();
     private final GameHistory gameHistory = new GameHistory();
     private final Seeker seeker;
