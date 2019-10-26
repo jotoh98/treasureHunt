@@ -1,8 +1,8 @@
-package com.treasure.hunt.ui.in_game;
+package com.treasure.hunt.view.in_game;
 
 import com.treasure.hunt.strategy.hint.Product;
 
-public interface View {
+public interface View extends Runnable{
 
     /**
      * Draw the product

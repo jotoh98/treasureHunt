@@ -1,4 +1,4 @@
-package com.treasure.hunt.ui.in_game.implementatons;
+package com.treasure.hunt.view.in_game.implementatons;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,8 +1,8 @@
-package com.treasure.hunt.ui.in_game.implementatons;
+package com.treasure.hunt.view.in_game.implementatons;
 
 import com.treasure.hunt.strategy.hint.Product;
 import com.treasure.hunt.strategy.geom.GeometryItem;
-import com.treasure.hunt.ui.in_game.View;
+import com.treasure.hunt.view.in_game.View;
 import lombok.RequiredArgsConstructor;
 
 import java.awt.*;

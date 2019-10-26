@@ -1,4 +1,4 @@
-package com.treasure.hunt.ui.swing;
+package com.treasure.hunt.view.swing;
 
 import com.treasure.hunt.jts.Circle;
 import com.treasure.hunt.strategy.geom.GeometryItem;

@@ -1,55 +1,56 @@
 package com.treasure.hunt.strategy.tipster;
 
-import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.game.GameHistory;
+import com.treasure.hunt.strategy.hint.Product;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.seeker.Moves;
 import org.locationtech.jts.geom.Point;
 
-import java.util.List;
-
 public interface Tipster<T extends Hint> {
 
     /**
-     * This defines the probability, that the hint
-     * given by the hintGen really contain the treasure.
+     * Use this to initialize your Tipster.
+     * This will give him the GameHistory.
      *
-     * @param insecurity The probability, that the given hint is correct.
+     * @param gameHistory
      */
-    void init(double insecurity);
+    void init(GameHistory gameHistory);
 
     /**
-     * Use this to choose some smart hint, given no Moves of the player.
-     *
-     * @return Moves
+     * This should let the Tipster commit all of his created GeometryItems
+     * to the View-Thread.
+     * For this, you could use void dump(List<Product> list) from GameHistory.
      */
-    T generateHint();
+    void commitProduct(Product product);
 
     /**
-     * Use this to choose some smart hint, given the Moves of the player.
+     * Use this to tell a hint,
+     * only knowing the current position of the {@Seeker}.
+     * This is for the case, the Tipster starts.
      *
-     * @return Moves
+     * @return T a hint.
      */
-    T generateHint(Moves moves);
+    T move(Point currentPos);
 
     /**
-     * Use this, to output any visuals
+     * Use this to tell a hint,
+     * knowing the last Moves of the {@Seeker}.
      *
-     * @return Visualization Gemoetry Items
+     * @return T a hint.
      */
-    List<GeometryItem> getAvailableVisualisationGeometryItems();
+    T move(Moves moves);
 
     /**
-     * Use this to return your chosen Strategy name to display.
+     * This should output the name of your Tipster-Strategy.
      *
-     * @return Strategy name.
+     * @return String
      */
     String getDisplayName();
 
     /**
-     * Use this to return the actual treasure location.
-     * This may be switched.
+     * This should output the current treasurelocation.
      *
-     * @return Point treasure location
+     * @return Point
      */
     Point getTreasureLocation();
 }
