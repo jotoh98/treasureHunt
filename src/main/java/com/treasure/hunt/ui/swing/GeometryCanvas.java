@@ -1,21 +1,46 @@
 package com.treasure.hunt.ui.swing;
 
+import com.treasure.hunt.jts.Circle;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import lombok.AllArgsConstructor;
-import org.locationtech.jts.awt.IdentityPointTransformation;
+import lombok.Getter;
 import org.locationtech.jts.awt.PointTransformation;
 import org.locationtech.jts.awt.ShapeWriter;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.math.Vector2D;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 @AllArgsConstructor
-public class GeometryPanel extends JPanel {
+public class GeometryCanvas extends JComponent {
 
-    private PointTransformation pointTransformation;
+    @Getter
+    private Vector2D offset = new Vector2D();
+    @Getter
+    private double scale = 1.0;
+    PointTransformation pointTransformation = new PointTransformation() {
+        @Override
+        public void transform(Coordinate src, Point2D dest) {
+            dest.setLocation(scale * src.x + offset.getX(), scale * src.y + offset.getY());
+        }
+    };
 
-    GeometryPanel() {
-        pointTransformation = new IdentityPointTransformation();
+    GeometryCanvas() {
+        GeometryCanvasMouseListener geometryCanvasMouseListener = new GeometryCanvasMouseListener(this);
+        addMouseMotionListener(geometryCanvasMouseListener);
+        addMouseListener(geometryCanvasMouseListener);
+        addMouseWheelListener(geometryCanvasMouseListener);
+    }
+
+    public void setOffset(Vector2D offset) {
+        this.offset = offset;
+    }
+
+    public void setScale(double scale) {
+        this.scale = Math.max(0.00001, Math.min(10.0, scale));
     }
 
     public void paint(Graphics graphics) {
@@ -25,9 +50,9 @@ public class GeometryPanel extends JPanel {
 
         graphics2D.addRenderingHints(renderingHints);
 
+        new GeometryItem<>(new Circle(new Coordinate(0, 0), 10.0, new GeometryFactory()));
         drawGeometryItems(graphics2D, SwingTest.exampleGeometryItems());
     }
-
 
     private void drawGeometryItems(Graphics2D graphics2D, GeometryItem[] geometryItems) {
         for (GeometryItem geometryItem : geometryItems)
@@ -51,5 +76,4 @@ public class GeometryPanel extends JPanel {
         graphics2D.setColor(geometryItem.getType().getLineColor());
         graphics2D.draw(shape);
     }
-
 }

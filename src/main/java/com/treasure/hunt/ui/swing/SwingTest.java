@@ -5,6 +5,7 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.util.AffineTransformation;
 
@@ -12,15 +13,19 @@ import javax.swing.*;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import java.awt.*;
 
-public class SwingTest extends JPanel {
+public class SwingTest extends JFrame {
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame();
+        SwingTest frame = new SwingTest();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 400);
+        frame.setSize(1080, 600);
         frame.setVisible(true);
 
-        GeometryPanel geometryPanel = new GeometryPanel();
+
+        GeometryCanvas geometryPanel = new GeometryCanvas();
+
+        geometryPanel.setOpaque(true);
+
         frame.setContentPane(geometryPanel);
 
         MetalLookAndFeel.setCurrentTheme(new TreasureHuntTheme());
@@ -48,11 +53,14 @@ public class SwingTest extends JPanel {
 
         GeometryType intersectionType = new GeometryType(true, Color.red, Color.yellow, true, "");
 
+
+        Point p1 = geometryFactory.createPoint(new Coordinate(0, 0));
         return new GeometryItem[]{
                 new GeometryItem<>(c1, new GeometryType(true, Color.green)),
                 new GeometryItem<>(c2, new GeometryType(true, Color.blue)),
                 new GeometryItem<>(c3, intersectionType),
-                new GeometryItem<>(intersection, intersectionType),
+                new GeometryItem<>(intersection),
+                new GeometryItem(p1)
         };
     }
 

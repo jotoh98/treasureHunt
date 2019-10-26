@@ -1,6 +1,9 @@
 package com.treasure.hunt.strategy.geom;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Geometry;
 
 /**
@@ -11,11 +14,8 @@ import org.locationtech.jts.geom.Geometry;
 
 @AllArgsConstructor
 @RequiredArgsConstructor
+@Data
 public class GeometryItem<T extends Geometry> {
-    @Getter
-    @Setter
     @NonNull T object;
-    @Getter
-    @Setter
     GeometryType type = new GeometryType();
 }
