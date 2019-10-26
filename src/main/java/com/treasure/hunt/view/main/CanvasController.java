@@ -1,4 +1,4 @@
-package com.treasure.hunt.ui.main;
+package com.treasure.hunt.view.main;
 
 import java.awt.*;
 

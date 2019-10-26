@@ -1,10 +1,13 @@
-package com.treasure.hunt.ui.main;
+package com.treasure.hunt.view.main;
 
 
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.strategy.hint.implementations.RandomAngularHintStrategy;
-import com.treasure.hunt.strategy.moves.implemenations.StrategyFromPaper;
-import com.treasure.hunt.ui.in_game.implementatons.CanvasUiRenderer;
+import com.treasure.hunt.strategy.tipster.implementations.RandomAngularHintStrategy;
+import com.treasure.hunt.strategy.seeker.implemenations.StrategyFromPaper;
+import com.treasure.hunt.view.in_game.View;
+import com.treasure.hunt.view.in_game.implementatons.CanvasView;
+
+import java.util.ArrayList;
 
 public class MainFrameController {
     private static MainFrameController single_instance = null;
@@ -27,11 +30,13 @@ public class MainFrameController {
     public void onPlay() {
         canvasController = new CanvasController();
 
-        gameManager = new GameManager(new RandomAngularHintStrategy(), new StrategyFromPaper(), new CanvasUiRenderer(canvasController.getCanvas()));
-        gameManager.start();
+        gameManager = new GameManager(new StrategyFromPaper(),
+                new RandomAngularHintStrategy(),
+                new ArrayList<View>(new CanvasView(canvasController.getCanvas())));
+        gameManager.run();
     }
 
     public void onNext() {
-        gameManager.onNext();
+        gameManager.step();
     }
 }
