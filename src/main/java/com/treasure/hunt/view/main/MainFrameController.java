@@ -1,14 +1,14 @@
 package com.treasure.hunt.view.main;
 
 
-import com.treasure.hunt.game.Normal;
+import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.strategy.tipster.implementations.RandomAngularHintStrategy;
 import com.treasure.hunt.strategy.seeker.implemenations.StrategyFromPaper;
 import com.treasure.hunt.view.in_game.implementatons.CanvasView;
 
 public class MainFrameController {
     private static MainFrameController single_instance = null;
-    private Normal normal;
+    private GameManager gameManager;
     private CanvasController canvasController;
 
     private MainFrameController() {
@@ -27,13 +27,13 @@ public class MainFrameController {
     public void onPlay() {
         canvasController = new CanvasController();
 
-        normal = new Normal(new StrategyFromPaper(),
+        gameManager = new GameManager(new StrategyFromPaper(),
                 new RandomAngularHintStrategy(),
                 new CanvasView(canvasController.getCanvas()));
-        normal.start();
+        gameManager.start();
     }
 
     public void onNext() {
-        normal.onNext();
+        gameManager.onNext();
     }
 }

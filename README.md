@@ -11,27 +11,19 @@
     1. Create a class "yourPlayer" in
     src/main/java/com/treasure/hunt/strategy/seeker/implementations/
     2. Implement to the interface "Seeker"
-    3. Have a look on "GeometryType" to know,
-    how to declare your GeometryType
 
 # Implementing a Tipster
     1. Create a class "yourTipser" in
     src/main/java/com/treasure/hunt/strategy/tipster/implementations/
     2. Implement to the interface "Tipster"
-    3. Have a look on "GeometryType" to know,
-    how to declare your GeometryType
 
 # Implementing a Hint
     1. Create a class "yourHint" in
     src/main/java/com/treasure/hunt/strategy/hint/implementations/
     2. Implement to the interface "Hint"
-    3. Have a look on "GeometryType" to know,
-    how to declare your GeometryType
     
     
 # Implementing a View
     1. Create a class "yourView" in
-    src/main/java/com/treasure/hunt/ui/in_game/implementations/
+    src/main/java/com/treasure/hunt/view/in_game/implementations/
     2. Implement to the interface "View"
-    3. Have a look on "GeometryType" to know,
-    what GemoetryType you got.
