@@ -1,4 +1,4 @@
-package com.treasure.hunt.strategy.seeker.implemenations;
+package com.treasure.hunt.strategy.seeker.implementations;
 
 import com.treasure.hunt.game.GameHistory;
 import com.treasure.hunt.strategy.Product;
@@ -27,11 +27,6 @@ public class StrategyFromPaper implements Seeker<AngleHint> {
     @Override
     public Moves move(AngleHint hint) {
         return null;
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "Strategy from paper";
     }
 
     @Override

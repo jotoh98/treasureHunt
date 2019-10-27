@@ -1,7 +1,6 @@
 package com.treasure.hunt.game.mods.hideandseek;
 
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.strategy.seeker.Moves;
 import com.treasure.hunt.view.in_game.View;
 
 import java.util.List;
@@ -28,16 +27,7 @@ public class HideAndSeekGameManager extends GameManager {
      * will be updated, but it could have not changed.
      */
     public void step() {
-        Moves moves;
-        if (firstStep)
-            moves = seeker.move();
-        else
-            moves = seeker.move(lastHint);
-        if (located()) {
-            finished = true;
-            return;
-        }
-        lastHint = tipster.move(moves); // The important difference against the GameManager
+        super.step();
         treasurePos = tipster.getTreasureLocation();
     }
 }

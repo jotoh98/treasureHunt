@@ -36,11 +36,4 @@ public interface Tipster<T extends Hint> {
      * @return T a hint.
      */
     T move(Moves moves);
-
-    /**
-     * This should output the name of your tipster strategy.
-     *
-     * @return String
-     */
-    String getDisplayName();
 }

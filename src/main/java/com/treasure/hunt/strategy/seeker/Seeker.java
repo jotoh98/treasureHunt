@@ -39,11 +39,6 @@ public interface Seeker<T extends Hint> {
     Moves move(T hint);
 
     /**
-     * @return String the name of your seeker strategy
-     */
-    String getDisplayName();
-
-    /**
      * @return Point the position where the player currently stands.
      */
     Point getLocation();

@@ -1,15 +1,14 @@
 package com.treasure.hunt.game;
 
-import com.treasure.hunt.strategy.seeker.Moves;
 import com.treasure.hunt.strategy.hint.Hint;
-import com.treasure.hunt.strategy.tipster.Tipster;
+import com.treasure.hunt.strategy.seeker.Moves;
 import com.treasure.hunt.strategy.seeker.Seeker;
+import com.treasure.hunt.strategy.tipster.Tipster;
 import com.treasure.hunt.view.in_game.View;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
