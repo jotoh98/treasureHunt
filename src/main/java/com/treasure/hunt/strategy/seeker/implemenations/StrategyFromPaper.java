@@ -1,54 +1,41 @@
 package com.treasure.hunt.strategy.seeker.implemenations;
 
-import com.treasure.hunt.strategy.geom.GeometryItem;
-import com.treasure.hunt.strategy.geom.GeometryType;
+import com.treasure.hunt.game.GameHistory;
+import com.treasure.hunt.strategy.Product;
 import com.treasure.hunt.strategy.hint.AngleHint;
-import com.treasure.hunt.strategy.seeker.Seeker;
 import com.treasure.hunt.strategy.seeker.Moves;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
+import com.treasure.hunt.strategy.seeker.Seeker;
 import org.locationtech.jts.geom.Point;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class StrategyFromPaper implements Seeker<AngleHint> {
-    private GeometryFactory gf = new GeometryFactory();
-    GeometryItem exampleGeometryItem = new GeometryItem(gf.createPoint(new Coordinate(0, 0)),
-            GeometryType.SEEKER_POS);
 
-    public void init() {
-        //TODO: implement
+    @Override
+    public void init(Point startPosition, GameHistory gameHistory) {
+
     }
 
-    protected Moves generate(AngleHint hint, Point currentLocation) {
+    @Override
+    public void commitProduct(Product product) {
+
+    }
+
+    @Override
+    public Moves move() {
+        return null;
+    }
+
+    @Override
+    public Moves move(AngleHint hint) {
         return null;
     }
 
     @Override
     public String getDisplayName() {
-        return "Strategy from Paper";
-    }
-
-
-    @Override
-    public void init(Point position) {
-
+        return "Strategy from paper";
     }
 
     @Override
-    public Moves generate() {
+    public Point getLocation() {
         return null;
-    }
-
-    @Override
-    public Moves generate(AngleHint moves) {
-        return null;
-    }
-
-    @Override
-    public List<GeometryItem> getAvailableVisualisationGeometryItems() {
-        List<GeometryItem> availableVisualisationGeometryTypes = Arrays.asList(exampleGeometryItem);
-        return availableVisualisationGeometryTypes;
     }
 }
