@@ -7,8 +7,7 @@ import com.treasure.hunt.strategy.seeker.Moves;
 import com.treasure.hunt.strategy.tipster.Tipster;
 import org.locationtech.jts.geom.Point;
 
-public class RandomAngularHintStrategy implements Tipster<AngleHint> {
-
+public class ExampleTipster implements Tipster<AngleHint> {
     @Override
     public void init(Point treasurePosition, GameHistory gameHistory) {
 

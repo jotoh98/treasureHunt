@@ -17,9 +17,9 @@ public interface Seeker<T extends Hint> {
     void init(Point startPosition, GameHistory gameHistory);
 
     /**
-     * This should let the Seeker commit all of his created GeometryItems
-     * to the View-Thread.
      * For this, you could use void dump(List<Product> list) from GameHistory.
+     *
+     * @param product the {@link Product} to commit to the {@link com.treasure.hunt.view.in_game.View}
      */
     void commitProduct(Product product);
 
@@ -28,30 +28,18 @@ public interface Seeker<T extends Hint> {
      * without a hint given.
      * This is for the case, the Seeker starts.
      *
-     * @return Moves
+     * @return Moves the {@link Moves} the seeker did
      */
     Moves move();
 
     /**
-     * Use this to perform a move,
-     * with a hint given.
-     *
-     * @param moves
-     * @return Moves
+     * @param hint the hint, the {@link com.treasure.hunt.strategy.tipster.Tipster} gave last.
+     * @return Moves the {@link Moves} choosed.
      */
-    Moves move(T moves);
+    Moves move(T hint);
 
     /**
-     * This should output the name of your Tipster-Strategy.
-     *
-     * @return String
-     */
-    String getDisplayName();
-
-    /**
-     * This should output the current location of the Seeker.
-     *
-     * @return Point
+     * @return Point the position where the player currently stands.
      */
     Point getLocation();
 }

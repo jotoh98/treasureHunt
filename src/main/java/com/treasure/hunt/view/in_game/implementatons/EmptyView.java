@@ -6,9 +6,13 @@ import com.treasure.hunt.view.in_game.View;
 
 public class EmptyView implements View {
 
+    @Override
     public void visualizeProduct(Product product) {
+
     }
 
-    protected void drawItem(GeometryItem geometryItem) {
+    @Override
+    public void run() {
+
     }
 }
