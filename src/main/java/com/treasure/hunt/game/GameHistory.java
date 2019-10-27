@@ -4,9 +4,10 @@ import com.treasure.hunt.strategy.Product;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @NoArgsConstructor
 public class GameHistory {
@@ -14,8 +15,13 @@ public class GameHistory {
      * Locks GameHistory.products, such that it can only be accessed by one thread
      * at the same time.
      */
-    private Lock productsLock = new ReentrantLock();
-    private List<Product> products;
+    private List<Product> products = Collections.synchronizedList(new ArrayList<>());
+    private ExecutorService executorService = Executors.newFixedThreadPool(2);
+    private List<Runnable> listeners = new ArrayList<>();
+
+    private void registerListener(Runnable runnable) {
+        listeners.add(runnable);
+    }
 
     /**
      * This dumps the new game created {@link Product}
@@ -24,12 +30,8 @@ public class GameHistory {
      * @param product The new Product, arised in the game.
      */
     public void dump(Product product) {
-        try {
-            productsLock.lock();
-            products.add(product);
-        } finally {
-            productsLock.unlock();
-        }
+        products.add(product);
+        listeners.forEach(runnable -> executorService.execute(runnable));
     }
 
     /**
@@ -39,14 +41,7 @@ public class GameHistory {
      * @return copy of the productList.
      */
     public List<Product> giveProductsCopy() {
-        List<Product> copy = new ArrayList<>();
-        try {
-            productsLock.lock();
-            copy.addAll(products);
-        } finally {
-            productsLock.unlock();
-        }
-        return copy;
+        return new ArrayList<Product>(products);
     }
 
 }

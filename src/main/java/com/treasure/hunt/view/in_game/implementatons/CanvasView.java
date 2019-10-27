@@ -13,11 +13,12 @@ public class CanvasView implements View {
 
 
     @Override
-    public void visualizeProduct(Product product) {
+    public void run() {
 
     }
 
-    protected void drawItem(GeometryItem geometryItem) {
+    @Override
+    public void visualizeProduct(Product product) {
 
     }
 }

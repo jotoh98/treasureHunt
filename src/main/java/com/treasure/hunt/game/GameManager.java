@@ -23,7 +23,6 @@ public class GameManager {
     protected final GameHistory gameHistory = new GameHistory();
     protected final Seeker seeker;
     protected final Tipster tipster;
-    protected final List<Thread> threads;
 
     // Game variables
     protected boolean finished = false;
@@ -38,11 +37,6 @@ public class GameManager {
     public GameManager(Seeker seeker, Tipster tipster, List<View> view) {
         this.seeker = seeker;
         this.tipster = tipster;
-        this.threads = new ArrayList<>();
-        for (int i = 0; i < view.size(); i++) {
-            Thread thread = new Thread((Runnable) view, "" + i);
-            threads.add(thread);
-        }
     }
 
     /**
@@ -87,18 +81,6 @@ public class GameManager {
     }
 
     /**
-     * This collects every Views (Runnables).
-     *
-     * @throws InterruptedException
-     */
-    // TODO handle exception
-    public void quit() throws InterruptedException {
-        for (Thread thread : threads) {
-            thread.join();
-        }
-    }
-
-    /**
      * @return whether the performed moves by the seeker/hints from the tipster were correct.
      */
     protected boolean checkConsistency() {
@@ -123,7 +105,5 @@ public class GameManager {
         treasurePos = gf.createPoint(new Coordinate(0, 0));
         seeker.init(seekerPos, gameHistory);
         tipster.init(treasurePos, gameHistory);
-        for (Thread thread : threads)
-            thread.start();
     }
 }

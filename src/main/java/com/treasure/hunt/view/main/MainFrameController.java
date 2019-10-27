@@ -8,6 +8,7 @@ import com.treasure.hunt.view.in_game.View;
 import com.treasure.hunt.view.in_game.implementatons.CanvasView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainFrameController {
     private static MainFrameController single_instance = null;
@@ -30,9 +31,12 @@ public class MainFrameController {
     public void onPlay() {
         canvasController = new CanvasController();
 
+        List<View> viewList = new ArrayList<View>();
+        viewList.add(new CanvasView(canvasController.getCanvas()));
+
         gameManager = new GameManager(new StrategyFromPaper(),
                 new RandomAngularHintStrategy(),
-                new ArrayList<View>(new CanvasView(canvasController.getCanvas())));
+                viewList);
         gameManager.run();
     }
 

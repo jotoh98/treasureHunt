@@ -15,7 +15,7 @@ import java.util.List;
 public class StrategyFromPaper implements Seeker<AngleHint> {
     private GeometryFactory gf = new GeometryFactory();
     GeometryItem exampleGeometryItem = new GeometryItem(gf.createPoint(new Coordinate(0, 0)),
-            GeometryType.WAY_POINT);
+            GeometryType.SEEKER_POS);
 
     public void init() {
         //TODO: implement
