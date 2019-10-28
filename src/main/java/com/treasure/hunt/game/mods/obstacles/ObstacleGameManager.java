@@ -8,17 +8,17 @@ import java.util.List;
 
 public class ObstacleGameManager extends GameManager {
 
+    protected ObstacleHider hider;
+    protected ObstacleSearcher searcher;
     protected List<GeometryItem> obstacles;
-    protected ObstacleSeeker seeker;
-    protected ObstacleTipster tipster;
 
-    public ObstacleGameManager(ObstacleSeeker seeker, ObstacleTipster tipster, List<View> view, List<GeometryItem> obstacles) {
-        super(seeker, tipster, view);
+    public ObstacleGameManager(ObstacleSearcher searcher, ObstacleHider hider, List<View> view, List<GeometryItem> obstacles) {
+        super(searcher, hider, view);
     }
 
     @Override
     protected boolean checkConsistency() {
-        // TODO, check whether the seeker passed a wall!
+        // TODO, check whether the searcher passed a wall!
         return true;
     }
 }

@@ -7,15 +7,15 @@
     6. In the maven tab at the right click the refresh symbol
     7. Click on play
 
-# Implementing a Seeker
-    1. Create a class "yourPlayer" in
-    src/main/java/com/treasure/hunt/strategy/seeker/implementations/
-    2. Implement to the interface "Seeker"
+# Implementing a Seacher
+    1. Create a class "yourSearcher" in
+    src/main/java/com/treasure/hunt/strategy/searcher/implementations/
+    2. Implement to the interface "Seacher"
 
-# Implementing a Tipster
-    1. Create a class "yourTipser" in
-    src/main/java/com/treasure/hunt/strategy/tipster/implementations/
-    2. Implement to the interface "Tipster"
+# Implementing a Hider
+    1. Create a class "yourHider" in
+    src/main/java/com/treasure/hunt/strategy/hider/implementations/
+    2. Implement to the interface "Hider"
     
 # Implementing a View
     Starting the GameManager with your View Class applied will
