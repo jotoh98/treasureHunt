@@ -16,4 +16,13 @@ import org.locationtech.jts.geom.Geometry;
 public class GeometryItem<T extends Geometry> {
     @NonNull T object;
     GeometryType type;
+    GeometryStyle style;
+
+    public GeometryItem(T object) {
+        this(object, GeometryType.STANDARD, GeometryStyle.getDefaults(GeometryType.STANDARD));
+    }
+
+    public GeometryItem(T object, GeometryType type) {
+        this(object, type, GeometryStyle.getDefaults(type));
+    }
 }

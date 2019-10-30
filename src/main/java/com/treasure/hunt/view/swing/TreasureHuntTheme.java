@@ -1,4 +1,4 @@
-package com.treasure.hunt.ui.swing;
+package com.treasure.hunt.view.swing;
 
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.FontUIResource;

@@ -1,7 +1,10 @@
 package com.treasure.hunt.strategy.geom;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
+@AllArgsConstructor
 public enum GeometryType {
     // hints
     FALSE_HINT(false, "False Hint"),
@@ -12,7 +15,7 @@ public enum GeometryType {
     POSSIBLE_TREASURE(false, "possible treasure"),
 
     // seeker movements
-    SEEKER_POS(true, "seeker pos", true),
+    SEEKER_POS(true, "seeker pos"),
     SEEKER_MOVE(true, "no treasure"),
 
     // treasure location
@@ -20,29 +23,25 @@ public enum GeometryType {
 
     // Obstacle add-on
     OBSTACLE(false, "no treasure"),
-    WAY_POINT(false, "no treasure")
+    WAY_POINT(false, "no treasure"),
+
+    STANDARD(true, "")
 
     // TODO add more..
     ;
 
     @Getter
-    private final boolean enabledByDefault;
+    @Setter
+    private boolean enabled;
+
     @Getter
     private final String displayName;
-    /**
-     * If a new {@link GeometryItem} is passed, old one with the same type are removed.
-     */
+
     @Getter
-    private final boolean override;
+    @Setter
+    private boolean override;
 
-
-    GeometryType(boolean enabledByDefault, String displayName) {
-        this(enabledByDefault, displayName, false);
-    }
-
-    GeometryType(boolean enabledByDefault, String displayName, boolean override) {
-        this.enabledByDefault = enabledByDefault;
-        this.displayName = displayName;
-        this.override = override;
+    GeometryType(boolean enabledByDefault, String name) {
+        this(enabledByDefault, name, false);
     }
 }

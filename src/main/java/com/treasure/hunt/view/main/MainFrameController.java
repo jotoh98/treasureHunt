@@ -30,10 +30,11 @@ public class MainFrameController {
     }
 
     public void onPlay() {
-        canvasController = new CanvasController();
+        CanvasView canvasView = new CanvasView();
+        //canvasController = new CanvasController(canvasView);
 
         List<View> viewList = new ArrayList<View>();
-        viewList.add(new CanvasView(canvasController.getCanvas()));
+        viewList.add(canvasView);
 
         gameManager = new GameManager(new StrategyFromPaper(),
                 new RandomAngularHintStrategy(),
