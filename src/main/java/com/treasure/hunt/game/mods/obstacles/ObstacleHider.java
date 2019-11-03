@@ -4,11 +4,12 @@ import com.treasure.hunt.game.GameHistory;
 import com.treasure.hunt.strategy.Product;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.hider.Hider;
+import com.treasure.hunt.strategy.hint.Hint;
 import org.locationtech.jts.geom.Point;
 
 import java.util.List;
 
-public interface ObstacleHider extends Hider {
+public interface ObstacleHider<T extends Hint> extends Hider<T> {
 
     /**
      * Use this to initialize your hider.

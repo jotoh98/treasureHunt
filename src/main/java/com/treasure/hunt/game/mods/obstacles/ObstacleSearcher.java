@@ -3,12 +3,13 @@ package com.treasure.hunt.game.mods.obstacles;
 import com.treasure.hunt.game.GameHistory;
 import com.treasure.hunt.strategy.Product;
 import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import org.locationtech.jts.geom.Point;
 
 import java.util.List;
 
-public interface ObstacleSearcher extends Searcher {
+public interface ObstacleSearcher<T extends Hint> extends Searcher<T> {
 
     /**
      * Use this to initialize your searcher.

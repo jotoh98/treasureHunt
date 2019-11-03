@@ -1,6 +1,7 @@
 package com.treasure.hunt.game.mods.insecurehints;
 
 import com.treasure.hunt.game.GameHistory;
+import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import org.locationtech.jts.geom.Point;
 
@@ -8,7 +9,7 @@ import org.locationtech.jts.geom.Point;
  * Nothing to implement here, BUT
  * you should ensure, your {@link Searcher} can handle with insecure hints.
  */
-public interface InsecureSearcher extends Searcher {
+public interface InsecureSearcher<T extends Hint> extends Searcher<T> {
 
     /**
      * Use this to initialize your searcher.
