@@ -2,10 +2,10 @@ package com.treasure.hunt.view.main;
 
 import com.treasure.hunt.SwingTest;
 import com.treasure.hunt.strategy.geom.GeometryItem;
-import com.treasure.hunt.strategy.seeker.Seeker;
-import com.treasure.hunt.strategy.tipster.Tipster;
 import com.treasure.hunt.view.swing.ClassListCellRenderer;
 import com.treasure.hunt.view.swing.ClassListMouseListener;
+import com.treasure.hunt.strategy.hider.Hider;
+import com.treasure.hunt.strategy.searcher.Searcher;
 import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
 
@@ -23,10 +23,10 @@ public class MainMenuController {
     private JPanel selectContextContainer = new JPanel();
     private JButton playButton = new JButton("Play");
     private JLabel errorLabel = new JLabel();
-    private DefaultListModel<Class<? extends Tipster>> tipsterList = new DefaultListModel<>();
-    private final JList<Class<? extends Tipster>> tipsterListView = new JList<>(tipsterList);
-    private DefaultListModel<Class<? extends Seeker>> seekerList = new DefaultListModel<>();
-    private final JList<Class<? extends Seeker>> seekerListView = new JList<>(seekerList);
+    private DefaultListModel<Class<? extends Hider>> hiderList = new DefaultListModel<>();
+    private final JList<Class<? extends Hider>> hiderListView = new JList<>(hiderList);
+    private DefaultListModel<Class<? extends Searcher>> searcherList = new DefaultListModel<>();
+    private final JList<Class<? extends Searcher>> searcherListView = new JList<>(searcherList);
 
     public void show() {
         init();
@@ -42,46 +42,46 @@ public class MainMenuController {
 
     private void listBehaviour() {
 
-        seekerListView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        tipsterListView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        searcherListView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        hiderListView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        seekerListView.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        tipsterListView.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        searcherListView.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        hiderListView.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        ClassListMouseListener seekerListListener = new ClassListMouseListener(seekerListView, tipsterListView);
-        seekerListView.addMouseListener(seekerListListener);
-        seekerListView.addMouseMotionListener(seekerListListener);
+        ClassListMouseListener searcherListListener = new ClassListMouseListener(searcherListView, hiderListView);
+        searcherListView.addMouseListener(searcherListListener);
+        searcherListView.addMouseMotionListener(searcherListListener);
 
-        ClassListMouseListener tipsterListListener = new ClassListMouseListener(tipsterListView, seekerListView);
-        tipsterListView.addMouseListener(tipsterListListener);
-        tipsterListView.addMouseMotionListener(tipsterListListener);
+        ClassListMouseListener hiderListListener = new ClassListMouseListener(hiderListView, searcherListView);
+        hiderListView.addMouseListener(hiderListListener);
+        hiderListView.addMouseMotionListener(hiderListListener);
 
     }
 
     private void fillLists() {
-        Reflections seekerReflections = new Reflections("com.treasure.hunt.strategy.seeker.implementations");
-        Reflections tipsterReflections = new Reflections("com.treasure.hunt.strategy.tipster.implementations");
+        Reflections searcherReflections = new Reflections("com.treasure.hunt.strategy.searcher.implementations");
+        Reflections hiderReflections = new Reflections("com.treasure.hunt.strategy.hider.implementations");
 
-        Set<Class<? extends Seeker>> allSeekers = seekerReflections.getSubTypesOf(Seeker.class);
-        allSeekers.forEach(aClass -> seekerList.addElement(aClass));
+        Set<Class<? extends Searcher>> allSearchers = searcherReflections.getSubTypesOf(Searcher.class);
+        allSearchers.forEach(aClass -> searcherList.addElement(aClass));
 
-        Set<Class<? extends Tipster>> allTipsters = tipsterReflections.getSubTypesOf(Tipster.class);
-        allTipsters.forEach(aClass -> tipsterList.addElement(aClass));
+        Set<Class<? extends Hider>> allHiders = hiderReflections.getSubTypesOf(Hider.class);
+        allHiders.forEach(aClass -> hiderList.addElement(aClass));
     }
 
     private void startGame() {
-        Class<? extends Seeker> selectedSeeker = seekerListView.getSelectedValue();
-        Class<? extends Tipster> selectedTipster = tipsterListView.getSelectedValue();
-        if (selectedSeeker == null || selectedTipster == null) {
+        Class<? extends Searcher> selectedSearcher = searcherListView.getSelectedValue();
+        Class<? extends Hider> selectedHider = hiderListView.getSelectedValue();
+        if (selectedSearcher == null || selectedHider == null) {
             errorLabel.setVisible(true);
-            errorLabel.setText("Please select both a seeker and a tipster.");
+            errorLabel.setText("Please select both a searcher and a hider.");
             return;
         }
-        Type actualTypeArgumentSeeker = ((ParameterizedType) (selectedSeeker.getGenericInterfaces()[0])).getActualTypeArguments()[0];
-        Type actualTypeArgumentTipster = ((ParameterizedType) (selectedTipster.getGenericInterfaces()[0])).getActualTypeArguments()[0];
-        if (!actualTypeArgumentSeeker.equals(actualTypeArgumentTipster)) {
+        Type actualTypeArgumentSearcher = ((ParameterizedType) (selectedSearcher.getGenericInterfaces()[0])).getActualTypeArguments()[0];
+        Type actualTypeArgumentHider = ((ParameterizedType) (selectedHider.getGenericInterfaces()[0])).getActualTypeArguments()[0];
+        if (!actualTypeArgumentSearcher.equals(actualTypeArgumentHider)) {
             errorLabel.setVisible(true);
-            errorLabel.setText("Please select a seeker and a tipster that are compatible.");
+            errorLabel.setText("Please select a searcher and a hider that are compatible.");
             return;
         }
         errorLabel.setVisible(false);
@@ -110,14 +110,14 @@ public class MainMenuController {
         selectStrategyContainer.setAlignmentY(Component.TOP_ALIGNMENT);
         selectStrategyContainer.setLayout(new BoxLayout(selectStrategyContainer, BoxLayout.X_AXIS));
         selectStrategyContainer.setOpaque(false);
-        selectStrategyContainer.add(tipsterListView, Component.TOP_ALIGNMENT);
-        selectStrategyContainer.add(seekerListView, Component.TOP_ALIGNMENT);
+        selectStrategyContainer.add(hiderListView, Component.TOP_ALIGNMENT);
+        selectStrategyContainer.add(searcherListView, Component.TOP_ALIGNMENT);
 
-        tipsterListView.setAlignmentY(Component.TOP_ALIGNMENT);
-        tipsterListView.setCellRenderer(new ClassListCellRenderer());
+        hiderListView.setAlignmentY(Component.TOP_ALIGNMENT);
+        hiderListView.setCellRenderer(new ClassListCellRenderer());
 
-        seekerListView.setAlignmentY(Component.TOP_ALIGNMENT);
-        seekerListView.setCellRenderer(new ClassListCellRenderer());
+        searcherListView.setAlignmentY(Component.TOP_ALIGNMENT);
+        searcherListView.setCellRenderer(new ClassListCellRenderer());
 
         selectContextContainer.setAlignmentY(Component.TOP_ALIGNMENT);
         selectContextContainer.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));

@@ -2,8 +2,8 @@ package com.treasure.hunt.view.main;
 
 
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.strategy.seeker.implementations.StrategyFromPaper;
-import com.treasure.hunt.strategy.tipster.implementations.RandomAngularHintStrategy;
+import com.treasure.hunt.strategy.hider.implementations.RandomAngularHintStrategy;
+import com.treasure.hunt.strategy.searcher.implementations.StrategyFromPaper;
 import com.treasure.hunt.view.in_game.View;
 import com.treasure.hunt.view.in_game.implementatons.CanvasView;
 
