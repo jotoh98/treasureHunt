@@ -1,9 +1,9 @@
 package com.treasure.hunt.game;
 
+import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.Hint;
-import com.treasure.hunt.strategy.seeker.Moves;
-import com.treasure.hunt.strategy.seeker.Seeker;
-import com.treasure.hunt.strategy.tipster.Tipster;
+import com.treasure.hunt.strategy.searcher.Moves;
+import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.view.in_game.View;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -20,12 +20,12 @@ public class GameManager {
     // final variables
     protected final GeometryFactory gf = new GeometryFactory();
     protected final GameHistory gameHistory = new GameHistory();
-    protected final Seeker seeker;
-    protected final Tipster tipster;
+    protected final Searcher searcher;
+    protected final Hider hider;
 
     // Game variables
     protected boolean finished = false;
-    protected Point seekerPos;
+    protected Point searcherPos;
     protected Point treasurePos;
     protected Hint lastHint;
     /**
@@ -33,31 +33,31 @@ public class GameManager {
      */
     protected boolean firstStep;
 
-    public GameManager(Seeker seeker, Tipster tipster, List<View> view) {
-        this.seeker = seeker;
-        this.tipster = tipster;
+    public GameManager(Searcher searcher, Hider hider, List<View> view) {
+        this.searcher = searcher;
+        this.hider = hider;
     }
 
     /**
      * This simulates just one step of the simulation.
-     * The seeker begins since we want not force him,
+     * The searcher begins since we want not force him,
      * to take a initial hint, he eventually do not need,
      * if he works randomized!
      * <p>
-     * The first step of the seeker goes without an hint,
+     * The first step of the searcher goes without an hint,
      * the next will be with.
      */
     public void step() {
         Moves moves;
         if (firstStep)
-            moves = seeker.move();
+            moves = searcher.move();
         else
-            moves = seeker.move(lastHint);
+            moves = searcher.move(lastHint);
         if (located()) {
             finished = true;
             return;
         }
-        lastHint = tipster.move(moves);
+        lastHint = hider.move(moves);
     }
 
     /**
@@ -80,7 +80,7 @@ public class GameManager {
     }
 
     /**
-     * @return whether the performed moves by the seeker/hints from the tipster were correct.
+     * @return whether the performed {@link Moves}' by the searcher and {@link Hint}'s from the hider were correct.
      */
     protected boolean checkConsistency() {
         // TODO implement
@@ -88,7 +88,7 @@ public class GameManager {
     }
 
     /**
-     * @return whether the seeker located the treasure successfully.
+     * @return whether the searcher located the treasure successfully.
      */
     protected boolean located() {
         // TODO implement
@@ -96,13 +96,12 @@ public class GameManager {
     }
 
     /**
-     * Use this to initialize seeker, tipster and
-     * start the concurrent threads.
+     * This initializes positions, searcher and hider.
      */
     protected void init() {
-        seekerPos = gf.createPoint(new Coordinate(0, 0));
+        searcherPos = gf.createPoint(new Coordinate(0, 0));
         treasurePos = gf.createPoint(new Coordinate(0, 0));
-        seeker.init(seekerPos, gameHistory);
-        tipster.init(treasurePos, gameHistory);
+        searcher.init(searcherPos, gameHistory);
+        hider.init(treasurePos, gameHistory);
     }
 }

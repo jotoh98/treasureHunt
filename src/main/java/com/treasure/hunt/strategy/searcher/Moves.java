@@ -1,4 +1,4 @@
-package com.treasure.hunt.strategy.seeker;
+package com.treasure.hunt.strategy.searcher;
 
 import com.treasure.hunt.strategy.Product;
 import com.treasure.hunt.strategy.geom.GeometryItem;

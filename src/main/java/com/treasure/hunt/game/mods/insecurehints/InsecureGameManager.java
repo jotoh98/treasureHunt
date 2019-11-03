@@ -7,10 +7,10 @@ import java.util.List;
 
 public class InsecureGameManager extends GameManager {
 
-    protected InsecureSeeker seeker;
-    protected InsecureTipster tipster;
+    protected InsecureSearcher searcher;
+    protected InsecureHider hider;
 
-    public InsecureGameManager(InsecureSeeker seeker, InsecureTipster tipster, List<View> view) {
-        super(seeker, tipster, view);
+    public InsecureGameManager(InsecureSearcher searcher, InsecureHider hider, List<View> view) {
+        super(searcher, hider, view);
     }
 }

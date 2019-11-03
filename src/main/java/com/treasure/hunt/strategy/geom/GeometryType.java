@@ -11,9 +11,9 @@ public enum GeometryType {
     NO_TREASURE(false, "no treasure"),
     POSSIBLE_TREASURE(false, "possible treasure"),
 
-    // seeker movements
-    SEEKER_POS(true, "seeker pos", true),
-    SEEKER_MOVE(true, "no treasure"),
+    // searcher movements
+    SEARCHER_POS(true, "searcher pos", true),
+    SEARCHER_MOVE(true, "no treasure"),
 
     // treasure location
     TREASURE(false, "no treasure"),
