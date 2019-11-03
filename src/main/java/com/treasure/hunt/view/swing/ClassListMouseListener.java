@@ -23,16 +23,16 @@ public class ClassListMouseListener extends MouseAdapter {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        int i = jList.locationToIndex(new Point(e.getX(), e.getY()));
+        int clickedItemIndex = jList.locationToIndex(new Point(e.getX(), e.getY()));
 
         ClassListCellRenderer otherRenderer = (ClassListCellRenderer) other.getCellRenderer();
 
-        Class generic = Reflections.interfaceGenericsClass((Class) jList.getModel().getElementAt(i));
+        Class generic = Reflections.interfaceGenericsClass((Class) jList.getModel().getElementAt(clickedItemIndex));
 
         otherRenderer.setOtherGeneric(generic);
         renderer.setOtherGeneric(generic);
 
-        jList.setSelectedIndex(i);
+        jList.setSelectedIndex(clickedItemIndex);
 
         super.mouseClicked(e);
 
@@ -47,11 +47,10 @@ public class ClassListMouseListener extends MouseAdapter {
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        int hoveredItemIndex = jList.locationToIndex(new Point(e.getX(), e.getY()));
 
-        int i = jList.locationToIndex(new Point(e.getX(), e.getY()));
-
-        if (i != renderer.getHoverIndex()) {
-            renderer.setHoverIndex(i);
+        if (hoveredItemIndex != renderer.getHoverIndex()) {
+            renderer.setHoverIndex(hoveredItemIndex);
             jList.repaint();
         }
     }

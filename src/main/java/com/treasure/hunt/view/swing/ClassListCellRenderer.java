@@ -24,8 +24,9 @@ public class ClassListCellRenderer extends JPanel implements ListCellRenderer<Cl
         boolean isHovered = index == hoverIndex;
         boolean isAvailable = Reflections.interfaceGenericsClass(value) == otherGeneric;
 
-        if (otherGeneric == null)
+        if (otherGeneric == null) {
             isAvailable = true;
+        }
 
         if (isSelected && !isAvailable) {
             list.clearSelection();
@@ -38,34 +39,37 @@ public class ClassListCellRenderer extends JPanel implements ListCellRenderer<Cl
 
         setBackground(new Color(70, 70, 70, isSelected ? 255 : 0));
 
-        if (isHovered)
-            if (isSelected)
+        if (isHovered) {
+            if (isSelected) {
                 setBackground(new Color(23, 53, 187));
-            else
+            } else {
                 setBackground(new Color(24, 53, 136));
-        else if (isSelected)
+            }
+        } else if (isSelected) {
             setBackground(new Color(70, 70, 70));
-        else
+        } else {
             setBackground(new Color(255, 255, 255, 0));
-
+        }
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         nameLabel.setText(value.getSimpleName());
 
-        if (isAvailable)
+        if (isAvailable) {
             nameLabel.setForeground(Color.white);
-        else
+        } else {
             nameLabel.setForeground(new Color(255, 255, 255, 88));
+        }
 
         add(nameLabel);
 
         genericLabel.setText(String.format("(%s)", Reflections.genericName(value)));
 
-        if (isAvailable)
+        if (isAvailable) {
             genericLabel.setForeground(Color.gray);
-        else
+        } else {
             genericLabel.setForeground(new Color(128, 128, 128, 88));
+        }
 
         add(genericLabel);
 

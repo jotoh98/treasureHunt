@@ -11,15 +11,11 @@ import java.awt.event.*;
 @RequiredArgsConstructor
 public class CanvasMouseListener implements MouseListener, MouseMotionListener, MouseWheelListener {
 
+    private static final double MIN_SCALE = .1;
+    private static final double MAX_SCALE = 1e2;
     private Vector2D dragOffset;
-
     @NonNull
     private CanvasController canvasController;
-
-    private static final double MIN_SCALE = .1;
-
-    private static final double MAX_SCALE = 1e2;
-
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -65,7 +61,6 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener, 
         double oldScale = canvasController.getScale();
         double scrollDelta = -e.getPreciseWheelRotation() * 1e-2;
         double newScale = oldScale + scrollDelta;
-
 
         if (newScale >= MIN_SCALE && newScale <= MAX_SCALE) {
             canvasController.addToScale(scrollDelta);

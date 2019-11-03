@@ -19,8 +19,9 @@ public class MainFrameController {
     }
 
     public static MainFrameController getInstance() {
-        if (single_instance == null)
+        if (single_instance == null) {
             single_instance = new MainFrameController();
+        }
         return single_instance;
     }
 
@@ -31,7 +32,6 @@ public class MainFrameController {
 
     public void onPlay() {
         CanvasView canvasView = new CanvasView();
-        //canvasController = new CanvasController(canvasView);
 
         List<View> viewList = new ArrayList<View>();
         viewList.add(canvasView);

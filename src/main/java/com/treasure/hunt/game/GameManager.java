@@ -49,10 +49,11 @@ public class GameManager {
      */
     public void step() {
         Moves moves;
-        if (firstStep)
+        if (firstStep) {
             moves = searcher.move();
-        else
+        } else {
             moves = searcher.move(lastHint);
+        }
         if (located()) {
             finished = true;
             return;
@@ -64,7 +65,9 @@ public class GameManager {
      * This simulates the whole game, until its finished.
      */
     public void run() {
-        while (!finished) step();
+        while (!finished) {
+            step();
+        }
     }
 
     /**
@@ -74,7 +77,9 @@ public class GameManager {
      */
     public void run(int steps) {
         for (int i = 0; i < steps; i++) {
-            if (finished) break;
+            if (finished) {
+                break;
+            }
             step();
         }
     }

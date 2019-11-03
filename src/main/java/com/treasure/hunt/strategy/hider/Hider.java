@@ -15,7 +15,7 @@ public interface Hider<T extends Hint> {
      * give him the GameHistory.
      *
      * @param treasurePosition The initial treasure position
-     * @param gameHistory The gameHistory, the hider dumps its geometry objects by {@link #commitProduct(Product)}
+     * @param gameHistory      The gameHistory, the hider dumps its geometry objects by {@link #commitProduct(Product)}
      */
     void init(Point treasurePosition, GameHistory gameHistory);
 

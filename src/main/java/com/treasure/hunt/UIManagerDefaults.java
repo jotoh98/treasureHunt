@@ -80,8 +80,9 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
      *  between different LAF's.
      */
     public JMenuBar getMenuBar() {
-        if (menuBar == null)
+        if (menuBar == null) {
             menuBar = createMenuBar();
+        }
 
         return menuBar;
     }
@@ -159,8 +160,9 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
         comboBox.addItemListener(this);
         comboBox.requestFocusInWindow();
 
-        if (selectedItem != null)
+        if (selectedItem != null) {
             comboBox.setSelectedItem(selectedItem);
+        }
     }
 
     /*
@@ -178,7 +180,9 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
 
             String itemName = getItemName(key.toString(), value);
 
-            if (itemName == null) continue;
+            if (itemName == null) {
+                continue;
+            }
 
             //  Get the attribute map for this componenent, or
             //  create a map when one is not found
@@ -204,13 +208,15 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
     private String getItemName(String key, Object value) {
         //  Seems like this is an old check required for JDK1.4.2
 
-        if (key.startsWith("class") || key.startsWith("javax"))
+        if (key.startsWith("class") || key.startsWith("javax")) {
             return null;
+        }
 
-        if (byComponent.isSelected())
+        if (byComponent.isSelected()) {
             return getComponentName(key, value);
-        else
+        } else {
             return getValueName(key, value);
+        }
     }
 
     private String getComponentName(String key, Object value) {
@@ -249,18 +255,21 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
         //  have different format even within the Nimbus properties.
         //  (the component name is specified in quotes)
 
-        if (key.startsWith("\""))
+        if (key.startsWith("\"")) {
             return key.indexOf("\"", 1) + 1;
+        }
 
         int pos = key.indexOf(":");
 
-        if (pos != -1)
+        if (pos != -1) {
             return pos;
+        }
 
         pos = key.indexOf("[");
 
-        if (pos != -1)
+        if (pos != -1) {
             return pos;
+        }
 
         //  Handle normal properties
 
@@ -268,33 +277,33 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
     }
 
     private String getValueName(String key, Object value) {
-        if (value instanceof Icon)
+        if (value instanceof Icon) {
             return "Icon";
-        else if (value instanceof Font)
+        } else if (value instanceof Font) {
             return "Font";
-        else if (value instanceof Border)
+        } else if (value instanceof Border) {
             return "Border";
-        else if (value instanceof Color)
+        } else if (value instanceof Color) {
             return "Color";
-        else if (value instanceof Insets)
+        } else if (value instanceof Insets) {
             return "Insets";
-        else if (value instanceof Boolean)
+        } else if (value instanceof Boolean) {
             return "Boolean";
-        else if (value instanceof Dimension)
+        } else if (value instanceof Dimension) {
             return "Dimension";
-        else if (value instanceof Number)
+        } else if (value instanceof Number) {
             return "Number";
-        else if (value instanceof Painter)
+        } else if (value instanceof Painter) {
             return "Painter";
-        else if (key.endsWith("UI"))
+        } else if (key.endsWith("UI")) {
             return "UI";
-        else if (key.endsWith("InputMap"))
+        } else if (key.endsWith("InputMap")) {
             return "InputMap";
-        else if (key.endsWith("RightToLeft"))
+        } else if (key.endsWith("RightToLeft")) {
             return "InputMap";
-        else if (key.endsWith("radient"))
+        } else if (key.endsWith("radient")) {
             return "Gradient";
-        else {
+        } else {
             return "The Rest";
         }
     }
@@ -403,8 +412,9 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
             if (value != null) {
                 row.add(value.toString());
 
-                if (value instanceof Icon)
+                if (value instanceof Icon) {
                     value = new SafeIcon((Icon) value);
+                }
 
                 row.add(value);
             } else {

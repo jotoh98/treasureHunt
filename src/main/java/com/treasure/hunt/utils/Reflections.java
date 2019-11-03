@@ -16,7 +16,7 @@ public class Reflections {
 
         Arrays.fill(interfaceGenerics, null);
 
-        for (int i = 0; i < interfaceGenericTypes.length; i++)
+        for (int i = 0; i < interfaceGenericTypes.length; i++) {
             try {
                 interfaceGenerics[i] = Class.forName(
                         ((Class) interfaceGenericTypes[i]).getName()
@@ -24,6 +24,7 @@ public class Reflections {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
 
         return interfaceGenerics;
     }
@@ -31,8 +32,9 @@ public class Reflections {
     public static Class interfaceGenericsClass(Class baseClass, int index) {
         Class[] genericNames = interfaceGenericsClasses(baseClass);
 
-        if (genericNames.length < 1)
+        if (genericNames.length < 1) {
             return null;
+        }
 
         index %= genericNames.length;
         return genericNames[index];
@@ -43,8 +45,9 @@ public class Reflections {
 
         String[] names = new String[classes.length];
 
-        for (int i = 0; i < classes.length; i++)
+        for (int i = 0; i < classes.length; i++) {
             names[i] = classes[i].getSimpleName();
+        }
 
         return names;
     }

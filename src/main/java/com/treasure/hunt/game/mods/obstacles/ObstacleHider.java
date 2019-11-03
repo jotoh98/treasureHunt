@@ -15,9 +15,9 @@ public interface ObstacleHider<T extends Hint> extends Hider<T> {
      * Use this to initialize your hider.
      *
      * @param treasurePosition The initial treasure position
-     * @param obstacles the obstacles, placed in the game
-     * @param gameHistory The {@link GameHistory}, the hider dumps its {@link com.treasure.hunt.strategy.Product}'s
-     *                    by {@link Hider#commitProduct(Product)}
+     * @param obstacles        the obstacles, placed in the game
+     * @param gameHistory      The {@link GameHistory}, the hider dumps its {@link com.treasure.hunt.strategy.Product}'s
+     *                         by {@link Hider#commitProduct(Product)}
      */
     void init(Point treasurePosition, List<GeometryItem> obstacles, GameHistory gameHistory);
 

@@ -12,7 +12,7 @@ public interface Searcher<T extends Hint> {
      * Use this to initialize your searcher.
      *
      * @param startPosition the searchers starting position
-     * @param gameHistory the {@link GameHistory}, the searcher dumps his plans.
+     * @param gameHistory   the {@link GameHistory}, the searcher dumps his plans.
      */
     void init(Point startPosition, GameHistory gameHistory);
 

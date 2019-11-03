@@ -21,14 +21,14 @@ public class CanvasView extends JPanel implements View<Shape> {
     @Setter
     private GeometryItem[] geometryItems = new GeometryItem[0];
 
-    @Override
-    public void run() {
-
-    }
-
     public CanvasView() {
         RenderingHints renderingHints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         shapeWriter = new ShapeWriter(pointTransformation);
+    }
+
+    @Override
+    public void run() {
+
     }
 
     @Override
@@ -41,15 +41,17 @@ public class CanvasView extends JPanel implements View<Shape> {
         super.paintComponent(g);
         Graphics2D graphics2D = (Graphics2D) g;
 
-        for (GeometryItem geometryItem : geometryItems)
+        for (GeometryItem geometryItem : geometryItems) {
             paintShape(graphics2D, geometryItem);
+        }
 
     }
 
     public void paintShape(Graphics2D graphics2D, GeometryItem geometryItem) {
 
-        if (!geometryItem.getStyle().isVisible())
+        if (!geometryItem.getStyle().isVisible()) {
             return;
+        }
 
         Shape shape = transfer(geometryItem);
 

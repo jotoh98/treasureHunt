@@ -15,9 +15,9 @@ public interface ObstacleSearcher<T extends Hint> extends Searcher<T> {
      * Use this to initialize your searcher.
      *
      * @param startPosition the position, the searcher starts
-     * @param obstacles the obstacles placed in the game
-     * @param gameHistory the {@link GameHistory} to dump in the list of {@link com.treasure.hunt.strategy.Product}'s
-     *                    via {@link GameHistory#dump(Product)}
+     * @param obstacles     the obstacles placed in the game
+     * @param gameHistory   the {@link GameHistory} to dump in the list of {@link com.treasure.hunt.strategy.Product}'s
+     *                      via {@link GameHistory#dump(Product)}
      */
     void init(Point startPosition, List<GeometryItem> obstacles, GameHistory gameHistory);
 

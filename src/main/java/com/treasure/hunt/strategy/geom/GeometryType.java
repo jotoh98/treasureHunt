@@ -1,10 +1,8 @@
 package com.treasure.hunt.strategy.geom;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@AllArgsConstructor
 public enum GeometryType {
     // hints
     FALSE_HINT(false, "False Hint"),
@@ -31,17 +29,21 @@ public enum GeometryType {
     ;
 
     @Getter
+    private final String displayName;
+    @Getter
     @Setter
     private boolean enabled;
-
-    @Getter
-    private final String displayName;
-
     @Getter
     @Setter
     private boolean override;
 
-    GeometryType(boolean enabledByDefault, String name) {
-        this(enabledByDefault, name, false);
+    GeometryType(String displayName, boolean enabled, boolean override) {
+        this.displayName = displayName;
+        this.enabled = enabled;
+        this.override = override;
+    }
+
+    GeometryType(boolean enabledByDefault, String displayName) {
+        this(displayName, enabledByDefault, false);
     }
 }

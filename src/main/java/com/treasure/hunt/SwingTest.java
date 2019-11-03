@@ -22,7 +22,6 @@ public class SwingTest {
 
         Polygon originPoint = (Polygon) affineTransformation.transform(c1);
 
-
         Point p1 = geometryFactory.createPoint(new Coordinate(0, 0));
         return new GeometryItem[]{
                 new GeometryItem<>(c1),
