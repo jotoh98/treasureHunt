@@ -30,7 +30,7 @@ public class GeometryStyle {
     public static GeometryStyle getDefaults(GeometryType type) {
         switch (type) {
             case WAY_POINT:
-            case SEEKER_POS:
+            case SEARCHER_POS:
                 return new GeometryStyle(true, Color.black);
             case POSSIBLE_TREASURE:
                 return new GeometryStyle(true, Color.gray, Color.lightGray);

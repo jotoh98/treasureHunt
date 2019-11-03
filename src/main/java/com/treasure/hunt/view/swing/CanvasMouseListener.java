@@ -16,9 +16,9 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener, 
     @NonNull
     private CanvasController canvasController;
 
-    private double min_scale = .1;
+    private static final double MIN_SCALE = .1;
 
-    private double max_scale = 1e2;
+    private static final double MAX_SCALE = 1e2;
 
 
     @Override
@@ -62,14 +62,14 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener, 
         Vector2D mouse = new Vector2D(e.getX(), e.getY());
         Vector2D direction = canvasController.getOffset().subtract(mouse);
 
-        double old_scale = canvasController.getScale();
+        double oldScale = canvasController.getScale();
         double scrollDelta = -e.getPreciseWheelRotation() * 1e-2;
-        double new_scale = old_scale + scrollDelta;
+        double newScale = oldScale + scrollDelta;
 
 
-        if (new_scale >= min_scale && new_scale <= max_scale) {
+        if (newScale >= MIN_SCALE && newScale <= MAX_SCALE) {
             canvasController.addToScale(scrollDelta);
-            canvasController.setOffset(mouse.add(direction.multiply(new_scale / old_scale)));
+            canvasController.setOffset(mouse.add(direction.multiply(newScale / oldScale)));
             canvasController.getCanvasView().repaint();
         }
     }

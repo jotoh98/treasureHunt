@@ -13,7 +13,6 @@ public class CanvasController extends JFrame {
     @Getter
     CanvasView canvasView = new CanvasView();
 
-
     @Getter
     private Vector2D offset = new Vector2D();
 

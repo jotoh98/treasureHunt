@@ -37,11 +37,13 @@ public class CanvasView extends JPanel implements View<Shape> {
     }
 
     @Override
-    public void paint(Graphics g) {
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         Graphics2D graphics2D = (Graphics2D) g;
 
         for (GeometryItem geometryItem : geometryItems)
             paintShape(graphics2D, geometryItem);
+
     }
 
     public void paintShape(Graphics2D graphics2D, GeometryItem geometryItem) {
