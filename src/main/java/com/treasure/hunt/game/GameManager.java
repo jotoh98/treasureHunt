@@ -4,6 +4,7 @@ import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.Moves;
 import com.treasure.hunt.strategy.searcher.Searcher;
+import com.treasure.hunt.utils.Requires;
 import com.treasure.hunt.view.in_game.View;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -15,6 +16,7 @@ import java.util.List;
  * This is the GameManager which should be started,
  * to start a normal game.
  */
+@Requires(hider = Hider.class, searcher = Searcher.class)
 public class GameManager {
 
     // final variables

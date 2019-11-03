@@ -1,42 +1,44 @@
 package com.treasure.hunt.view.swing;
 
-import com.treasure.hunt.utils.Reflections;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 public class ClassListMouseListener extends MouseAdapter {
 
     private ClassListCellRenderer renderer;
-    private JList jList;
-    private JList other;
+    private final JList jList;
+    private final List<JList> toBeRePaintedOnSelection;
 
-    private int selectedIndex = -1;
 
-    public ClassListMouseListener(JList jlist, JList other) {
+    public ClassListMouseListener(JList jlist, List<JList> toBeRePaintedOnSelection) {
         this.jList = jlist;
-        this.other = other;
         renderer = (ClassListCellRenderer) jlist.getCellRenderer();
+        this.toBeRePaintedOnSelection = toBeRePaintedOnSelection;
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
         int clickedItemIndex = jList.locationToIndex(new Point(e.getX(), e.getY()));
 
-        ClassListCellRenderer otherRenderer = (ClassListCellRenderer) other.getCellRenderer();
-
-        Class generic = Reflections.interfaceGenericsClass((Class) jList.getModel().getElementAt(clickedItemIndex));
-
-        otherRenderer.setOtherGeneric(generic);
-        renderer.setOtherGeneric(generic);
-
         jList.setSelectedIndex(clickedItemIndex);
-
         super.mouseClicked(e);
+        //The following should not be done in the asynchronously called paint method
+        for (JList list : toBeRePaintedOnSelection) {
+            Class selectedValue = (Class) list.getSelectedValue();
+            if (selectedValue == null) {
+                list.repaint();
+                break;
+            }
+            Boolean available = ((ClassListCellRenderer) list.getCellRenderer()).isAvailableFunction.apply(selectedValue);
+            if (!available) {
+                list.clearSelection();
+            }
+            list.repaint();
+        }
 
-        other.repaint();
         jList.repaint();
     }
 
