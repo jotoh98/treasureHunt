@@ -1,8 +1,6 @@
 package com.treasure.hunt.view.main;
 
-import com.treasure.hunt.SwingTest;
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.ReflectionUtils;
@@ -16,8 +14,6 @@ import org.reflections.Reflections;
 import javax.swing.*;
 import java.awt.*;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -83,29 +79,33 @@ public class MainMenuController {
     }
 
     private void startGame() {
-        Class<? extends Searcher> selectedSearcher = searcherListView.getSelectedValue();
-        Class<? extends Hider> selectedHider = hiderListView.getSelectedValue();
-        if (selectedSearcher == null || selectedHider == null) {
+        Class<? extends Searcher> selectedSearcherClass = searcherListView.getSelectedValue();
+        Class<? extends Hider> selectedHiderClass = hiderListView.getSelectedValue();
+        Class<? extends GameManager> selectedGameManagerClass = gameManagerListView.getSelectedValue();
+
+        if (selectedSearcherClass == null || selectedHiderClass == null || selectedGameManagerClass == null) {
             errorLabel.setVisible(true);
-            errorLabel.setText("Please select both a searcher and a hider.");
+            errorLabel.setText("Please select a searcher, a hider and a game manager.");
             return;
         }
-        Type actualTypeArgumentSearcher = ((ParameterizedType) (selectedSearcher.getGenericInterfaces()[0])).getActualTypeArguments()[0];
-        Type actualTypeArgumentHider = ((ParameterizedType) (selectedHider.getGenericInterfaces()[0])).getActualTypeArguments()[0];
-        if (!actualTypeArgumentSearcher.equals(actualTypeArgumentHider)) {
+
+        Requires requires = selectedGameManagerClass.getAnnotation(Requires.class);
+
+        if (!requires.searcher().isAssignableFrom(selectedSearcherClass) || !requires.hider().isAssignableFrom(selectedHiderClass)) {
             errorLabel.setVisible(true);
-            errorLabel.setText("Please select a searcher and a hider that are compatible.");
+            errorLabel.setText("Please select a valid game manager.");
             return;
         }
+
         errorLabel.setVisible(false);
-        GeometryItem[] items = SwingTest.exampleGeometryItems();
-        CanvasController canvasController = new CanvasController();
-        canvasController.setGeometryItems(items);
 
-        //ItemEditorController itemEditorController = new ItemEditorController();
-        //itemEditorController.setGeometryItem(items[3]);
-
-        canvasController.setVisible(true);
+        try {
+            MainFrameController.getInstance().onPlay(selectedSearcherClass, selectedHiderClass, selectedGameManagerClass);
+        } catch (Exception e) {
+            log.error("Something went wrong creating an instance of GameManager", e);
+            errorLabel.setVisible(true);
+            errorLabel.setText("Something went wrong");
+        }
     }
 
     private void init() {

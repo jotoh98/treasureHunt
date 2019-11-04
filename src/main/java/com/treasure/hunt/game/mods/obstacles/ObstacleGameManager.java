@@ -1,7 +1,8 @@
 package com.treasure.hunt.game.mods.obstacles;
 
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.hider.Hider;
+import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.Requires;
 import com.treasure.hunt.view.in_game.View;
 
@@ -10,11 +11,7 @@ import java.util.List;
 @Requires(hider = ObstacleHider.class, searcher = ObstacleSearcher.class)
 public class ObstacleGameManager extends GameManager {
 
-    protected ObstacleHider hider;
-    protected ObstacleSearcher searcher;
-    protected List<GeometryItem> obstacles;
-
-    public ObstacleGameManager(ObstacleSearcher searcher, ObstacleHider hider, List<View> view, List<GeometryItem> obstacles) {
+    public ObstacleGameManager(Searcher searcher, Hider hider, List<View> view) {
         super(searcher, hider, view);
     }
 
