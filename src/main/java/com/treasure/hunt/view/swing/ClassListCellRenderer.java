@@ -18,7 +18,7 @@ public class ClassListCellRenderer extends JPanel implements ListCellRenderer<Cl
     @Setter
     int hoverIndex = -1;
     private JLabel nameLabel = new JLabel();
-    private JLabel subTitleLable = new JLabel();
+    private JLabel subTitleLabel = new JLabel();
 
     @Override
     public Component getListCellRendererComponent(JList<? extends Class> list, Class value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -56,15 +56,15 @@ public class ClassListCellRenderer extends JPanel implements ListCellRenderer<Cl
 
         add(nameLabel);
 
-        subTitleLable.setText(String.format("(%s)", getSubTitle.apply(value)));
+        subTitleLabel.setText(String.format("(%s)", getSubTitle.apply(value)));
 
         if (isAvailable) {
-            subTitleLable.setForeground(Color.gray);
+            subTitleLabel.setForeground(Color.gray);
         } else {
-            subTitleLable.setForeground(new Color(128, 128, 128, 88));
+            subTitleLabel.setForeground(new Color(128, 128, 128, 88));
         }
 
-        add(subTitleLable);
+        add(subTitleLabel);
 
         return this;
     }

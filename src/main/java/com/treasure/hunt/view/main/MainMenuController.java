@@ -8,6 +8,7 @@ import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.ReflectionUtils;
 import com.treasure.hunt.utils.Requires;
 import com.treasure.hunt.view.swing.ClassListCellRenderer;
+import com.treasure.hunt.view.swing.ClassListHoverListener;
 import com.treasure.hunt.view.swing.ClassListMouseListener;
 import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
@@ -27,7 +28,6 @@ public class MainMenuController {
     private final JPanel rootPanel = new JPanel();
     private JPanel selectStrategyContainer = new JPanel();
     private JPanel selectContextContainer = new JPanel();
-    private JPanel selectGameManagerContainer = new JPanel();
     private JButton playButton = new JButton("Play");
     private JLabel errorLabel = new JLabel();
     private DefaultListModel<Class> hiderList = new DefaultListModel<>();
@@ -44,27 +44,23 @@ public class MainMenuController {
             startGame();
         });
 
-        listBehaviour();
+        setStrategyListsLAF();
 
         fillLists();
     }
 
-    private void listBehaviour() {
-
-        searcherListView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        hiderListView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        searcherListView.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        hiderListView.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
+    private void setStrategyListsLAF() {
+        searcherListView.setCellRenderer(getStrategiesCellListRenderer(hiderListView));
         ClassListMouseListener searcherListListener = new ClassListMouseListener(searcherListView, Arrays.asList(hiderListView, gameManagerListView));
         searcherListView.addMouseListener(searcherListListener);
         searcherListView.addMouseMotionListener(searcherListListener);
 
+        hiderListView.setCellRenderer(getStrategiesCellListRenderer(searcherListView));
         ClassListMouseListener hiderListListener = new ClassListMouseListener(hiderListView, Arrays.asList(searcherListView, gameManagerListView));
         hiderListView.addMouseListener(hiderListListener);
         hiderListView.addMouseMotionListener(hiderListListener);
 
+        setGameManagerSelectionLAF();
     }
 
     private void fillLists() {
@@ -106,8 +102,8 @@ public class MainMenuController {
         CanvasController canvasController = new CanvasController();
         canvasController.setGeometryItems(items);
 
-        ItemEditorController itemEditorController = new ItemEditorController();
-        itemEditorController.setGeometryItem(items[3]);
+        //ItemEditorController itemEditorController = new ItemEditorController();
+        //itemEditorController.setGeometryItem(items[3]);
 
         canvasController.setVisible(true);
     }
@@ -119,33 +115,11 @@ public class MainMenuController {
             e.printStackTrace();
         }
 
-        rootPanel.setLayout(new BoxLayout(rootPanel, BoxLayout.X_AXIS));
-        rootPanel.setBackground(new Color(46, 48, 50));
-        rootPanel.add(selectStrategyContainer);
-        rootPanel.add(selectGameManagerContainer);
-        rootPanel.add(selectContextContainer);
+        initRootPanel(rootPanel);
 
-        selectStrategyContainer.setAlignmentY(Component.TOP_ALIGNMENT);
-        selectStrategyContainer.setLayout(new BoxLayout(selectStrategyContainer, BoxLayout.X_AXIS));
-        selectStrategyContainer.setOpaque(false);
-        selectStrategyContainer.add(hiderListView, Component.TOP_ALIGNMENT);
-        selectStrategyContainer.add(searcherListView, Component.TOP_ALIGNMENT);
+        initStrategyContainer(selectStrategyContainer);
 
-        hiderListView.setAlignmentY(Component.TOP_ALIGNMENT);
-        hiderListView.setCellRenderer(getCellListRendererStrategies(searcherListView));
-
-        searcherListView.setAlignmentY(Component.TOP_ALIGNMENT);
-        searcherListView.setCellRenderer(getCellListRendererStrategies(hiderListView));
-
-        selectContextContainer.setAlignmentY(Component.TOP_ALIGNMENT);
-        selectContextContainer.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-        selectContextContainer.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, new Color(78, 78, 78)));
-        selectContextContainer.setLayout(new BoxLayout(selectContextContainer, BoxLayout.Y_AXIS));
-        selectContextContainer.setBackground(new Color(0x35373A));
-        selectContextContainer.add(playButton);
-        selectContextContainer.add(errorLabel);
-
-        initGameManagerSelection(selectGameManagerContainer);
+        initSelectContextContainer();
 
         playButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -161,7 +135,39 @@ public class MainMenuController {
 
     }
 
-    private ClassListCellRenderer getCellListRendererStrategies(JList<Class> opponentListView) {
+    private void initRootPanel(JPanel root) {
+        root.setLayout(new BoxLayout(root, BoxLayout.X_AXIS));
+        root.setBackground(new Color(46, 48, 50));
+        root.add(selectStrategyContainer);
+        root.add(selectContextContainer);
+    }
+
+    private void initStrategyContainer(JPanel container) {
+        container.setAlignmentY(Component.TOP_ALIGNMENT);
+        container.setLayout(new BoxLayout(selectStrategyContainer, BoxLayout.X_AXIS));
+        container.setOpaque(false);
+
+        JList[] lists = {hiderListView, searcherListView, gameManagerListView};
+
+        for (JList list : lists) {
+            container.add(list, Component.TOP_ALIGNMENT);
+            list.setAlignmentY(Component.TOP_ALIGNMENT);
+            list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            list.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        }
+    }
+
+    private void initSelectContextContainer() {
+        selectContextContainer.setAlignmentY(Component.TOP_ALIGNMENT);
+        selectContextContainer.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        selectContextContainer.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, new Color(78, 78, 78)));
+        selectContextContainer.setLayout(new BoxLayout(selectContextContainer, BoxLayout.Y_AXIS));
+        selectContextContainer.setBackground(new Color(0x35373A));
+        selectContextContainer.add(playButton);
+        selectContextContainer.add(errorLabel);
+    }
+
+    private ClassListCellRenderer getStrategiesCellListRenderer(JList<Class> opponentListView) {
         return new ClassListCellRenderer(value -> {
             Class selectedValue = opponentListView.getSelectedValue();
             if (selectedValue == null) {
@@ -172,16 +178,14 @@ public class MainMenuController {
         }, ReflectionUtils::genericName);
     }
 
-    private void initGameManagerSelection(JPanel selectGameManagerContainer) {
-        selectGameManagerContainer.setAlignmentY(Component.TOP_ALIGNMENT);
-        selectGameManagerContainer.setLayout(new BoxLayout(selectGameManagerContainer, BoxLayout.X_AXIS));
-        selectGameManagerContainer.setOpaque(false);
-        selectGameManagerContainer.add(gameManagerListView, Component.TOP_ALIGNMENT);
-        gameManagerListView.setCellRenderer(getCellListRendererGameManager());
-
+    private void setGameManagerSelectionLAF() {
+        gameManagerListView.setCellRenderer(getGameManagerCellListRenderer());
+        ClassListHoverListener hoverListener = new ClassListHoverListener(gameManagerListView);
+        gameManagerListView.addMouseListener(hoverListener);
+        gameManagerListView.addMouseMotionListener(hoverListener);
     }
 
-    private ClassListCellRenderer getCellListRendererGameManager() {
+    private ClassListCellRenderer getGameManagerCellListRenderer() {
         return new ClassListCellRenderer(value -> {
             Class selectedSearch = searcherListView.getSelectedValue();
             Class selectedHide = hiderListView.getSelectedValue();
