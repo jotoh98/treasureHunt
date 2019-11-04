@@ -21,29 +21,19 @@ import java.util.List;
 @Requires(hider = Hider.class, searcher = Searcher.class)
 public class GameManager {
 
-    /**
-     * Final variables
-     */
     protected final GeometryFactory gf = new GeometryFactory();
+
+    private List<View> view;
     protected final GameHistory gameHistory = new GameHistory();
+
     protected final Searcher searcher;
     protected final Hider hider;
-
     /**
      * Safe, whether the game is done or not.
      */
     protected boolean finished = false;
-
-    /**
-     * Game variables
-     */
     protected Hint lastHint;
     protected Moves lastMoves;
-
-    /**
-     * View variables
-     */
-    private List<View> view;
     protected Point searcherPos;
     protected Point treasurePos;
     /**
