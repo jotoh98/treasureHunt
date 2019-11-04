@@ -18,7 +18,6 @@ public class GeometryItem<T extends Geometry> {
     @NonNull
     @Getter
     T object;
-
     GeometryType type;
     GeometryStyle style;
 

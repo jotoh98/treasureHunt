@@ -15,9 +15,7 @@ public class Moves extends Product {
     private List<GeometryItem<Point>> points = new ArrayList<>();
 
     /**
-     * This returns the last end-position of the moves-sequence.
-     *
-     * @return
+     * @return the last end-position of the moves-sequence.
      */
     public GeometryItem<Point> getEndPoint() {
         return points.get(points.size() - 1);

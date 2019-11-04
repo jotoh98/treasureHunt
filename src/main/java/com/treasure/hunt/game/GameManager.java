@@ -21,7 +21,9 @@ import java.util.List;
 @Requires(hider = Hider.class, searcher = Searcher.class)
 public class GameManager {
 
-    // final variables
+    /**
+     * Final variables
+     */
     protected final GeometryFactory gf = new GeometryFactory();
     protected final GameHistory gameHistory = new GameHistory();
     protected final Searcher searcher;
@@ -32,10 +34,15 @@ public class GameManager {
      */
     protected boolean finished = false;
 
-    // Game variables
+    /**
+     * Game variables
+     */
     protected Hint lastHint;
     protected Moves lastMoves;
-    // View variables
+
+    /**
+     * View variables
+     */
     private List<View> view;
     protected Point searcherPos;
     protected Point treasurePos;
@@ -116,8 +123,8 @@ public class GameManager {
      */
     protected boolean located() {
         Point lastPoint = null;
-        for (GeometryItem<Point> gi : lastMoves.getPoints()) {
-            Point point = gi.getObject();
+        for (GeometryItem<Point> geometriItem : lastMoves.getPoints()) {
+            Point point = geometriItem.getObject();
             if (lastPoint == null) {
                 lastPoint = point;
             } else {
@@ -130,7 +137,7 @@ public class GameManager {
                 }
             }
         }
-        return false;
+        return finished;
     }
 
     /**
@@ -138,8 +145,7 @@ public class GameManager {
      */
     protected void init() {
         for (View view : view) { // TODO does this go better ?
-            Thread t = new Thread(view);
-            gameHistory.registerListener(t);
+            gameHistory.registerListener(view);
         }
         searcherPos = gf.createPoint(new Coordinate(0, 0));
         treasurePos = gf.createPoint(new Coordinate(0, 0));
