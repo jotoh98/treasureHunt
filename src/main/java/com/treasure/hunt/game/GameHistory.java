@@ -19,7 +19,7 @@ public class GameHistory {
     private ExecutorService executorService = Executors.newFixedThreadPool(2);
     private List<Runnable> listeners = new ArrayList<>();
 
-    private void registerListener(Runnable runnable) {
+    public void registerListener(Runnable runnable) {
         listeners.add(runnable);
     }
 
