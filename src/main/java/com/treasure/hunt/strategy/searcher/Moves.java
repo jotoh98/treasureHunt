@@ -21,7 +21,7 @@ public class Moves extends Product {
         return points.get(points.size() - 1);
     }
 
-    protected void addWayPoint(Point point) {
+    public void addWayPoint(Point point) {
         points.add(new GeometryItem<>(point, GeometryType.WAY_POINT));
         addAdditionalItem(point, GeometryType.WAY_POINT);
     }
