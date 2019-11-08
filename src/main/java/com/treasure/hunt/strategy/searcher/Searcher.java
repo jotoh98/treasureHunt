@@ -34,7 +34,7 @@ public interface Searcher<T extends Hint> {
 
     /**
      * @param hint the hint, the {@link Hider} gave last.
-     * @return Moves the {@link Moves}, the searcher choosed.
+     * @return Moves the {@link Moves}, the searcher chose.
      */
     Moves move(T hint);
 

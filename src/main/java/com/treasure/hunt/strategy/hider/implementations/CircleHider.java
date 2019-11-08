@@ -1,36 +1,30 @@
-package com.treasure.hunt.strategy.searcher.implementations;
+package com.treasure.hunt.strategy.hider.implementations;
 
 import com.treasure.hunt.game.GameHistory;
 import com.treasure.hunt.strategy.Product;
+import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.CircleHint;
 import com.treasure.hunt.strategy.searcher.Moves;
-import com.treasure.hunt.strategy.searcher.Searcher;
 import org.locationtech.jts.geom.Point;
 
-public class CircleSeeker implements Searcher<CircleHint> {
-
-    @Override
-    public void init(Point startPosition, GameHistory gameHistory) {
-
-    }
-
+public class CircleHider implements Hider<CircleHint> {
     @Override
     public void commitProduct(Product product) {
 
     }
 
     @Override
-    public Moves move() {
+    public Point getTreasureLocation() {
         return null;
     }
 
     @Override
-    public Moves move(CircleHint hint) {
-        return null;
+    public void init(GameHistory gameHistory) {
+
     }
 
     @Override
-    public Point getLocation() {
+    public CircleHint move(Moves moves) {
         return null;
     }
 }

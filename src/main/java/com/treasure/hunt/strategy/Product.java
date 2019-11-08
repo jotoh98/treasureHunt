@@ -1,17 +1,24 @@
 package com.treasure.hunt.strategy;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
-import com.treasure.hunt.strategy.geom.GeometryType;
 import lombok.Getter;
-import org.locationtech.jts.geom.Geometry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Product {
     @Getter
-    protected List<GeometryItem> geometryItems;
+    protected List<GeometryItem> geometryItems = new ArrayList<>();
 
-    public void addAdditionalItem(Geometry target, GeometryType geometryType) {
-        addAdditionalItem(target, geometryType);
+    /**
+     * @return the last end-position of the moves-sequence.
+     */
+    public GeometryItem getEndPoint() {
+        assert (geometryItems.size() != 0);
+        return geometryItems.get(geometryItems.size() - 1);
+    }
+
+    public void addAdditionalItem(GeometryItem geometryItem) {
+        geometryItems.add(geometryItem);
     }
 }
