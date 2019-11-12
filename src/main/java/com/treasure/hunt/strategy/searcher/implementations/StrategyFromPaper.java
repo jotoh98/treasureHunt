@@ -7,8 +7,9 @@ import com.treasure.hunt.strategy.hint.HalfplaneHint;
 import com.treasure.hunt.strategy.hint.HalfplaneHint.Direction;
 import com.treasure.hunt.strategy.searcher.Moves;
 import com.treasure.hunt.strategy.searcher.Searcher;
+import com.treasure.hunt.strategy.searcher.movesImplementations.Steps;
 import com.treasure.hunt.utils.JTSUtils;
-import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 
 import static com.treasure.hunt.strategy.hint.HalfplaneHint.angular2correctHalfPlaneHint;
@@ -51,12 +52,79 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         HalfplaneHint piHint;
         piHint = angular2correctHalfPlaneHint(hint);
 
+        Point []intersection_AD_hint = JTSUtils.lineLinesegmentIntersection(piHint.getHalfplanePointOne(), piHint.getHalfplanePointTwo(), A, D);
+        Point []intersection_BC_hint = JTSUtils.lineLinesegmentIntersection(piHint.getHalfplanePointOne(), piHint.getHalfplanePointTwo(), B, C);
+        if(intersection_AD_hint.length>1)//TODO maybe use another exception
+            throw new IllegalArgumentException("The hint intersects in more than one point with the Line AD");
+        if(intersection_BC_hint.length>1)
+            throw new IllegalArgumentException("The hint intersects in more than one point with the Line BC");
+
+        if(piHint.getDirection()==Direction.up){
+            if(intersection_AD_hint.length == 0){
+                throw new IllegalArgumentException("The line doesn't intersect with AD and the direction is up," +
+                        " that is not possible.");
+            }
+            if((intersection_AD_hint[0].getY()-D.getY())>=1){
+                D = intersection_AD_hint[0];
+                C = intersection_BC_hint[0];
+                return stepsToCenterOfRectangle(A,B,C,D);
+            }
+        }
+
+        if(piHint.getDirection()==Direction.down){
+            if(intersection_AD_hint.length == 0){
+                   throw new IllegalArgumentException("The line doesn't intersect with AD and the direction is down," +
+                        " that is not possible.");
+            }
+            if((A.getY()-intersection_AD_hint[0].getY())>=1){
+                A = intersection_AD_hint[0];
+                B = intersection_BC_hint[0];
+                return stepsToCenterOfRectangle(A,B,C,D);
+            }
+        }
+
+        Point []intersection_AB_hint = JTSUtils.lineLinesegmentIntersection(piHint.getHalfplanePointOne(), piHint.getHalfplanePointTwo(), A, B);
+        Point []intersection_CD_hint = JTSUtils.lineLinesegmentIntersection(piHint.getHalfplanePointOne(), piHint.getHalfplanePointTwo(), C, D);
+
+        Point lowerHintPoint;
+        Point upperHintPoint;
+
+        if(piHint.getHalfplanePointOne().getY()<piHint.getHalfplanePointTwo().getY()){
+            lowerHintPoint = piHint.getHalfplanePointOne();
+            upperHintPoint = piHint.getHalfplanePointTwo();
+        }
+        else{
+            lowerHintPoint = piHint.getHalfplanePointTwo();
+            upperHintPoint = piHint.getHalfplanePointOne();
+        }
+
+        if(piHint.getDirection()==Direction.left){
+
+        }
+
+
+
         return null;
     }
 
     @Override
     public Point getLocation() {
         return location;
+    }
+
+    private Steps badHintSubroutine(HalfplaneHint hint){
+        return null;
+    }
+
+    private Steps twoHintsSubroutine(HalfplaneHint firstHint, HalfplaneHint secondHint){
+        return null;
+    }
+
+    private Steps stepsToCenterOfRectangle(Point P1, Point P2, Point P3, Point P4){
+        LineString line13 = JTSUtils.createLineString(P1, P3);
+        Steps ret = new Steps();
+        ret.addStep(line13.getCentroid());
+        return ret;
     }
 
     private Moves incrementPhase(){
@@ -66,7 +134,7 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         Point oldC = C;
         Point oldD = D;
         setRectToPhase();
-        return RectangeScan(oldA, oldB, oldC, oldD);
+        return RectangeScan(oldA, oldB, oldC, oldD); //TODO maybe go to the middle of the new rectangle
     }
 
     private void setRectToPhase()
@@ -74,10 +142,10 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         double halfDiff = Math.pow(2, phase-1);
         double startX = start.getX();
         double startY = start.getY();
-        A = JTSUtils.givePoint(startX-halfDiff, startY+halfDiff);
-        B = JTSUtils.givePoint(startX+halfDiff, startY+halfDiff);
-        C = JTSUtils.givePoint(startX-halfDiff, startY+halfDiff);
-        D = JTSUtils.givePoint(startX-halfDiff, startY-halfDiff);
+        A = JTSUtils.createPoint(startX-halfDiff, startY+halfDiff);
+        B = JTSUtils.createPoint(startX+halfDiff, startY+halfDiff);
+        C = JTSUtils.createPoint(startX-halfDiff, startY+halfDiff);
+        D = JTSUtils.createPoint(startX-halfDiff, startY-halfDiff);
     }
 
 

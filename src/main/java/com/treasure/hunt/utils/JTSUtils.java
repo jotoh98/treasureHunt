@@ -86,6 +86,8 @@ public class JTSUtils {
      * @return
      */
     public static Point[] lineLinesegmentIntersection(Point L1,Point L2,Point S1,Point S2){
+        if(L1==L2 || S1==S2)
+            throw new IllegalArgumentException("L1==L2 or S1==S2");
         Point[] intersection = lineIntersection(L1, L2, S1, S2);
         if(intersection.length>1)
             return new Point[]{S1,S2}; // S lies on L
