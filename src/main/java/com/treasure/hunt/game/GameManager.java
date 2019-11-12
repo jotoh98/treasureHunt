@@ -106,7 +106,8 @@ public class GameManager {
      * @return whether the performed {@link Moves}' by the searcher and {@link Hint}'s from the hider were correct.
      */
     protected boolean checkConsistency() {
-        // TODO forbid wrong hints!!!!1!!11!!11
+        // TODO implement
+        // forbid wrong hints
         return true;
     }
 

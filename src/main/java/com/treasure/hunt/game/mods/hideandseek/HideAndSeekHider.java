@@ -9,5 +9,4 @@ import com.treasure.hunt.strategy.hint.Hint;
  */
 public interface HideAndSeekHider<T extends Hint> extends Hider<T> {
 
-
 }

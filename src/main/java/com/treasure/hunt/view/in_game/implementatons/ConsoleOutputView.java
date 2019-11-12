@@ -4,6 +4,8 @@ import com.treasure.hunt.game.GameHistory;
 import com.treasure.hunt.strategy.Product;
 import com.treasure.hunt.view.in_game.View;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -25,7 +27,8 @@ public class ConsoleOutputView implements View<Product> {
             try {
                 products = gameHistory.giveNewProducts(pos);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Logger logger = LoggerFactory.getLogger("sdf");
+                logger.error(e.toString());
             }
             products.forEach(product -> draw(product));
             pos += products.size();
