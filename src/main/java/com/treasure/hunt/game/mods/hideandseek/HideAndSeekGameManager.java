@@ -1,17 +1,22 @@
 package com.treasure.hunt.game.mods.hideandseek;
 
 import com.treasure.hunt.game.GameManager;
+import com.treasure.hunt.strategy.hider.Hider;
+import com.treasure.hunt.strategy.searcher.Searcher;
+import com.treasure.hunt.utils.Requires;
 import com.treasure.hunt.view.in_game.View;
 
 import java.util.List;
 
+
+@Requires(hider = HideAndSeekHider.class, searcher = HideAndSeekSearcher.class)
 public class HideAndSeekGameManager extends GameManager {
 
-    protected HideAndSeekHider hider;
-    protected HideAndSeekSearcher searcher;
+    protected final HideAndSeekHider hideAndSeekHider;
 
-    public HideAndSeekGameManager(HideAndSeekSearcher searcher, HideAndSeekHider hider, List<View> view) {
+    public HideAndSeekGameManager(Searcher searcher, Hider hider, List<View> view) {
         super(searcher, hider, view);
+        hideAndSeekHider = (HideAndSeekHider) hider;
     }
 
     /**
@@ -28,6 +33,6 @@ public class HideAndSeekGameManager extends GameManager {
      */
     public void step() {
         super.step();
-        treasurePos = hider.getTreasureLocation();
+        treasurePos = hideAndSeekHider.getTreasureLocation();
     }
 }

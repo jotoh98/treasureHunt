@@ -11,7 +11,7 @@ import javax.swing.*;
 public class CanvasController extends JFrame {
 
     @Getter
-    CanvasView canvasView = new CanvasView();
+    CanvasView canvasView;
 
     @Getter
     private Vector2D offset = new Vector2D();
@@ -19,7 +19,8 @@ public class CanvasController extends JFrame {
     @Getter
     private double scale = 1.0;
 
-    CanvasController() {
+    CanvasController(CanvasView canvasView) {
+        this.canvasView = canvasView;
         CanvasMouseListener canvasMouseListener = new CanvasMouseListener(this);
         canvasView.addMouseMotionListener(canvasMouseListener);
         canvasView.addMouseListener(canvasMouseListener);
