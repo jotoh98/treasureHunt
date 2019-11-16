@@ -10,19 +10,22 @@ import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.AngleHint;
 import com.treasure.hunt.strategy.searcher.Moves;
 import lombok.Getter;
-import org.locationtech.jts.algorithm.Angle;
+import org.locationtech.jts.algorithm.LineIntersector;
+import org.locationtech.jts.algorithm.RobustLineIntersector;
 import org.locationtech.jts.geom.*;
-import org.locationtech.jts.geom.impl.CoordinateArraySequence;
-import org.locationtech.jts.geom.impl.CoordinateArraySequenceFactory;
 
+import javax.sound.sampled.Line;
 import java.util.ArrayList;
 import java.util.List;
 
 /*
     There are 3 Structures to represent the state of Algorithm
-    BoundingCircle: the biggest Area in which the Strategy wants to place the treasure
-    checkedArea: the Area the player has visited and thus must not contain the target
-    possibleArea: BoundingCircle \ {checkedArea + AreaExcludedByHints)
+    BoundingCircle:         the biggest Area in which the Strategy wants to place the treasure
+    checkedArea:            the Area the player has visited and thus must not contain the target
+    AreaExcludedByHints:    the Area the previous hints have
+
+    ==> those 3 structures are used to calculate the remaining possible area to place the treasure into
+    possibleArea:           BoundingCircle \ {checkedArea + AreaExcludedByHints)
 
     The Algorithm tries to greedily maximize the possibleArea with each Hint generation
 
@@ -33,7 +36,7 @@ public class MaxAreaAngularHintStrategy implements Hider<AngleHint> {
     private Point startingPoint;
     private Point currentPlayersPosition;
     private Point initTreasure;
-    private GameHistory gh;
+    private GameHistory gameHistory;
     private List<AngleHint> givenHints;
     private GeometryFactory gf;
 
@@ -63,7 +66,7 @@ public class MaxAreaAngularHintStrategy implements Hider<AngleHint> {
     public void init(Point treasurePosition, GameHistory gameHistory) {
         startingPoint = gf.createPoint(new Coordinate(0,0));
         initTreasure = treasurePosition;
-        gh = gameHistory;
+        this.gameHistory = gameHistory;
 
         //TODO this should be easier
         Circle c = new Circle(startingPoint.getCoordinate(),boundingCircleSize,gf);
@@ -73,26 +76,75 @@ public class MaxAreaAngularHintStrategy implements Hider<AngleHint> {
         commitProduct(gp);
 
 
-        MultiPolygon pa = new MultiPolygon(new Polygon[]{c},gf);
-        possibleArea = new GeometryItem<>(pa,GeometryType.POSSIBLE_TREASURE);
+        possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{c},gf),GeometryType.POSSIBLE_TREASURE);
 
 
     }
 
-    /*
-        Computes the 2 Intersections between the bounding circle and the current hint, then
-        Merges the resulting Polygon and the remaining possible Area
-        to the new possible Area
 
+
+    /**
+     * Computes the 2 Intersections between the bounding circle and the current hint, then
+     *  Merges the resulting Polygon and the remaining possible Area
+     *  to the new possible Area
+     *
+     * @param hint The hint to integrate
      */
+
     public void integrateHint(AngleHint hint){
-        //TODO
+        Polygon c = boundingCircle.getObject();
+
+        //for each hintVector there's going to be 2 intersections with the bounding circle, Take the ones which scale the Vector with a positive factor
+        LineSegment firstVector = new LineSegment(hint.getAngleCenter().getCoordinate(),hint.getAnglePointOne().getCoordinate());
+        LineSegment secondVector = new LineSegment(hint.getAngleCenter().getCoordinate(),hint.getAnglePointTwo().getCoordinate());
+
+        Coordinate[] boundingPoints =  boundingCircle.getObject().getCoordinates();
+        LineSegment boundingSeg = new LineSegment();
+        Coordinate intersects[] = new Coordinate[2];
+        LineSegment intersectionSeg[] = new LineSegment[2];
+        RobustLineIntersector intersectorCalc = new RobustLineIntersector();
+
+
+
+
+        for(int curr = 0 ; curr <boundingPoints.length-1;curr++){
+            boundingSeg.p0 = boundingPoints[curr];
+            boundingSeg.p1 = boundingPoints[curr+1];
+
+            //first vector
+            intersectorCalc.computeIntersection(boundingPoints[curr],boundingPoints[curr+1],firstVector.p0,firstVector.p1);
+            // sanity check to also exclude Collinear lines
+            if(intersectorCalc.getIntersectionNum() == LineIntersector.POINT_INTERSECTION && intersectorCalc.isInteriorIntersection((0))){
+                //not  sure if the IntersectionIndex should actually be zero. Not sure why the intersection index can be 2 and still return a point
+                if(firstVector.projectionFactor(intersectorCalc.getIntersection(0)) >= 0){
+                    intersects[0] = intersectorCalc.getIntersection(0);
+                    intersectionSeg[0] = boundingSeg;
+                }
+            }
+
+            //second vector
+            intersectorCalc.computeIntersection(boundingPoints[curr],boundingPoints[curr+1],secondVector.p0,secondVector.p1);
+            // sanity check to also exclude Collinear lines
+            if(intersectorCalc.getIntersectionNum() == LineIntersector.POINT_INTERSECTION && intersectorCalc.isInteriorIntersection((0))){
+                //not  sure if the IntersectionIndex should actually be zero. Not sure why the intersection index can be 2 and still return a point
+                if(secondVector.projectionFactor(intersectorCalc.getIntersection(0)) >= 0){
+                    intersects[1] = intersectorCalc.getIntersection(0);
+                    intersectionSeg[1] = boundingSeg;
+                }
+            }
+
+            // now merge the 2 intersections, the AngleCenter and the Bounding cicle
+            // Todo find a way to get the orientation of the line and go from intersects[0] to intersects[1]
+
+        }
+
+
     }
 
     @Override
     public void commitProduct(Product product) {
         //TODO, not sure if this is the intended way
-        gh.dump(product);
+        gameHistory.dump(product);
     }
 
     @Override
@@ -117,6 +169,7 @@ public class MaxAreaAngularHintStrategy implements Hider<AngleHint> {
 
         return null;
     }
+
 
     /*
         Extends the bounding Circle/Linestring when the player comes close to its edge
