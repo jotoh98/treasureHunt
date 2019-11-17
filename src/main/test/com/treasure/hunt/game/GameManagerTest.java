@@ -1,6 +1,5 @@
 package com.treasure.hunt.game;
 
-import com.treasure.hunt.strategy.Product;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hider.implementations.SpoilerHider;
 import com.treasure.hunt.strategy.hint.CircleHint;
@@ -57,10 +56,6 @@ class GameManagerTest {
             private GeometryFactory gf = new GeometryFactory();
             private GameHistory gameHistory;
             private Point treasurePos = gf.createPoint(new Coordinate(1, 1));
-
-            @Override
-            public void commitProduct(Product product) {
-            }
 
             @Override
             public Point getTreasureLocation() {

@@ -1,6 +1,8 @@
 package com.treasure.hunt.game;
 
 import com.treasure.hunt.strategy.Product;
+import com.treasure.hunt.strategy.hint.Hint;
+import com.treasure.hunt.strategy.searcher.Moves;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -39,7 +41,18 @@ public class GameHistory {
      *
      * @param product The new Product, arisen in the game.
      */
-    public synchronized void dump(Product product) {
+    public synchronized void dump(Hint product) {
+        products.add(product);
+        notifyAll();
+    }
+
+    /**
+     * This dumps the new game created {@link Product} into this history
+     * and notifies the views.
+     *
+     * @param product The new Product, arisen in the game.
+     */
+    public synchronized void dump(Moves product) {
         products.add(product);
         notifyAll();
     }
