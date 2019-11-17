@@ -1,15 +1,18 @@
 package com.treasure.hunt.game;
 
 import com.treasure.hunt.strategy.Product;
+import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.Moves;
 import lombok.NoArgsConstructor;
+import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 public class GameHistory {
@@ -20,6 +23,7 @@ public class GameHistory {
     private List<Product> products = Collections.synchronizedList(new ArrayList<>());
     private ExecutorService executorService = Executors.newFixedThreadPool(2);
     private List<Runnable> views = new ArrayList<>();
+    private GeometryItem<Point> treasureLocation;
 
     /**
      * @param runnable the views, which gets registered.
@@ -31,7 +35,7 @@ public class GameHistory {
     /**
      * This will run the views.
      */
-    public void startListeners() {
+    public void runListeners() {
         views.forEach(runnable -> executorService.execute(runnable));
     }
 
@@ -43,7 +47,7 @@ public class GameHistory {
      */
     public synchronized void dump(Hint product) {
         products.add(product);
-        notifyAll();
+        runListeners();
     }
 
     /**
@@ -54,19 +58,19 @@ public class GameHistory {
      */
     public synchronized void dump(Moves product) {
         products.add(product);
-        notifyAll();
+        runListeners();
     }
 
-    /**
-     * @param i the last size, the {@link com.treasure.hunt.view.in_game.View} knew.
-     * @return the new products, the {@link com.treasure.hunt.view.in_game.View} missed.
-     */
-    public synchronized List<Product> giveNewProducts(int i) throws InterruptedException {
-        while (products.size() <= i) {
-            wait();
-        }
-        List list = new ArrayList<>(products.subList(i, products.size() - 1));
-        return list;
+    public void dumpTreasureLocation(GeometryItem<Point> pointGeometryItem) {
+        treasureLocation = pointGeometryItem;
+        runListeners();
+    }
+
+    public List<GeometryItem> getGeometryItems() {
+        ArrayList<GeometryItem> geometryItems = products.stream()
+                .flatMap(product -> product.getGeometryItems().stream()).collect(Collectors.toCollection(ArrayList::new));
+        geometryItems.add(treasureLocation);
+        return geometryItems;
     }
 
 }

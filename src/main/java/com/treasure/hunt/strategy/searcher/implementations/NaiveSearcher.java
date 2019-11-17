@@ -41,9 +41,4 @@ public class NaiveSearcher implements HideAndSeekSearcher<CircleHint> {
         moves.addWayPoint(circleHint.getCenter());
         return moves;
     }
-
-    @Override
-    public Point getLocation() {
-        return position;
-    }
 }

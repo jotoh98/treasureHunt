@@ -5,31 +5,31 @@ import com.treasure.hunt.jts.PointTransformation;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.view.in_game.View;
 import lombok.Getter;
-import lombok.Setter;
 import org.locationtech.jts.awt.ShapeWriter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class CanvasView extends JPanel implements View<Shape> {
+public class CanvasView extends JPanel implements View {
 
-    @Getter
     private ShapeWriter shapeWriter;
 
     @Getter
     private PointTransformation pointTransformation = new PointTransformation();
 
-    @Setter
-    private GeometryItem[] geometryItems = new GeometryItem[0];
+    private GameHistory gameHistory;
+    private List<GeometryItem> geometryItems = new ArrayList<>();
 
     public CanvasView() {
-        RenderingHints renderingHints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         shapeWriter = new ShapeWriter(pointTransformation);
     }
 
     @Override
     public void run() {
-        // TODO implement
+        geometryItems = gameHistory.getGeometryItems();
+        revalidate();
     }
 
     public Shape draw(GeometryItem geometryItem) {
@@ -66,6 +66,7 @@ public class CanvasView extends JPanel implements View<Shape> {
 
     @Override
     public void init(GameHistory gameHistory) {
-        // TODO implement
+        this.gameHistory = gameHistory;
+        gameHistory.registerListener(this);
     }
 }

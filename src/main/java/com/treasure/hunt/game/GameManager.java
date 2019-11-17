@@ -1,15 +1,16 @@
 package com.treasure.hunt.game;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.Moves;
 import com.treasure.hunt.strategy.searcher.Searcher;
+import com.treasure.hunt.util.JTSUtils;
 import com.treasure.hunt.utils.Requires;
 import com.treasure.hunt.view.in_game.View;
 import lombok.Getter;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Point;
 
@@ -21,8 +22,6 @@ import java.util.List;
  */
 @Requires(hider = Hider.class, searcher = Searcher.class)
 public class GameManager {
-
-    private final GeometryFactory gf = new GeometryFactory();
 
     private List<View> view;
     protected final GameHistory gameHistory = new GameHistory();
@@ -47,6 +46,7 @@ public class GameManager {
         this.searcher = searcher;
         this.hider = hider;
         this.view = view;
+        init();
     }
 
     /**
@@ -146,12 +146,12 @@ public class GameManager {
             gameHistory.registerListener(view);
             view.init(gameHistory);
         }
-        gameHistory.startListeners();
 
-        searcherPos = gf.createPoint(new Coordinate(0, 0));
+        searcherPos = JTSUtils.getDefaultGeometryFactory().createPoint(new Coordinate(0, 0));
         searcher.init(searcherPos, gameHistory);
 
         hider.init(gameHistory);
         treasurePos = hider.getTreasureLocation();
+        gameHistory.dumpTreasureLocation(new GeometryItem<>(treasurePos, GeometryType.TREASURE));
     }
 }

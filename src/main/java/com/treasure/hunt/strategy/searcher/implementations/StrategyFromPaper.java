@@ -22,9 +22,4 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
     public Moves move(AngleHint hint) {
         return null;
     }
-
-    @Override
-    public Point getLocation() {
-        return null;
-    }
 }

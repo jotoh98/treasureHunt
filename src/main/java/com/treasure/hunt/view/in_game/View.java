@@ -2,7 +2,7 @@ package com.treasure.hunt.view.in_game;
 
 import com.treasure.hunt.game.GameHistory;
 
-public interface View<T> extends Runnable {
+public interface View extends Runnable {
 
     /**
      * @param gameHistory the {@link GameHistory}, the View gets its inputs.

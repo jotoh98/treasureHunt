@@ -22,9 +22,4 @@ public class CircleSearcher implements Searcher<CircleHint> {
     public Moves move(CircleHint hint) {
         return null;
     }
-
-    @Override
-    public Point getLocation() {
-        return null;
-    }
 }

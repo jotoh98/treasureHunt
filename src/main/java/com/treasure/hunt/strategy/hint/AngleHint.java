@@ -1,9 +1,11 @@
 package com.treasure.hunt.strategy.hint;
 
+import lombok.ToString;
 import lombok.Value;
 import org.locationtech.jts.geom.Point;
 
 @Value
+@ToString(of = {"anglePointLeft", "anglePointRight", "center"})
 public class AngleHint extends Hint {
     Point anglePointLeft;
     Point anglePointRight;

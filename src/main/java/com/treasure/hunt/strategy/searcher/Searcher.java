@@ -28,9 +28,4 @@ public interface Searcher<T extends Hint> {
      * @return Moves the {@link Moves}, the searcher chose.
      */
     Moves move(T hint);
-
-    /**
-     * @return Point the position where the player currently stands.
-     */
-    Point getLocation();
 }

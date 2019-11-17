@@ -2,6 +2,7 @@ package com.treasure.hunt.view.main;
 
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.strategy.hider.Hider;
+import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.ReflectionUtils;
 import com.treasure.hunt.utils.Requires;
@@ -46,12 +47,12 @@ public class MainMenuController {
     }
 
     private void setStrategyListsLAF() {
-        searcherListView.setCellRenderer(getStrategiesCellListRenderer(hiderListView));
+        searcherListView.setCellRenderer(getSearcherCellListRenderer(hiderListView));
         ClassListMouseListener searcherListListener = new ClassListMouseListener(searcherListView, Arrays.asList(hiderListView, gameManagerListView));
         searcherListView.addMouseListener(searcherListListener);
         searcherListView.addMouseMotionListener(searcherListListener);
 
-        hiderListView.setCellRenderer(getStrategiesCellListRenderer(searcherListView));
+        hiderListView.setCellRenderer(getHiderCellListRenderer(searcherListView));
         ClassListMouseListener hiderListListener = new ClassListMouseListener(hiderListView, Arrays.asList(searcherListView, gameManagerListView));
         hiderListView.addMouseListener(hiderListListener);
         hiderListView.addMouseMotionListener(hiderListListener);
@@ -167,14 +168,25 @@ public class MainMenuController {
         selectContextContainer.add(errorLabel);
     }
 
-    private ClassListCellRenderer getStrategiesCellListRenderer(JList<Class> opponentListView) {
+    private ClassListCellRenderer getHiderCellListRenderer(JList<Class> opponentListView) {
+        return new ClassListCellRenderer(value -> {
+            Class selectedValue = opponentListView.getSelectedValue();
+            if (selectedValue == null) {
+                return true;
+            }
+            Class<Hint> otherGeneric = ReflectionUtils.interfaceGenericsClass(selectedValue);
+            return otherGeneric.isAssignableFrom(ReflectionUtils.interfaceGenericsClass(value));
+        }, ReflectionUtils::genericName);
+    }
+
+    private ClassListCellRenderer getSearcherCellListRenderer(JList<Class> opponentListView) {
         return new ClassListCellRenderer(value -> {
             Class selectedValue = opponentListView.getSelectedValue();
             if (selectedValue == null) {
                 return true;
             }
             Class otherGeneric = ReflectionUtils.interfaceGenericsClass(selectedValue);
-            return ReflectionUtils.interfaceGenericsClass(value).equals(otherGeneric);
+            return ReflectionUtils.interfaceGenericsClass(value).isAssignableFrom(otherGeneric);
         }, ReflectionUtils::genericName);
     }
 

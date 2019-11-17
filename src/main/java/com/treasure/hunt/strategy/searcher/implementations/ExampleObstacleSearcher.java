@@ -29,9 +29,4 @@ public class ExampleObstacleSearcher implements ObstacleSearcher<CircleHint> {
     public Moves move(CircleHint hint) {
         return null;
     }
-
-    @Override
-    public Point getLocation() {
-        return null;
-    }
 }
