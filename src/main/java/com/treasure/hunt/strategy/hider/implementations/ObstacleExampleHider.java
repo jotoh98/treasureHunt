@@ -17,12 +17,17 @@ public class ObstacleExampleHider implements ObstacleHider<CircleHint> {
     }
 
     @Override
-    public void init(Point treasurePosition, GameHistory gameHistory) {
+    public void commitProduct(Product product) {
 
     }
 
     @Override
-    public void commitProduct(Product product) {
+    public Point getTreasureLocation() {
+        return null;
+    }
+
+    @Override
+    public void init(GameHistory gameHistory) {
 
     }
 

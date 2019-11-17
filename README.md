@@ -7,7 +7,7 @@
     6. In the maven tab at the right click the refresh symbol
     7. Click on play
 
-# Implementing a Seacher
+# Implementing a Searcher
     1. Create a class "yourSearcher" in
     src/main/java/com/treasure/hunt/strategy/searcher/implementations/
     2. Implement to the interface "Seacher"

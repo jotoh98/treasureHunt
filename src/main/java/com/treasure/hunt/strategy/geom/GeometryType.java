@@ -6,6 +6,8 @@ import lombok.Setter;
 public enum GeometryType {
     // hints
     FALSE_HINT(false, "False Hint"),
+    HINT_CENTER(false, "hint-center"),
+    HINT_RADIUS(false, "hint-center"),
     TRUE_HINT(false, "True Hint"),
 
     // treasure/no-treasure (areas)

@@ -17,31 +17,43 @@ public class GameHistory {
      */
     private List<Product> products = Collections.synchronizedList(new ArrayList<>());
     private ExecutorService executorService = Executors.newFixedThreadPool(2);
-    private List<Runnable> listeners = new ArrayList<>();
+    private List<Runnable> views = new ArrayList<>();
 
+    /**
+     * @param runnable the views, which gets registered.
+     */
     public void registerListener(Runnable runnable) {
-        listeners.add(runnable);
+        views.add(runnable);
     }
 
     /**
-     * This dumps the new game created {@link Product}
-     * into this history.
-     *
-     * @param product The new Product, arised in the game.
+     * This will run the views.
      */
-    public void dump(Product product) {
+    public void startListeners() {
+        views.forEach(runnable -> executorService.execute(runnable));
+    }
+
+    /**
+     * This dumps the new game created {@link Product} into this history
+     * and notifies the views.
+     *
+     * @param product The new Product, arisen in the game.
+     */
+    public synchronized void dump(Product product) {
         products.add(product);
-        listeners.forEach(runnable -> executorService.execute(runnable));
+        notifyAll();
     }
 
     /**
-     * This returns a copy of the productsList.
-     * The Product objects are still the same!
-     *
-     * @return copy of the productList.
+     * @param i the last size, the {@link com.treasure.hunt.view.in_game.View} knew.
+     * @return the new products, the {@link com.treasure.hunt.view.in_game.View} missed.
      */
-    public List<Product> giveProductsCopy() {
-        return new ArrayList<Product>(products);
+    public synchronized List<Product> giveNewProducts(int i) throws InterruptedException {
+        while (products.size() <= i) {
+            wait();
+        }
+        List list = new ArrayList<>(products.subList(i, products.size() - 1));
+        return list;
     }
 
 }

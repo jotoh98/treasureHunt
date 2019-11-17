@@ -8,14 +8,18 @@ import com.treasure.hunt.strategy.searcher.Moves;
 import org.locationtech.jts.geom.Point;
 
 public class RandomAngularHintStrategy implements Hider<AngleHint> {
-
     @Override
-    public void init(Point treasurePosition, GameHistory gameHistory) {
+    public void commitProduct(Product product) {
 
     }
 
     @Override
-    public void commitProduct(Product product) {
+    public Point getTreasureLocation() {
+        return null;
+    }
+
+    @Override
+    public void init(GameHistory gameHistory) {
 
     }
 
