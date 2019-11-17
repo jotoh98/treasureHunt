@@ -1,11 +1,13 @@
 package com.treasure.hunt.strategy.hint;
 
+import lombok.Getter;
 import lombok.Value;
 import org.locationtech.jts.geom.Point;
 
-@Value
 public class AngleHint extends Hint {
+    @Getter
     Point anglePointLeft;
+    @Getter
     Point anglePointRight;
 
     public AngleHint(Point geometryItem, Point anglePointLeft, Point anglePointRight) {

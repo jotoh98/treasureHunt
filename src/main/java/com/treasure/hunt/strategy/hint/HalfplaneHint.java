@@ -1,18 +1,24 @@
 package com.treasure.hunt.strategy.hint;
 
+import lombok.Getter;
 import lombok.Value;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Point;
 
-@Value
 public class HalfplaneHint extends Hint {
+
+    public HalfplaneHint(Point P1, Point P2, Direction direction){
+        super(P1);
+        Point halfplanePoint = P2;
+        this.direction = direction;
+    }
 
     public enum Direction{
         right, left, up, down;
     }
-
-    Point halfplanePointOne;
-    Point halfplanePointTwo;
+    @Getter
+    Point halfplanePoint;
+    @Getter
     Direction direction;    // when the line indicated by halfplanePointOne and halfplanePointTwo is not horizontal,
                             // right and left indicate where the target is (right indicates the target is in positive x-Direction
                             // in relationship to the line)
@@ -24,9 +30,9 @@ public class HalfplaneHint extends Hint {
     {
 
 
-        Point P1 = anglehint.getAnglePointOne();
-        Point P2 = anglehint.getAnglePointTwo();
-        Point C = anglehint.getAngleCenter();
+        Point P1 = anglehint.getAnglePointLeft();
+        Point P2 = anglehint.getAnglePointRight();
+        Point C = anglehint.getCenter();
 
         double yPointOne = P1.getY();
         double xPointOne = P1.getX();
@@ -34,6 +40,7 @@ public class HalfplaneHint extends Hint {
         double xCenter = C.getX();
         double yPointTwo = P2.getY();
         double xPointTwo = P2.getX();
+
 
         if(Angle.angleBetweenOriented(P1.getCoordinate(), C.getCoordinate(), P2.getCoordinate())<=0){
             throw new IllegalArgumentException("angular2correctHalfPlaneHint was called with an angular Hint bigger"+

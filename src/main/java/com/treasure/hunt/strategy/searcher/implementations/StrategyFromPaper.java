@@ -51,8 +51,8 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         LineSegment CD = new LineSegment(C.getCoordinate(), D.getCoordinate());
         LineSegment AD = new LineSegment(A.getCoordinate(), D.getCoordinate());
 
-        LineSegment piHintLine = new LineSegment(piHint.getHalfplanePointOne().getCoordinate(),
-                piHint.getHalfplanePointTwo().getCoordinate());
+        LineSegment piHintLine = new LineSegment(piHint.getCenter().getCoordinate(),
+                piHint.getHalfplanePoint().getCoordinate());
 
         Point intersection_AD_hint = JTSUtils.lineLinesegmentIntersection(piHintLine, AD);
         Point intersection_BC_hint = JTSUtils.lineLinesegmentIntersection(piHintLine, BC);
@@ -113,12 +113,12 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         Point lowerHintPoint;
         Point upperHintPoint;
 
-        if (piHint.getHalfplanePointOne().getY() < piHint.getHalfplanePointTwo().getY()) {
-            lowerHintPoint = piHint.getHalfplanePointOne();
-            upperHintPoint = piHint.getHalfplanePointTwo();
+        if (piHint.getCenter().getY() < piHint.getHalfplanePoint().getY()) {
+            lowerHintPoint = piHint.getCenter();
+            upperHintPoint = piHint.getHalfplanePoint();
         } else {
-            lowerHintPoint = piHint.getHalfplanePointTwo();
-            upperHintPoint = piHint.getHalfplanePointOne();
+            lowerHintPoint = piHint.getHalfplanePoint();
+            upperHintPoint = piHint.getCenter();
         }
 
         if ((piHint.getDirection() == Direction.left && lowerHintPoint.getX() < upperHintPoint.getX()) ||
