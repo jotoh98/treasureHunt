@@ -70,12 +70,14 @@ public class GameManager {
         } else {
             lastMoves = searcher.move(lastHint);
         }
+        gameHistory.dump(lastMoves);
         searcherPos = lastMoves.getEndPoint().getObject();
         if (located()) {
             finished = true;
             return;
         }
         lastHint = hider.move(lastMoves);
+        gameHistory.dump(lastHint);
     }
 
     /**
@@ -108,6 +110,7 @@ public class GameManager {
     protected boolean checkConsistency() {
         // TODO implement
         // forbid wrong hints
+        // treasure location may not change
         return true;
     }
 

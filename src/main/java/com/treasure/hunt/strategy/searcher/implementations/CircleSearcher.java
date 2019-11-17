@@ -1,7 +1,6 @@
 package com.treasure.hunt.strategy.searcher.implementations;
 
 import com.treasure.hunt.game.GameHistory;
-import com.treasure.hunt.strategy.Product;
 import com.treasure.hunt.strategy.hint.CircleHint;
 import com.treasure.hunt.strategy.searcher.Moves;
 import com.treasure.hunt.strategy.searcher.Searcher;
@@ -11,11 +10,6 @@ public class CircleSearcher implements Searcher<CircleHint> {
 
     @Override
     public void init(Point startPosition, GameHistory gameHistory) {
-
-    }
-
-    @Override
-    public void commitProduct(Product product) {
 
     }
 

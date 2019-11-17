@@ -10,14 +10,6 @@ public abstract class Product {
     @Getter
     protected List<GeometryItem> geometryItems = new ArrayList<>();
 
-    /**
-     * @return the last end-position of the moves-sequence.
-     */
-    public GeometryItem getEndPoint() {
-        assert (geometryItems.size() != 0);
-        return geometryItems.get(geometryItems.size() - 1);
-    }
-
     public void addAdditionalItem(GeometryItem geometryItem) {
         geometryItems.add(geometryItem);
     }
