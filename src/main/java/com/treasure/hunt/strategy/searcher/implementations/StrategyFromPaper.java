@@ -1,7 +1,6 @@
 package com.treasure.hunt.strategy.searcher.implementations;
 
 import com.treasure.hunt.game.GameHistory;
-import com.treasure.hunt.strategy.Product;
 import com.treasure.hunt.strategy.hint.AngleHint;
 import com.treasure.hunt.strategy.hint.HalfplaneHint;
 import com.treasure.hunt.strategy.hint.HalfplaneHint.Direction;
@@ -29,11 +28,6 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         location = (Point) startPosition.copy();
         phase = 1;
         setRectToPhase();
-    }
-
-    @Override
-    public void commitProduct(Product product) {
-
     }
 
     @Override

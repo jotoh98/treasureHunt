@@ -1,5 +1,6 @@
 package com.treasure.hunt.view.in_game.implementatons;
 
+import com.treasure.hunt.game.GameHistory;
 import com.treasure.hunt.jts.PointTransformation;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.view.in_game.View;
@@ -28,11 +29,10 @@ public class CanvasView extends JPanel implements View<Shape> {
 
     @Override
     public void run() {
-
+        // TODO implement
     }
 
-    @Override
-    public Shape transfer(GeometryItem geometryItem) {
+    public Shape draw(GeometryItem geometryItem) {
         return shapeWriter.toShape(geometryItem.getObject());
     }
 
@@ -53,7 +53,7 @@ public class CanvasView extends JPanel implements View<Shape> {
             return;
         }
 
-        Shape shape = transfer(geometryItem);
+        Shape shape = draw(geometryItem);
 
         if (geometryItem.getStyle().isFilled()) {
             graphics2D.setColor(geometryItem.getStyle().getFillColor());
@@ -62,5 +62,10 @@ public class CanvasView extends JPanel implements View<Shape> {
 
         graphics2D.setColor(geometryItem.getStyle().getOutlineColor());
         graphics2D.draw(shape);
+    }
+
+    @Override
+    public void init(GameHistory gameHistory) {
+        // TODO implement
     }
 }

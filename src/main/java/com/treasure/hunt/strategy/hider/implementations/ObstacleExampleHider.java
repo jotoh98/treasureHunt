@@ -2,7 +2,6 @@ package com.treasure.hunt.strategy.hider.implementations;
 
 import com.treasure.hunt.game.GameHistory;
 import com.treasure.hunt.game.mods.obstacles.ObstacleHider;
-import com.treasure.hunt.strategy.Product;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.hint.CircleHint;
 import com.treasure.hunt.strategy.searcher.Moves;
@@ -17,12 +16,12 @@ public class ObstacleExampleHider implements ObstacleHider<CircleHint> {
     }
 
     @Override
-    public void init(Point treasurePosition, GameHistory gameHistory) {
-
+    public Point getTreasureLocation() {
+        return null;
     }
 
     @Override
-    public void commitProduct(Product product) {
+    public void init(GameHistory gameHistory) {
 
     }
 
