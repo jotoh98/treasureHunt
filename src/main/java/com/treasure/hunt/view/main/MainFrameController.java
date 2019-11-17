@@ -31,9 +31,9 @@ public class MainFrameController {
         Searcher newSearcher = searcherClass.getDeclaredConstructor().newInstance();
         Hider newHider = hiderClass.getDeclaredConstructor().newInstance();
         CanvasView canvasView = new CanvasView();
-        gameManager
+        GameManager gameManagerInstance = gameManager
                 .getDeclaredConstructor(Searcher.class, Hider.class, List.class)
                 .newInstance(newSearcher, newHider, Collections.singletonList(canvasView));
-        new CanvasController(canvasView);
+        new CanvasController(canvasView, gameManagerInstance);
     }
 }
