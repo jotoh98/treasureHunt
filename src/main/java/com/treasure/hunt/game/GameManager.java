@@ -59,6 +59,7 @@ public class GameManager {
      * the next will be with.
      */
     public void step() {
+        System.out.println("GameManager.step()");
         if (finished) {
             throw new IllegalStateException("Game is already finished");
         }

@@ -67,6 +67,5 @@ public class CanvasView extends JPanel implements View {
     @Override
     public void init(GameHistory gameHistory) {
         this.gameHistory = gameHistory;
-        gameHistory.registerListener(this);
     }
 }
