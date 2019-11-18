@@ -113,7 +113,7 @@ public class MainMenuController {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
-            e.printStackTrace();
+            // TODO logg
         }
 
         initRootPanel(rootPanel);

@@ -22,7 +22,7 @@ import java.util.List;
 @Requires(hider = Hider.class, searcher = Searcher.class)
 public class GameManager {
 
-    private List<View> view;
+    protected List<View> view;
     protected final GameHistory gameHistory = new GameHistory();
 
     protected final Searcher searcher;
@@ -31,15 +31,15 @@ public class GameManager {
      * Safe, whether the game is done or not.
      */
     @Getter
-    private boolean finished = false;
-    private Hint lastHint;
-    private Movement lastMovement;
-    private Point searcherPos;
+    protected boolean finished = false;
+    protected Hint lastHint;
+    protected Movement lastMovement;
+    protected Point searcherPos;
     protected Point treasurePos;
     /**
      * This tells, whether the next step is the first or not.
      */
-    private boolean firstStep = true;
+    protected boolean firstStep = true;
 
     public GameManager(Searcher searcher, Hider hider, List<View> view) {
         this.searcher = searcher;
@@ -77,7 +77,6 @@ public class GameManager {
         if (!checkConsistency()) {
             throw new IllegalStateException("Game is no longer consistent!");
         }
-        treasurePos = hider.getTreasureLocation();
         gameHistory.dump(new Move(lastHint, lastMovement, treasurePos));
     }
 
@@ -111,8 +110,7 @@ public class GameManager {
     protected boolean checkConsistency() {
         // TODO implement
         // forbid wrong hints
-        return (treasurePos.getX() == hider.getTreasureLocation().getX()) &&
-                (treasurePos.getY() == hider.getTreasureLocation().getY());
+        return true;
     }
 
     /**
@@ -128,12 +126,16 @@ public class GameManager {
                 // Check the gap of each move-segment and treasurePos
                 LineSegment lineSegment = new LineSegment(new Coordinate(lastPoint.getX(), lastPoint.getY()),
                         new Coordinate(point.getX(), point.getY()));
-                if (lineSegment.distancePerpendicular(new Coordinate(treasurePos.getX(), treasurePos.getY())) <= 1) {
+                // Usage of distancePerpendicular is completely incorrect here, since the line will be infinite
+                if (lineSegment.distance(new Coordinate(treasurePos.getX(), treasurePos.getY())) <= 1) {
+                    // distance to treasure is <= 1
                     // searcher found the treasure
                     finished = true;
                 }
             }
         }
+        assert (finished ||
+                ((searcherPos.getX() != treasurePos.getX()) && (searcherPos.getY() != treasurePos.getY())));
         return finished;
     }
 
@@ -152,6 +154,9 @@ public class GameManager {
         searcher.init(searcherPos);
 
         treasurePos = hider.getTreasureLocation();
+        gameHistory.dump(
+                new Move(null, null, treasurePos)
+        );
     }
 
     protected void outitialize() {

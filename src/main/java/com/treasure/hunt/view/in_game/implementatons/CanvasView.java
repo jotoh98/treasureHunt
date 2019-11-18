@@ -49,18 +49,18 @@ public class CanvasView extends JPanel implements View {
 
     public void paintShape(Graphics2D graphics2D, GeometryItem geometryItem) {
 
-        if (!geometryItem.getStyle().isVisible()) {
+        if (!geometryItem.getGeometryStyle().isVisible()) {
             return;
         }
 
         Shape shape = draw(geometryItem);
 
-        if (geometryItem.getStyle().isFilled()) {
-            graphics2D.setColor(geometryItem.getStyle().getFillColor());
+        if (geometryItem.getGeometryStyle().isFilled()) {
+            graphics2D.setColor(geometryItem.getGeometryStyle().getFillColor());
             graphics2D.fill(shape);
         }
 
-        graphics2D.setColor(geometryItem.getStyle().getOutlineColor());
+        graphics2D.setColor(geometryItem.getGeometryStyle().getOutlineColor());
         graphics2D.draw(shape);
     }
 

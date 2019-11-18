@@ -14,7 +14,7 @@ import javax.swing.*;
 
 import static org.locationtech.jts.algorithm.Angle.angleBetweenOriented;
 
-public class UserControlledAngleHider implements HideAndSeekHider<AngleHint> {
+public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint> {
     private Point treasureLocation;
 
     @Override

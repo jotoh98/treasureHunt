@@ -22,7 +22,7 @@ public class ReflectionUtils {
                         ((Class) interfaceGenericTypes[i]).getName()
                 );
             } catch (Exception e) {
-                e.printStackTrace();
+                // TODO logg
             }
         }
 
