@@ -1,7 +1,7 @@
-package com.treasure.hunt.strategy.hint;
+package com.treasure.hunt.strategy.hint.impl;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
-import com.treasure.hunt.strategy.hint.impl.AngleHint;
+import com.treasure.hunt.strategy.hint.Hint;
 import lombok.Getter;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Point;

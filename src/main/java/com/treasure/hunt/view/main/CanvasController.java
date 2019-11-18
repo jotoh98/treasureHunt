@@ -1,7 +1,7 @@
 package com.treasure.hunt.view.main;
 
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.view.in_game.implementatons.CanvasView;
+import com.treasure.hunt.view.in_game.impl.CanvasView;
 import com.treasure.hunt.view.swing.CanvasMouseListener;
 import lombok.Getter;
 import org.locationtech.jts.math.Vector2D;

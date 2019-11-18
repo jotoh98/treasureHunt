@@ -1,8 +1,8 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
-import com.treasure.hunt.strategy.hint.HalfPlaneHint;
-import com.treasure.hunt.strategy.hint.HalfPlaneHint.Direction;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
+import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
+import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
@@ -10,7 +10,7 @@ import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 
-import static com.treasure.hunt.strategy.hint.HalfPlaneHint.angular2correctHalfPlaneHint;
+import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.angular2correctHalfPlaneHint;
 
 public class StrategyFromPaper implements Searcher<AngleHint> {
     int phase; //equals j in the paper. In phase i, the algorithm checks a rectangle with a side length of 2^i

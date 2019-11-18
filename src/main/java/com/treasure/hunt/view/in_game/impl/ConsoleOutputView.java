@@ -1,4 +1,4 @@
-package com.treasure.hunt.view.in_game.implementatons;
+package com.treasure.hunt.view.in_game.impl;
 
 import com.treasure.hunt.game.GameHistory;
 import com.treasure.hunt.game.Move;

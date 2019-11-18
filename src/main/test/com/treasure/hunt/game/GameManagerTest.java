@@ -7,7 +7,7 @@ import com.treasure.hunt.strategy.hint.impl.CircleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.impl.NaiveSearcher;
 import com.treasure.hunt.view.in_game.View;
-import com.treasure.hunt.view.in_game.implementatons.ConsoleOutputView;
+import com.treasure.hunt.view.in_game.impl.ConsoleOutputView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
