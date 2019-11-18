@@ -20,6 +20,17 @@ public class HalfPlaneHint extends Hint {
     @Getter
     private Point halfPlanePoint;
 
+    @Override
+    public List<GeometryItem> getGeometryItems() {
+        // TODO implement
+        return null;
+    }
+    // right and left indicate where the target is (right indicates the target is in positive x-Direction
+    // in relationship to the line)
+    // when the line is horizontal, up signals the target is in positive y-Direction in relationship
+    // to the line (the up and down enumerators are only used when the line is horizontal)
+    // left and down respectively
+
     public static HalfPlaneHint angular2correctHalfPlaneHint(AngleHint anglehint) {
 
         Point P1 = anglehint.getAnglePointLeft();
@@ -51,11 +62,10 @@ public class HalfPlaneHint extends Hint {
 
         return new HalfPlaneHint(P1, C, Direction.left);
     }
-    // right and left indicate where the target is (right indicates the target is in positive x-Direction
-    // in relationship to the line)
-    // when the line is horizontal, up signals the target is in positive y-Direction in relationship
-    // to the line (the up and down enumerators are only used when the line is horizontal)
-    // left and down respectively
+
+    public enum Direction {
+        right, left, up, down
+    }
 
     public Point getLowerHintPoint() {
         if (center.getY() < halfPlanePoint.getY()) {
@@ -65,22 +75,12 @@ public class HalfPlaneHint extends Hint {
         }
     }
 
-    @Override
-    public List<GeometryItem> getGeometryItems() {
-        // TODO implement
-        return null;
-    }
-
     public Point getUpperHintPoint() {
         if (center.getY() < halfPlanePoint.getY()) {
             return halfPlanePoint;
         } else {
             return center;
         }
-    }
-
-    public enum Direction {
-        right, left, up, down
     }
 
     public boolean pointsUpwards() {

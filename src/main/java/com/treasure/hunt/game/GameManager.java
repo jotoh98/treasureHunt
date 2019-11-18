@@ -158,8 +158,4 @@ public class GameManager {
                 new Move(null, null, treasurePos)
         );
     }
-
-    protected void outitialize() {
-        gameHistory.waitForListeners();
-    }
 }

@@ -39,7 +39,6 @@ class GameManagerTest {
         gameManager.init();
         gameManager.run(2);
         assertTrue(gameManager.isFinished());
-        gameManager.outitialize();
     }
 
     /**
@@ -71,6 +70,5 @@ class GameManagerTest {
         gameManager.init();
         gameManager.run(2);
         assertTrue(gameManager.isFinished());
-        gameManager.outitialize();
     }
 }

@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
@@ -29,18 +28,10 @@ public class GameHistory {
     }
 
     /**
-     * This will run the views.
+     * This will run the views, e.g. start the run() method.
      */
     public void runListeners() {
         views.forEach(runnable -> executorService.execute(runnable));
-    }
-
-    public void waitForListeners() {
-        try {
-            executorService.awaitTermination(3000, TimeUnit.NANOSECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
