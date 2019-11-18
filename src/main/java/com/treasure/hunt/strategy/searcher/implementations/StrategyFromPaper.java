@@ -119,9 +119,7 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
             upperHintPoint = piHint.getCenter();
         }
 
-        if ((piHint.getDirection() == Direction.left && lowerHintPoint.getX() < upperHintPoint.getX()) ||
-                (piHint.getDirection() == Direction.right && lowerHintPoint.getX() > upperHintPoint.getX()))
-        //the hint points upwards
+        if (piHint.pointsUpwards())
         {
             if (intersection_AD_hint.distance(D) >= 1 && intersection_BC_hint.distance(C) >= 1) {
                 if (intersection_AD_hint.distance(D) >= intersection_BC_hint.distance(C)) {
@@ -135,9 +133,7 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
                 }
             }
         }
-        if ((piHint.getDirection() == Direction.left && lowerHintPoint.getX() > upperHintPoint.getX()) ||
-                (piHint.getDirection() == Direction.right && lowerHintPoint.getX() < upperHintPoint.getX()))
-        //the hint points downwards
+        if (piHint.pointsDownwards())
         {
             if (intersection_AD_hint.distance(A) >= intersection_BC_hint.distance(B)) {
                 Point newA = JTSUtils.createPoint(A.getX(), intersection_BC_hint.getY());
@@ -199,6 +195,18 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
     }
 
     private Moves twoHintsSubroutine(HalfplaneHint firstHint, HalfplaneHint secondHint) {
+        return null;
+    }
+
+    private Point twoStepsOrthogonal(HalfplaneHint piHint) {
+        if (piHint.getDirection() == Direction.up) {
+            return JTSUtils.createPoint(location.getX(), location.getY() + 2);
+        }
+        if (piHint.getDirection() == Direction.down) {
+            return JTSUtils.createPoint(location.getX(), location.getY() - 2);
+        }
+
+
         return null;
     }
 
