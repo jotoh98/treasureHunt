@@ -1,7 +1,7 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
-import com.treasure.hunt.strategy.hint.HalfplaneHint;
-import com.treasure.hunt.strategy.hint.HalfplaneHint.Direction;
+import com.treasure.hunt.strategy.hint.HalfPlaneHint;
+import com.treasure.hunt.strategy.hint.HalfPlaneHint.Direction;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
@@ -10,7 +10,7 @@ import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 
-import static com.treasure.hunt.strategy.hint.HalfplaneHint.angular2correctHalfPlaneHint;
+import static com.treasure.hunt.strategy.hint.HalfPlaneHint.angular2correctHalfPlaneHint;
 
 public class StrategyFromPaper implements Searcher<AngleHint> {
     int phase; //equals j in the paper. In phase i, the algorithm checks a rectangle with a side length of 2^i
@@ -38,7 +38,7 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
             return incrementPhase();
         }
         //now analyse the hint:
-        HalfplaneHint piHint;
+        HalfPlaneHint piHint;
         piHint = angular2correctHalfPlaneHint(hint);
 
         LineSegment AB = new LineSegment(A.getCoordinate(), B.getCoordinate());
@@ -47,7 +47,7 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         LineSegment AD = new LineSegment(A.getCoordinate(), D.getCoordinate());
 
         LineSegment piHintLine = new LineSegment(piHint.getCenter().getCoordinate(),
-                piHint.getHalfplanePoint().getCoordinate());
+                piHint.getHalfPlanePoint().getCoordinate());
 
         Point intersection_AD_hint = JTSUtils.lineSegmentIntersection(piHintLine, AD);
         Point intersection_BC_hint = JTSUtils.lineSegmentIntersection(piHintLine, BC);
@@ -76,7 +76,7 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         return badHintSubroutine(piHint);
     }
 
-    private Point[] splitRectangleHorizontally(Point A, Point B, Point C, Point D, HalfplaneHint piHint,
+    private Point[] splitRectangleHorizontally(Point A, Point B, Point C, Point D, HalfPlaneHint piHint,
                                                Point intersection_AD_hint, Point intersection_BC_hint) {
         if (intersection_AD_hint == null || intersection_AD_hint == null) {
             return null;
@@ -101,11 +101,11 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         Point lowerHintPoint;
         Point upperHintPoint;
 
-        if (piHint.getCenter().getY() < piHint.getHalfplanePoint().getY()) {
+        if (piHint.getCenter().getY() < piHint.getHalfPlanePoint().getY()) {
             lowerHintPoint = piHint.getCenter();
-            upperHintPoint = piHint.getHalfplanePoint();
+            upperHintPoint = piHint.getHalfPlanePoint();
         } else {
-            lowerHintPoint = piHint.getHalfplanePoint();
+            lowerHintPoint = piHint.getHalfPlanePoint();
             upperHintPoint = piHint.getCenter();
         }
 
@@ -136,7 +136,7 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         return null;
     }
 
-    private Point[] splitRectangleVertically(Point A, Point B, Point C, Point D, HalfplaneHint piHint,
+    private Point[] splitRectangleVertically(Point A, Point B, Point C, Point D, HalfPlaneHint piHint,
                                              Point intersection_AB_hint, Point intersection_CD_hint) {
         if (piHint.getDirection() == Direction.left) {
             if (intersection_AB_hint != null) {
@@ -178,15 +178,15 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         return null;
     }
 
-    private Movement badHintSubroutine(HalfplaneHint hint) {
+    private Movement badHintSubroutine(HalfPlaneHint hint) {
         return null;
     }
 
-    private Movement twoHintsSubroutine(HalfplaneHint firstHint, HalfplaneHint secondHint) {
+    private Movement twoHintsSubroutine(HalfPlaneHint firstHint, HalfPlaneHint secondHint) {
         return null;
     }
 
-    private Point twoStepsOrthogonal(HalfplaneHint piHint) {
+    private Point twoStepsOrthogonal(HalfPlaneHint piHint) {
         if (piHint.getDirection() == Direction.up) {
             return JTSUtils.createPoint(location.getX(), location.getY() + 2);
         }
