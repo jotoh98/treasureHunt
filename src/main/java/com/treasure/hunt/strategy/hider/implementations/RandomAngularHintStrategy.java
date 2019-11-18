@@ -19,10 +19,17 @@ public class RandomAngularHintStrategy implements Hider<AngleHint> {
         return treasure;
     }
 
+    /**
+     * This initializes the treasure position (a,b) being of [0,1*50)x[0,1*50)
+     *
+     * @param gameHistory
+     */
     @Override
     public void init(GameHistory gameHistory) {
         factory = new GeometryFactory();
-        treasure = factory.createPoint(new Coordinate(0, 0));
+        treasure = factory.createPoint(new Coordinate(
+                Math.random() * 50,
+                Math.random() * 50));
         // register Runnable to Gamehistory
         history = gameHistory;
 
