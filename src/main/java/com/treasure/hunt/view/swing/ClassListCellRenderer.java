@@ -1,36 +1,29 @@
 package com.treasure.hunt.view.swing;
 
-import com.treasure.hunt.utils.Reflections;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.function.Function;
 
+@RequiredArgsConstructor
 public class ClassListCellRenderer extends JPanel implements ListCellRenderer<Class> {
 
+    public final Function<Class, Boolean> isAvailableFunction;
+    private final Function<Class, String> getSubTitle;
     @Getter
     @Setter
     int hoverIndex = -1;
-    @Getter
-    @Setter
-    Class otherGeneric = null;
     private JLabel nameLabel = new JLabel();
-    private JLabel genericLabel = new JLabel();
+    private JLabel subTitleLabel = new JLabel();
 
     @Override
     public Component getListCellRendererComponent(JList<? extends Class> list, Class value, int index, boolean isSelected, boolean cellHasFocus) {
         boolean isHovered = index == hoverIndex;
-        boolean isAvailable = Reflections.interfaceGenericsClass(value) == otherGeneric;
-
-        if (otherGeneric == null) {
-            isAvailable = true;
-        }
-
-        if (isSelected && !isAvailable) {
-            list.clearSelection();
-        }
+        boolean isAvailable = isAvailableFunction.apply(value);
 
         list.setOpaque(false);
         setFont(list.getFont());
@@ -63,15 +56,15 @@ public class ClassListCellRenderer extends JPanel implements ListCellRenderer<Cl
 
         add(nameLabel);
 
-        genericLabel.setText(String.format("(%s)", Reflections.genericName(value)));
+        subTitleLabel.setText(String.format("(%s)", getSubTitle.apply(value)));
 
         if (isAvailable) {
-            genericLabel.setForeground(Color.gray);
+            subTitleLabel.setForeground(Color.gray);
         } else {
-            genericLabel.setForeground(new Color(128, 128, 128, 88));
+            subTitleLabel.setForeground(new Color(128, 128, 128, 88));
         }
 
-        add(genericLabel);
+        add(subTitleLabel);
 
         return this;
     }

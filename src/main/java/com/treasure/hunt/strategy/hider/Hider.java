@@ -1,7 +1,6 @@
 package com.treasure.hunt.strategy.hider;
 
 import com.treasure.hunt.game.GameHistory;
-import com.treasure.hunt.strategy.Product;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.Moves;
 import com.treasure.hunt.strategy.searcher.Searcher;
@@ -10,23 +9,20 @@ import org.locationtech.jts.geom.Point;
 public interface Hider<T extends Hint> {
 
     /**
-     * Use this to initialize your hider.
-     * This will tell him the treasure position and
-     * give him the GameHistory.
+     * This should output the current treasure location,
+     * the {@link Hider} is able to change.
      *
-     * @param treasurePosition The initial treasure position
-     * @param gameHistory      The gameHistory, the hider dumps its geometry objects by {@link #commitProduct(Product)}
+     * @return Point the new treasure location
      */
-    void init(Point treasurePosition, GameHistory gameHistory);
+    Point getTreasureLocation();
 
     /**
-     * This should let the hider commit all of his created GeometryItems
-     * to the View-Thread.
-     * For this, you could use void {@link GameHistory#dump(Product)}
+     * Use this to initialize your hider.
+     * This will give him the GameHistory.
      *
-     * @param product The product of geometry objects, the view should display
+     * @param gameHistory
      */
-    void commitProduct(Product product);
+    void init(GameHistory gameHistory);
 
     /**
      * Use this to tell a hint,

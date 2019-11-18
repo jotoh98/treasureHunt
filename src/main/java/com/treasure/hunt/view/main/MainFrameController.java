@@ -2,18 +2,15 @@ package com.treasure.hunt.view.main;
 
 
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.strategy.hider.implementations.RandomAngularHintStrategy;
-import com.treasure.hunt.strategy.searcher.implementations.StrategyFromPaper;
-import com.treasure.hunt.view.in_game.View;
+import com.treasure.hunt.strategy.hider.Hider;
+import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.view.in_game.implementatons.CanvasView;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MainFrameController {
     private static MainFrameController single_instance = null;
-    private GameManager gameManager;
-    private CanvasController canvasController;
 
     private MainFrameController() {
     }
@@ -30,19 +27,13 @@ public class MainFrameController {
         mainMenuController.show();
     }
 
-    public void onPlay() {
+    public void onPlay(Class<? extends Searcher> searcherClass, Class<? extends Hider> hiderClass, Class<? extends GameManager> gameManager) throws Exception {
+        Searcher newSearcher = searcherClass.getDeclaredConstructor().newInstance();
+        Hider newHider = hiderClass.getDeclaredConstructor().newInstance();
         CanvasView canvasView = new CanvasView();
-
-        List<View> viewList = new ArrayList<View>();
-        viewList.add(canvasView);
-
-        gameManager = new GameManager(new StrategyFromPaper(),
-                new RandomAngularHintStrategy(),
-                viewList);
-        gameManager.run();
-    }
-
-    public void onNext() {
-        gameManager.step();
+        GameManager gameManagerInstance = gameManager
+                .getDeclaredConstructor(Searcher.class, Hider.class, List.class)
+                .newInstance(newSearcher, newHider, Collections.singletonList(canvasView));
+        new CanvasController(canvasView, gameManagerInstance);
     }
 }

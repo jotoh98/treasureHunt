@@ -1,7 +1,6 @@
 package com.treasure.hunt.strategy.searcher;
 
 import com.treasure.hunt.game.GameHistory;
-import com.treasure.hunt.strategy.Product;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.Hint;
 import org.locationtech.jts.geom.Point;
@@ -12,17 +11,9 @@ public interface Searcher<T extends Hint> {
      * Use this to initialize your searcher.
      *
      * @param startPosition the searchers starting position
-     * @param gameHistory   the {@link GameHistory}, the searcher dumps his plans.
+     * @param gameHistory
      */
     void init(Point startPosition, GameHistory gameHistory);
-
-    /**
-     * Use this to dump the searchers thoughts.
-     * For this, you could use void {@link GameHistory#dump(Product)}
-     *
-     * @param product the {@link Product} to commit to the {@link com.treasure.hunt.view.in_game.View}
-     */
-    void commitProduct(Product product);
 
     /**
      * Use this to perform a initial move, without a hint given.
@@ -34,7 +25,7 @@ public interface Searcher<T extends Hint> {
 
     /**
      * @param hint the hint, the {@link Hider} gave last.
-     * @return Moves the {@link Moves}, the searcher choosed.
+     * @return Moves the {@link Moves}, the searcher chose.
      */
     Moves move(T hint);
 

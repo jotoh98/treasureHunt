@@ -5,7 +5,12 @@ import org.locationtech.jts.geom.Point;
 
 @Value
 public class AngleHint extends Hint {
-    Point anglePointOne;
-    Point anglePointTwo;
-    Point angleCenter;
+    Point anglePointLeft;
+    Point anglePointRight;
+
+    public AngleHint(Point geometryItem, Point anglePointLeft, Point anglePointRight) {
+        super(geometryItem);
+        this.anglePointLeft = anglePointLeft;
+        this.anglePointRight = anglePointRight;
+    }
 }

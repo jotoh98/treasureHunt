@@ -4,7 +4,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
-public class Reflections {
+public class ReflectionUtils {
     public static Class interfaceGenericsClass(Class baseClass) {
         return interfaceGenericsClass(baseClass, 0);
     }
