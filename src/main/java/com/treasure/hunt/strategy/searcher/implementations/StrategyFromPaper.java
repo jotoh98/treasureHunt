@@ -229,8 +229,52 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         D = JTSUtils.createPoint(startX - halfDiff, startY - halfDiff);
     }
 
-    private Moves rectangleScan(Point A, Point B, Point C, Point D) {
-        return null;
+    private Moves rectangleScan(Point A, Point B, Point C, Point D){
+        Moves moves = new Moves();
+
+        int k = (int)A.distance(B);
+        Point[] a = new Point[k];
+        Point[] b = new Point[k];
+
+        { //create a_i on line segment AB
+            double xDist = B.getX() - A.getX();
+            double yDist = B.getY() - A.getY();
+            for (int i = 0; i <= k; i++) {
+                a[i] = JTSUtils.createPoint(A.getX() + xDist * ((double)i / k), B.getX() + yDist * ((double)i / k));
+            }
+        }
+        { //create b_i on line segment DC
+            double xDist = D.getX() - C.getX();
+            double yDist = D.getY() - C.getY();
+            for (int i = 0; i <= k; i++) {
+                b[i] = JTSUtils.createPoint(D.getX() + xDist * ((double)i / k), C.getX() + yDist * ((double)i / k));
+            }
+        }
+
+        if (k % 2 == 1) //code like in paper
+        {
+            for (int i = 0; i <= k-1; k+=2)
+            {
+                moves.addWayPoint(a[i]);
+                moves.addWayPoint(b[i]);
+                moves.addWayPoint(b[i+1]);
+                moves.addWayPoint(a[i+1]);
+            }
+        }
+        else
+        {
+            for (int i = 0; i <= k-2; k+=2)
+            {
+                moves.addWayPoint(a[i]);
+                moves.addWayPoint(b[i]);
+                moves.addWayPoint(b[i+1]);
+                moves.addWayPoint(a[i+1]);
+            }
+            moves.addWayPoint(a[k]);
+            moves.addWayPoint(b[k]);
+            //moves.addWayPoint(a); // go to a
+        }
+        return moves;
     }
 }
 
