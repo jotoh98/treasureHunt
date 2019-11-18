@@ -1,12 +1,11 @@
-package com.treasure.hunt.strategy.hider.implementations;
+package com.treasure.hunt.strategy.hider.impl;
 
-import com.treasure.hunt.game.GameHistory;
 import com.treasure.hunt.game.mods.hideandseek.HideAndSeekHider;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
-import com.treasure.hunt.strategy.hint.AngleHint;
-import com.treasure.hunt.strategy.searcher.Moves;
-import com.treasure.hunt.util.JTSUtils;
+import com.treasure.hunt.strategy.hint.impl.AngleHint;
+import com.treasure.hunt.strategy.searcher.Movement;
+import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
@@ -25,14 +24,9 @@ public class UserControlledAngleHider implements HideAndSeekHider<AngleHint> {
     }
 
     @Override
-    public void init(GameHistory gameHistory) {
-        //empty
-    }
-
-    @Override
-    public AngleHint move(Moves moves) {
-        AngleHint angleHint = createAngleDialog(moves.getEndPoint().getObject());
-        Coordinate[] angle = {angleHint.getAnglePointLeft().getCoordinate(), angleHint.getCenter().getCoordinate(), angleHint.getAnglePointRight().getCoordinate()};
+    public AngleHint move(Movement movement) {
+        AngleHint angleHint = createAngleDialog(movement.getEndPoint().getObject());
+        Coordinate[] angle = {angleHint.getAnglePointLeft().getCoordinate(), angleHint.getCenterPoint().getCoordinate(), angleHint.getAnglePointRight().getCoordinate()};
         LineString lineString = JTSUtils.getDefaultGeometryFactory().createLineString(angle);
         GeometryItem<LineString> hintGeometryItem = new GeometryItem<>(lineString, GeometryType.HINT_ANGLE);
         angleHint.addAdditionalItem(hintGeometryItem);

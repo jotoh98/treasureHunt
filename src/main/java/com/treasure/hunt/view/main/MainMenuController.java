@@ -61,8 +61,8 @@ public class MainMenuController {
     }
 
     private void fillLists() {
-        Reflections searcherReflections = new Reflections("com.treasure.hunt.strategy.searcher.implementations");
-        Reflections hiderReflections = new Reflections("com.treasure.hunt.strategy.hider.implementations");
+        Reflections searcherReflections = new Reflections("com.treasure.hunt.strategy.searcher.impl");
+        Reflections hiderReflections = new Reflections("com.treasure.hunt.strategy.hider.impl");
         Reflections reflections = new Reflections("com.treasure.hunt.game");
 
         Set<Class<? extends Searcher>> allSearchers = searcherReflections.getSubTypesOf(Searcher.class);

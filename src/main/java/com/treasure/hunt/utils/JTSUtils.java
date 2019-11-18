@@ -1,4 +1,4 @@
-package com.treasure.hunt.util;
+package com.treasure.hunt.utils;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;

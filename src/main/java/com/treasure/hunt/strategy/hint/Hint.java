@@ -1,17 +1,18 @@
 package com.treasure.hunt.strategy.hint;
 
-import com.treasure.hunt.strategy.Product;
 import com.treasure.hunt.strategy.geom.GeometryItem;
-import com.treasure.hunt.strategy.geom.GeometryType;
 import lombok.Data;
-import org.locationtech.jts.geom.Point;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
-public class Hint extends Product {
-    protected Point center;
+public abstract class Hint {
+    protected List<GeometryItem> additionalGeometryItems = new ArrayList<>();
 
-    public Hint(Point center) {
-        this.center = center;
-        addAdditionalItem(new GeometryItem<>(center, GeometryType.HINT_CENTER));
+    public void addAdditionalItem(GeometryItem geometryItem) {
+        additionalGeometryItems.add(geometryItem);
     }
+
+    public abstract List<GeometryItem> getGeometryItems();
 }

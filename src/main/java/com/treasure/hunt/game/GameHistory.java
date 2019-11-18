@@ -1,17 +1,14 @@
 package com.treasure.hunt.game;
 
-import com.treasure.hunt.strategy.Product;
 import com.treasure.hunt.strategy.geom.GeometryItem;
-import com.treasure.hunt.strategy.hint.Hint;
-import com.treasure.hunt.strategy.searcher.Moves;
 import lombok.NoArgsConstructor;
-import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
@@ -20,10 +17,9 @@ public class GameHistory {
      * Locks GameHistory.products, such that it can only be accessed by one thread
      * at the same time.
      */
-    private List<Product> products = Collections.synchronizedList(new ArrayList<>());
+    private List<Move> moves = Collections.synchronizedList(new ArrayList<>());
     private ExecutorService executorService = Executors.newFixedThreadPool(2);
     private List<Runnable> views = new ArrayList<>();
-    private GeometryItem<Point> treasureLocation;
 
     /**
      * @param runnable the views, which gets registered.
@@ -39,38 +35,38 @@ public class GameHistory {
         views.forEach(runnable -> executorService.execute(runnable));
     }
 
-    /**
-     * This dumps the new game created {@link Product} into this history
-     * and notifies the views.
-     *
-     * @param product The new Product, arisen in the game.
-     */
-    public synchronized void dump(Hint product) {
-        products.add(product);
-        runListeners();
+    public void waitForListeners() {
+        try {
+            executorService.awaitTermination(3000, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace(); // TODO logg
+        }
     }
 
     /**
-     * This dumps the new game created {@link Product} into this history
+     * This dumps the new game created {@link Move} into this history
      * and notifies the views.
      *
-     * @param product The new Product, arisen in the game.
+     * @param move The new {@link Move}, arisen in the game.
      */
-    public synchronized void dump(Moves product) {
-        products.add(product);
-        runListeners();
-    }
-
-    public void dumpTreasureLocation(GeometryItem<Point> pointGeometryItem) {
-        treasureLocation = pointGeometryItem;
+    public synchronized void dump(Move move) {
+        moves.add(move);
         runListeners();
     }
 
     public List<GeometryItem> getGeometryItems() {
-        ArrayList<GeometryItem> geometryItems = products.stream()
-                .flatMap(product -> product.getGeometryItems().stream()).collect(Collectors.toCollection(ArrayList::new));
-        geometryItems.add(treasureLocation);
+        ArrayList<GeometryItem> geometryItems = moves.stream()
+                .flatMap(move -> move.getGeometryItems().stream()).collect(Collectors.toCollection(ArrayList::new));
         return geometryItems;
     }
 
+    /**
+     * @param i the last size, the {@link com.treasure.hunt.view.in_game.View} knew.
+     * @return the new moves, the {@link com.treasure.hunt.view.in_game.View} missed.
+     */
+    public synchronized List<Move> giveNewProducts(int i) {
+        List list = new ArrayList<>(moves.subList(i, moves.size()));
+        assert (moves.size() - i == list.size());
+        return list;
+    }
 }

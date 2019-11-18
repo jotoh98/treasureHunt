@@ -1,6 +1,5 @@
 package com.treasure.hunt.game.mods.insecurehints;
 
-import com.treasure.hunt.game.GameHistory;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import org.locationtech.jts.geom.Point;
@@ -16,9 +15,7 @@ public interface InsecureSearcher<T extends Hint> extends Searcher<T> {
      *
      * @param startPosition the position, the searcher starts on
      * @param insecurity    the probability, the {@link com.treasure.hunt.strategy.hint.Hint} of the {@link InsecureHider} is correct.
-     * @param gameHistory   the {@link com.treasure.hunt.game.GameManager}, the list of {@link com.treasure.hunt.strategy.geom.GeometryItem}
-     *                      will be dumped in.
      */
     // TODO not sure, whether the searcher may know this
-    void init(Point startPosition, double insecurity, GameHistory gameHistory);
+    void init(Point startPosition, double insecurity);
 }

@@ -1,12 +1,11 @@
 package com.treasure.hunt.game;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
-import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.Hint;
-import com.treasure.hunt.strategy.searcher.Moves;
+import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
-import com.treasure.hunt.util.JTSUtils;
+import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.Requires;
 import com.treasure.hunt.view.in_game.View;
 import lombok.Getter;
@@ -34,7 +33,7 @@ public class GameManager {
     @Getter
     private boolean finished = false;
     private Hint lastHint;
-    private Moves lastMoves;
+    private Movement lastMovement;
     private Point searcherPos;
     protected Point treasurePos;
     /**
@@ -46,7 +45,6 @@ public class GameManager {
         this.searcher = searcher;
         this.hider = hider;
         this.view = view;
-        init();
     }
 
     /**
@@ -65,19 +63,22 @@ public class GameManager {
             throw new IllegalStateException("Game is already finished");
         }
         if (firstStep) {
-            lastMoves = searcher.move();
+            lastMovement = searcher.move();
             firstStep = false;
         } else {
-            lastMoves = searcher.move(lastHint);
+            lastMovement = searcher.move(lastHint);
         }
-        gameHistory.dump(lastMoves);
-        searcherPos = lastMoves.getEndPoint().getObject();
+        searcherPos = lastMovement.getEndPoint().getObject();
         if (located()) {
             finished = true;
             return;
         }
-        lastHint = hider.move(lastMoves);
-        gameHistory.dump(lastHint);
+        lastHint = hider.move(lastMovement);
+        if (!checkConsistency()) {
+            throw new IllegalStateException("Game is no longer consistent!");
+        }
+        treasurePos = hider.getTreasureLocation();
+        gameHistory.dump(new Move(lastHint, lastMovement, treasurePos));
     }
 
     /**
@@ -105,13 +106,13 @@ public class GameManager {
     }
 
     /**
-     * @return whether the performed {@link Moves}' by the searcher and {@link Hint}'s from the hider were correct.
+     * @return whether the performed {@link Movement}' by the searcher and {@link Hint}'s from the hider were correct.
      */
     protected boolean checkConsistency() {
         // TODO implement
         // forbid wrong hints
-        // treasure location may not change
-        return true;
+        return (treasurePos.getX() == hider.getTreasureLocation().getX()) &&
+                (treasurePos.getY() == hider.getTreasureLocation().getY());
     }
 
     /**
@@ -119,7 +120,7 @@ public class GameManager {
      */
     protected boolean located() {
         Point lastPoint = null;
-        for (GeometryItem<Point> geometryItem : lastMoves.getPoints()) {
+        for (GeometryItem<Point> geometryItem : lastMovement.getPoints()) {
             Point point = geometryItem.getObject();
             if (lastPoint == null) {
                 lastPoint = point;
@@ -141,17 +142,19 @@ public class GameManager {
      * initialize searcher and hider.
      * initialize searcher and treasure positions.
      */
-    protected void init() {
+    public void init() {
         for (View view : view) {
             gameHistory.registerListener(view);
             view.init(gameHistory);
         }
 
         searcherPos = JTSUtils.getDefaultGeometryFactory().createPoint(new Coordinate(0, 0));
-        searcher.init(searcherPos, gameHistory);
+        searcher.init(searcherPos);
 
-        hider.init(gameHistory);
         treasurePos = hider.getTreasureLocation();
-        gameHistory.dumpTreasureLocation(new GeometryItem<>(treasurePos, GeometryType.TREASURE));
+    }
+
+    protected void outitialize() {
+        gameHistory.waitForListeners();
     }
 }

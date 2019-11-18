@@ -1,11 +1,11 @@
 package com.treasure.hunt.game;
 
 import com.treasure.hunt.strategy.hider.Hider;
-import com.treasure.hunt.strategy.hider.implementations.SpoilerHider;
-import com.treasure.hunt.strategy.hint.CircleHint;
+import com.treasure.hunt.strategy.hider.impl.SpoilerHider;
 import com.treasure.hunt.strategy.hint.Hint;
-import com.treasure.hunt.strategy.searcher.Moves;
-import com.treasure.hunt.strategy.searcher.implementations.NaiveSearcher;
+import com.treasure.hunt.strategy.hint.impl.CircleHint;
+import com.treasure.hunt.strategy.searcher.Movement;
+import com.treasure.hunt.strategy.searcher.impl.NaiveSearcher;
 import com.treasure.hunt.view.in_game.View;
 import com.treasure.hunt.view.in_game.implementatons.ConsoleOutputView;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GameManagerTest {
-
     private List<View> views = new ArrayList<>();
 
     @org.junit.jupiter.api.BeforeEach
@@ -35,10 +34,11 @@ class GameManagerTest {
      */
     @Test
     void spoiledGame() {
-        GameManager gameManager = new GameManager(new NaiveSearcher(), new SpoilerHider(), new ArrayList<>());
+        GameManager gameManager = new GameManager(new NaiveSearcher(), new SpoilerHider(), views);
         gameManager.init();
         gameManager.run(2);
         assertTrue(gameManager.isFinished());
+        gameManager.outitialize();
     }
 
     /**
@@ -54,7 +54,6 @@ class GameManagerTest {
         GameManager gameManager = new GameManager(new NaiveSearcher(), new Hider() {
 
             private GeometryFactory gf = new GeometryFactory();
-            private GameHistory gameHistory;
             private Point treasurePos = gf.createPoint(new Coordinate(1, 1));
 
             @Override
@@ -63,19 +62,14 @@ class GameManagerTest {
             }
 
             @Override
-            public void init(GameHistory gameHistory) {
-                this.gameHistory = gameHistory;
-            }
-
-            @Override
-            public Hint move(Moves moves) {
+            public Hint move(Movement moves) {
                 CircleHint hint = new CircleHint(gf.createPoint(new Coordinate(0, 2)), 0);
-                gameHistory.dump(hint);
                 return hint;
             }
         }, views);
         gameManager.init();
         gameManager.run(2);
         assertTrue(gameManager.isFinished());
+        gameManager.outitialize();
     }
 }
