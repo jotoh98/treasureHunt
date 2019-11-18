@@ -17,12 +17,13 @@ public class ReflectionUtils {
         Arrays.fill(interfaceGenerics, null);
 
         for (int i = 0; i < interfaceGenericTypes.length; i++) {
+
             try {
                 interfaceGenerics[i] = Class.forName(
                         ((Class) interfaceGenericTypes[i]).getName()
                 );
-            } catch (Exception e) {
-                // TODO logg
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
         }
 

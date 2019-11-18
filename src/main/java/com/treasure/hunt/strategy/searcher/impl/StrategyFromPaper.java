@@ -1,4 +1,4 @@
-package com.treasure.hunt.strategy.searcher.implementations;
+package com.treasure.hunt.strategy.searcher.impl;
 
 import com.treasure.hunt.strategy.hint.HalfplaneHint;
 import com.treasure.hunt.strategy.hint.HalfplaneHint.Direction;

@@ -590,7 +590,7 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
             try {
                 super.paint(g);
             } catch (Exception e) {
-                // TODO logg here
+                e.printStackTrace();
             }
         }
     }
@@ -634,7 +634,7 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
 
                 frame.setVisible(true);
             } catch (Exception ex) {
-                // TODO logg
+                ex.printStackTrace();
             }
         }
     }

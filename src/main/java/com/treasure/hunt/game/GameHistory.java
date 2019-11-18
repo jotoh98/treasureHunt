@@ -39,7 +39,7 @@ public class GameHistory {
         try {
             executorService.awaitTermination(3000, TimeUnit.NANOSECONDS);
         } catch (InterruptedException e) {
-            // TODO logg
+            e.printStackTrace();
         }
     }
 
