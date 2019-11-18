@@ -2,34 +2,42 @@ package com.treasure.hunt.strategy.hint;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Point;
 
 import java.util.List;
 
-@AllArgsConstructor
 public class HalfPlaneHint extends Hint {
 
     @Getter
-    Direction direction;    // when the line indicated by halfPlanePointOne and halfPlanePointTwo is not horizontal,
+    private Direction direction;    // when the line indicated by halfplanePointOne and halfplanePointTwo is not horizontal,
+    // right and left indicate where the target is (right indicates the target is in positive x-Direction
+    // in relationship to the line)
+    // when the line is horizontal, up signals the target is in positive y-Direction in relationship
+    // to the line (the up and down enumerators are only used when the line is horizontal)
+    // left and down respectively
 
     @Getter
     private Point center;
     @Getter
     private Point halfPlanePoint;
 
+    public HalfPlaneHint(Point center, Point halfPlanePoint, Direction direction) {
+        this.direction = direction;
+        this.center = center;
+        this.halfPlanePoint = halfPlanePoint;
+    }
+
+    public enum Direction {
+        right, left, up, down
+    }
+
     @Override
     public List<GeometryItem> getGeometryItems() {
         // TODO implement
         return null;
     }
-    // right and left indicate where the target is (right indicates the target is in positive x-Direction
-    // in relationship to the line)
-    // when the line is horizontal, up signals the target is in positive y-Direction in relationship
-    // to the line (the up and down enumerators are only used when the line is horizontal)
-    // left and down respectively
 
     public static HalfPlaneHint angular2correctHalfPlaneHint(AngleHint anglehint) {
 
@@ -61,10 +69,6 @@ public class HalfPlaneHint extends Hint {
         }
 
         return new HalfPlaneHint(P1, C, Direction.left);
-    }
-
-    public enum Direction {
-        right, left, up, down
     }
 
     public Point getLowerHintPoint() {
