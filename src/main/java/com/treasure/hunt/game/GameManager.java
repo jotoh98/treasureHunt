@@ -59,7 +59,6 @@ public class GameManager {
      * the next will be with.
      */
     public void step() {
-        System.out.println("GameManager.step()");
         if (finished) {
             throw new IllegalStateException("Game is already finished");
         }
@@ -72,9 +71,9 @@ public class GameManager {
         searcherPos = lastMovement.getEndPoint().getObject();
         if (located()) {
             finished = true;
-            return;
+        } else {
+            lastHint = hider.move(lastMovement);
         }
-        lastHint = hider.move(lastMovement);
         if (!checkConsistency()) {
             throw new IllegalStateException("Game is no longer consistent!");
         }
