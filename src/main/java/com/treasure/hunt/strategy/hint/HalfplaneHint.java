@@ -1,37 +1,33 @@
 package com.treasure.hunt.strategy.hint;
 
+import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import lombok.Getter;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Point;
 
+import java.util.List;
+
 public class HalfplaneHint extends Hint {
 
+    @Getter
+    private Point center;
+    @Getter
+    private Point halfplanePoint;
+
     public HalfplaneHint(Point P1, Point P2, Direction direction) {
-        super(P1);
-        Point halfplanePoint = P2;
+        super();
+        center = P1;
+        halfplanePoint = P2;
         this.direction = direction;
     }
-
-    public enum Direction {
-        right, left, up, down;
-    }
-
-    @Getter
-    Point halfplanePoint;
-    @Getter
-    Direction direction;    // when the line indicated by halfplanePointOne and halfplanePointTwo is not horizontal,
-    // right and left indicate where the target is (right indicates the target is in positive x-Direction
-    // in relationship to the line)
-    // when the line is horizontal, up signals the target is in positive y-Direction in relationship
-    // to the line (the up and down enumerators are only used when the line is horizontal)
-    // left and down respectively
 
     public static HalfplaneHint angular2correctHalfPlaneHint(AngleHint anglehint) {
 
 
         Point P1 = anglehint.getAnglePointLeft();
         Point P2 = anglehint.getAnglePointRight();
-        Point C = anglehint.getCenter();
+        Point C = anglehint.getCenterPoint();
 
         double yPointOne = P1.getY();
         double xPointOne = P1.getX();
@@ -58,6 +54,24 @@ public class HalfplaneHint extends Hint {
         }
 
         return new HalfplaneHint(P1, C, Direction.left);
+    }
+
+    @Override
+    public List<GeometryItem> getGeometryItems() {
+        // TODO implement
+        return null;
+    }
+
+    @Getter
+    Direction direction;    // when the line indicated by halfplanePointOne and halfplanePointTwo is not horizontal,
+    // right and left indicate where the target is (right indicates the target is in positive x-Direction
+    // in relationship to the line)
+    // when the line is horizontal, up signals the target is in positive y-Direction in relationship
+    // to the line (the up and down enumerators are only used when the line is horizontal)
+    // left and down respectively
+
+    public enum Direction {
+        right, left, up, down
     }
 
     public Point getLowerHintPoint() {

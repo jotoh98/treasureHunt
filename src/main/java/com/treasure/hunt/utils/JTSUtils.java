@@ -1,8 +1,6 @@
 package com.treasure.hunt.utils;
 
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.*;
 
 import javax.swing.*;
 
@@ -13,26 +11,27 @@ public class JTSUtils {
         return GEOMETRY_FACTORY;
     }
 
-    public static Point createPoint(double x, double y){
-        return getDefaultGeometryFactory().createPoint(new Coordinate(x,y));
+    public static Point createPoint(double x, double y) {
+        return getDefaultGeometryFactory().createPoint(new Coordinate(x, y));
     }
 
-    public static LineString createLineString(Point A, Point B){
+    public static LineString createLineString(Point A, Point B) {
         Coordinate[] coords = {A.getCoordinate(), B.getCoordinate()};
         return getDefaultGeometryFactory().createLineString(coords);
     }
 
     /**
-     * Tests whether line line intersects with the linesegment linesegment
-     * @param line
-     * @param linesegment
-     * @return
+     * Tests whether two {@link LineSegment} objects intersect.
+     *
+     * @param lineSegment1
+     * @param lineSegment2
+     * @return point of intersection, if the {@link LineSegment}'s intersect. null otherwise.
      */
-    public static Point lineLinesegmentIntersection(LineSegment line, LineSegment linesegment){
-        Point intersection = getDefaultGeometryFactory().createPoint(line.lineIntersection(linesegment));
-        LineString lineSegString = createLineString(getDefaultGeometryFactory().createPoint(linesegment.p0),
-                getDefaultGeometryFactory().createPoint(linesegment.p1));
-        if(lineSegString.contains(intersection)){
+    public static Point lineSegmentIntersection(LineSegment lineSegment1, LineSegment lineSegment2) {
+        Point intersection = getDefaultGeometryFactory().createPoint(lineSegment1.lineIntersection(lineSegment2));
+        LineString lineSegString = createLineString(getDefaultGeometryFactory().createPoint(lineSegment2.p0),
+                getDefaultGeometryFactory().createPoint(lineSegment2.p1));
+        if (lineSegString.contains(intersection)) {
             return intersection;
         }
         return null;
