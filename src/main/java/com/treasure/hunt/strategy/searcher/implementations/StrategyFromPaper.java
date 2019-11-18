@@ -60,25 +60,23 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         Point intersection_AB_hint = JTSUtils.lineLinesegmentIntersection(piHintLine, AB);
         Point intersection_CD_hint = JTSUtils.lineLinesegmentIntersection(piHintLine, CD);
 
-        Point []horizontalSplit = splitsRectangleHorizontally(A,B,C,D, piHint, intersection_AD_hint,
+        Point[] horizontalSplit = splitRectangleHorizontally(A, B, C, D, piHint, intersection_AD_hint,
                 intersection_BC_hint);
-        if(horizontalSplit != null)
-        {
+        if (horizontalSplit != null) {
             A = horizontalSplit[0];
             B = horizontalSplit[1];
             C = horizontalSplit[2];
             D = horizontalSplit[3];
-            return movesToCenterOfRectangle(A,B,C,D);
+            return movesToCenterOfRectangle(A, B, C, D);
         }
-        Point []verticalSplit = splitsRectangleVertically(A,B,C,D, piHint, intersection_AB_hint,
+        Point[] verticalSplit = splitRectangleVertically(A, B, C, D, piHint, intersection_AB_hint,
                 intersection_CD_hint);
-        if(verticalSplit != null)
-        {
+        if (verticalSplit != null) {
             A = verticalSplit[0];
             B = verticalSplit[1];
             C = verticalSplit[2];
             D = verticalSplit[3];
-            return movesToCenterOfRectangle(A,B,C,D);
+            return movesToCenterOfRectangle(A, B, C, D);
         }
         return badHintSubroutine(piHint);
     }
@@ -88,8 +86,8 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         return location;
     }
 
-    private Point[] splitsRectangleHorizontally(Point A, Point B, Point C, Point D, HalfplaneHint piHint,
-                                                Point intersection_AD_hint, Point intersection_BC_hint) {
+    private Point[] splitRectangleHorizontally(Point A, Point B, Point C, Point D, HalfplaneHint piHint,
+                                               Point intersection_AD_hint, Point intersection_BC_hint) {
         if (intersection_AD_hint == null || intersection_AD_hint == null) {
             return null;
         }
@@ -154,8 +152,8 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         return null;
     }
 
-    private Point[] splitsRectangleVertically(Point A, Point B, Point C, Point D, HalfplaneHint piHint,
-                                              Point intersection_AB_hint, Point intersection_CD_hint) {
+    private Point[] splitRectangleVertically(Point A, Point B, Point C, Point D, HalfplaneHint piHint,
+                                             Point intersection_AB_hint, Point intersection_CD_hint) {
         if (piHint.getDirection() == Direction.left) {
             if (intersection_AB_hint != null) {
                 if (intersection_AB_hint.distance(B) >= 1 && intersection_CD_hint.distance(C) >= 1) {
@@ -230,7 +228,6 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         C = JTSUtils.createPoint(startX - halfDiff, startY + halfDiff);
         D = JTSUtils.createPoint(startX - halfDiff, startY - halfDiff);
     }
-
 
     private Moves rectangleScan(Point A, Point B, Point C, Point D) {
         return null;
