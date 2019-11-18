@@ -143,7 +143,7 @@ public class MaxAreaAngularHintStrategy implements Hider<AngleHint> {
         }
 
         // now merge the 2 intersections, the AngleCenter and the Bounding cicle
-        // Todo find a way to get the orientation of the line and go from intersects[0] to intersects[1]
+        // due to ccw orientation, move from intersects[0] in ascending order on the boundingPoints to intersects[1]
         LineString ls = boundingCircle.getObject().getExteriorRing();
         Polygon hintedArea;
         List<Coordinate> buildingList = new ArrayList<>();
@@ -155,6 +155,7 @@ public class MaxAreaAngularHintStrategy implements Hider<AngleHint> {
         if (interSectionIndex[0] == interSectionIndex[1] &&
                 boundingPoints[interSectionIndex[0]].distance(intersects[0]) < boundingPoints[interSectionIndex[1]].distance(intersects[1])) {
             buildingList.add(intersects[1]);
+            assert intersects[0] != intersects[1]; //otherwise the hint would be useless (No area or whole plane)
 
         } else {  //otherwise there is at least one Point on the boundary
 
@@ -164,11 +165,13 @@ public class MaxAreaAngularHintStrategy implements Hider<AngleHint> {
             } else {
                 coordIdx = interSectionIndex[0] + 1;
             }
-            coord = (interSectionIndex[0] == boundingPoints.length - 1) ? boundingPoints[0] : boundingPoints[interSectionIndex[0]];
-            buildingList.add(coord);
 
             do {
                 buildingList.add(boundingPoints[coordIdx]);
+                // in case intersection is on an endPoint of the current BoundingSegment
+                if(buildingList.get(buildingList.size()-1) == buildingList.get(buildingList.size()-2)){
+                    buildingList.remove((buildingList.size()-1));
+                }
                 coordIdx++;
                 if (coordIdx == boundingPoints.length) {
                     coordIdx = 0;
