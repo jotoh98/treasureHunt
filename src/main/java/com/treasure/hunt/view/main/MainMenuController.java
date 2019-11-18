@@ -128,6 +128,7 @@ public class MainMenuController {
         errorLabel.setVisible(false);
         errorLabel.setForeground(Color.RED);
 
+        jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jFrame.setContentPane(rootPanel);
         jFrame.setResizable(false);
         jFrame.pack();
