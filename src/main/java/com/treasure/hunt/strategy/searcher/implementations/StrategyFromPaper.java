@@ -12,6 +12,7 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.math.Vector2D;
 
+import static com.treasure.hunt.strategy.hint.HalfplaneHint.Direction.*;
 import static com.treasure.hunt.strategy.hint.HalfplaneHint.angular2correctHalfPlaneHint;
 
 public class StrategyFromPaper implements Searcher<AngleHint> {
@@ -97,7 +98,7 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
             return null;
         }
 
-        if (piHint.getDirection() == Direction.up) {
+        if (piHint.getDirection() == up) {
             if ((intersection_AD_hint.getY() - D.getY()) >= 1) {
                 Point newD = intersection_AD_hint;
                 Point newC = intersection_BC_hint;
@@ -105,7 +106,7 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
             }
         }
 
-        if (piHint.getDirection() == Direction.down) {
+        if (piHint.getDirection() == down) {
             if ((A.getY() - intersection_AD_hint.getY()) >= 1) {
                 Point newA = intersection_AD_hint;
                 Point newB = intersection_BC_hint;
@@ -142,42 +143,38 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
 
     private Point[] splitRectangleVertically(Point A, Point B, Point C, Point D, HalfplaneHint piHint,
                                              Point intersection_AB_hint, Point intersection_CD_hint) {
-        if (piHint.getDirection() == Direction.left) {
-            if (intersection_AB_hint != null) {
-                if (intersection_AB_hint.distance(B) >= 1 && intersection_CD_hint.distance(C) >= 1) {
-                    // checks if y is bigger or equal to 0
-                    // determine which intersection-point has to be used to calculate the rectangle-points:
-                    if (intersection_AB_hint.distance(B) >= intersection_CD_hint.distance(C)) {
-                        Point newB = JTSUtils.createPoint(intersection_CD_hint.getX(), B.getY());
-                        Point newC = intersection_CD_hint;
-                        return new Point[]{A, newB, newC, D};
-                    } else {
-                        // equivalent
-                        Point newC = JTSUtils.createPoint(intersection_AB_hint.getX(), C.getY());
-                        Point newB = intersection_AB_hint;
-                        return new Point[]{A, newB, newC, D};
-                    }
-                }
-            }
+        // checks if the hint is good (i.e. if the hint divides one side of the rectangles in into two parts such that
+        // the smaller one is bigger or equal to 1)
+        if (intersection_AB_hint == null || intersection_CD_hint == null
+                || (intersection_AB_hint.distance(A) < 1 || intersection_AB_hint.distance(B) < 1
+                || intersection_CD_hint.distance(C) < 1 || intersection_CD_hint.distance(D) < 1)) {
+            return null;
         }
 
-        if (piHint.getDirection() == Direction.right) {
-            if (intersection_AB_hint != null) {
-                if (intersection_AB_hint.distance(B) >= 1 && intersection_CD_hint.distance(C) >= 1) {
-                    // checks if y is bigger or equal to 0
-                    // determine which intersection-point has to be used to calculate the rectangle-points:
-                    if (intersection_AB_hint.distance(A) >= intersection_CD_hint.distance(D)) {
-                        Point newA = JTSUtils.createPoint(intersection_CD_hint.getX(), A.getY());
-                        Point newD = intersection_CD_hint;
-                        return new Point[]{newA, B, C, newD};
-                    } else {
-                        // equivalent
-                        Point newD = JTSUtils.createPoint(intersection_AB_hint.getX(), D.getY());
-                        Point newA = intersection_AB_hint;
-                        return new Point[]{newA, B, C, newD};
-                    }
+        if (piHint.getDirection() == left) {
+                // determine which intersection-point has to be used to calculate the rectangle-points:
+                if (intersection_AB_hint.distance(B) >= intersection_CD_hint.distance(C)) {
+                    Point newB = JTSUtils.createPoint(intersection_CD_hint.getX(), B.getY());
+                    Point newC = intersection_CD_hint;
+                    return new Point[]{A, newB, newC, D};
+                } else {
+                    Point newC = JTSUtils.createPoint(intersection_AB_hint.getX(), C.getY());
+                    Point newB = intersection_AB_hint;
+                    return new Point[]{A, newB, newC, D};
                 }
-            }
+        }
+
+        if (piHint.getDirection() == right) {
+                // determine which intersection-point has to be used to calculate the rectangle-points:
+                if (intersection_AB_hint.distance(A) >= intersection_CD_hint.distance(D)) {
+                    Point newA = JTSUtils.createPoint(intersection_CD_hint.getX(), A.getY());
+                    Point newD = intersection_CD_hint;
+                    return new Point[]{newA, B, C, newD};
+                } else {
+                    Point newD = JTSUtils.createPoint(intersection_AB_hint.getX(), D.getY());
+                    Point newA = intersection_AB_hint;
+                    return new Point[]{newA, B, C, newD};
+                }
         }
         return null;
     }
@@ -198,21 +195,20 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
 
     // location has to be set accordingly (so that the player is on the hint line)
     private Point twoStepsOrthogonal(HalfplaneHint piHint, Point cur_pos) {
-        if (piHint.getDirection() == Direction.up) {
-            return JTSUtils.createPoint(cur_pos.getX(), cur_pos.getY() + 2);
-        }
-        if (piHint.getDirection() == Direction.down) {
-            return JTSUtils.createPoint(cur_pos.getX(), cur_pos.getY() - 2);
-        }
         Vector2D hintVector = new Vector2D(piHint.getLowerHintPoint().getCoordinate(),
                 piHint.getUpperHintPoint().getCoordinate());
 
         hintVector = hintVector.divide(hintVector.length() / 2);
-        if (piHint.getDirection() == Direction.left) {
-            hintVector = hintVector.rotateByQuarterCircle(1);
-        }
-        if (piHint.getDirection() == Direction.right) {
-            hintVector = hintVector.rotateByQuarterCircle(3);
+
+        switch(piHint.getDirection()){
+            case up:
+                return JTSUtils.createPoint(cur_pos.getX(), cur_pos.getY() + 2);
+            case down:
+                return JTSUtils.createPoint(cur_pos.getX(), cur_pos.getY() - 2);
+            case left:
+                hintVector = hintVector.rotateByQuarterCircle(1);
+            case right:
+                hintVector = hintVector.rotateByQuarterCircle(3);
         }
         return JTSUtils.createPoint(cur_pos.getX() + hintVector.getX(), cur_pos.getY() + hintVector.getY());
     }
