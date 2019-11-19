@@ -152,29 +152,29 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         }
 
         if (piHint.getDirection() == left) {
-                // determine which intersection-point has to be used to calculate the rectangle-points:
-                if (intersection_AB_hint.distance(B) >= intersection_CD_hint.distance(C)) {
-                    Point newB = JTSUtils.createPoint(intersection_CD_hint.getX(), B.getY());
-                    Point newC = intersection_CD_hint;
-                    return new Point[]{A, newB, newC, D};
-                } else {
-                    Point newC = JTSUtils.createPoint(intersection_AB_hint.getX(), C.getY());
-                    Point newB = intersection_AB_hint;
-                    return new Point[]{A, newB, newC, D};
-                }
+            // determine which intersection-point has to be used to calculate the rectangle-points:
+            if (intersection_AB_hint.distance(B) >= intersection_CD_hint.distance(C)) {
+                Point newB = JTSUtils.createPoint(intersection_CD_hint.getX(), B.getY());
+                Point newC = intersection_CD_hint;
+                return new Point[]{A, newB, newC, D};
+            } else {
+                Point newC = JTSUtils.createPoint(intersection_AB_hint.getX(), C.getY());
+                Point newB = intersection_AB_hint;
+                return new Point[]{A, newB, newC, D};
+            }
         }
 
         if (piHint.getDirection() == right) {
-                // determine which intersection-point has to be used to calculate the rectangle-points:
-                if (intersection_AB_hint.distance(A) >= intersection_CD_hint.distance(D)) {
-                    Point newA = JTSUtils.createPoint(intersection_CD_hint.getX(), A.getY());
-                    Point newD = intersection_CD_hint;
-                    return new Point[]{newA, B, C, newD};
-                } else {
-                    Point newD = JTSUtils.createPoint(intersection_AB_hint.getX(), D.getY());
-                    Point newA = intersection_AB_hint;
-                    return new Point[]{newA, B, C, newD};
-                }
+            // determine which intersection-point has to be used to calculate the rectangle-points:
+            if (intersection_AB_hint.distance(A) >= intersection_CD_hint.distance(D)) {
+                Point newA = JTSUtils.createPoint(intersection_CD_hint.getX(), A.getY());
+                Point newD = intersection_CD_hint;
+                return new Point[]{newA, B, C, newD};
+            } else {
+                Point newD = JTSUtils.createPoint(intersection_AB_hint.getX(), D.getY());
+                Point newA = intersection_AB_hint;
+                return new Point[]{newA, B, C, newD};
+            }
         }
         return null;
     }
@@ -200,7 +200,7 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
 
         hintVector = hintVector.divide(hintVector.length() / 2);
 
-        switch(piHint.getDirection()){
+        switch (piHint.getDirection()) {
             case up:
                 return JTSUtils.createPoint(cur_pos.getX(), cur_pos.getY() + 2);
             case down:
@@ -213,10 +213,14 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         return JTSUtils.createPoint(cur_pos.getX() + hintVector.getX(), cur_pos.getY() + hintVector.getY());
     }
 
-    private Moves movesToCenterOfRectangle(Point P1, Point P2, Point P3, Point P4) {
+    private Point centerOfRectangle(Point P1, Point P2, Point P3, Point P4) {
         LineString line13 = JTSUtils.createLineString(P1, P3);
+        return line13.getCentroid();
+    }
+
+    private Moves movesToCenterOfRectangle(Point P1, Point P2, Point P3, Point P4) {
         Moves ret = new Moves();
-        ret.addWayPoint(line13.getCentroid());
+        ret.addWayPoint(centerOfRectangle(P1, P2, P3, P4));
         return ret;
     }
 
@@ -227,7 +231,9 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         Point oldC = C;
         Point oldD = D;
         setRectToPhase();
-        return rectangleScan(oldA, oldB, oldC, oldD); //TODO maybe go to the middle of the new rectangle
+        Moves ret = rectangleScan(oldA, oldB, oldC, oldD);
+        ret.addWayPoint(centerOfRectangle(A, B, C, D));
+        return ret;
     }
 
     private void setRectToPhase() {
