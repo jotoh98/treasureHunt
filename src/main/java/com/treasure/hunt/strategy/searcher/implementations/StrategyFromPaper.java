@@ -10,6 +10,7 @@ import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.math.Vector2D;
 
 import static com.treasure.hunt.strategy.hint.HalfplaneHint.angular2correctHalfPlaneHint;
 
@@ -21,6 +22,8 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
     Point B;
     Point C;
     Point D;
+    HalfplaneHint lastBadHint; //only used when last hint was bad
+    boolean lastHintWasBad = false;
 
     @Override
     public void init(Point startPosition, GameHistory gameHistory) {
@@ -45,6 +48,8 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         //now analyse the hint:
         HalfplaneHint piHint;
         piHint = angular2correctHalfPlaneHint(hint);
+        if (lastHintWasBad)
+            return twoHintsSubroutine(piHint);
 
         LineSegment AB = new LineSegment(A.getCoordinate(), B.getCoordinate());
         LineSegment BC = new LineSegment(B.getCoordinate(), C.getCoordinate());
@@ -108,19 +113,7 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
             }
         }
 
-        Point lowerHintPoint;
-        Point upperHintPoint;
-
-        if (piHint.getCenter().getY() < piHint.getHalfplanePoint().getY()) {
-            lowerHintPoint = piHint.getCenter();
-            upperHintPoint = piHint.getHalfplanePoint();
-        } else {
-            lowerHintPoint = piHint.getHalfplanePoint();
-            upperHintPoint = piHint.getCenter();
-        }
-
-        if (piHint.pointsUpwards())
-        {
+        if (piHint.pointsUpwards()) {
             if (intersection_AD_hint.distance(D) >= 1 && intersection_BC_hint.distance(C) >= 1) {
                 if (intersection_AD_hint.distance(D) >= intersection_BC_hint.distance(C)) {
                     Point newD = JTSUtils.createPoint(D.getX(), intersection_BC_hint.getY());
@@ -133,8 +126,7 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
                 }
             }
         }
-        if (piHint.pointsDownwards())
-        {
+        if (piHint.pointsDownwards()) {
             if (intersection_AD_hint.distance(A) >= intersection_BC_hint.distance(B)) {
                 Point newA = JTSUtils.createPoint(A.getX(), intersection_BC_hint.getY());
                 Point newB = intersection_BC_hint;
@@ -191,23 +183,38 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
     }
 
     private Moves badHintSubroutine(HalfplaneHint hint) {
+        Point direction = twoStepsOrthogonal(hint, location);
+        Moves ret = new Moves();
+        ret.addWayPoint(direction);
+        lastHintWasBad = true;
+        lastBadHint = hint;
+        return ret;
+    }
+
+    private Moves twoHintsSubroutine(HalfplaneHint curHint) {
+
         return null;
     }
 
-    private Moves twoHintsSubroutine(HalfplaneHint firstHint, HalfplaneHint secondHint) {
-        return null;
-    }
-
-    private Point twoStepsOrthogonal(HalfplaneHint piHint) {
+    // location has to be set accordingly (so that the player is on the hint line)
+    private Point twoStepsOrthogonal(HalfplaneHint piHint, Point cur_pos) {
         if (piHint.getDirection() == Direction.up) {
-            return JTSUtils.createPoint(location.getX(), location.getY() + 2);
+            return JTSUtils.createPoint(cur_pos.getX(), cur_pos.getY() + 2);
         }
         if (piHint.getDirection() == Direction.down) {
-            return JTSUtils.createPoint(location.getX(), location.getY() - 2);
+            return JTSUtils.createPoint(cur_pos.getX(), cur_pos.getY() - 2);
         }
+        Vector2D hintVector = new Vector2D(piHint.getLowerHintPoint().getCoordinate(),
+                piHint.getUpperHintPoint().getCoordinate());
 
-
-        return null;
+        hintVector = hintVector.divide(hintVector.length() / 2);
+        if (piHint.getDirection() == Direction.left) {
+            hintVector = hintVector.rotateByQuarterCircle(1);
+        }
+        if (piHint.getDirection() == Direction.right) {
+            hintVector = hintVector.rotateByQuarterCircle(3);
+        }
+        return JTSUtils.createPoint(cur_pos.getX() + hintVector.getX(), cur_pos.getY() + hintVector.getY());
     }
 
     private Moves movesToCenterOfRectangle(Point P1, Point P2, Point P3, Point P4) {
@@ -237,10 +244,10 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         D = JTSUtils.createPoint(startX - halfDiff, startY - halfDiff);
     }
 
-    private Moves rectangleScan(Point A, Point B, Point C, Point D){
+    private Moves rectangleScan(Point A, Point B, Point C, Point D) {
         Moves moves = new Moves();
 
-        int k = (int)A.distance(B);
+        int k = (int) A.distance(B);
         Point[] a = new Point[k];
         Point[] b = new Point[k];
 
@@ -248,35 +255,31 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
             double xDist = B.getX() - A.getX();
             double yDist = B.getY() - A.getY();
             for (int i = 0; i <= k; i++) {
-                a[i] = JTSUtils.createPoint(A.getX() + xDist * ((double)i / k), B.getX() + yDist * ((double)i / k));
+                a[i] = JTSUtils.createPoint(A.getX() + xDist * ((double) i / k), B.getX() + yDist * ((double) i / k));
             }
         }
         { //create b_i on line segment DC
             double xDist = D.getX() - C.getX();
             double yDist = D.getY() - C.getY();
             for (int i = 0; i <= k; i++) {
-                b[i] = JTSUtils.createPoint(D.getX() + xDist * ((double)i / k), C.getX() + yDist * ((double)i / k));
+                b[i] = JTSUtils.createPoint(D.getX() + xDist * ((double) i / k), C.getX() + yDist * ((double) i / k));
             }
         }
 
         if (k % 2 == 1) //code like in paper
         {
-            for (int i = 0; i <= k-1; k+=2)
-            {
+            for (int i = 0; i <= k - 1; k += 2) {
                 moves.addWayPoint(a[i]);
                 moves.addWayPoint(b[i]);
-                moves.addWayPoint(b[i+1]);
-                moves.addWayPoint(a[i+1]);
+                moves.addWayPoint(b[i + 1]);
+                moves.addWayPoint(a[i + 1]);
             }
-        }
-        else
-        {
-            for (int i = 0; i <= k-2; k+=2)
-            {
+        } else {
+            for (int i = 0; i <= k - 2; k += 2) {
                 moves.addWayPoint(a[i]);
                 moves.addWayPoint(b[i]);
-                moves.addWayPoint(b[i+1]);
-                moves.addWayPoint(a[i+1]);
+                moves.addWayPoint(b[i + 1]);
+                moves.addWayPoint(a[i + 1]);
             }
             moves.addWayPoint(a[k]);
             moves.addWayPoint(b[k]);
