@@ -133,7 +133,6 @@ public class MainMenuController {
         // Magically, only this colors errorScrollPane, when no text's there.
         errorScrollPane.getViewport().setBackground(new Color(0x35373A));
         // Hide scrollbars
-        //errorScrollPane.setVerticalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         errorScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);

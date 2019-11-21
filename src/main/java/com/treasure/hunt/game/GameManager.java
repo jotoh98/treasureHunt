@@ -1,6 +1,7 @@
 package com.treasure.hunt.game;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.Movement;
@@ -13,6 +14,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Point;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -69,8 +71,9 @@ public class GameManager {
             lastMovement = searcher.move(lastHint);
         }
         searcherPos = lastMovement.getEndPoint().getObject();
-        if (located()) {
-            finished = true;
+        if (located(lastMovement.getPoints())) {
+            finish();
+            return;
         } else {
             lastHint = hider.move(lastMovement);
         }
@@ -78,6 +81,10 @@ public class GameManager {
             throw new IllegalStateException("Game is no longer consistent!");
         }
         gameHistory.dump(new Move(lastHint, lastMovement, treasurePos));
+        System.out.println("" +
+                "treasurePos" + treasurePos +
+                "searcherPos: " + searcherPos +
+                "");
     }
 
     /**
@@ -116,27 +123,31 @@ public class GameManager {
     /**
      * @return whether the searcher located the treasure successfully.
      */
-    protected boolean located() {
-        Point lastPoint = null;
-        for (GeometryItem<Point> geometryItem : lastMovement.getPoints()) {
-            Point point = geometryItem.getObject();
-            if (lastPoint == null) {
-                lastPoint = point;
-            } else {
-                // Check the gap of each move-segment and treasurePos
-                LineSegment lineSegment = new LineSegment(new Coordinate(lastPoint.getX(), lastPoint.getY()),
-                        new Coordinate(point.getX(), point.getY()));
-                // Usage of distancePerpendicular is completely incorrect here, since the line will be infinite
-                if (lineSegment.distance(new Coordinate(treasurePos.getX(), treasurePos.getY())) <= 1) {
-                    // distance to treasure is <= 1
-                    // searcher found the treasure
-                    finished = true;
+    protected boolean located(List<GeometryItem<Point>> geometryItemsList) {
+        assert geometryItemsList.size() > 0;
+
+        // Searcher does not move.
+        if (geometryItemsList.size() == 1) {
+            return geometryItemsList.get(0).getObject().distance(treasurePos) <= 1;
+        } else {
+
+            Point lastPoint = null;
+            for (GeometryItem<Point> geometryItem : geometryItemsList) {
+                Point point = geometryItem.getObject();
+                if (lastPoint == null) {
+                    lastPoint = point;
+                } else {
+                    // Check the gap of each move-segment and treasurePos
+                    LineSegment lineSegment = new LineSegment(new Coordinate(lastPoint.getX(), lastPoint.getY()),
+                            new Coordinate(point.getX(), point.getY()));
+                    // Usage of distancePerpendicular is completely incorrect here, since the line will be infinite
+                    if (lineSegment.distance(new Coordinate(treasurePos.getX(), treasurePos.getY())) <= 1) {
+                        return true;
+                    }
                 }
             }
         }
-        assert (finished ||
-                ((searcherPos.getX() != treasurePos.getX()) && (searcherPos.getY() != treasurePos.getY())));
-        return finished;
+        return false;
     }
 
     /**
@@ -157,5 +168,16 @@ public class GameManager {
         gameHistory.dump(
                 new Move(null, null, treasurePos)
         );
+
+        // Check, whether treasure spawns in range of searcher
+        List<GeometryItem<Point>> act = new ArrayList<>();
+        act.add(new GeometryItem<>(searcherPos, GeometryType.WAY_POINT));
+        if (located(act)) {
+            finish();
+        }
+    }
+
+    private void finish() {
+        finished = true;
     }
 }

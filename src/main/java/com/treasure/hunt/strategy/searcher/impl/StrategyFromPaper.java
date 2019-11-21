@@ -199,8 +199,7 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
 
     private Movement movesToCenterOfRectangle(Point P1, Point P2, Point P3, Point P4) {
         LineString line13 = JTSUtils.createLineString(P1, P3);
-        Movement ret = new Movement();
-        ret.addWayPoint(line13.getCentroid());
+        Movement ret = new Movement(line13.getCentroid());
         return ret;
     }
 
@@ -225,7 +224,7 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
     }
 
     private Movement rectangleScan(Point A, Point B, Point C, Point D) {
-        Movement moves = new Movement();
+        Movement movements = new Movement();
 
         int k = (int) A.distance(B);
         Point[] a = new Point[k];
@@ -249,22 +248,22 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         if (k % 2 == 1) //code like in paper
         {
             for (int i = 0; i <= k - 1; k += 2) {
-                moves.addWayPoint(a[i]);
-                moves.addWayPoint(b[i]);
-                moves.addWayPoint(b[i + 1]);
-                moves.addWayPoint(a[i + 1]);
+                movements.addWayPoint(a[i]);
+                movements.addWayPoint(b[i]);
+                movements.addWayPoint(b[i + 1]);
+                movements.addWayPoint(a[i + 1]);
             }
         } else {
             for (int i = 0; i <= k - 2; k += 2) {
-                moves.addWayPoint(a[i]);
-                moves.addWayPoint(b[i]);
-                moves.addWayPoint(b[i + 1]);
-                moves.addWayPoint(a[i + 1]);
+                movements.addWayPoint(a[i]);
+                movements.addWayPoint(b[i]);
+                movements.addWayPoint(b[i + 1]);
+                movements.addWayPoint(a[i + 1]);
             }
-            moves.addWayPoint(a[k]);
-            moves.addWayPoint(b[k]);
+            movements.addWayPoint(a[k]);
+            movements.addWayPoint(b[k]);
             //moves.addWayPoint(a); // go to a
         }
-        return moves;
+        return movements;
     }
 }

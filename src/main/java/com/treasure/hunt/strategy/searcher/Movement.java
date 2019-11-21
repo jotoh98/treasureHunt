@@ -15,10 +15,24 @@ public class Movement {
     @Getter
     protected List<GeometryItem> additionalGeometryItems = new ArrayList<>();
 
+    public Movement() {
+    }
+
+    public Movement(Point point) {
+        this.points.add(new GeometryItem<>(point, GeometryType.WAY_POINT));
+    }
+
+    public Movement(List<GeometryItem<Point>> points) {
+        this.points.addAll(points);
+    }
+
     /**
      * @return the last end-position of the moves-sequence.
      */
     public GeometryItem<Point> getEndPoint() {
+        if (points.size() == 0) {
+            throw new IllegalStateException("Movement has size of 0.");
+        }
         return points.get(points.size() - 1);
     }
 

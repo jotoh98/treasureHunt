@@ -18,8 +18,7 @@ public class UserControlledAngleHintSearcher implements HideAndSeekSearcher<Hint
     public Movement move() {
         Point moveTo = JTSUtils.promptForPoint("Please provide a initial move location", "");
         currentPosition = moveTo;
-        Movement movement = new Movement();
-        movement.addWayPoint(currentPosition);
+        Movement movement = new Movement(currentPosition);
         movement.addWayPoint(moveTo);
         return movement;
     }
@@ -28,8 +27,7 @@ public class UserControlledAngleHintSearcher implements HideAndSeekSearcher<Hint
     public Movement move(Hint hint) {
         Point moveTo = JTSUtils.promptForPoint("Please provide a move location", "Hint is: " + hint);
         currentPosition = moveTo;
-        Movement movement = new Movement();
-        movement.addWayPoint(currentPosition);
+        Movement movement = new Movement(currentPosition);
         movement.addWayPoint(moveTo);
         return movement;
     }
