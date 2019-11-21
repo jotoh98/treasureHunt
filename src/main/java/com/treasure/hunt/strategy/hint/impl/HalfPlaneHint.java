@@ -27,16 +27,7 @@ public class HalfPlaneHint extends AngleHint {
         this.halfPlanePoint = halfPlanePoint;
     }
 
-    public enum Direction {
-        right, left, up, down
-    }
-
-    @Override
-    public List<GeometryItem> getGeometryItems() {
-        // TODO implement
-        return null;
-    }
-
+    // TODO is this necessary ?
     public static HalfPlaneHint angular2correctHalfPlaneHint(AngleHint anglehint) {
 
         Point P1 = anglehint.getAnglePointLeft();
@@ -69,7 +60,14 @@ public class HalfPlaneHint extends AngleHint {
         return new HalfPlaneHint(P1, C, Direction.left);
     }
 
-    public Point getLowerHintPoint() {
+    @Override
+    public List<GeometryItem> getGeometryItems() {
+        // TODO implement
+        return null;
+    }
+
+    // TODO could be simplified
+    private Point getLowerHintPoint() {
         if (center.getY() < halfPlanePoint.getY()) {
             return center;
         } else {
@@ -77,12 +75,18 @@ public class HalfPlaneHint extends AngleHint {
         }
     }
 
-    public Point getUpperHintPoint() {
+    // TODO could be simplified
+    private Point getUpperHintPoint() {
         if (center.getY() < halfPlanePoint.getY()) {
             return halfPlanePoint;
         } else {
             return center;
         }
+    }
+
+    // TODO is this necessary ?
+    public enum Direction {
+        right, left, up, down
     }
 
     public boolean pointsUpwards() {

@@ -38,7 +38,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         }
         //now analyse the hint:
         HalfPlaneHint piHint;
-        piHint = angular2correctHalfPlaneHint(hint);
+        piHint = angular2correctHalfPlaneHint(hint); // TODO is this necessary ?
 
         LineSegment AB = new LineSegment(A.getCoordinate(), B.getCoordinate());
         LineSegment BC = new LineSegment(B.getCoordinate(), C.getCoordinate());
@@ -48,11 +48,11 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         LineSegment piHintLine = new LineSegment(piHint.getCenter().getCoordinate(),
                 piHint.getHalfPlanePoint().getCoordinate());
 
-        Point intersection_AD_hint = JTSUtils.lineSegmentIntersection(piHintLine, AD);
-        Point intersection_BC_hint = JTSUtils.lineSegmentIntersection(piHintLine, BC);
+        Point intersection_AD_hint = JTSUtils.lineLineSegmentIntersection(piHintLine, AD);
+        Point intersection_BC_hint = JTSUtils.lineLineSegmentIntersection(piHintLine, BC);
 
-        Point intersection_AB_hint = JTSUtils.lineSegmentIntersection(piHintLine, AB);
-        Point intersection_CD_hint = JTSUtils.lineSegmentIntersection(piHintLine, CD);
+        Point intersection_AB_hint = JTSUtils.lineLineSegmentIntersection(piHintLine, AB);
+        Point intersection_CD_hint = JTSUtils.lineLineSegmentIntersection(piHintLine, CD);
 
         Point[] horizontalSplit = splitRectangleHorizontally(A, B, C, D, piHint, intersection_AD_hint,
                 intersection_BC_hint);
