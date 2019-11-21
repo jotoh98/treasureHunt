@@ -590,8 +590,7 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
             try {
                 super.paint(g);
             } catch (Exception e) {
-//				System.out.println(e);
-//				System.out.println(e.getStackTrace()[0]);
+                e.printStackTrace();
             }
         }
     }

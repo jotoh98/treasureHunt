@@ -2,6 +2,7 @@ package com.treasure.hunt.view.main;
 
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.strategy.hider.Hider;
+import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.ReflectionUtils;
 import com.treasure.hunt.utils.Requires;
@@ -25,7 +26,8 @@ public class MainMenuController {
     private JPanel selectStrategyContainer = new JPanel();
     private JPanel selectContextContainer = new JPanel();
     private JButton playButton = new JButton("Play");
-    private JLabel errorLabel = new JLabel();
+    private JTextArea errorLabel = new JTextArea();
+    private JScrollPane errorScrollPane = new JScrollPane(errorLabel);
     private DefaultListModel<Class> hiderList = new DefaultListModel<>();
     private final JList<Class> hiderListView = new JList<>(hiderList);
     private DefaultListModel<Class> gameManagerList = new DefaultListModel<>();
@@ -46,12 +48,12 @@ public class MainMenuController {
     }
 
     private void setStrategyListsLAF() {
-        searcherListView.setCellRenderer(getStrategiesCellListRenderer(hiderListView));
+        searcherListView.setCellRenderer(getSearcherCellListRenderer(hiderListView));
         ClassListMouseListener searcherListListener = new ClassListMouseListener(searcherListView, Arrays.asList(hiderListView, gameManagerListView));
         searcherListView.addMouseListener(searcherListListener);
         searcherListView.addMouseMotionListener(searcherListListener);
 
-        hiderListView.setCellRenderer(getStrategiesCellListRenderer(searcherListView));
+        hiderListView.setCellRenderer(getHiderCellListRenderer(searcherListView));
         ClassListMouseListener hiderListListener = new ClassListMouseListener(hiderListView, Arrays.asList(searcherListView, gameManagerListView));
         hiderListView.addMouseListener(hiderListListener);
         hiderListView.addMouseMotionListener(hiderListListener);
@@ -60,8 +62,8 @@ public class MainMenuController {
     }
 
     private void fillLists() {
-        Reflections searcherReflections = new Reflections("com.treasure.hunt.strategy.searcher.implementations");
-        Reflections hiderReflections = new Reflections("com.treasure.hunt.strategy.hider.implementations");
+        Reflections searcherReflections = new Reflections("com.treasure.hunt.strategy.searcher.impl");
+        Reflections hiderReflections = new Reflections("com.treasure.hunt.strategy.hider.impl");
         Reflections reflections = new Reflections("com.treasure.hunt.game");
 
         Set<Class<? extends Searcher>> allSearchers = searcherReflections.getSubTypesOf(Searcher.class);
@@ -78,6 +80,9 @@ public class MainMenuController {
         gameManagerClasses.forEach(aClass -> gameManagerList.addElement(aClass));
     }
 
+    /**
+     * This is executed by clicking the "Play"-button in the MainMenu
+     */
     private void startGame() {
         Class<? extends Searcher> selectedSearcherClass = searcherListView.getSelectedValue();
         Class<? extends Hider> selectedHiderClass = hiderListView.getSelectedValue();
@@ -123,16 +128,30 @@ public class MainMenuController {
 
         playButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // Get rid of borders
+        errorScrollPane.setBorder(BorderFactory.createEmptyBorder());
+        // Magically, only this colors errorScrollPane, when no text's there.
+        errorScrollPane.getViewport().setBackground(new Color(0x35373A));
+        // Hide scrollbars
+        errorScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
         errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         errorLabel.setVisible(false);
+        errorLabel.setOpaque(false);
         errorLabel.setForeground(Color.RED);
+        // some copy paste,
+        // preventing the errorLabel to get out of sight
+        errorLabel.setWrapStyleWord(true);
+        errorLabel.setLineWrap(true);
+        errorLabel.setEditable(false);
+        errorLabel.setFocusable(false);
+        //
 
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jFrame.setContentPane(rootPanel);
         jFrame.setResizable(false);
         jFrame.pack();
         jFrame.setVisible(true);
-        jFrame.setSize(new Dimension(900, 400));
 
     }
 
@@ -141,8 +160,14 @@ public class MainMenuController {
         root.setBackground(new Color(46, 48, 50));
         root.add(selectStrategyContainer);
         root.add(selectContextContainer);
+        root.setPreferredSize(new Dimension(900, 400));
     }
 
+    /**
+     * This initializes the different lists of hider, searcher, gameManagers.
+     *
+     * @param container The container, getting the different "lists"
+     */
     private void initStrategyContainer(JPanel container) {
         container.setAlignmentY(Component.TOP_ALIGNMENT);
         container.setLayout(new BoxLayout(selectStrategyContainer, BoxLayout.X_AXIS));
@@ -158,6 +183,10 @@ public class MainMenuController {
         }
     }
 
+    /**
+     * This initializes the container on the right,
+     * containing the "Play"-Button and the errorLabel.
+     */
     private void initSelectContextContainer() {
         selectContextContainer.setAlignmentY(Component.TOP_ALIGNMENT);
         selectContextContainer.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
@@ -165,17 +194,28 @@ public class MainMenuController {
         selectContextContainer.setLayout(new BoxLayout(selectContextContainer, BoxLayout.Y_AXIS));
         selectContextContainer.setBackground(new Color(0x35373A));
         selectContextContainer.add(playButton);
-        selectContextContainer.add(errorLabel);
+        selectContextContainer.add(errorScrollPane);
     }
 
-    private ClassListCellRenderer getStrategiesCellListRenderer(JList<Class> opponentListView) {
+    private ClassListCellRenderer getHiderCellListRenderer(JList<Class> opponentListView) {
+        return new ClassListCellRenderer(value -> {
+            Class selectedValue = opponentListView.getSelectedValue();
+            if (selectedValue == null) {
+                return true;
+            }
+            Class<Hint> otherGeneric = ReflectionUtils.interfaceGenericsClass(selectedValue);
+            return otherGeneric.isAssignableFrom(ReflectionUtils.interfaceGenericsClass(value));
+        }, ReflectionUtils::genericName);
+    }
+
+    private ClassListCellRenderer getSearcherCellListRenderer(JList<Class> opponentListView) {
         return new ClassListCellRenderer(value -> {
             Class selectedValue = opponentListView.getSelectedValue();
             if (selectedValue == null) {
                 return true;
             }
             Class otherGeneric = ReflectionUtils.interfaceGenericsClass(selectedValue);
-            return ReflectionUtils.interfaceGenericsClass(value).equals(otherGeneric);
+            return ReflectionUtils.interfaceGenericsClass(value).isAssignableFrom(otherGeneric);
         }, ReflectionUtils::genericName);
     }
 

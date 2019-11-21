@@ -13,13 +13,14 @@ public enum GeometryType {
     // treasure/no-treasure (areas)
     NO_TREASURE(false, "no treasure"),
     POSSIBLE_TREASURE(false, "possible treasure"),
+    HINT_ANGLE(true, "angle hint"),
 
     // searcher movements
-    SEARCHER_POS(true, "searcher pos"),
-    SEARCHER_MOVE(true, "no treasure"),
+    SEARCHER_POSITION(true, "searcher position"),
+    SEARCHER_MOVEMENT(true, "searcher movement"),
 
     // treasure location
-    TREASURE(false, "no treasure"),
+    TREASURE(true, "no treasure"),
 
     // Obstacle add-on
     OBSTACLE(false, "no treasure"),

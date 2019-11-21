@@ -1,8 +1,6 @@
 package com.treasure.hunt.game;
 
-import com.treasure.hunt.strategy.Product;
-import com.treasure.hunt.strategy.hint.Hint;
-import com.treasure.hunt.strategy.searcher.Moves;
+import com.treasure.hunt.strategy.geom.GeometryItem;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -10,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 public class GameHistory {
@@ -17,7 +16,7 @@ public class GameHistory {
      * Locks GameHistory.products, such that it can only be accessed by one thread
      * at the same time.
      */
-    private List<Product> products = Collections.synchronizedList(new ArrayList<>());
+    private List<Move> moves = Collections.synchronizedList(new ArrayList<>());
     private ExecutorService executorService = Executors.newFixedThreadPool(2);
     private List<Runnable> views = new ArrayList<>();
 
@@ -29,44 +28,36 @@ public class GameHistory {
     }
 
     /**
-     * This will run the views.
+     * This will run the views, e.g. start the run() method.
      */
-    public void startListeners() {
+    public void runListeners() {
         views.forEach(runnable -> executorService.execute(runnable));
     }
 
     /**
-     * This dumps the new game created {@link Product} into this history
+     * This dumps the new game created {@link Move} into this history
      * and notifies the views.
      *
-     * @param product The new Product, arisen in the game.
+     * @param move The new {@link Move}, arisen in the game.
      */
-    public synchronized void dump(Hint product) {
-        products.add(product);
-        notifyAll();
+    public synchronized void dump(Move move) {
+        moves.add(move);
+        runListeners();
     }
 
-    /**
-     * This dumps the new game created {@link Product} into this history
-     * and notifies the views.
-     *
-     * @param product The new Product, arisen in the game.
-     */
-    public synchronized void dump(Moves product) {
-        products.add(product);
-        notifyAll();
+    public List<GeometryItem> getGeometryItems() {
+        ArrayList<GeometryItem> geometryItems = moves.stream()
+                .flatMap(move -> move.getGeometryItems().stream()).collect(Collectors.toCollection(ArrayList::new));
+        return geometryItems;
     }
 
     /**
      * @param i the last size, the {@link com.treasure.hunt.view.in_game.View} knew.
-     * @return the new products, the {@link com.treasure.hunt.view.in_game.View} missed.
+     * @return the new moves, the {@link com.treasure.hunt.view.in_game.View} missed.
      */
-    public synchronized List<Product> giveNewProducts(int i) throws InterruptedException {
-        while (products.size() <= i) {
-            wait();
-        }
-        List list = new ArrayList<>(products.subList(i, products.size() - 1));
+    public synchronized List<Move> giveNewProducts(int i) {
+        List list = new ArrayList<>(moves.subList(i, moves.size()));
+        assert (moves.size() - i == list.size());
         return list;
     }
-
 }

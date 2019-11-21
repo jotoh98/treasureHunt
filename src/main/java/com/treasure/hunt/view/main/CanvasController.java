@@ -1,8 +1,7 @@
 package com.treasure.hunt.view.main;
 
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.strategy.geom.GeometryItem;
-import com.treasure.hunt.view.in_game.implementatons.CanvasView;
+import com.treasure.hunt.view.in_game.impl.CanvasView;
 import com.treasure.hunt.view.swing.CanvasMouseListener;
 import lombok.Getter;
 import org.locationtech.jts.math.Vector2D;
@@ -27,6 +26,7 @@ public class CanvasController extends JFrame {
     CanvasController(CanvasView canvasView, GameManager gameManager) {
         this.canvasView = canvasView;
         this.gameManager = gameManager;
+        gameManager.init(); //!
         CanvasMouseListener canvasMouseListener = new CanvasMouseListener(this);
         canvasView.addMouseMotionListener(canvasMouseListener);
         canvasView.addMouseListener(canvasMouseListener);
@@ -51,10 +51,6 @@ public class CanvasController extends JFrame {
         nextButton.addActionListener(e -> gameManager.step());
         bottomControlPanel.add(nextButton);
         bottomControlPanel.add(new Box.Filler(new Dimension(0, 0), new Dimension(Integer.MAX_VALUE, 0), new Dimension(0, Integer.MAX_VALUE)));
-    }
-
-    void setGeometryItems(GeometryItem[] geometryItems) {
-        this.canvasView.setGeometryItems(geometryItems);
     }
 
     public void setOffset(Vector2D vector2D) {
