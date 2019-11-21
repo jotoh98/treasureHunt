@@ -38,15 +38,37 @@ public class GameManager {
     protected Movement lastMovement;
     protected Point searcherPos;
     protected Point treasurePos;
-    /**
-     * This tells, whether the next step is the first or not.
-     */
-    protected boolean firstStep = true;
+
+    protected boolean firstMove = true;
+    protected int stepSim = 0;
+    protected int stepView = 0;
 
     public GameManager(Searcher searcher, Hider hider, List<View> view) {
         this.searcher = searcher;
         this.hider = hider;
         this.view = view;
+    }
+
+    public void next() {
+        if (stepView > stepSim) {
+            throw new IllegalStateException("The View cannot be over than the simulation.");
+        }
+        if (stepSim == stepView) {
+            step();
+            stepSim++;
+            stepView++;
+        } else {
+            stepView++;
+            gameHistory.next();
+        }
+    }
+
+    public void previous() {
+        if (stepView == 0) {
+            throw new IllegalStateException("The View cannot be before than the simulation.");
+        }
+        stepView--;
+        gameHistory.previous();
     }
 
     /**
@@ -66,9 +88,9 @@ public class GameManager {
         }
 
         // Searcher moves
-        if (firstStep) {
+        if (firstMove) {
+            firstMove = false;
             lastMovement = searcher.move();
-            firstStep = false;
         } else {
             lastMovement = searcher.move(lastHint);
         }
@@ -176,8 +198,10 @@ public class GameManager {
         treasurePos = hider.getTreasureLocation();
         assert (treasurePos != null);
 
-        gameHistory.dump(
-                new Move(null, null, treasurePos)
+        gameHistory.dump(new Move(
+                null,
+                new Movement(searcherPos),
+                treasurePos)
         );
 
         // Check, whether treasure spawns in range of searcher

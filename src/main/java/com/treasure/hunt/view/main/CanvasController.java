@@ -26,7 +26,7 @@ public class CanvasController extends JFrame {
     CanvasController(CanvasView canvasView, GameManager gameManager) {
         this.canvasView = canvasView;
         this.gameManager = gameManager;
-        gameManager.init(); //!
+        gameManager.init();
         CanvasMouseListener canvasMouseListener = new CanvasMouseListener(this);
         canvasView.addMouseMotionListener(canvasMouseListener);
         canvasView.addMouseListener(canvasMouseListener);
@@ -48,7 +48,7 @@ public class CanvasController extends JFrame {
         bottomControlPanel.setBorder(createEmptyBorder(10, 10, 10, 10));
         Button nextButton = new Button();
         nextButton.setLabel("Next");
-        nextButton.addActionListener(e -> gameManager.step());
+        nextButton.addActionListener(e -> gameManager.next());
         bottomControlPanel.add(nextButton);
         bottomControlPanel.add(new Box.Filler(new Dimension(0, 0), new Dimension(Integer.MAX_VALUE, 0), new Dimension(0, Integer.MAX_VALUE)));
     }

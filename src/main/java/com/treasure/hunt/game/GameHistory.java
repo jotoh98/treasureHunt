@@ -20,6 +20,8 @@ public class GameHistory {
     private ExecutorService executorService = Executors.newFixedThreadPool(2);
     private List<Runnable> views = new ArrayList<>();
 
+    private int i = 0;
+
     /**
      * @param runnable the views, which gets registered.
      */
@@ -34,6 +36,22 @@ public class GameHistory {
         views.forEach(runnable -> executorService.execute(runnable));
     }
 
+    public synchronized void previous() {
+        if (i == 0) {
+            throw new IllegalStateException("i == 0");
+        }
+        i--;
+        runListeners();
+    }
+
+    public synchronized void next() {
+        if (i == moves.size()) {
+            throw new IllegalStateException("i == moves.size()");
+        }
+        i++;
+        runListeners();
+    }
+
     /**
      * This dumps the new game created {@link Move} into this history
      * and notifies the views.
@@ -41,23 +59,17 @@ public class GameHistory {
      * @param move The new {@link Move}, arisen in the game.
      */
     public synchronized void dump(Move move) {
+        i++;
         moves.add(move);
         runListeners();
     }
 
+    /**
+     * @return The whole List of geometryItems of the gameHistory
+     */
     public List<GeometryItem> getGeometryItems() {
-        ArrayList<GeometryItem> geometryItems = moves.stream()
+        ArrayList<GeometryItem> geometryItems = moves.subList(0, i).stream()
                 .flatMap(move -> move.getGeometryItems().stream()).collect(Collectors.toCollection(ArrayList::new));
         return geometryItems;
-    }
-
-    /**
-     * @param i the last size, the {@link com.treasure.hunt.view.in_game.View} knew.
-     * @return the new moves, the {@link com.treasure.hunt.view.in_game.View} missed.
-     */
-    public synchronized List<Move> giveNewProducts(int i) {
-        List list = new ArrayList<>(moves.subList(i, moves.size()));
-        assert (moves.size() - i == list.size());
-        return list;
     }
 }

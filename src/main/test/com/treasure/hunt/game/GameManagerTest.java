@@ -11,8 +11,6 @@ import com.treasure.hunt.strategy.searcher.impl.MoveOverTreasure2Searcher;
 import com.treasure.hunt.strategy.searcher.impl.NaiveCircleSearcher;
 import com.treasure.hunt.strategy.searcher.impl.StandingSearcher;
 import com.treasure.hunt.view.in_game.View;
-import com.treasure.hunt.view.in_game.impl.ConsoleOutputView;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -25,11 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GameManagerTest {
     private List<View> views = new ArrayList<>();
-
-    @BeforeEach
-    void setUp() {
-        views.add(new ConsoleOutputView());
-    }
 
     /**
      * Game simulation test:
