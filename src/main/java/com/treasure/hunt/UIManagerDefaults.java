@@ -446,7 +446,7 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
                 table.setRowHeight(row, rowHeight);
             }
         } catch (ClassCastException e) {
-            // TODO logg
+            e.printStackTrace();
         }
     }
 
@@ -634,7 +634,8 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
 
                 frame.setVisible(true);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                System.out.println("Failed loading L&F: " + laf);
+                System.out.println(ex);
             }
         }
     }
