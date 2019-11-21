@@ -22,10 +22,10 @@ public class MoveOverTreasure1Searcher implements Searcher<CircleHint> {
     @Override
     public Movement move(CircleHint hint) {
         Movement movement = new Movement(startPosition);
-        movement.addWayPoint(hint.getCenterPoint());
+        movement.addWayPoint(hint.getCenter());
         movement.addWayPoint(JTSUtils.createPoint(
-                hint.getCenterPoint().getX() * 2,
-                hint.getCenterPoint().getY() * 2
+                hint.getCenter().getX() * 2,
+                hint.getCenter().getY() * 2
 
         ));
         return movement;

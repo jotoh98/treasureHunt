@@ -14,18 +14,18 @@ import java.util.List;
 @Getter
 public class AngleHint extends Hint {
     Point anglePointRight;
-    Point centerPoint;
+    Point center;
     Point anglePointLeft;
 
-    public AngleHint(Point anglePointRight, Point centerPoint, Point anglePointLeft) {
+    public AngleHint(Point anglePointRight, Point center, Point anglePointLeft) {
         this.anglePointRight = anglePointRight;
-        this.centerPoint = centerPoint;
+        this.center = center;
         this.anglePointLeft = anglePointLeft;
     }
 
     public List<GeometryItem> getGeometryItems() {
         List<GeometryItem> output = new ArrayList<>();
-        output.add(new GeometryItem(centerPoint, GeometryType.HINT_CENTER));
+        output.add(new GeometryItem(center, GeometryType.HINT_CENTER));
         output.add(new GeometryItem(anglePointLeft, GeometryType.HINT_ANGLE));
         output.add(new GeometryItem(anglePointRight, GeometryType.HINT_ANGLE));
         return output;

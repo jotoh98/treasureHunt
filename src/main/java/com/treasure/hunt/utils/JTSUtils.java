@@ -10,19 +10,15 @@ import static org.locationtech.jts.algorithm.Angle.angleBetweenOriented;
 import static org.locationtech.jts.algorithm.Angle.normalizePositive;
 
 public class JTSUtils {
-    private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
-
-    public static GeometryFactory getDefaultGeometryFactory() {
-        return GEOMETRY_FACTORY;
-    }
+    public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
     public static Point createPoint(double x, double y) {
-        return getDefaultGeometryFactory().createPoint(new Coordinate(x, y));
+        return GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
     }
 
     public static LineString createLineString(Point A, Point B) {
         Coordinate[] coords = {A.getCoordinate(), B.getCoordinate()};
-        return getDefaultGeometryFactory().createLineString(coords);
+        return GEOMETRY_FACTORY.createLineString(coords);
     }
 
     /**
@@ -33,9 +29,9 @@ public class JTSUtils {
      * @return point of intersection, if the {@link LineSegment}'s intersect. null otherwise.
      */
     public static Point lineSegmentIntersection(LineSegment lineSegment1, LineSegment lineSegment2) {
-        Point intersection = getDefaultGeometryFactory().createPoint(lineSegment1.lineIntersection(lineSegment2));
-        LineString lineSegString = createLineString(getDefaultGeometryFactory().createPoint(lineSegment2.p0),
-                getDefaultGeometryFactory().createPoint(lineSegment2.p1));
+        Point intersection = GEOMETRY_FACTORY.createPoint(lineSegment1.lineIntersection(lineSegment2));
+        LineString lineSegString = createLineString(GEOMETRY_FACTORY.createPoint(lineSegment2.p0),
+                GEOMETRY_FACTORY.createPoint(lineSegment2.p1));
         if (lineSegString.contains(intersection)) {
             return intersection;
         }
@@ -58,7 +54,7 @@ public class JTSUtils {
                 try {
                     double x = Double.parseDouble(xPositionTextField.getText());
                     double y = Double.parseDouble(yPositionTextField.getText());
-                    return JTSUtils.getDefaultGeometryFactory().createPoint(new Coordinate(x, y));
+                    return GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
                 } catch (NumberFormatException e) {
                     JOptionPane.showConfirmDialog(null, "Please enter valid numbers", "Error", JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE);
                 }
@@ -69,21 +65,21 @@ public class JTSUtils {
     /**
      * Works only for angles <=Math.PI
      *
-     * @param angleHint
-     * @return
+     * @param angleHint where we want the middle point to go, from.
+     * @return {@link Point} going through the middle of the {@link AngleHint}
      */
     public static Coordinate middleOfAngleHint(AngleHint angleHint) {
         double betweenAngle = angleBetweenOriented(
                 angleHint.getAnglePointRight().getCoordinate(),
-                angleHint.getCenterPoint().getCoordinate(),
+                angleHint.getCenter().getCoordinate(),
                 angleHint.getAnglePointLeft().getCoordinate()
         );
         assert Math.PI >= betweenAngle && betweenAngle >= 0; // If the angle is <= PI
-        double rightAngle = Angle.angle(angleHint.getCenterPoint().getCoordinate(),
+        double rightAngle = Angle.angle(angleHint.getCenter().getCoordinate(),
                 angleHint.getAnglePointRight().getCoordinate());
         double resultAngle = normalizePositive(rightAngle + betweenAngle * 1 / 2);
-        double x = angleHint.getCenterPoint().getX() + (Math.cos(resultAngle) * 1);
-        double y = angleHint.getCenterPoint().getY() + (Math.sin(resultAngle) * 1);
+        double x = angleHint.getCenter().getX() + (Math.cos(resultAngle) * 1);
+        double y = angleHint.getCenter().getY() + (Math.sin(resultAngle) * 1);
         return new Coordinate(x, y);
     }
 }

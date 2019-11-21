@@ -1,14 +1,13 @@
 package com.treasure.hunt.strategy.hint.impl;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
-import com.treasure.hunt.strategy.hint.Hint;
 import lombok.Getter;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Point;
 
 import java.util.List;
 
-public class HalfPlaneHint extends Hint {
+public class HalfPlaneHint extends AngleHint {
 
     @Getter
     private Direction direction;    // when the line indicated by halfplanePointOne and halfplanePointTwo is not horizontal,
@@ -19,11 +18,10 @@ public class HalfPlaneHint extends Hint {
     // left and down respectively
 
     @Getter
-    private Point center;
-    @Getter
     private Point halfPlanePoint;
 
     public HalfPlaneHint(Point center, Point halfPlanePoint, Direction direction) {
+        super(null, center, halfPlanePoint);
         this.direction = direction;
         this.center = center;
         this.halfPlanePoint = halfPlanePoint;
@@ -43,7 +41,7 @@ public class HalfPlaneHint extends Hint {
 
         Point P1 = anglehint.getAnglePointLeft();
         Point P2 = anglehint.getAnglePointRight();
-        Point C = anglehint.getCenterPoint();
+        Point C = anglehint.getCenter();
 
         double yPointOne = P1.getY();
         double xPointOne = P1.getX();

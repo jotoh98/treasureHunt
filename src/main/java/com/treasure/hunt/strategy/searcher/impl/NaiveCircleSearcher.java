@@ -35,7 +35,7 @@ public class NaiveCircleSearcher implements HideAndSeekSearcher<CircleHint> {
     public Movement move(CircleHint circleHint) {
         Movement movement = new Movement();
         movement.addWayPoint(position);
-        movement.addWayPoint(circleHint.getCenterPoint());
+        movement.addWayPoint(circleHint.getCenter());
         return movement;
     }
 }

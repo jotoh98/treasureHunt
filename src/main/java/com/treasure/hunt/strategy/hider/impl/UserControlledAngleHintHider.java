@@ -26,8 +26,8 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
     @Override
     public AngleHint move(Movement movement) {
         AngleHint angleHint = createAngleDialog(movement.getEndPoint());
-        Coordinate[] angle = {angleHint.getAnglePointLeft().getCoordinate(), angleHint.getCenterPoint().getCoordinate(), angleHint.getAnglePointRight().getCoordinate()};
-        LineString lineString = JTSUtils.getDefaultGeometryFactory().createLineString(angle);
+        Coordinate[] angle = {angleHint.getAnglePointLeft().getCoordinate(), angleHint.getCenter().getCoordinate(), angleHint.getAnglePointRight().getCoordinate()};
+        LineString lineString = JTSUtils.GEOMETRY_FACTORY.createLineString(angle);
         GeometryItem<LineString> hintGeometryItem = new GeometryItem<>(lineString, GeometryType.HINT_ANGLE);
         angleHint.addAdditionalItem(hintGeometryItem);
         return angleHint;
@@ -57,8 +57,8 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
                     double y = Double.parseDouble(yPositionTextField.getText());
                     double x2 = Double.parseDouble(xPositionTextField2.getText());
                     double y2 = Double.parseDouble(yPositionTextField2.getText());
-                    Point angleLeft = JTSUtils.getDefaultGeometryFactory().createPoint(new Coordinate(x2, y2));
-                    Point angleRight = JTSUtils.getDefaultGeometryFactory().createPoint(new Coordinate(x, y));
+                    Point angleLeft = JTSUtils.GEOMETRY_FACTORY.createPoint(new Coordinate(x2, y2));
+                    Point angleRight = JTSUtils.GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
                     checkAngle(angleLeft, angleRight, middle);
                     return new AngleHint(middle, angleLeft, angleRight);
                 } catch (NumberFormatException e) {

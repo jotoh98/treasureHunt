@@ -123,7 +123,10 @@ public class GameManager {
      */
     protected boolean checkConsistency() {
         // TODO implement
-        // forbid wrong hints
+        // AngleHints must be correct
+        // AngleHints <=180 degrees
+        // CircleHints correct
+        // CircleHints must contain eachother !?
         return true;
     }
 

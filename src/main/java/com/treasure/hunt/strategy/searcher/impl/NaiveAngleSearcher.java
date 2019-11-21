@@ -12,7 +12,6 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.impl.CoordinateArraySequence;
 
 public class NaiveAngleSearcher implements Searcher<AngleHint> {
-    private static double DISTANCE = 1; // TODO
     private Point startPosition;
 
     @Override
@@ -36,37 +35,15 @@ public class NaiveAngleSearcher implements Searcher<AngleHint> {
         double x = c1.x;
         double y = c1.y;
 
-        //Testpurposes
-        Coordinate[] a1 = {angleHint.getCenterPoint().getCoordinate(), angleHint.getAnglePointLeft().getCoordinate()};
-        Coordinate[] a2 = {angleHint.getCenterPoint().getCoordinate(), new Coordinate(x, y)};
-        Coordinate[] a3 = {angleHint.getCenterPoint().getCoordinate(), angleHint.getAnglePointRight().getCoordinate()};
-        //end
-
         Movement m = new Movement(startPosition);
         startPosition = JTSUtils.createPoint(x, y);
         m.addWayPoint(startPosition);
         // Add to additionalItems
-        Coordinate[] c = {m.getPoints().get(0).getObject().getCoordinate(),
-                m.getEndPoint().getCoordinate()};
-        /*m.addAdditionalItem(
-                new GeometryItem(new LineString(
-                        new CoordinateArraySequence(c),
-                        JTSUtils.getDefaultGeometryFactory()
-                ), GeometryType.SEARCHER_MOVEMENT));*/
-        m.addAdditionalItem(
-                new GeometryItem(new LineString(
-                        new CoordinateArraySequence(a1),
-                        JTSUtils.getDefaultGeometryFactory()
-                ), GeometryType.SEARCHER_MOVEMENT));
+        Coordinate[] a2 = {angleHint.getCenter().getCoordinate(), new Coordinate(x, y)};
         m.addAdditionalItem(
                 new GeometryItem(new LineString(
                         new CoordinateArraySequence(a2),
-                        JTSUtils.getDefaultGeometryFactory()
-                ), GeometryType.SEARCHER_MOVEMENT));
-        m.addAdditionalItem(
-                new GeometryItem(new LineString(
-                        new CoordinateArraySequence(a3),
-                        JTSUtils.getDefaultGeometryFactory()
+                        JTSUtils.GEOMETRY_FACTORY
                 ), GeometryType.SEARCHER_MOVEMENT));
         return m;
     }

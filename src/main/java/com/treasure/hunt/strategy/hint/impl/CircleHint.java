@@ -15,13 +15,13 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class CircleHint extends Hint {
-    private Point centerPoint;
+    private Point center;
     private double radius;
 
     public List<GeometryItem> getGeometryItems() {
         List<GeometryItem> output = new ArrayList<>();
         output.add(new GeometryItem(
-                new Circle(centerPoint.getCoordinate(), radius, JTSUtils.getDefaultGeometryFactory())
+                new Circle(center.getCoordinate(), radius, JTSUtils.GEOMETRY_FACTORY)
                 , GeometryType.HINT_CENTER));
         return output;
     }
