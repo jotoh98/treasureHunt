@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 
     The Algorithm tries to greedily maximize the possibleArea with each Hint generation
 
+
  */
 public class MaxAreaAngularHintStrategy implements Hider<AngleHint> {
 
@@ -88,7 +89,7 @@ public class MaxAreaAngularHintStrategy implements Hider<AngleHint> {
      * @param hint The hint to integrate
      */
 
-    public void integrateHint(AngleHint hint) {
+    public Geometry integrateHint(AngleHint hint) {
 
         //for each hintVector there's going to be 2 intersections with the bounding circle, Take the ones which scale the Vector with a positive factor
         LineSegment firstVector = new LineSegment(hint.getAngleCenter().getCoordinate(), hint.getAnglePointOne().getCoordinate());
@@ -169,8 +170,8 @@ public class MaxAreaAngularHintStrategy implements Hider<AngleHint> {
             do {
                 buildingList.add(boundingPoints[coordIdx]);
                 // in case intersection is on an endPoint of the current BoundingSegment
-                if(buildingList.get(buildingList.size()-1) == buildingList.get(buildingList.size()-2)){
-                    buildingList.remove((buildingList.size()-1));
+                if (buildingList.get(buildingList.size() - 1) == buildingList.get(buildingList.size() - 2)) {
+                    buildingList.remove((buildingList.size() - 1));
                 }
                 coordIdx++;
                 if (coordIdx == boundingPoints.length) {
@@ -185,7 +186,8 @@ public class MaxAreaAngularHintStrategy implements Hider<AngleHint> {
         Geometry newPossibleArea = possibleArea.getObject().union(hintedArea);
 
 
-        this.possibleArea = new GeometryItem<>(newPossibleArea,GeometryType.POSSIBLE_TREASURE);
+
+        return newPossibleArea;
 
 
     }
@@ -215,6 +217,49 @@ public class MaxAreaAngularHintStrategy implements Hider<AngleHint> {
         gameHistory.dump(product);
     }
 
+    /**
+     * Brute Force Method to determine the best hint
+     *
+     * @param samples
+     * @return
+     */
+
+    private AngleHint generateHint(int samples, Point origin){
+        double twoPi = Math.PI * 2;
+
+        double dX,dY;
+        Point p1, p2;
+        AngleHint hint;
+        double area;
+        Geometry resultingGeom;
+
+        double maxArea = 0;
+        Geometry maxGeometry = null;
+        AngleHint maxAngle = null;
+
+
+        for(int i = 0; i < samples; i++){
+            dX = Math.cos(twoPi * (i/samples));
+            dY = Math.sin(twoPi * (i/samples));
+            p1 = gf.createPoint(new Coordinate(origin.getX() + dX, origin.getY() + dY));
+            p2 = gf.createPoint(new Coordinate(origin.getX() - dX, origin.getY() + dY));
+
+            hint = new AngleHint(p1,origin,p2);
+            resultingGeom = integrateHint(hint);
+            area = integrateHint(hint).getArea();
+            if(area > maxArea){
+                maxGeometry = resultingGeom;
+                maxArea = area;
+                maxAngle = hint;
+            }
+        }
+
+        assert maxAngle != null;
+
+        this.possibleArea = new GeometryItem<>(maxGeometry,GeometryType.POSSIBLE_TREASURE);
+        return maxAngle;
+    }
+
     @Override
     public AngleHint move(Moves moves) {
         currentPlayersPosition = moves.getEndPoint().getObject();
@@ -231,10 +276,13 @@ public class MaxAreaAngularHintStrategy implements Hider<AngleHint> {
         Polygon checkedPoly = (Polygon) walkedPath.buffer(1.0);
         checkedArea = new GeometryItem<>(checkedPoly, GeometryType.NO_TREASURE);
 
-        AngleHint hint; //compute by maximizing the remaining possible Area after the Hint
-        //integrateHint(hint);
 
-        return null;
+
+        AngleHint hint = generateHint(360, currentPlayersPosition); //compute by maximizing the remaining possible Area after the Hint over 360 sample points
+
+
+
+        return hint;
     }
 
 
