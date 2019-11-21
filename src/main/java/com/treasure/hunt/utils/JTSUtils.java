@@ -4,8 +4,6 @@ import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.*;
 
-import javax.swing.*;
-
 import static org.locationtech.jts.algorithm.Angle.angleBetweenOriented;
 
 public class JTSUtils {
@@ -37,31 +35,6 @@ public class JTSUtils {
             return intersection;
         }
         return null;
-    }
-
-    // TODO outsource
-    public static Point promptForPoint(String title, String message) {
-        while (true) {
-            JTextField xPositionTextField = new JTextField();
-            JTextField yPositionTextField = new JTextField();
-            final JComponent[] inputs = new JComponent[]{
-                    new JLabel(message),
-                    new JLabel("X Position"),
-                    xPositionTextField,
-                    new JLabel("Y Position"),
-                    yPositionTextField
-            };
-            int result = JOptionPane.showConfirmDialog(null, inputs, title, JOptionPane.OK_OPTION);
-            if (result == JOptionPane.OK_OPTION) {
-                try {
-                    double x = Double.parseDouble(xPositionTextField.getText());
-                    double y = Double.parseDouble(yPositionTextField.getText());
-                    return GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
-                } catch (NumberFormatException e) {
-                    JOptionPane.showConfirmDialog(null, "Please enter valid numbers", "Error", JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        }
     }
 
     /**

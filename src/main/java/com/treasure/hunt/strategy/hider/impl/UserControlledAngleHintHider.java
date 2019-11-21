@@ -6,6 +6,7 @@ import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.utils.JTSUtils;
+import com.treasure.hunt.utils.SwingUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
@@ -19,7 +20,7 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
 
     @Override
     public Point getTreasureLocation() {
-        treasureLocation = JTSUtils.promptForPoint("Provide a treasure position", "...");
+        treasureLocation = SwingUtils.promptForPoint("Provide a treasure position", "...");
         return this.treasureLocation;
     }
 
