@@ -30,6 +30,8 @@ public class CanvasView extends JPanel implements View {
     public void run() {
         geometryItems = gameHistory.getGeometryItems();
         revalidate();
+        // This repaints the view, when new geometryItems appear.
+        repaint();
     }
 
     public Shape draw(GeometryItem geometryItem) {

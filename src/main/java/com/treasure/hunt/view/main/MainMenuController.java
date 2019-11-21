@@ -167,7 +167,7 @@ public class MainMenuController {
     /**
      * This initializes the different lists of hider, searcher, gameManagers.
      *
-     * @param container
+     * @param container The container, getting the different "lists"
      */
     private void initStrategyContainer(JPanel container) {
         container.setAlignmentY(Component.TOP_ALIGNMENT);
