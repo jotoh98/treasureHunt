@@ -9,7 +9,7 @@ import org.locationtech.jts.geom.Point;
  * The SpoiledSearcher follows an {@link CircleHint} and
  * moves always in the center;
  */
-public class NaiveSearcher implements HideAndSeekSearcher<CircleHint> {
+public class NaiveCircleSearcher implements HideAndSeekSearcher<CircleHint> {
 
     private Point position;
 

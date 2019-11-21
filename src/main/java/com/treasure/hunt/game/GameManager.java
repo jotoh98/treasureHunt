@@ -64,26 +64,33 @@ public class GameManager {
         if (finished) {
             throw new IllegalStateException("Game is already finished");
         }
+
+        // Searcher moves
         if (firstStep) {
             lastMovement = searcher.move();
             firstStep = false;
         } else {
             lastMovement = searcher.move(lastHint);
         }
-        searcherPos = lastMovement.getEndPoint().getObject();
+        assert (lastMovement != null);
+        assert (lastMovement.getPoints().size() != 0);
+        searcherPos = lastMovement.getEndPoint();
+
         if (located(lastMovement.getPoints())) {
             finish();
             return;
         } else {
             lastHint = hider.move(lastMovement);
         }
+        assert (lastHint != null);
+
         if (!checkConsistency()) {
             throw new IllegalStateException("Game is no longer consistent!");
         }
         gameHistory.dump(new Move(lastHint, lastMovement, treasurePos));
         System.out.println("" +
-                "treasurePos" + treasurePos +
-                "searcherPos: " + searcherPos +
+                "treasurePos: " + treasurePos +
+                "searcherPos:  " + searcherPos +
                 "");
     }
 
@@ -126,11 +133,10 @@ public class GameManager {
     protected boolean located(List<GeometryItem<Point>> geometryItemsList) {
         assert geometryItemsList.size() > 0;
 
-        // Searcher does not move.
+        // Did the searcher move ?
         if (geometryItemsList.size() == 1) {
             return geometryItemsList.get(0).getObject().distance(treasurePos) <= 1;
         } else {
-
             Point lastPoint = null;
             for (GeometryItem<Point> geometryItem : geometryItemsList) {
                 Point point = geometryItem.getObject();
@@ -161,10 +167,12 @@ public class GameManager {
             view.init(gameHistory);
         }
 
-        searcherPos = JTSUtils.getDefaultGeometryFactory().createPoint(new Coordinate(0, 0));
+        searcherPos = JTSUtils.createPoint(0, 0);
         searcher.init(searcherPos);
 
         treasurePos = hider.getTreasureLocation();
+        assert (treasurePos != null);
+
         gameHistory.dump(
                 new Move(null, null, treasurePos)
         );

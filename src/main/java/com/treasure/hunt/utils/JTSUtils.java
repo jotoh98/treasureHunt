@@ -1,8 +1,13 @@
 package com.treasure.hunt.utils;
 
+import com.treasure.hunt.strategy.hint.impl.AngleHint;
+import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.*;
 
 import javax.swing.*;
+
+import static org.locationtech.jts.algorithm.Angle.angleBetweenOriented;
+import static org.locationtech.jts.algorithm.Angle.normalizePositive;
 
 public class JTSUtils {
     private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
@@ -59,5 +64,26 @@ public class JTSUtils {
                 }
             }
         }
+    }
+
+    /**
+     * Works only for angles <=Math.PI
+     *
+     * @param angleHint
+     * @return
+     */
+    public static Coordinate middleOfAngleHint(AngleHint angleHint) {
+        double betweenAngle = angleBetweenOriented(
+                angleHint.getAnglePointRight().getCoordinate(),
+                angleHint.getCenterPoint().getCoordinate(),
+                angleHint.getAnglePointLeft().getCoordinate()
+        );
+        assert Math.PI >= betweenAngle && betweenAngle >= 0; // If the angle is <= PI
+        double rightAngle = Angle.angle(angleHint.getCenterPoint().getCoordinate(),
+                angleHint.getAnglePointRight().getCoordinate());
+        double resultAngle = normalizePositive(rightAngle + betweenAngle * 1 / 2);
+        double x = angleHint.getCenterPoint().getX() + (Math.cos(resultAngle) * 1);
+        double y = angleHint.getCenterPoint().getY() + (Math.sin(resultAngle) * 1);
+        return new Coordinate(x, y);
     }
 }

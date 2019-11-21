@@ -29,11 +29,11 @@ public class Movement {
     /**
      * @return the last end-position of the moves-sequence.
      */
-    public GeometryItem<Point> getEndPoint() {
+    public Point getEndPoint() {
         if (points.size() == 0) {
             throw new IllegalStateException("Movement has size of 0.");
         }
-        return points.get(points.size() - 1);
+        return points.get(points.size() - 1).getObject();
     }
 
     public void addWayPoint(Point point) {

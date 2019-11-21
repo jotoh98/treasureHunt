@@ -16,8 +16,8 @@ public enum GeometryType {
     HINT_ANGLE(true, "angle hint"),
 
     // searcher movements
-    SEARCHER_POS(true, "searcher pos"),
-    SEARCHER_MOVE(true, "no treasure"),
+    SEARCHER_POSITION(true, "searcher position"),
+    SEARCHER_MOVEMENT(true, "searcher movement"),
 
     // treasure location
     TREASURE(true, "no treasure"),

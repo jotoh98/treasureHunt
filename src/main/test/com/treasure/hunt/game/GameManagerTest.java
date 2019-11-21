@@ -8,7 +8,7 @@ import com.treasure.hunt.strategy.hint.impl.CircleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.impl.MoveOverTreasure1Searcher;
 import com.treasure.hunt.strategy.searcher.impl.MoveOverTreasure2Searcher;
-import com.treasure.hunt.strategy.searcher.impl.NaiveSearcher;
+import com.treasure.hunt.strategy.searcher.impl.NaiveCircleSearcher;
 import com.treasure.hunt.strategy.searcher.impl.StandingSearcher;
 import com.treasure.hunt.view.in_game.View;
 import com.treasure.hunt.view.in_game.impl.ConsoleOutputView;
@@ -34,12 +34,12 @@ class GameManagerTest {
     /**
      * Game simulation test:
      * {@link RevealingHider} gives perfect hint.
-     * {@link NaiveSearcher} follows.
+     * {@link NaiveCircleSearcher} follows.
      * {@link GameManager#isFinished()} should now return true.
      */
     @Test
     void spoiledGame() {
-        GameManager gameManager = new GameManager(new NaiveSearcher(), new RevealingHider(), views);
+        GameManager gameManager = new GameManager(new NaiveCircleSearcher(), new RevealingHider(), views);
         gameManager.init();
         gameManager.run(2);
         assertTrue(gameManager.isFinished());
@@ -47,7 +47,7 @@ class GameManagerTest {
 
     @Test
     void moveOnTreasure() {
-        GameManager gameManager = new GameManager(new NaiveSearcher(), new RevealingHider(), views);
+        GameManager gameManager = new GameManager(new NaiveCircleSearcher(), new RevealingHider(), views);
         gameManager.init();
         gameManager.run(2);
         assertTrue(gameManager.isFinished());
@@ -87,7 +87,7 @@ class GameManagerTest {
      */
     @Test
     void narrowMove() {
-        GameManager gameManager = new GameManager(new NaiveSearcher(), new Hider() {
+        GameManager gameManager = new GameManager(new NaiveCircleSearcher(), new Hider() {
 
             private GeometryFactory gf = new GeometryFactory();
             private Point treasurePos = gf.createPoint(new Coordinate(1, 1));

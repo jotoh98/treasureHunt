@@ -25,7 +25,7 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
 
     @Override
     public AngleHint move(Movement movement) {
-        AngleHint angleHint = createAngleDialog(movement.getEndPoint().getObject());
+        AngleHint angleHint = createAngleDialog(movement.getEndPoint());
         Coordinate[] angle = {angleHint.getAnglePointLeft().getCoordinate(), angleHint.getCenterPoint().getCoordinate(), angleHint.getAnglePointRight().getCoordinate()};
         LineString lineString = JTSUtils.getDefaultGeometryFactory().createLineString(angle);
         GeometryItem<LineString> hintGeometryItem = new GeometryItem<>(lineString, GeometryType.HINT_ANGLE);
@@ -71,12 +71,12 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
     }
 
     private void checkAngle(Point angleLeft, Point angleRight, Point middle) throws WrongAngleException {
-        double angleHint = angleBetweenOriented(angleRight.getCoordinate(), middle.getCoordinate(), angleLeft.getCoordinate());
-        if (angleHint >= Math.PI || angleHint < 0) {
+        double angle = angleBetweenOriented(angleRight.getCoordinate(), middle.getCoordinate(), angleLeft.getCoordinate());
+        if (angle >= Math.PI || angle < 0) {
             throw new WrongAngleException("Angle is bigger 180 degrees");
         }
         double angleHintToTreasure = angleBetweenOriented(treasureLocation.getCoordinate(), middle.getCoordinate(), angleLeft.getCoordinate());
-        if (angleHintToTreasure > angleHint || angleHintToTreasure < 0) {
+        if (angleHintToTreasure > angle || angleHintToTreasure < 0) {
             throw new WrongAngleException("Treasure  Location not contained in angle");
         }
     }
