@@ -34,7 +34,7 @@ class GameManagerTest {
     void spoiledGame() {
         GameManager gameManager = new GameManager(new NaiveCircleSearcher(), new RevealingHider(), views);
         gameManager.init();
-        gameManager.run(2);
+        gameManager.move(2);
         assertTrue(gameManager.isFinished());
     }
 
@@ -42,7 +42,7 @@ class GameManagerTest {
     void moveOnTreasure() {
         GameManager gameManager = new GameManager(new NaiveCircleSearcher(), new RevealingHider(), views);
         gameManager.init();
-        gameManager.run(2);
+        gameManager.move(2);
         assertTrue(gameManager.isFinished());
     }
 
@@ -50,7 +50,7 @@ class GameManagerTest {
     void moveOverTreasure1() {
         GameManager gameManager = new GameManager(new MoveOverTreasure1Searcher(), new RevealingHider(), views);
         gameManager.init();
-        gameManager.run(2);
+        gameManager.move(2);
         assertTrue(gameManager.isFinished());
     }
 
@@ -58,7 +58,7 @@ class GameManagerTest {
     void moveOverTreasure2() {
         GameManager gameManager = new GameManager(new MoveOverTreasure2Searcher(), new RevealingHider(), views);
         gameManager.init();
-        gameManager.run(2);
+        gameManager.move(2);
         assertTrue(gameManager.isFinished());
     }
 
@@ -66,7 +66,7 @@ class GameManagerTest {
     void spawnOnTreasure() {
         GameManager gameManager = new GameManager(new StandingSearcher(), new InstantWinHider(), views);
         gameManager.init();
-        gameManager.run(0);
+        gameManager.move(0);
         assertTrue(gameManager.isFinished());
     }
 
@@ -97,7 +97,7 @@ class GameManagerTest {
             }
         }, views);
         gameManager.init();
-        gameManager.run(2);
+        gameManager.move(2);
         assertTrue(gameManager.isFinished());
     }
 }

@@ -27,8 +27,8 @@ public class HideAndSeekGameManager extends GameManager {
      * After each move of the {@link HideAndSeekHider}, the treasure position
      * will be updated, but it could have not changed.
      */
-    public void step() {
-        super.step();
+    public void move() {
+        super.move();
         treasurePos = hider.getTreasureLocation();
     }
 }

@@ -54,7 +54,7 @@ public class GameManager {
             throw new IllegalStateException("The View cannot be over than the simulation.");
         }
         if (stepSim == stepView) {
-            step();
+            move();
             stepSim++;
             stepView++;
         } else {
@@ -82,7 +82,7 @@ public class GameManager {
      * The first step of the searcher goes without an hint,
      * the next will be with.
      */
-    public void step() {
+    public void move() {
         if (finished) {
             throw new IllegalStateException("Game is already finished");
         }
@@ -119,9 +119,9 @@ public class GameManager {
     /**
      * This simulates the whole game, until its finished.
      */
-    public void run() {
+    public void beat() {
         while (!finished) {
-            step();
+            move();
         }
     }
 
@@ -131,12 +131,12 @@ public class GameManager {
      *
      * @param steps number of steps
      */
-    public void run(int steps) {
+    public void move(int steps) {
         for (int i = 0; i < steps; i++) {
             if (finished) {
                 break;
             }
-            step();
+            move();
         }
     }
 
@@ -212,7 +212,7 @@ public class GameManager {
         }
     }
 
-    private void finish() {
+    protected void finish() {
         finished = true;
     }
 }
