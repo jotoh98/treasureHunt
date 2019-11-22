@@ -1,11 +1,12 @@
 package com.treasure.hunt.view.in_game.impl;
 
 import com.treasure.hunt.game.GameHistory;
+import com.treasure.hunt.jts.AdvancedShapeWriter;
 import com.treasure.hunt.jts.PointTransformation;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.view.in_game.View;
 import lombok.Getter;
-import org.locationtech.jts.awt.ShapeWriter;
+import org.locationtech.jts.geom.Coordinate;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class CanvasView extends JPanel implements View {
 
-    private ShapeWriter shapeWriter;
+    private AdvancedShapeWriter shapeWriter;
 
     @Getter
     private PointTransformation pointTransformation = new PointTransformation();
@@ -23,7 +24,7 @@ public class CanvasView extends JPanel implements View {
     private List<GeometryItem> geometryItems = new ArrayList<>();
 
     public CanvasView() {
-        shapeWriter = new ShapeWriter(pointTransformation);
+        shapeWriter = new AdvancedShapeWriter(pointTransformation);
     }
 
     @Override
@@ -34,8 +35,8 @@ public class CanvasView extends JPanel implements View {
         repaint();
     }
 
-    public Shape draw(GeometryItem geometryItem) {
-        return shapeWriter.toShape(geometryItem.getObject());
+    private Shape draw(GeometryItem geometryItem) {
+        return geometryItem.toShape(shapeWriter);
     }
 
     @Override
@@ -49,7 +50,7 @@ public class CanvasView extends JPanel implements View {
 
     }
 
-    public void paintShape(Graphics2D graphics2D, GeometryItem geometryItem) {
+    private void paintShape(Graphics2D graphics2D, GeometryItem geometryItem) {
 
         if (!geometryItem.getGeometryStyle().isVisible()) {
             return;
@@ -69,5 +70,10 @@ public class CanvasView extends JPanel implements View {
     @Override
     public void init(GameHistory gameHistory) {
         this.gameHistory = gameHistory;
+    }
+
+
+    private Coordinate[] getBoundary() {
+        return null;
     }
 }

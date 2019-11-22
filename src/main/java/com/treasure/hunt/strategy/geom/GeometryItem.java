@@ -2,7 +2,10 @@ package com.treasure.hunt.strategy.geom;
 
 import lombok.Getter;
 import lombok.NonNull;
+import org.locationtech.jts.awt.ShapeWriter;
 import org.locationtech.jts.geom.Geometry;
+
+import java.awt.*;
 
 /**
  * Classifies a jts geometry item with parameters to distinguish between items for visualization/algorithm usages.
@@ -31,5 +34,9 @@ public class GeometryItem<T extends Geometry> {
 
     public GeometryItem(T object, GeometryType geometryType) {
         this(object, geometryType, GeometryStyle.getDefaults(geometryType));
+    }
+
+    public Shape toShape(ShapeWriter shapeWriter) {
+        return shapeWriter.toShape(object);
     }
 }
