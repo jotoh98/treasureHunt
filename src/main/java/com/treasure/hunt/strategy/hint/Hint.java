@@ -1,13 +1,18 @@
 package com.treasure.hunt.strategy.hint;
 
-import com.treasure.hunt.strategy.Product;
 import com.treasure.hunt.strategy.geom.GeometryItem;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class Hint extends Product {
-    @Getter
-    @Setter
-    GeometryItem globalTarget;
+@Data
+public abstract class Hint {
+    protected List<GeometryItem> additionalGeometryItems = new ArrayList<>();
+
+    public void addAdditionalItem(GeometryItem geometryItem) {
+        additionalGeometryItems.add(geometryItem);
+    }
+
+    public abstract List<GeometryItem> getGeometryItems();
 }

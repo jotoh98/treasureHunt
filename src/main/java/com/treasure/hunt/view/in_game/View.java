@@ -1,13 +1,12 @@
 package com.treasure.hunt.view.in_game;
 
-import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.game.GameHistory;
 
-public interface View<T> extends Runnable {
+public interface View extends Runnable {
 
     /**
-     * Draw the product
-     *
-     * @param geometryItem The visuals to draw.
+     * @param gameHistory the {@link GameHistory}, the View gets its inputs.
      */
-    T transfer(GeometryItem geometryItem);
+    void init(GameHistory gameHistory);
+
 }

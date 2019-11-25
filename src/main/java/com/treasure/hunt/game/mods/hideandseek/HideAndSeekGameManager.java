@@ -8,15 +8,11 @@ import com.treasure.hunt.view.in_game.View;
 
 import java.util.List;
 
-
 @Requires(hider = HideAndSeekHider.class, searcher = HideAndSeekSearcher.class)
 public class HideAndSeekGameManager extends GameManager {
 
-    protected final HideAndSeekHider hideAndSeekHider;
-
     public HideAndSeekGameManager(Searcher searcher, Hider hider, List<View> view) {
         super(searcher, hider, view);
-        hideAndSeekHider = (HideAndSeekHider) hider;
     }
 
     /**
@@ -33,6 +29,6 @@ public class HideAndSeekGameManager extends GameManager {
      */
     public void step() {
         super.step();
-        treasurePos = hideAndSeekHider.getTreasureLocation();
+        treasurePos = hider.getTreasureLocation();
     }
 }

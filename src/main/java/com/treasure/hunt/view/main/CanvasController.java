@@ -1,17 +1,21 @@
 package com.treasure.hunt.view.main;
 
-import com.treasure.hunt.strategy.geom.GeometryItem;
-import com.treasure.hunt.view.in_game.implementatons.CanvasView;
+import com.treasure.hunt.game.GameManager;
+import com.treasure.hunt.view.in_game.impl.CanvasView;
 import com.treasure.hunt.view.swing.CanvasMouseListener;
 import lombok.Getter;
 import org.locationtech.jts.math.Vector2D;
 
 import javax.swing.*;
+import java.awt.*;
+
+import static javax.swing.BorderFactory.createEmptyBorder;
 
 public class CanvasController extends JFrame {
 
     @Getter
-    CanvasView canvasView;
+    private final CanvasView canvasView;
+    private final GameManager gameManager;
 
     @Getter
     private Vector2D offset = new Vector2D();
@@ -19,19 +23,34 @@ public class CanvasController extends JFrame {
     @Getter
     private double scale = 1.0;
 
-    CanvasController(CanvasView canvasView) {
+    CanvasController(CanvasView canvasView, GameManager gameManager) {
         this.canvasView = canvasView;
+        this.gameManager = gameManager;
+        gameManager.init(); //!
         CanvasMouseListener canvasMouseListener = new CanvasMouseListener(this);
         canvasView.addMouseMotionListener(canvasMouseListener);
         canvasView.addMouseListener(canvasMouseListener);
         canvasView.addMouseWheelListener(canvasMouseListener);
         setVisible(true);
         setSize(1080, 600);
-        add(canvasView);
+        initCanvasWrapper(canvasView);
     }
 
-    void setGeometryItems(GeometryItem[] geometryItems) {
-        this.canvasView.setGeometryItems(geometryItems);
+    private void initCanvasWrapper(CanvasView canvasView) {
+        JPanel borderPanel = new JPanel();
+        JPanel bottomControlPanel = new JPanel();
+        borderPanel.setLayout(new BorderLayout());
+        bottomControlPanel.setLayout(new BoxLayout(bottomControlPanel, BoxLayout.X_AXIS));
+        setContentPane(borderPanel);
+        borderPanel.add(canvasView, BorderLayout.CENTER);
+        borderPanel.add(bottomControlPanel, BorderLayout.SOUTH);
+        bottomControlPanel.setBackground(Color.gray);
+        bottomControlPanel.setBorder(createEmptyBorder(10, 10, 10, 10));
+        Button nextButton = new Button();
+        nextButton.setLabel("Next");
+        nextButton.addActionListener(e -> gameManager.step());
+        bottomControlPanel.add(nextButton);
+        bottomControlPanel.add(new Box.Filler(new Dimension(0, 0), new Dimension(Integer.MAX_VALUE, 0), new Dimension(0, Integer.MAX_VALUE)));
     }
 
     public void setOffset(Vector2D vector2D) {

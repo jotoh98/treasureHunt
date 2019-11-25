@@ -7,21 +7,21 @@
     6. In the maven tab at the right click the refresh symbol
     7. Click on play
 
-# Implementing a Seacher
+# Implementing a Searcher
     1. Create a class "yourSearcher" in
-    src/main/java/com/treasure/hunt/strategy/searcher/implementations/
-    2. Implement to the interface "Seacher"
+    src/main/java/com/treasure/hunt/strategy/searcher/impl/
+    2. Implement to the interface "Searcher"
 
 # Implementing a Hider
     1. Create a class "yourHider" in
-    src/main/java/com/treasure/hunt/strategy/hider/implementations/
+    src/main/java/com/treasure/hunt/strategy/hider/impl/
     2. Implement to the interface "Hider"
     
 # Implementing a View
     Starting the GameManager with your View Class applied will
     run it **concurrent**!
     1. Create a class "yourView" in
-    src/main/java/com/treasure/hunt/view/in_game/implementations/
+    src/main/java/com/treasure/hunt/view/in_game/impl/
     2. Implement to the interface "View"
     3. Access the Products created after each step via
     GameHistory.giveProductsCopy()

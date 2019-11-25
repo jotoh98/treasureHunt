@@ -1,38 +1,40 @@
-package com.treasure.hunt.view.in_game.implementatons;
+package com.treasure.hunt.view.in_game.impl;
 
+import com.treasure.hunt.game.GameHistory;
 import com.treasure.hunt.jts.PointTransformation;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.view.in_game.View;
 import lombok.Getter;
-import lombok.Setter;
 import org.locationtech.jts.awt.ShapeWriter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class CanvasView extends JPanel implements View<Shape> {
+public class CanvasView extends JPanel implements View {
 
-    @Getter
     private ShapeWriter shapeWriter;
 
     @Getter
     private PointTransformation pointTransformation = new PointTransformation();
 
-    @Setter
-    private GeometryItem[] geometryItems = new GeometryItem[0];
+    private GameHistory gameHistory;
+    private List<GeometryItem> geometryItems = new ArrayList<>();
 
     public CanvasView() {
-        RenderingHints renderingHints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         shapeWriter = new ShapeWriter(pointTransformation);
     }
 
     @Override
     public void run() {
-
+        geometryItems = gameHistory.getGeometryItems();
+        revalidate();
+        // This repaints the view, when new geometryItems appear.
+        repaint();
     }
 
-    @Override
-    public Shape transfer(GeometryItem geometryItem) {
+    public Shape draw(GeometryItem geometryItem) {
         return shapeWriter.toShape(geometryItem.getObject());
     }
 
@@ -49,18 +51,23 @@ public class CanvasView extends JPanel implements View<Shape> {
 
     public void paintShape(Graphics2D graphics2D, GeometryItem geometryItem) {
 
-        if (!geometryItem.getStyle().isVisible()) {
+        if (!geometryItem.getGeometryStyle().isVisible()) {
             return;
         }
 
-        Shape shape = transfer(geometryItem);
+        Shape shape = draw(geometryItem);
 
-        if (geometryItem.getStyle().isFilled()) {
-            graphics2D.setColor(geometryItem.getStyle().getFillColor());
+        if (geometryItem.getGeometryStyle().isFilled()) {
+            graphics2D.setColor(geometryItem.getGeometryStyle().getFillColor());
             graphics2D.fill(shape);
         }
 
-        graphics2D.setColor(geometryItem.getStyle().getOutlineColor());
+        graphics2D.setColor(geometryItem.getGeometryStyle().getOutlineColor());
         graphics2D.draw(shape);
+    }
+
+    @Override
+    public void init(GameHistory gameHistory) {
+        this.gameHistory = gameHistory;
     }
 }

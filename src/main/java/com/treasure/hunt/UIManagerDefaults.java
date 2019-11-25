@@ -184,7 +184,7 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
                 continue;
             }
 
-            //  Get the attribute map for this componenent, or
+            //  Get the attribute map for this component, or
             //  create a map when one is not found
 
             TreeMap<String, Object> attributeMap = items.get(itemName);
@@ -194,7 +194,7 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
                 items.put(itemName, attributeMap);
             }
 
-            //  Add the attribute to the map for this componenent
+            //  Add the attribute to the map for this component
 
             attributeMap.put(key.toString(), value);
         }
@@ -382,7 +382,7 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
     }
 
     /*
-     *  Change the TabelModel in the table for the selected item
+     *  Change the TableModel in the table for the selected item
      */
     private void changeTableModel(String itemName) {
         //  The model has been created previously so just use it
@@ -446,6 +446,7 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
                 table.setRowHeight(row, rowHeight);
             }
         } catch (ClassCastException e) {
+            e.printStackTrace();
         }
     }
 
@@ -466,21 +467,21 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
      * In subsequent calls the ImageIcon is used.
      */
     public static class SafeIcon implements Icon {
-        private Icon wrappee;
+        private Icon wrapper;
         private Icon standIn;
 
         public SafeIcon(Icon wrappee) {
-            this.wrappee = wrappee;
+            this.wrapper = wrappee;
         }
 
         @Override
         public int getIconHeight() {
-            return wrappee.getIconHeight();
+            return wrapper.getIconHeight();
         }
 
         @Override
         public int getIconWidth() {
-            return wrappee.getIconWidth();
+            return wrapper.getIconWidth();
         }
 
         @Override
@@ -491,7 +492,7 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
                 standIn.paintIcon(c, g, x, y);
             } else {
                 try {
-                    wrappee.paintIcon(c, g, x, y);
+                    wrapper.paintIcon(c, g, x, y);
                 } catch (ClassCastException e) {
                     createStandIn(e, x, y);
                     standIn.paintIcon(c, g, x, y);
@@ -499,9 +500,6 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
             }
         }
 
-        /**
-         * @param e
-         */
         private void createStandIn(ClassCastException e, int x, int y) {
             try {
                 Class<?> clazz = getClass(e);
@@ -517,17 +515,13 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
             BufferedImage image = new BufferedImage(getIconWidth(), getIconHeight(), BufferedImage.TYPE_INT_ARGB);
             Graphics g = image.createGraphics();
             try {
-                wrappee.paintIcon(standInComponent, g, 0, 0);
+                wrapper.paintIcon(standInComponent, g, 0, 0);
                 return new ImageIcon(image);
             } finally {
                 g.dispose();
             }
         }
 
-        /**
-         * @param clazz
-         * @throws IllegalAccessException
-         */
         private JComponent getSubstitute(Class<?> clazz) throws IllegalAccessException {
             JComponent standInComponent;
 
@@ -596,8 +590,7 @@ public class UIManagerDefaults implements ActionListener, ItemListener {
             try {
                 super.paint(g);
             } catch (Exception e) {
-//				System.out.println(e);
-//				System.out.println(e.getStackTrace()[0]);
+                e.printStackTrace();
             }
         }
     }
