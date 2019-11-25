@@ -49,26 +49,29 @@ public class GameManager {
         this.view = view;
     }
 
+    /**
+     * Works only for stepSim <= stepView
+     */
     public void next() {
-        if (stepView > stepSim) {
-            throw new IllegalStateException("The View cannot be over than the simulation.");
-        }
-        if (stepSim == stepView) {
-            move();
-            stepSim++;
+        if (stepSim <= stepView) {
             stepView++;
-        } else {
-            stepView++;
-            gameHistory.next();
+
+            if (stepSim == stepView) {
+                move();
+            } else {
+                gameHistory.next();
+            }
         }
     }
 
+    /**
+     * Works only for stepView > 0
+     */
     public void previous() {
-        if (stepView == 0) {
-            throw new IllegalStateException("The View cannot be before than the simulation.");
+        if (stepView > 0) {
+            stepView--;
+            gameHistory.previous();
         }
-        stepView--;
-        gameHistory.previous();
     }
 
     /**
@@ -114,6 +117,7 @@ public class GameManager {
                 "treasurePos: " + treasurePos +
                 "searcherPos:  " + searcherPos +
                 "");
+        stepSim++;
     }
 
     /**
