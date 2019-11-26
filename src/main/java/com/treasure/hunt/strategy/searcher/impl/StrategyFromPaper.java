@@ -1,18 +1,19 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
+import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.Value;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.LineSegment;
-import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.*;
 import org.locationtech.jts.geom.util.AffineTransformation;
 import org.locationtech.jts.math.Vector2D;
 
+import static com.treasure.hunt.strategy.geom.GeometryType.CURRENT_PHASE;
+import static com.treasure.hunt.strategy.geom.GeometryType.CURRENT_RECTANGLE;
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
+import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
 
 public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     int phase; //equals j in the paper. In phase i, the algorithm checks a rectangle with a side length of 2^i
@@ -31,9 +32,28 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         setRectToPhase();
     }
 
+    private Movement addState(Movement move) {
+        // add current rectangle which the strategy is working on
+        Coordinate[] cur_coords = new Coordinate[4];
+        cur_coords[0] = A.getCoordinate();
+        cur_coords[1] = B.getCoordinate();
+        cur_coords[2] = C.getCoordinate();
+        cur_coords[3] = D.getCoordinate();
+
+        Polygon cur_rect = GEOMETRY_FACTORY.createPolygon(cur_coords);
+        GeometryItem<Polygon> cur = new GeometryItem<Polygon>(cur_rect, CURRENT_RECTANGLE);
+        move.addAdditionalItem(cur);
+
+        // add the rectangle of the current phase
+        Polygon rect_phase = GEOMETRY_FACTORY.createPolygon(phaseRectangle());
+        GeometryItem<Polygon> phase = new GeometryItem<Polygon>(rect_phase, CURRENT_PHASE);
+        move.addAdditionalItem(phase);
+        return move;
+    }
+
     @Override
     public Movement move() {
-        return incrementPhase();
+        return addState(incrementPhase());
     }
 
     @Override
@@ -41,7 +61,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         double width = B.getX() - A.getX();
         double height = A.getY() - D.getY();
         if (width < 4 || height < 4) {
-            return incrementPhase();
+            return addState(incrementPhase());
         }
         //now analyse the hint:
         if (lastHintWasBad)
@@ -68,7 +88,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             B = horizontalSplit[1];
             C = horizontalSplit[2];
             D = horizontalSplit[3];
-            return moveToCenterOfRectangle(A, B, C, D);
+            return addState(moveToCenterOfRectangle(A, B, C, D));
         }
         Point[] verticalSplit = splitRectangleVertically(A, B, C, D, hint, intersection_AB_hint,
                 intersection_CD_hint);
@@ -77,9 +97,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             B = verticalSplit[1];
             C = verticalSplit[2];
             D = verticalSplit[3];
-            return moveToCenterOfRectangle(A, B, C, D);
+            return addState(moveToCenterOfRectangle(A, B, C, D));
         }
-        return badHintSubroutine(hint);
+        return addState(badHintSubroutine(hint));
     }
 
     private Point[] splitRectangleHorizontally(Point A, Point B, Point C, Point D, HalfPlaneHint hint,
@@ -173,11 +193,11 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         //return moveToCenterOfRectangle(A, B, C, D); //testing
 
         Point direction = twoStepsOrthogonal(hint, location);
-        Movement ret = new Movement();
-        ret.addWayPoint(direction);
+        Movement move = new Movement();
+        move.addWayPoint(direction);
         lastHintWasBad = true;
         lastBadHint = hint;
-        return ret;
+        return move;
     }
 
     // location has to be set accordingly (so that the player is on the hint line)
@@ -223,14 +243,24 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return ret;
     }
 
-    private void setRectToPhase() {
+    private Coordinate[] phaseRectangle() {
         double halfDiff = Math.pow(2, phase - 1);
         double startX = start.getX();
         double startY = start.getY();
-        A = JTSUtils.createPoint(startX - halfDiff, startY + halfDiff);
-        B = JTSUtils.createPoint(startX + halfDiff, startY + halfDiff);
-        C = JTSUtils.createPoint(startX - halfDiff, startY + halfDiff);
-        D = JTSUtils.createPoint(startX - halfDiff, startY - halfDiff);
+        Coordinate[] rect = new Coordinate[4];
+        rect[0] = new Coordinate(startX - halfDiff, startY + halfDiff);
+        rect[1] = new Coordinate(startX + halfDiff, startY + halfDiff);
+        rect[2] = new Coordinate(startX - halfDiff, startY + halfDiff);
+        rect[3] = new Coordinate(startX - halfDiff, startY - halfDiff);
+        return rect;
+    }
+
+    private void setRectToPhase() {
+        Coordinate[] rect = phaseRectangle();
+        A = GEOMETRY_FACTORY.createPoint(rect[0]);
+        B = GEOMETRY_FACTORY.createPoint(rect[1]);
+        C = GEOMETRY_FACTORY.createPoint(rect[2]);
+        D = GEOMETRY_FACTORY.createPoint(rect[3]);
     }
 
     private Movement rectangleScan(Point A, Point B, Point C, Point D) {
@@ -291,16 +321,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return null;
     }
 
-
-    @Value
-    private class RectangleHintPair {
-        Point A;
-        Point B;
-        Point C;
-        Point D;
-        HalfPlaneHint hint;
-    }
-
     /**
      * Returnes the rectangle R of rp and the hint of rp which are mirrored in H, a vertical line
      * through the center of R.
@@ -314,15 +334,14 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Point C = rp.getC();
         Point D = rp.getD();
 
-        LineString AD = JTSUtils.GEOMETRY_FACTORY.createLineString(new Coordinate[]{
+        LineString AD = GEOMETRY_FACTORY.createLineString(new Coordinate[]{
                 A.getCoordinate(), D.getCoordinate()});
-        LineString BC = JTSUtils.GEOMETRY_FACTORY.createLineString(new Coordinate[]{
+        LineString BC = GEOMETRY_FACTORY.createLineString(new Coordinate[]{
                 B.getCoordinate(), C.getCoordinate()});
         Point middleOfAD = AD.getCentroid();
         Point middleOfBC = BC.getCentroid();
         AffineTransformation reflectionH = AffineTransformation.reflectionInstance(
                 middleOfAD.getX(), middleOfAD.getY(), middleOfBC.getX(), middleOfBC.getY());
-
 
         //Point r = centerOfRectangle(rp.getA(),rp.getB(),rp.getC(),rp.getD());
 
@@ -342,6 +361,15 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     private int getBasicTransformation(RectangleHintPair rp) {
 
         return 0;
+    }
+
+    @Value
+    private class RectangleHintPair {
+        Point A;
+        Point B;
+        Point C;
+        Point D;
+        HalfPlaneHint hint;
     }
 
 }
