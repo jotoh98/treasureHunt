@@ -4,7 +4,7 @@ package com.treasure.hunt.view.main;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
-import com.treasure.hunt.view.in_game.implementatons.CanvasView;
+import com.treasure.hunt.view.in_game.impl.CanvasView;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,9 +31,9 @@ public class MainFrameController {
         Searcher newSearcher = searcherClass.getDeclaredConstructor().newInstance();
         Hider newHider = hiderClass.getDeclaredConstructor().newInstance();
         CanvasView canvasView = new CanvasView();
-        gameManager
+        GameManager gameManagerInstance = gameManager
                 .getDeclaredConstructor(Searcher.class, Hider.class, List.class)
                 .newInstance(newSearcher, newHider, Collections.singletonList(canvasView));
-        new CanvasController(canvasView);
+        new CanvasController(canvasView, gameManagerInstance);
     }
 }

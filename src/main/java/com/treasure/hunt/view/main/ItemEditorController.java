@@ -26,11 +26,11 @@ public class ItemEditorController extends JFrame {
     }
 
     private void update() {
-        name.setText(geometryItem.getType().getDisplayName());
+        name.setText(geometryItem.getGeometryType().getDisplayName());
         name.setMaximumSize(new Dimension(Integer.MAX_VALUE, 0));
         addRow("Name", enabled);
 
-        enabled.setSelected(geometryItem.getStyle().isVisible());
+        enabled.setSelected(geometryItem.getGeometryStyle().isVisible());
         addRow("Visible", enabled);
     }
 
