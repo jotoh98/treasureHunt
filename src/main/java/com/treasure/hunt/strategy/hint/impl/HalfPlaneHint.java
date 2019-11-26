@@ -27,39 +27,6 @@ public class HalfPlaneHint extends AngleHint {
         this.halfPlanePoint = halfPlanePoint;
     }
 
-    // TODO is this necessary ?
-    public static HalfPlaneHint angular2correctHalfPlaneHint(AngleHint anglehint) {
-
-        Point P1 = anglehint.getAnglePointLeft();
-        Point P2 = anglehint.getAnglePointRight();
-        Point C = anglehint.getCenter();
-
-        double yPointOne = P1.getY();
-        double xPointOne = P1.getX();
-        double yCenter = C.getY();
-        double xCenter = C.getX();
-        double yPointTwo = P2.getY();
-        double xPointTwo = P2.getX();
-
-        if (Angle.angleBetweenOriented(P1.getCoordinate(), C.getCoordinate(), P2.getCoordinate()) <= 0) {
-            throw new IllegalArgumentException("angular2correctHalfPlaneHint was called with an angular Hint bigger" +
-                    " than pi or equal to 0.");
-        }
-
-        if (yPointOne == yCenter) {
-            if (xPointOne > xCenter) {
-                return new HalfPlaneHint(P1, C, Direction.up);
-            }
-            return new HalfPlaneHint(P1, C, Direction.down);
-        }
-
-        if (yPointOne < yCenter) {
-            return new HalfPlaneHint(P1, C, Direction.right);
-        }
-
-        return new HalfPlaneHint(P1, C, Direction.left);
-    }
-
     @Override
     public List<GeometryItem> getGeometryItems() {
         // TODO implement
@@ -67,7 +34,7 @@ public class HalfPlaneHint extends AngleHint {
     }
 
     // TODO could be simplified
-    private Point getLowerHintPoint() {
+    public Point getLowerHintPoint() {
         if (center.getY() < halfPlanePoint.getY()) {
             return center;
         } else {
@@ -76,7 +43,7 @@ public class HalfPlaneHint extends AngleHint {
     }
 
     // TODO could be simplified
-    private Point getUpperHintPoint() {
+    public Point getUpperHintPoint() {
         if (center.getY() < halfPlanePoint.getY()) {
             return halfPlanePoint;
         } else {
