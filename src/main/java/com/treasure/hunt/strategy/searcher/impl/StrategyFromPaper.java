@@ -1,12 +1,9 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
-import com.treasure.hunt.game.GameHistory;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
-import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
-import lombok.AllArgsConstructor;
 import lombok.Value;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
@@ -56,7 +53,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         LineSegment AD = new LineSegment(A.getCoordinate(), D.getCoordinate());
 
         LineSegment hintLine = new LineSegment(hint.getCenter().getCoordinate(),
-                hint.getHalfPlanePoint().getCoordinate());
+                hint.getRightPoint().getCoordinate());
 
         Point intersection_AD_hint = JTSUtils.lineLineSegmentIntersection(hintLine, AD);
         Point intersection_BC_hint = JTSUtils.lineLineSegmentIntersection(hintLine, BC);
@@ -71,7 +68,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             B = horizontalSplit[1];
             C = horizontalSplit[2];
             D = horizontalSplit[3];
-            return movesToCenterOfRectangle(A, B, C, D);
+            return moveToCenterOfRectangle(A, B, C, D);
         }
         Point[] verticalSplit = splitRectangleVertically(A, B, C, D, hint, intersection_AB_hint,
                 intersection_CD_hint);
@@ -80,7 +77,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             B = verticalSplit[1];
             C = verticalSplit[2];
             D = verticalSplit[3];
-            return movesToCenterOfRectangle(A, B, C, D);
+            return moveToCenterOfRectangle(A, B, C, D);
         }
         return badHintSubroutine(hint);
     }
@@ -173,7 +170,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     }
 
     private Movement badHintSubroutine(HalfPlaneHint hint) {
-        //return movesToCenterOfRectangle(A, B, C, D); //testing
+        //return moveToCenterOfRectangle(A, B, C, D); //testing
 
         Point direction = twoStepsOrthogonal(hint, location);
         Movement ret = new Movement();
@@ -208,7 +205,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return line13.getCentroid();
     }
 
-    private Movement movesToCenterOfRectangle(Point P1, Point P2, Point P3, Point P4) {
+    private Movement moveToCenterOfRectangle(Point P1, Point P2, Point P3, Point P4) {
         Movement ret = new Movement();
         ret.addWayPoint(centerOfRectangle(P1, P2, P3, P4));
         return ret;
@@ -237,7 +234,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     }
 
     private Movement rectangleScan(Point A, Point B, Point C, Point D) {
-        Movement moves = new Movement();
+        Movement move = new Movement();
 
         int k = (int) A.distance(B);
         Point[] a = new Point[k];
@@ -263,23 +260,24 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         if (k % 2 == 1) //code like in paper
         {
             for (int i = 0; i <= k - 1; k += 2) {
-                moves.addWayPoint(a[i]);
-                moves.addWayPoint(b[i]);
-                moves.addWayPoint(b[i + 1]);
-                moves.addWayPoint(a[i + 1]);
+                move.addWayPoint(a[i]);
+                move.addWayPoint(b[i]);
+                move.addWayPoint(b[i + 1]);
+                move.addWayPoint(a[i + 1]);
             }
         } else {
             for (int i = 0; i <= k - 2; k += 2) {
-                moves.addWayPoint(a[i]);
-                moves.addWayPoint(b[i]);
-                moves.addWayPoint(b[i + 1]);
-                moves.addWayPoint(a[i + 1]);
+                move.addWayPoint(a[i]);
+                move.addWayPoint(b[i]);
+                move.addWayPoint(b[i + 1]);
+                move.addWayPoint(a[i + 1]);
             }
-            moves.addWayPoint(a[k]);
-            moves.addWayPoint(b[k]);
-            //moves.addWayPoint(a); // go to a
+            move.addWayPoint(a[k]);
+            move.addWayPoint(b[k]);
+            //move.addWayPoint(a); // go to a
         }
-        return moves;
+
+        return move;
     }
 
     private Movement twoHintsSubroutine(HalfPlaneHint curHint) {

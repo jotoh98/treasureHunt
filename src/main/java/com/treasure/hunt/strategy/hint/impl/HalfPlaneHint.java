@@ -2,7 +2,6 @@ package com.treasure.hunt.strategy.hint.impl;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import lombok.Getter;
-import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Point;
 
 import java.util.List;
@@ -18,13 +17,19 @@ public class HalfPlaneHint extends AngleHint {
     // left and down respectively
 
     @Getter
-    private Point halfPlanePoint;
+    private Point rightPoint;
 
-    public HalfPlaneHint(Point center, Point halfPlanePoint, Direction direction) {
-        super(null, center, halfPlanePoint);
+    public HalfPlaneHint(Point center, Point rightPoint){
+        super(null,center,rightPoint);
+        this.center = center;
+        this.rightPoint = rightPoint;
+    }
+
+    public HalfPlaneHint(Point center, Point rightPoint, Direction direction) {
+        super(null, center, rightPoint);
         this.direction = direction;
         this.center = center;
-        this.halfPlanePoint = halfPlanePoint;
+        this.rightPoint = rightPoint;
     }
 
     @Override
@@ -35,17 +40,17 @@ public class HalfPlaneHint extends AngleHint {
 
     // TODO could be simplified
     public Point getLowerHintPoint() {
-        if (center.getY() < halfPlanePoint.getY()) {
+        if (center.getY() < rightPoint.getY()) {
             return center;
         } else {
-            return halfPlanePoint;
+            return rightPoint;
         }
     }
 
     // TODO could be simplified
     public Point getUpperHintPoint() {
-        if (center.getY() < halfPlanePoint.getY()) {
-            return halfPlanePoint;
+        if (center.getY() < rightPoint.getY()) {
+            return rightPoint;
         } else {
             return center;
         }
