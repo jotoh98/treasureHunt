@@ -34,18 +34,24 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
 
     private Movement addState(Movement move) {
         // add current rectangle which the strategy is working on
-        Coordinate[] cur_coords = new Coordinate[4];
+        Coordinate[] cur_coords = new Coordinate[5];
         cur_coords[0] = A.getCoordinate();
         cur_coords[1] = B.getCoordinate();
         cur_coords[2] = C.getCoordinate();
         cur_coords[3] = D.getCoordinate();
+        cur_coords[4] = A.getCoordinate();
 
         Polygon cur_rect = GEOMETRY_FACTORY.createPolygon(cur_coords);
         GeometryItem<Polygon> cur = new GeometryItem<Polygon>(cur_rect, CURRENT_RECTANGLE);
         move.addAdditionalItem(cur);
 
         // add the rectangle of the current phase
-        Polygon rect_phase = GEOMETRY_FACTORY.createPolygon(phaseRectangle());
+        Coordinate[] phaseRect = phaseRectangle();
+        Coordinate[] phasePolygon = new Coordinate[5];
+        for (int i = 0; i < 4; i++)
+            phasePolygon[i] = phaseRect[i];
+        phasePolygon[4] = phaseRect[0];
+        Polygon rect_phase = GEOMETRY_FACTORY.createPolygon(phasePolygon);
         GeometryItem<Polygon> phase = new GeometryItem<Polygon>(rect_phase, CURRENT_PHASE);
         move.addAdditionalItem(phase);
         return move;
@@ -238,9 +244,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Point oldC = C;
         Point oldD = D;
         setRectToPhase();
-        Movement ret = rectangleScan(oldA, oldB, oldC, oldD);
-        ret.addWayPoint(centerOfRectangle(A, B, C, D));
-        return ret;
+        Movement move = rectangleScan(oldA, oldB, oldC, oldD);
+        move.addWayPoint(centerOfRectangle(A, B, C, D));
+        return move;
     }
 
     private Coordinate[] phaseRectangle() {
@@ -250,7 +256,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Coordinate[] rect = new Coordinate[4];
         rect[0] = new Coordinate(startX - halfDiff, startY + halfDiff);
         rect[1] = new Coordinate(startX + halfDiff, startY + halfDiff);
-        rect[2] = new Coordinate(startX - halfDiff, startY + halfDiff);
+        rect[2] = new Coordinate(startX + halfDiff, startY - halfDiff);
         rect[3] = new Coordinate(startX - halfDiff, startY - halfDiff);
         return rect;
     }
@@ -267,36 +273,39 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Movement move = new Movement();
 
         int k = (int) A.distance(B);
-        Point[] a = new Point[k];
-        Point[] b = new Point[k];
+        Point[] a = new Point[k + 1];
+        Point[] b = new Point[k + 1];
 
         { //create a_i on line segment AB
             double xDist = B.getX() - A.getX();
             double yDist = B.getY() - A.getY();
             for (int i = 0; i <= k; i++) {
-                a[i] = JTSUtils.createPoint(A.getX() + xDist * ((double) i / k), B.getX() + yDist *
-                        ((double) i / k));
+                a[i] = JTSUtils.createPoint(A.getX() + xDist * ((double) i / (double) k), A.getY() + yDist *
+                        ((double) i / (double) k));
             }
         }
         { //create b_i on line segment DC
-            double xDist = D.getX() - C.getX();
-            double yDist = D.getY() - C.getY();
+            double xDist = C.getX() - D.getX();
+            double yDist = C.getY() - D.getY();
+            //for (int i = 0; i <= k; i++) {
             for (int i = 0; i <= k; i++) {
-                b[i] = JTSUtils.createPoint(D.getX() + xDist * ((double) i / k), C.getX() + yDist *
-                        ((double) i / k));
+                b[i] = JTSUtils.createPoint(D.getX() + xDist * ((double) i / (double) k), D.getY() + yDist *
+                        ((double) i / (double) k));
             }
         }
 
         if (k % 2 == 1) //code like in paper
         {
-            for (int i = 0; i <= k - 1; k += 2) {
+            //for (int i = 0; i <= k - 1; k += 2) {
+            for (int i = 0; i <= k - 1; i += 2) {
                 move.addWayPoint(a[i]);
                 move.addWayPoint(b[i]);
                 move.addWayPoint(b[i + 1]);
                 move.addWayPoint(a[i + 1]);
             }
         } else {
-            for (int i = 0; i <= k - 2; k += 2) {
+            //for (int i = 0; i <= k - 2; k += 2) {
+            for (int i = 0; i <= k - 2; i += 2) {
                 move.addWayPoint(a[i]);
                 move.addWayPoint(b[i]);
                 move.addWayPoint(b[i + 1]);
@@ -304,9 +313,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             }
             move.addWayPoint(a[k]);
             move.addWayPoint(b[k]);
-            //move.addWayPoint(a); // go to a
         }
-
+        //move.addWayPoint(a); // go to a
         return move;
     }
 
