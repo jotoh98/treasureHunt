@@ -6,6 +6,9 @@ import org.locationtech.jts.geom.Point;
 
 public class HalfplaneHint extends Hint {
 
+    //TODO
+    // delete constructor argument direction, compute intern
+
     public HalfplaneHint(Point P1, Point P2, Direction direction) {
         super(P1);
         Point halfplanePoint = P2;
@@ -26,6 +29,7 @@ public class HalfplaneHint extends Hint {
     // to the line (the up and down enumerators are only used when the line is horizontal)
     // left and down respectively
 
+    //TODO del this method
     public static HalfplaneHint angular2correctHalfPlaneHint(AngleHint anglehint) {
 
 

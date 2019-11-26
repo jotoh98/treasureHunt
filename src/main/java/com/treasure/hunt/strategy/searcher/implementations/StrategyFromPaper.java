@@ -7,9 +7,13 @@ import com.treasure.hunt.strategy.hint.HalfplaneHint.Direction;
 import com.treasure.hunt.strategy.searcher.Moves;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
+import lombok.AllArgsConstructor;
+import lombok.Value;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.util.AffineTransformation;
 import org.locationtech.jts.math.Vector2D;
 
 import static com.treasure.hunt.strategy.hint.HalfplaneHint.Direction.*;
@@ -43,7 +47,7 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
     public Moves move(AngleHint hint) {
         double width = B.getX() - A.getX();
         double height = A.getY() - D.getY();
-        if (width * height <= 4) {
+        if (width < 4 || height < 4) {
             return incrementPhase();
         }
         //now analyse the hint:
@@ -180,17 +184,14 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
     }
 
     private Moves badHintSubroutine(HalfplaneHint hint) {
+        //return movesToCenterOfRectangle(A, B, C, D); //testing
+
         Point direction = twoStepsOrthogonal(hint, location);
         Moves ret = new Moves();
         ret.addWayPoint(direction);
         lastHintWasBad = true;
         lastBadHint = hint;
         return ret;
-    }
-
-    private Moves twoHintsSubroutine(HalfplaneHint curHint) {
-
-        return null;
     }
 
     // location has to be set accordingly (so that the player is on the hint line)
@@ -257,14 +258,16 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
             double xDist = B.getX() - A.getX();
             double yDist = B.getY() - A.getY();
             for (int i = 0; i <= k; i++) {
-                a[i] = JTSUtils.createPoint(A.getX() + xDist * ((double) i / k), B.getX() + yDist * ((double) i / k));
+                a[i] = JTSUtils.createPoint(A.getX() + xDist * ((double) i / k), B.getX() + yDist *
+                        ((double) i / k));
             }
         }
         { //create b_i on line segment DC
             double xDist = D.getX() - C.getX();
             double yDist = D.getY() - C.getY();
             for (int i = 0; i <= k; i++) {
-                b[i] = JTSUtils.createPoint(D.getX() + xDist * ((double) i / k), C.getX() + yDist * ((double) i / k));
+                b[i] = JTSUtils.createPoint(D.getX() + xDist * ((double) i / k), C.getX() + yDist *
+                        ((double) i / k));
             }
         }
 
@@ -289,5 +292,70 @@ public class StrategyFromPaper implements Searcher<AngleHint> {
         }
         return moves;
     }
+
+    private Moves twoHintsSubroutine(HalfplaneHint curHint) {
+        //TODO
+
+        // plan für diese funktion:
+        // erstmal die methoden für phi, reversePhi, rho und getBasicTransformation schreiben
+        // dann die ganzen punkte berechnen die in dem Paper auch gebraucht werden
+        // dann die Fälle des Papers durchgehen und dementsprechend returnen
+
+        return null;
+    }
+
+
+    @Value
+    private class RectangleHintPair{
+        Point A;
+        Point B;
+        Point C;
+        Point D;
+        HalfplaneHint hint;
+    }
+
+    /**
+     * Returnes the rectangle R of rp and the hint of rp which are mirrored in H, a vertical line
+     * through the center of R.
+     * @param rp
+     * @return
+     */
+    private RectangleHintPair rho(RectangleHintPair rp){
+        Point A = rp.getA();
+        Point B = rp.getB();
+        Point C = rp.getC();
+        Point D = rp.getD();
+
+        LineString AD = JTSUtils.getDefaultGeometryFactory().createLineString(new Coordinate[]{
+                A.getCoordinate(), D.getCoordinate()});
+        LineString BC = JTSUtils.getDefaultGeometryFactory().createLineString(new Coordinate[]{
+                B.getCoordinate(), C.getCoordinate()});
+        Point middleOfAD = AD.getCentroid();
+        Point middleOfBC = BC.getCentroid();
+        AffineTransformation reflectionH = AffineTransformation.reflectionInstance(
+                middleOfAD.getX(),middleOfAD.getY(), middleOfBC.getX(), middleOfBC.getY());
+
+
+
+        //Point r = centerOfRectangle(rp.getA(),rp.getB(),rp.getC(),rp.getD());
+
+        return null;
+    }
+
+    private Point[] phi(int k, Point A, Point B, Point C, Point D) {
+
+        return null;
+    }
+
+    private Point[] reversePhi(int k, Point A, Point B, Point C, Point D) {
+
+        return null;
+    }
+
+    private int getBasicTransformation(RectangleHintPair rp){
+
+        return 0;
+    }
+
 }
 
