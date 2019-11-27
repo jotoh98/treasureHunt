@@ -43,19 +43,19 @@ public class JTSUtils {
      */
     public static Coordinate middleOfAngleHint(AngleHint angleHint) {
         double betweenAngle = angleBetweenOriented(
-                angleHint.getAnglePointRight().getCoordinate(),
-                angleHint.getCenter().getCoordinate(),
-                angleHint.getAnglePointLeft().getCoordinate()
+                angleHint.getGeometryAngle().getRight(),
+                angleHint.getGeometryAngle().getCenter(),
+                angleHint.getGeometryAngle().getLeft()
         );
 
-        double rightAngle = Angle.angle(angleHint.getCenter().getCoordinate(),
-                angleHint.getAnglePointRight().getCoordinate());
+        double rightAngle = Angle.angle(angleHint.getGeometryAngle().getCenter(),
+                angleHint.getGeometryAngle().getRight());
         double resultAngle = Angle.normalizePositive(rightAngle + betweenAngle / 2);
         if (betweenAngle < 0) {
             resultAngle += Math.PI;
         }
-        double x = angleHint.getCenter().getX() + (Math.cos(resultAngle));
-        double y = angleHint.getCenter().getY() + (Math.sin(resultAngle));
+        double x = angleHint.getGeometryAngle().getCenter().getX() + (Math.cos(resultAngle));
+        double y = angleHint.getGeometryAngle().getCenter().getY() + (Math.sin(resultAngle));
         return new Coordinate(x, y);
     }
 }

@@ -12,7 +12,7 @@ import java.awt.event.*;
 public class CanvasMouseListener implements MouseListener, MouseMotionListener, MouseWheelListener {
 
     private static final double MIN_SCALE = .1;
-    private static final double MAX_SCALE = 1e2;
+    private static final double MAX_SCALE = 1e10;
     private Vector2D dragOffset;
     @NonNull
     private CanvasController canvasController;

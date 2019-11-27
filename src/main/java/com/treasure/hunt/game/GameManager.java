@@ -25,6 +25,7 @@ import java.util.List;
 public class GameManager {
 
     protected List<View> view;
+    @Getter
     protected final GameHistory gameHistory = new GameHistory();
 
     protected final Searcher searcher;

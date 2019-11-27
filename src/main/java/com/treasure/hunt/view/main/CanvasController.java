@@ -17,13 +17,15 @@ public class CanvasController extends JFrame {
     private final CanvasView canvasView;
     private final GameManager gameManager;
 
+    private JTextPane offsetPanel = new JTextPane();
+
     @Getter
-    private Vector2D offset = new Vector2D();
+    private Vector2D offset = new Vector2D(400, 400);
 
     @Getter
     private double scale = 1.0;
 
-    CanvasController(CanvasView canvasView, GameManager gameManager) {
+    public CanvasController(CanvasView canvasView, GameManager gameManager) {
         this.canvasView = canvasView;
         this.gameManager = gameManager;
         gameManager.init(); //!
@@ -37,29 +39,64 @@ public class CanvasController extends JFrame {
     }
 
     private void initCanvasWrapper(CanvasView canvasView) {
-        JPanel borderPanel = new JPanel();
+        JPanel rootPanel = new JPanel();
+        rootPanel.setLayout(new BorderLayout());
+        setContentPane(rootPanel);
+
+        rootPanel.add(canvasView, BorderLayout.CENTER);
+
         JPanel bottomControlPanel = new JPanel();
-        borderPanel.setLayout(new BorderLayout());
         bottomControlPanel.setLayout(new BoxLayout(bottomControlPanel, BoxLayout.X_AXIS));
-        setContentPane(borderPanel);
-        borderPanel.add(canvasView, BorderLayout.CENTER);
-        borderPanel.add(bottomControlPanel, BorderLayout.SOUTH);
+        rootPanel.add(bottomControlPanel, BorderLayout.SOUTH);
         bottomControlPanel.setBackground(Color.gray);
         bottomControlPanel.setBorder(createEmptyBorder(10, 10, 10, 10));
+
+        JPanel rightControlPanel = new JPanel();
+        rightControlPanel.setLayout(new BoxLayout(rightControlPanel, BoxLayout.Y_AXIS));
+        rootPanel.add(rightControlPanel, BorderLayout.EAST);
+        rightControlPanel.add(offsetPanel);
+
         Button nextButton = new Button();
         nextButton.setLabel("Next");
         nextButton.addActionListener(e -> gameManager.step());
         bottomControlPanel.add(nextButton);
-        bottomControlPanel.add(new Box.Filler(new Dimension(0, 0), new Dimension(Integer.MAX_VALUE, 0), new Dimension(0, Integer.MAX_VALUE)));
+
+        bottomControlPanel.add(
+                new Box.Filler(
+                        new Dimension(0, 0),
+                        new Dimension(Integer.MAX_VALUE, 0),
+                        new Dimension(0, Integer.MAX_VALUE)
+                )
+        );
     }
 
     public void setOffset(Vector2D vector2D) {
         offset = vector2D;
         canvasView.getPointTransformation().setOffset(offset);
+        updateOffsetPanel();
+
     }
 
     public void addToScale(double addend) {
         this.scale += addend;
         this.getCanvasView().getPointTransformation().setScale(this.scale);
+        updateOffsetPanel();
+    }
+
+    private void updateOffsetPanel() {
+        Vector2D leftUpperBoundary = canvasView.getPointTransformation().getLeftUpperBoundary();
+        Vector2D rightLowerBoundary = canvasView.getPointTransformation().getRightLowerBoundary(canvasView);
+
+        offsetPanel.setText(String.format(
+                "[%.2f, %.2f] [%.2f, %.2f]",
+                leftUpperBoundary.getX(),
+                leftUpperBoundary.getY(),
+                rightLowerBoundary.getX(),
+                rightLowerBoundary.getY()
+        ));
+    }
+
+    public void updateBoundary() {
+        canvasView.getPointTransformation().setBoundarySize((int) (canvasView.getWidth() / scale), (int) (canvasView.getHeight() / scale));
     }
 }

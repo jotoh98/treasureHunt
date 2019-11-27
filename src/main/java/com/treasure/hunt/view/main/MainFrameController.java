@@ -10,16 +10,16 @@ import java.util.Collections;
 import java.util.List;
 
 public class MainFrameController {
-    private static MainFrameController single_instance = null;
+    private static MainFrameController singleInstance = null;
 
     private MainFrameController() {
     }
 
     public static MainFrameController getInstance() {
-        if (single_instance == null) {
-            single_instance = new MainFrameController();
+        if (singleInstance == null) {
+            singleInstance = new MainFrameController();
         }
-        return single_instance;
+        return singleInstance;
     }
 
     public void start() {
@@ -27,13 +27,13 @@ public class MainFrameController {
         mainMenuController.show();
     }
 
-    public void onPlay(Class<? extends Searcher> searcherClass, Class<? extends Hider> hiderClass, Class<? extends GameManager> gameManager) throws Exception {
+    public CanvasController initGame(Class<? extends Searcher> searcherClass, Class<? extends Hider> hiderClass, Class<? extends GameManager> gameManager) throws Exception {
         Searcher newSearcher = searcherClass.getDeclaredConstructor().newInstance();
         Hider newHider = hiderClass.getDeclaredConstructor().newInstance();
         CanvasView canvasView = new CanvasView();
         GameManager gameManagerInstance = gameManager
                 .getDeclaredConstructor(Searcher.class, Hider.class, List.class)
                 .newInstance(newSearcher, newHider, Collections.singletonList(canvasView));
-        new CanvasController(canvasView, gameManagerInstance);
+        return new CanvasController(canvasView, gameManagerInstance);
     }
 }

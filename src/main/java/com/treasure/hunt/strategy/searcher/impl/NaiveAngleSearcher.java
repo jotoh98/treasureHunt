@@ -39,7 +39,7 @@ public class NaiveAngleSearcher implements Searcher<AngleHint> {
         startPosition = JTSUtils.createPoint(x, y);
         m.addWayPoint(startPosition);
         // Add to additionalItems
-        Coordinate[] a2 = {angleHint.getCenter().getCoordinate(), new Coordinate(x, y)};
+        Coordinate[] a2 = {angleHint.getGeometryAngle().getCenter(), new Coordinate(x, y)};
         m.addAdditionalItem(
                 new GeometryItem(new LineString(
                         new CoordinateArraySequence(a2),
