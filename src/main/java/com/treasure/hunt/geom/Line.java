@@ -13,6 +13,10 @@ public class Line extends Ray {
         super(p0, p1);
     }
 
+    public Line(double x1, double y1, double x2, double y2) {
+        this(new Coordinate(x1, y1), new Coordinate(x2, y2));
+    }
+
     @Override
     public Coordinate intersection(LineSegment line) {
         return super.lineIntersection(line);
@@ -34,8 +38,8 @@ public class Line extends Ray {
 
         Vector2D vector2D = new Vector2D(p0, p1);
 
-        Vector2D positiveRay = vector2D.multiply(pointTransformation.diameter() / 2);
-        Vector2D negativeRay = vector2D.multiply(-pointTransformation.diameter() / 2);
+        Vector2D positiveRay = vector2D.normalize().multiply(pointTransformation.diameter());
+        Vector2D negativeRay = vector2D.normalize().multiply(-pointTransformation.diameter());
 
         linePath.moveTo(start.getX() + negativeRay.getX(), start.getY() + negativeRay.getY());
         linePath.lineTo(start.getX() + positiveRay.getX(), start.getY() + positiveRay.getY());
