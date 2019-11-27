@@ -1,14 +1,15 @@
 package com.treasure.hunt.strategy.hint.impl;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
-import lombok.Getter;
+import com.treasure.hunt.strategy.hint.Hint;
+import lombok.Value;
 import org.locationtech.jts.geom.Point;
 
 import java.util.List;
 
-public class HalfPlaneHint extends AngleHint {
+@Value
+public class HalfPlaneHint extends Hint {
 
-    @Getter
     private Direction direction;    // when the line indicated by halfplanePointOne and halfplanePointTwo is not horizontal,
     // right and left indicate where the target is (right indicates the target is in positive x-Direction
     // in relationship to the line)
@@ -16,21 +17,8 @@ public class HalfPlaneHint extends AngleHint {
     // to the line (the up and down enumerators are only used when the line is horizontal)
     // left and down respectively
 
-    @Getter
-    private Point rightPoint;
-
-    public HalfPlaneHint(Point center, Point rightPoint){
-        super(null,center,rightPoint);
-        this.center = center;
-        this.rightPoint = rightPoint;
-    }
-
-    public HalfPlaneHint(Point center, Point rightPoint, Direction direction) {
-        super(null, center, rightPoint);
-        this.direction = direction;
-        this.center = center;
-        this.rightPoint = rightPoint;
-    }
+    private Point pointOne;
+    private Point pointTwo;
 
     @Override
     public List<GeometryItem> getGeometryItems() {
@@ -38,27 +26,20 @@ public class HalfPlaneHint extends AngleHint {
         return null;
     }
 
-    // TODO could be simplified
     public Point getLowerHintPoint() {
-        if (center.getY() < rightPoint.getY()) {
-            return center;
+        if (pointOne.getY() < pointTwo.getY()) {
+            return pointOne;
         } else {
-            return rightPoint;
+            return pointTwo;
         }
     }
 
-    // TODO could be simplified
     public Point getUpperHintPoint() {
-        if (center.getY() < rightPoint.getY()) {
-            return rightPoint;
+        if (pointOne.getY() < pointTwo.getY()) {
+            return pointTwo;
         } else {
-            return center;
+            return pointOne;
         }
-    }
-
-    // TODO is this necessary ?
-    public enum Direction {
-        right, left, up, down
     }
 
     public boolean pointsUpwards() {
@@ -69,6 +50,10 @@ public class HalfPlaneHint extends AngleHint {
     public boolean pointsDownwards() {
         return (direction == Direction.left && getLowerHintPoint().getX() > getUpperHintPoint().getX()) ||
                 (direction == Direction.right && getLowerHintPoint().getX() < getUpperHintPoint().getX());
+    }
+
+    public enum Direction {
+        right, left, up, down
     }
 
 }
