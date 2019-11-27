@@ -1,14 +1,10 @@
 package com.treasure.hunt.strategy.hider.impl;
 
 import com.treasure.hunt.game.mods.hideandseek.HideAndSeekHider;
-import com.treasure.hunt.strategy.geom.GeometryItem;
-import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
-import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.SwingUtils;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 
 import javax.swing.*;
@@ -26,15 +22,10 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
 
     @Override
     public AngleHint move(Movement movement) {
-        AngleHint angleHint = createAngleDialog(movement.getEndPoint());
-        Coordinate[] angle = {angleHint.getAnglePointLeft().getCoordinate(), angleHint.getCenter().getCoordinate(), angleHint.getAnglePointRight().getCoordinate()};
-        LineString lineString = JTSUtils.GEOMETRY_FACTORY.createLineString(angle);
-        GeometryItem<LineString> hintGeometryItem = new GeometryItem<>(lineString, GeometryType.HINT_ANGLE);
-        angleHint.addAdditionalItem(hintGeometryItem);
-        return angleHint;
+        return createAngleDialog(movement.getEndPoint().getCoordinate());
     }
 
-    private AngleHint createAngleDialog(Point middle) {
+    private AngleHint createAngleDialog(Coordinate middle) {
         while (true) {
             JTextField xPositionTextField = new JTextField();
             JTextField yPositionTextField = new JTextField();
@@ -58,8 +49,8 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
                     double y = Double.parseDouble(yPositionTextField.getText());
                     double x2 = Double.parseDouble(xPositionTextField2.getText());
                     double y2 = Double.parseDouble(yPositionTextField2.getText());
-                    Point angleLeft = JTSUtils.GEOMETRY_FACTORY.createPoint(new Coordinate(x2, y2));
-                    Point angleRight = JTSUtils.GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
+                    Coordinate angleLeft = new Coordinate(x2, y2);
+                    Coordinate angleRight = new Coordinate(x, y);
                     checkAngle(angleLeft, angleRight, middle);
                     return new AngleHint(middle, angleLeft, angleRight);
                 } catch (NumberFormatException e) {
@@ -71,12 +62,12 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
         }
     }
 
-    private void checkAngle(Point angleLeft, Point angleRight, Point middle) throws WrongAngleException {
-        double angle = angleBetweenOriented(angleRight.getCoordinate(), middle.getCoordinate(), angleLeft.getCoordinate());
+    private void checkAngle(Coordinate angleLeft, Coordinate angleRight, Coordinate middle) throws WrongAngleException {
+        double angle = angleBetweenOriented(angleRight, middle, angleLeft);
         if (angle >= Math.PI || angle < 0) {
             throw new WrongAngleException("Angle is bigger 180 degrees");
         }
-        double angleHintToTreasure = angleBetweenOriented(treasureLocation.getCoordinate(), middle.getCoordinate(), angleLeft.getCoordinate());
+        double angleHintToTreasure = angleBetweenOriented(treasureLocation.getCoordinate(), middle, angleLeft);
         if (angleHintToTreasure > angle || angleHintToTreasure < 0) {
             throw new WrongAngleException("Treasure  Location not contained in angle");
         }

@@ -5,6 +5,7 @@ import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
@@ -45,8 +46,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         LineSegment CD = new LineSegment(C.getCoordinate(), D.getCoordinate());
         LineSegment AD = new LineSegment(A.getCoordinate(), D.getCoordinate());
 
-        LineSegment piHintLine = new LineSegment(piHint.getCenter().getCoordinate(),
-                piHint.getHalfPlanePoint().getCoordinate());
+        LineSegment piHintLine = new LineSegment(piHint.getGeometryAngle().getCenter(),
+                piHint.getHalfPlanePoint());
 
         Point intersection_AD_hint = JTSUtils.lineLineSegmentIntersection(piHintLine, AD);
         Point intersection_BC_hint = JTSUtils.lineLineSegmentIntersection(piHintLine, BC);
@@ -97,15 +98,15 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             }
         }
 
-        Point lowerHintPoint;
-        Point upperHintPoint;
+        Coordinate lowerHintPoint;
+        Coordinate upperHintPoint;
 
-        if (piHint.getCenter().getY() < piHint.getHalfPlanePoint().getY()) {
-            lowerHintPoint = piHint.getCenter();
+        if (piHint.getGeometryAngle().getCenter().getY() < piHint.getHalfPlanePoint().getY()) {
+            lowerHintPoint = piHint.getGeometryAngle().getCenter();
             upperHintPoint = piHint.getHalfPlanePoint();
         } else {
             lowerHintPoint = piHint.getHalfPlanePoint();
-            upperHintPoint = piHint.getCenter();
+            upperHintPoint = piHint.getGeometryAngle().getCenter();
         }
 
         if (piHint.pointsUpwards()) {
