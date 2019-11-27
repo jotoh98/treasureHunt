@@ -1,13 +1,19 @@
 package com.treasure.hunt;
 
-import com.treasure.hunt.jts.Circle;
+import com.treasure.hunt.game.GameManager;
+import com.treasure.hunt.geom.Circle;
 import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.hider.impl.UserControlledAngleHintHider;
+import com.treasure.hunt.strategy.searcher.impl.UserControlledAngleHintSearcher;
+import com.treasure.hunt.view.main.MainFrameController;
+import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.util.AffineTransformation;
 
+@Slf4j
 public class SwingTest {
     public static GeometryItem[] exampleGeometryItems() {
         GeometryFactory geometryFactory = new GeometryFactory();
@@ -30,5 +36,13 @@ public class SwingTest {
                 new GeometryItem<>(intersection),
                 new GeometryItem<>(p1)
         };
+    }
+
+    public static void main(String[] args) {
+        try {
+            MainFrameController.getInstance().initGame(UserControlledAngleHintSearcher.class, UserControlledAngleHintHider.class, GameManager.class);
+        } catch (Exception e) {
+            log.debug("Uh oh", e);
+        }
     }
 }

@@ -1,9 +1,8 @@
 package com.treasure.hunt.strategy.geom;
 
+import com.treasure.hunt.jts.AdvancedShapeWriter;
 import lombok.Getter;
 import lombok.NonNull;
-import org.locationtech.jts.awt.ShapeWriter;
-import org.locationtech.jts.geom.Geometry;
 
 import java.awt.*;
 
@@ -14,7 +13,7 @@ import java.awt.*;
  */
 
 @Getter
-public class GeometryItem<T extends Geometry> {
+public class GeometryItem<T> {
     @NonNull
     @Getter
     T object;
@@ -36,7 +35,19 @@ public class GeometryItem<T extends Geometry> {
         this(object, geometryType, GeometryStyle.getDefaults(geometryType));
     }
 
-    public Shape toShape(ShapeWriter shapeWriter) {
-        return shapeWriter.toShape(object);
+    public void draw(Graphics2D graphics2D, AdvancedShapeWriter shapeWriter) {
+        if (!geometryStyle.isVisible()) {
+            return;
+        }
+
+        Shape shape = shapeWriter.toShape(object);
+
+        if (geometryStyle.isFilled()) {
+            graphics2D.setPaint(geometryStyle.getFillColor());
+            graphics2D.fill(shape);
+        }
+        graphics2D.setPaint(geometryStyle.getOutlineColor());
+        graphics2D.setStroke(geometryStyle.toStroke());
+        graphics2D.draw(shape);
     }
 }

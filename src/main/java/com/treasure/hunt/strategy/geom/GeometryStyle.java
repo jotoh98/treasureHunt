@@ -30,12 +30,19 @@ public class GeometryStyle {
     public static GeometryStyle getDefaults(GeometryType type) {
         switch (type) {
             case WAY_POINT:
+                return new GeometryStyle(true, Color.red);
             case SEARCHER_POSITION:
                 return new GeometryStyle(true, Color.black);
             case POSSIBLE_TREASURE:
                 return new GeometryStyle(true, Color.gray, Color.lightGray);
+            case HINT_ANGLE:
+                return new GeometryStyle(true, Color.lightGray);
         }
         return new GeometryStyle(true, Color.black);
+    }
+
+    public Stroke toStroke() {
+        return new BasicStroke(1);
     }
 
 }

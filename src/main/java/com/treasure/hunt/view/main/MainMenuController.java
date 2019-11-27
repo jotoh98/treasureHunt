@@ -105,7 +105,7 @@ public class MainMenuController {
         errorLabel.setVisible(false);
 
         try {
-            MainFrameController.getInstance().onPlay(selectedSearcherClass, selectedHiderClass, selectedGameManagerClass);
+            MainFrameController.getInstance().initGame(selectedSearcherClass, selectedHiderClass, selectedGameManagerClass);
         } catch (Exception e) {
             log.error("Something went wrong creating an instance of GameManager", e);
             errorLabel.setVisible(true);

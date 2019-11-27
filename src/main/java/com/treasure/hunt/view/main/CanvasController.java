@@ -18,7 +18,7 @@ public class CanvasController extends JFrame {
     private final GameManager gameManager;
 
     @Getter
-    private Vector2D offset = new Vector2D();
+    private Vector2D offset = new Vector2D(400, 400);
 
     @Getter
     private double scale = 1.0;
