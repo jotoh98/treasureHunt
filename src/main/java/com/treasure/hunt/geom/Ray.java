@@ -12,6 +12,9 @@ import java.awt.geom.Line2D;
 public class Ray extends LineSegment implements Shapeable {
     public Ray(Coordinate p0, Coordinate p1) {
         super(p0, p1);
+        double length = this.getLength();
+        this.p1.setX(this.p0.getX() + p1.getX() / length);
+        this.p1.setY(this.p0.getY() + p1.getY() / length);
     }
 
     boolean interSectionInRay(Coordinate intersection) {
@@ -48,12 +51,8 @@ public class Ray extends LineSegment implements Shapeable {
 
     @Override
     public Shape toShape(PointTransformation pointTransformation) {
+
         GeneralPath path = new GeneralPath();
-
-        Vector2D rayDirection = new Vector2D(p0, p1).normalize().multiply(pointTransformation.diameter());
-
-        path.moveTo(p0.getX(), p0.getY());
-        path.lineTo(p0.getX() + rayDirection.getX(), p0.getY() + rayDirection.getY());
 
         return path;
     }
