@@ -18,8 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This is the GameManager which should be started,
- * to start a normal game.
+ * This is the GameManager which handles a game with standard behaviour.
  */
 @Requires(hider = Hider.class, searcher = Searcher.class)
 public class GameManager {
