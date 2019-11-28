@@ -13,6 +13,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+/**
+ * This is the GameManager which handles a game with standard behaviour.
+ */
 public class GameManager {
     /**
      * The {@link View} objects (being {@link Runnable})

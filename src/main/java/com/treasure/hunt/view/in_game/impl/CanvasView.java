@@ -1,8 +1,7 @@
 package com.treasure.hunt.view.in_game.impl;
 
-import com.treasure.hunt.game.GameHistory;
-import com.treasure.hunt.jts.AdvancedShapeWriter;
 import com.treasure.hunt.game.GameManager;
+import com.treasure.hunt.jts.AdvancedShapeWriter;
 import com.treasure.hunt.jts.PointTransformation;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.view.in_game.View;
@@ -18,7 +17,7 @@ import java.util.stream.Stream;
 
 /**
  * This is the awt {@link Shape} view displaying the rendered coordinate system. Being a {@link View} instance, it
- * also reacts and repaints every time a new {@link GeometryItem} is sent to the {@link GameHistory}.
+ * also reacts and repaints every time a new {@link GeometryItem} is sent to the {@link GameManager}.
  *
  * @version 1.0
  */
