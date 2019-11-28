@@ -16,6 +16,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * This is the awt {@link Shape} view displaying the rendered coordinate system. Being a {@link View} instance, it
+ * also reacts and repaints every time a new {@link GeometryItem} is sent to the {@link GameHistory}.
+ *
+ * @version 1.0
+ */
 public class CanvasView extends JPanel implements View {
 
     @Getter
@@ -57,8 +63,6 @@ public class CanvasView extends JPanel implements View {
         for (GeometryItem geometryItem : geometryItems) {
             paintShape(graphics2D, geometryItem);
         }
-
-        graphics2D.draw(pointTransformation.getBoundaryRect(this));
 
     }
 

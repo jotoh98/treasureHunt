@@ -11,17 +11,27 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Point2D;
 
+/**
+ * Transforms a source {@link Coordinate} from a strategy to a AWT {@link Point2D} considering a canvas offset
+ * {@link Vector2D} and a viewport scale. These are supplied by a
+ * {@link com.treasure.hunt.view.swing.CanvasMouseListener} through zooming and dragging
+ * actions. Furthermore, it manages the bounding box representing the visual frame of the canvas inside the
+ * mathematical vector space of the algorithm logic for rendering purposes.
+ *
+ * @version 1.0
+ * @see com.treasure.hunt.view.swing.CanvasMouseListener
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 public class PointTransformation implements org.locationtech.jts.awt.PointTransformation {
 
+    @Setter
+    @Getter
+    private Vector2D canvasDiameter = new Vector2D();
+
     /**
      * Holds the relative boundary of the rendered view.
      */
-    @Setter
-    @Getter
-    private Rectangle boundary = new Rectangle();
-
     private Vector2D leftUpperBoundary = new Vector2D();
     private Vector2D rightLowerBoundary = new Vector2D();
 
@@ -34,27 +44,28 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
 
     public void setOffset(Vector2D offset) {
         this.offset = offset;
-        boundary.setLocation((int) Math.floor(offset.getX()), (int) Math.floor(offset.getY()));
     }
 
     @Override
     public void transform(Coordinate src, Point2D dest) {
         dest.setLocation(
-                .5 * (1 + scale) * (1 + scale) * src.x + offset.getX(),
-                .5 * (1 + scale) * (1 + scale) * -src.y + offset.getY()
+                scale * src.x + offset.getX(),
+                scale * -src.y + offset.getY()
         );
     }
 
     public double diameter() {
-        return Math.sqrt(boundary.width * boundary.width + boundary.height * boundary.height);
+        return getMainDiagonalVector().length();
     }
 
     public Vector2D getLeftUpperBoundary() {
-        return offset.negate().divide(scale);
+        Vector2D normalisedOffset = offset.divide(scale);
+        return new Vector2D(-normalisedOffset.getX(), normalisedOffset.getY());
     }
 
     public Vector2D getRightLowerBoundary(JPanel canvas) {
         Vector2D canvasDimension = new Vector2D(canvas.getWidth(), canvas.getHeight());
+        Vector2D leftUpperBoundary = getLeftUpperBoundary();
         return canvasDimension.subtract(offset).divide(scale);
     }
 
@@ -70,7 +81,33 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
         );
     }
 
-    public void setBoundarySize(int width, int height) {
-        boundary.setSize(width, height);
+    public void updateBoundary(int canvasWidth, int canvasHeight) {
+        setBoundaryLocation(-1 * offset.getX(), offset.getY());
+        setBoundarySize(canvasWidth / scale, canvasHeight / scale);
     }
+
+    public void setBoundarySize(Vector2D diagonal) {
+        rightLowerBoundary = leftUpperBoundary.add(diagonal);
+    }
+
+    public void setBoundarySize(double width, double height) {
+        setBoundarySize(new Vector2D(width, height));
+    }
+
+    public void setBoundaryLocation(double x, double y) {
+        setBoundaryLocation(new Vector2D(x, y));
+    }
+
+    public void setBoundaryLocation(Vector2D location) {
+        Vector2D diagonalVector = getMainDiagonalVector();
+        leftUpperBoundary = location;
+        rightLowerBoundary = leftUpperBoundary.add(diagonalVector);
+
+    }
+
+    public Vector2D getMainDiagonalVector() {
+        return leftUpperBoundary.subtract(rightLowerBoundary);
+    }
+
+
 }

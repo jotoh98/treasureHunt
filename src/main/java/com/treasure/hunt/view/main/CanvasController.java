@@ -1,6 +1,7 @@
 package com.treasure.hunt.view.main;
 
 import com.treasure.hunt.game.GameManager;
+import com.treasure.hunt.jts.PointTransformation;
 import com.treasure.hunt.view.in_game.impl.CanvasView;
 import com.treasure.hunt.view.swing.CanvasMouseListener;
 import lombok.Getter;
@@ -17,13 +18,13 @@ public class CanvasController extends JFrame {
     private final CanvasView canvasView;
     private final GameManager gameManager;
 
+    private JPanel rootPanel = new JPanel();
+    private JPanel rightControlPanel = new JPanel();
     private JTextPane offsetPanel = new JTextPane();
+    private JTextPane scalePanel = new JTextPane();
 
-    @Getter
-    private Vector2D offset = new Vector2D(400, 400);
-
-    @Getter
-    private double scale = 1.0;
+    private JPanel bottomControlPanel = new JPanel();
+    private Button nextButton = new Button("Next");
 
     public CanvasController(CanvasView canvasView, GameManager gameManager) {
         this.canvasView = canvasView;
@@ -34,26 +35,18 @@ public class CanvasController extends JFrame {
         canvasView.addMouseWheelListener(canvasMouseListener);
         setVisible(true);
         setSize(1080, 600);
-        initCanvasWrapper(canvasView);
+        initCanvasWrapper();
     }
 
-    private void initCanvasWrapper(CanvasView canvasView) {
-        JPanel rootPanel = new JPanel();
-        rootPanel.setLayout(new BorderLayout());
+    private void initCanvasWrapper() {
         setContentPane(rootPanel);
 
-        rootPanel.add(canvasView, BorderLayout.CENTER);
+        initRootPanel();
+        initBottomControlPanel();
 
-        JPanel bottomControlPanel = new JPanel();
-        bottomControlPanel.setLayout(new BoxLayout(bottomControlPanel, BoxLayout.X_AXIS));
-        rootPanel.add(bottomControlPanel, BorderLayout.SOUTH);
-        bottomControlPanel.setBackground(Color.gray);
-        bottomControlPanel.setBorder(createEmptyBorder(10, 10, 10, 10));
-
-        JPanel rightControlPanel = new JPanel();
         rightControlPanel.setLayout(new BoxLayout(rightControlPanel, BoxLayout.Y_AXIS));
-        rootPanel.add(rightControlPanel, BorderLayout.EAST);
         rightControlPanel.add(offsetPanel);
+        rightControlPanel.add(scalePanel);
 
 
         Button prevButton = new Button();
@@ -75,22 +68,23 @@ public class CanvasController extends JFrame {
         );
     }
 
-    public void setOffset(Vector2D vector2D) {
-        offset = vector2D;
-        canvasView.getPointTransformation().setOffset(offset);
-        updateOffsetPanel();
-
+    private void initRootPanel() {
+        rootPanel.setLayout(new BorderLayout());
+        rootPanel.add(canvasView, BorderLayout.CENTER);
+        rootPanel.add(bottomControlPanel, BorderLayout.SOUTH);
+        rootPanel.add(rightControlPanel, BorderLayout.EAST);
     }
 
-    public void addToScale(double addend) {
-        this.scale += addend;
-        this.getCanvasView().getPointTransformation().setScale(this.scale);
-        updateOffsetPanel();
+    private void initBottomControlPanel() {
+        bottomControlPanel.setLayout(new BoxLayout(bottomControlPanel, BoxLayout.X_AXIS));
+        bottomControlPanel.setBackground(Color.gray);
+        bottomControlPanel.setBorder(createEmptyBorder(10, 10, 10, 10));
     }
 
-    private void updateOffsetPanel() {
-        Vector2D leftUpperBoundary = canvasView.getPointTransformation().getLeftUpperBoundary();
-        Vector2D rightLowerBoundary = canvasView.getPointTransformation().getRightLowerBoundary(canvasView);
+    public void updateOffsetPanel() {
+        PointTransformation transformation = canvasView.getPointTransformation();
+        Vector2D leftUpperBoundary = transformation.getLeftUpperBoundary();
+        Vector2D rightLowerBoundary = transformation.getRightLowerBoundary(canvasView);
 
         offsetPanel.setText(String.format(
                 "[%.2f, %.2f] [%.2f, %.2f]",
@@ -101,7 +95,10 @@ public class CanvasController extends JFrame {
         ));
     }
 
-    public void updateBoundary() {
-        canvasView.getPointTransformation().setBoundarySize((int) (canvasView.getWidth() / scale), (int) (canvasView.getHeight() / scale));
+    public void updateScalePanel(double scale) {
+        scalePanel.setText(String.format(
+                "Scale: %.2f",
+                scale
+        ));
     }
 }
