@@ -78,8 +78,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         LineSegment CD = new LineSegment(C.getCoordinate(), D.getCoordinate());
         LineSegment AD = new LineSegment(A.getCoordinate(), D.getCoordinate());
 
-        LineSegment hintLine = new LineSegment(hint.getCenter().getCoordinate(),
-                hint.getRightPoint().getCoordinate());
+        LineSegment hintLine = new LineSegment(hint.getAnglePointLeft().getCoordinate(),
+                hint.getAnglePointRight().getCoordinate());
 
         Point intersection_AD_hint = JTSUtils.lineLineSegmentIntersection(hintLine, AD);
         Point intersection_BC_hint = JTSUtils.lineLineSegmentIntersection(hintLine, BC);
@@ -319,12 +319,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     }
 
     private Movement twoHintsSubroutine(HalfPlaneHint curHint) {
-        //TODO
-
-        // plan für diese funktion:
-        // erstmal die methoden für phi, reversePhi, rho und getBasicTransformation schreiben
+        // TODO
         // dann die ganzen punkte berechnen die in dem Paper auch gebraucht werden
         // dann die Fälle des Papers durchgehen und dementsprechend returnen
+
 
         return null;
     }
@@ -342,33 +340,89 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Point C = rp.getC();
         Point D = rp.getD();
 
-        LineString AD = GEOMETRY_FACTORY.createLineString(new Coordinate[]{
-                A.getCoordinate(), D.getCoordinate()});
-        LineString BC = GEOMETRY_FACTORY.createLineString(new Coordinate[]{
-                B.getCoordinate(), C.getCoordinate()});
-        Point middleOfAD = AD.getCentroid();
-        Point middleOfBC = BC.getCentroid();
-        AffineTransformation reflectionH = AffineTransformation.reflectionInstance(
-                middleOfAD.getX(), middleOfAD.getY(), middleOfBC.getX(), middleOfBC.getY());
+        LineString AD = JTSUtils.createLineString(A, D);
+        LineString BC = JTSUtils.createLineString(B, C);
+        Point centerAD = AD.getCentroid();
+        Point centerBC = BC.getCentroid();
 
-        //Point r = centerOfRectangle(rp.getA(),rp.getB(),rp.getC(),rp.getD());
+        AffineTransformation reflection = AffineTransformation.reflectionInstance(centerAD.getX(), centerAD.getY(),
+                centerBC.getX(), centerBC.getY());
 
-        return null;
+        Point newAPLeft = (Point) reflection.transform(rp.getHint().getAnglePointRight());
+        Point newAPRight = (Point) reflection.transform(rp.getHint().getAnglePointLeft());
+        HalfPlaneHint newHint = new HalfPlaneHint(newAPLeft, newAPRight);
+        return new RectangleHintPair(rp.getA(), rp.getB(), rp.getC(), rp.getD(), newHint);
     }
 
-    private Point[] phi(int k, Point A, Point B, Point C, Point D) {
+    private RectangleHintPair sigma(int i, RectangleHintPair rp) {
+        if (i < 0 || i > 3) {
+            throw new IllegalArgumentException("sigma was called with i not in [0,3]");
+        }
 
-        return null;
+        Point A = rp.getA();
+        Point B = rp.getB();
+        Point C = rp.getC();
+        Point D = rp.getD();
+
+        Point newA = null;
+        Point newB = null;
+        Point newC = null;
+        Point newD = null;
+
+        Point r = centerOfRectangle(A, B, C, D);
+        AffineTransformation rotHalfPi = AffineTransformation.rotationInstance(Math.PI / 2, r.getX(), r.getY());
+        AffineTransformation rot_i = AffineTransformation.rotationInstance(Math.PI * i / 2, r.getX(), r.getY());
+
+        if (i == 0 || i == 2) {
+            newA = A;
+            newB = B;
+            newC = C;
+            newD = D;
+        }
+        if (i == 1 || i == 3) {
+            //rotate rectangle by pi/2
+            newA = (Point) rotHalfPi.transform(B);
+            newB = (Point) rotHalfPi.transform(C);
+            newC = (Point) rotHalfPi.transform(D);
+            newD = (Point) rotHalfPi.transform(A);
+        }
+        Point newAPLeft = (Point) rot_i.transform(rp.getHint().getAnglePointLeft());
+        Point newAPRight = (Point) rot_i.transform(rp.getHint().getAnglePointRight());
+        HalfPlaneHint hint = new HalfPlaneHint(newAPLeft, newAPRight);
+        return new RectangleHintPair(newA, newB, newC, newD, hint);
     }
 
-    private Point[] reversePhi(int k, Point A, Point B, Point C, Point D) {
+    private RectangleHintPair sigmaReverse(int i, RectangleHintPair rp) {
+        return sigma(3 - i, rp);
+    }
 
-        return null;
+    private RectangleHintPair phi(int i, RectangleHintPair rp) {
+        if (i < 0 || i > 7)
+            throw new IllegalArgumentException("i must be in [0,7]");
+        if (i < 4)
+            return sigma(i, rp);
+        return rho(sigma(i - 4, rp));
+    }
+
+    private RectangleHintPair reversePhi(int i, RectangleHintPair rp) {
+        if (i < 0 || i > 7)
+            throw new IllegalArgumentException("i must be in [0,7]");
+        if (i < 4)
+            return sigmaReverse(i, rp);
+        return sigmaReverse(i - 4, rho(rp));
     }
 
     private int getBasicTransformation(RectangleHintPair rp) {
-
-        return 0;
+        for (int i = 0; i <= 7; i++) {
+            HalfPlaneHint testHint = phi(i, rp).getHint();
+            HalfPlaneHint.Direction testDir = testHint.getDirection();
+            if (testDir == up)
+                return i;
+            if (testDir == right && testHint.getUpperHintPoint().getX() < testHint.getLowerHintPoint().getX())
+                return i;
+        }
+        throw new IllegalArgumentException("Somehow there was no basic transformation to be found for this " +
+                "RectangleHintPair. This is not possible.");
     }
 
     @Value
