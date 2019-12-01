@@ -1,5 +1,6 @@
 package com.treasure.hunt.game;
 
+import com.treasure.hunt.analysis.Analyzer;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
