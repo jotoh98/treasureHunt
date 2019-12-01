@@ -22,6 +22,9 @@ public class Move {
     @Nullable
     private Point treasureLocation;
 
+    /**
+     * @return a list of all geometryItems of this.
+     */
     public List<GeometryItem> getGeometryItems() {
         List<GeometryItem> output = new ArrayList<>();
         if (hint != null) {

@@ -17,8 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This is the GameManager which should be started,
- * to start a normal game.
+ * This is the engine which runs a simulation of a treasure hunt.
  */
 @Requires(hider = Hider.class, searcher = Searcher.class)
 public class GameEngine {

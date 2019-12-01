@@ -14,7 +14,6 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class GameManager {
-
     /**
      * The {@link View} objects (being {@link Runnable})
      */
@@ -25,8 +24,7 @@ public class GameManager {
     private ExecutorService executorService = Executors.newFixedThreadPool(8);
 
     /**
-     * Locks GameHistory.products, such that it can only be accessed by one thread
-     * at the same time.
+     *
      */
     private List<Move> moves = Collections.synchronizedList(new ArrayList<>());
     private GameEngine gameEngine;
@@ -54,11 +52,13 @@ public class GameManager {
                 .newInstance(newSearcher, newHider);
         this.gameEngine = gameEngineInstance;
 
+        // Register Views
         for (View view : views) {
             registerListener(view);
             view.init(this);
         }
 
+        // Do initial move
         moves.add(gameEngine.init());
         stepView++;
         stepSim++;
@@ -99,7 +99,7 @@ public class GameManager {
     }
 
     /**
-     * This will run the views, e.g. start the run() method.
+     * This will run {@link Runnable#run()} of each {@link View}
      */
     public void runListeners() {
         views.forEach(runnable -> executorService.execute(runnable));

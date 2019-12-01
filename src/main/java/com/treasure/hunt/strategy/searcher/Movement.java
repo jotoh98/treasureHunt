@@ -36,6 +36,9 @@ public class Movement {
         return points.get(points.size() - 1).getObject();
     }
 
+    /**
+     * @param point The next point, visited in this movement.
+     */
     public void addWayPoint(Point point) {
         points.add(new GeometryItem<>(point, GeometryType.WAY_POINT));
         addAdditionalItem(new GeometryItem<>(point, GeometryType.WAY_POINT));
