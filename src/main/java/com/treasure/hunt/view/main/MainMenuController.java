@@ -1,6 +1,6 @@
 package com.treasure.hunt.view.main;
 
-import com.treasure.hunt.game.GameManager;
+import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.Searcher;
@@ -74,9 +74,9 @@ public class MainMenuController {
         allHiders = allHiders.stream().filter(aClass -> !Modifier.isAbstract(aClass.getModifiers())).collect(Collectors.toSet());
         allHiders.forEach(aClass -> hiderList.addElement(aClass));
 
-        Set<Class<? extends GameManager>> gameManagerClasses = reflections.getSubTypesOf(GameManager.class);
+        Set<Class<? extends GameEngine>> gameManagerClasses = reflections.getSubTypesOf(GameEngine.class);
         gameManagerClasses = gameManagerClasses.stream().filter(aClass -> !Modifier.isAbstract(aClass.getModifiers())).collect(Collectors.toSet());
-        gameManagerClasses.add(GameManager.class);
+        gameManagerClasses.add(GameEngine.class);
         gameManagerClasses.forEach(aClass -> gameManagerList.addElement(aClass));
     }
 
@@ -86,7 +86,7 @@ public class MainMenuController {
     private void startGame() {
         Class<? extends Searcher> selectedSearcherClass = searcherListView.getSelectedValue();
         Class<? extends Hider> selectedHiderClass = hiderListView.getSelectedValue();
-        Class<? extends GameManager> selectedGameManagerClass = gameManagerListView.getSelectedValue();
+        Class<? extends GameEngine> selectedGameManagerClass = gameManagerListView.getSelectedValue();
 
         if (selectedSearcherClass == null || selectedHiderClass == null || selectedGameManagerClass == null) {
             errorLabel.setVisible(true);

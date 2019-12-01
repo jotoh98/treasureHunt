@@ -10,75 +10,65 @@ import com.treasure.hunt.strategy.searcher.impl.MoveOverTreasure1Searcher;
 import com.treasure.hunt.strategy.searcher.impl.MoveOverTreasure2Searcher;
 import com.treasure.hunt.strategy.searcher.impl.NaiveCircleSearcher;
 import com.treasure.hunt.strategy.searcher.impl.StandingSearcher;
-import com.treasure.hunt.view.in_game.View;
-import com.treasure.hunt.view.in_game.impl.ConsoleOutputView;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class GameManagerTest {
-    private List<View> views = new ArrayList<>();
-
-    @BeforeEach
-    void setUp() {
-        views.add(new ConsoleOutputView());
-    }
+class GameEngineTest {
 
     /**
      * Game simulation test:
      * {@link RevealingHider} gives perfect hint.
      * {@link NaiveCircleSearcher} follows.
-     * {@link GameManager#isFinished()} should now return true.
+     * {@link GameEngine#isFinished()} should now return true.
      */
     @Test
     void spoiledGame() {
-        GameManager gameManager = new GameManager(new NaiveCircleSearcher(), new RevealingHider(), views);
-        gameManager.init();
-        gameManager.run(2);
-        assertTrue(gameManager.isFinished());
+        GameEngine gameEngine = new GameEngine(new NaiveCircleSearcher(), new RevealingHider());
+        gameEngine.init();
+        gameEngine.move(2);
+        assertTrue(gameEngine.isFinished());
     }
 
     @Test
     void moveOnTreasure() {
-        GameManager gameManager = new GameManager(new NaiveCircleSearcher(), new RevealingHider(), views);
-        gameManager.init();
-        gameManager.run(2);
-        assertTrue(gameManager.isFinished());
+        GameEngine gameEngine = new GameEngine(new NaiveCircleSearcher(), new RevealingHider());
+        gameEngine.init();
+        gameEngine.move(2);
+        assertTrue(gameEngine.isFinished());
     }
 
     @Test
     void moveOverTreasure1() {
-        GameManager gameManager = new GameManager(new MoveOverTreasure1Searcher(), new RevealingHider(), views);
-        gameManager.init();
-        gameManager.run(2);
-        assertTrue(gameManager.isFinished());
+        GameEngine gameEngine = new GameEngine(new MoveOverTreasure1Searcher(), new RevealingHider());
+        gameEngine.init();
+        gameEngine.move(2);
+        assertTrue(gameEngine.isFinished());
     }
 
     @Test
     void moveOverTreasure2() {
-        GameManager gameManager = new GameManager(new MoveOverTreasure2Searcher(), new RevealingHider(), views);
-        gameManager.init();
-        gameManager.run(2);
-        assertTrue(gameManager.isFinished());
+        GameEngine gameEngine = new GameEngine(new MoveOverTreasure2Searcher(), new RevealingHider());
+        gameEngine.init();
+        gameEngine.move(2);
+        assertTrue(gameEngine.isFinished());
     }
 
     @Test
     void spawnOnTreasure() {
-        GameManager gameManager = new GameManager(new StandingSearcher(), new InstantWinHider(), views);
-        gameManager.init();
-        gameManager.run(0);
-        assertTrue(gameManager.isFinished());
+        GameEngine gameEngine = new GameEngine(new StandingSearcher(), new InstantWinHider());
+        gameEngine.init();
+        gameEngine.move(0);
+        assertTrue(gameEngine.isFinished());
     }
 
     /**
-     * {@link GameManager#located(List)} )} test.
+     * {@link GameEngine#located(List)} )} test.
      * In this test, the searcher moves <b>past</b> the treasure
      * with a minimum distance of 1.
      * searcher starts at (0,0) as usual.
@@ -87,7 +77,7 @@ class GameManagerTest {
      */
     @Test
     void narrowMove() {
-        GameManager gameManager = new GameManager(new NaiveCircleSearcher(), new Hider() {
+        GameEngine gameEngine = new GameEngine(new NaiveCircleSearcher(), new Hider() {
 
             private GeometryFactory gf = new GeometryFactory();
             private Point treasurePos = gf.createPoint(new Coordinate(1, 1));
@@ -102,9 +92,9 @@ class GameManagerTest {
                 CircleHint hint = new CircleHint(gf.createPoint(new Coordinate(0, 2)), 0);
                 return hint;
             }
-        }, views);
-        gameManager.init();
-        gameManager.run(2);
-        assertTrue(gameManager.isFinished());
+        });
+        gameEngine.init();
+        gameEngine.move(2);
+        assertTrue(gameEngine.isFinished());
     }
 }

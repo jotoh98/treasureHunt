@@ -63,6 +63,12 @@
             <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <classifier>javadoc</classifier>
+        </dependency>
     </dependencies>
 
 </project>
