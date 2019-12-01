@@ -9,16 +9,18 @@ import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.Requires;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Point;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * This is the engine which runs a simulation of a treasure hunt.
  */
+@Slf4j
 @Requires(hider = Hider.class, searcher = Searcher.class)
 public class GameEngine {
 
@@ -79,7 +81,7 @@ public class GameEngine {
         if (!checkConsistency()) {
             throw new IllegalStateException("Game is no longer consistent!");
         }
-        System.out.println("" +
+        log.info("" +
                 "treasurePos: " + treasurePos +
                 "searcherPos:  " + searcherPos +
                 "");
@@ -163,9 +165,7 @@ public class GameEngine {
         assert (treasurePos != null);
 
         // Check, whether treasure spawns in range of searcher
-        List<GeometryItem<Point>> act = new ArrayList<>();
-        act.add(new GeometryItem<>(searcherPos, GeometryType.WAY_POINT));
-        if (located(act)) {
+        if (located(Collections.singletonList(new GeometryItem<>(searcherPos, GeometryType.WAY_POINT)))) {
             finish();
         }
 

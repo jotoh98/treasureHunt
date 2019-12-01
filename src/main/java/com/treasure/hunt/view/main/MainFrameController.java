@@ -7,7 +7,6 @@ import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.view.in_game.View;
 import com.treasure.hunt.view.in_game.impl.CanvasView;
-import com.treasure.hunt.view.in_game.impl.DummyView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +33,6 @@ public class MainFrameController {
         List<View> list = new ArrayList<>();
         CanvasView canvasView = new CanvasView();
         list.add(canvasView);
-        for (int i = 0; i < 7; i++) {
-            list.add(new DummyView());
-        }
-        /* TODO:
-         revert to this. We did this for testing purposes.
-         GameManager gameManager = new GameManager(searcherClass, hiderClass, gameEngineClass, Collections.singletonList(canvasView));
-        */
         GameManager gameManager = new GameManager(searcherClass, hiderClass, gameEngineClass, list);
 
         new CanvasController(canvasView, gameManager);
