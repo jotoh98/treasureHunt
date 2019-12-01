@@ -26,7 +26,6 @@ public class CanvasController extends JFrame {
     CanvasController(CanvasView canvasView, GameManager gameManager) {
         this.canvasView = canvasView;
         this.gameManager = gameManager;
-        gameManager.init();
         CanvasMouseListener canvasMouseListener = new CanvasMouseListener(this);
         canvasView.addMouseMotionListener(canvasMouseListener);
         canvasView.addMouseListener(canvasMouseListener);

@@ -1,6 +1,6 @@
 package com.treasure.hunt.view.in_game.impl;
 
-import com.treasure.hunt.game.GameHistory;
+import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.jts.PointTransformation;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.view.in_game.View;
@@ -19,7 +19,7 @@ public class CanvasView extends JPanel implements View {
     @Getter
     private PointTransformation pointTransformation = new PointTransformation();
 
-    private GameHistory gameHistory;
+    private GameManager gameManager;
     private List<GeometryItem> geometryItems = new ArrayList<>();
 
     public CanvasView() {
@@ -28,7 +28,7 @@ public class CanvasView extends JPanel implements View {
 
     @Override
     public void run() {
-        geometryItems = gameHistory.getGeometryItems();
+        geometryItems = gameManager.getGeometryItems();
         revalidate();
         // This repaints the view, when new geometryItems appear.
         repaint();
@@ -67,7 +67,7 @@ public class CanvasView extends JPanel implements View {
     }
 
     @Override
-    public void init(GameHistory gameHistory) {
-        this.gameHistory = gameHistory;
+    public void init(GameManager gameManager) {
+        this.gameManager = gameManager;
     }
 }
