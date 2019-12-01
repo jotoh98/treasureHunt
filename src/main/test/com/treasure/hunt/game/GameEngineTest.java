@@ -30,6 +30,7 @@ class GameEngineTest {
     @Test
     void spoiledGame() {
         GameEngine gameEngine = new GameEngine(new NaiveCircleSearcher(), new RevealingHider());
+        gameEngine.init();
         gameEngine.move(2);
         assertTrue(gameEngine.isFinished());
     }
@@ -37,6 +38,7 @@ class GameEngineTest {
     @Test
     void moveOnTreasure() {
         GameEngine gameEngine = new GameEngine(new NaiveCircleSearcher(), new RevealingHider());
+        gameEngine.init();
         gameEngine.move(2);
         assertTrue(gameEngine.isFinished());
     }
@@ -44,6 +46,7 @@ class GameEngineTest {
     @Test
     void moveOverTreasure1() {
         GameEngine gameEngine = new GameEngine(new MoveOverTreasure1Searcher(), new RevealingHider());
+        gameEngine.init();
         gameEngine.move(2);
         assertTrue(gameEngine.isFinished());
     }
@@ -51,6 +54,7 @@ class GameEngineTest {
     @Test
     void moveOverTreasure2() {
         GameEngine gameEngine = new GameEngine(new MoveOverTreasure2Searcher(), new RevealingHider());
+        gameEngine.init();
         gameEngine.move(2);
         assertTrue(gameEngine.isFinished());
     }
@@ -58,6 +62,7 @@ class GameEngineTest {
     @Test
     void spawnOnTreasure() {
         GameEngine gameEngine = new GameEngine(new StandingSearcher(), new InstantWinHider());
+        gameEngine.init();
         gameEngine.move(0);
         assertTrue(gameEngine.isFinished());
     }
@@ -88,6 +93,7 @@ class GameEngineTest {
                 return hint;
             }
         });
+        gameEngine.init();
         gameEngine.move(2);
         assertTrue(gameEngine.isFinished());
     }
