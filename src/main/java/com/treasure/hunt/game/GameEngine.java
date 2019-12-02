@@ -189,9 +189,6 @@ public class GameEngine {
                     LineSegment lineSegment = new LineSegment(new Coordinate(lastPoint.getX(), lastPoint.getY()),
                             new Coordinate(point.getX(), point.getY()));
                     // Usage of distancePerpendicular is completely incorrect here, since the line will be infinite
-                    System.out.println("Distance: " + lineSegment.distance(new Coordinate(treasurePos.getX(), treasurePos.getY())) +
-                            "lineSegment: " + lineSegment +
-                            "treasurePos: " + treasurePos);
                     if (lineSegment.distance(new Coordinate(treasurePos.getX(), treasurePos.getY())) <= 1) {
                         return true;
                     }
