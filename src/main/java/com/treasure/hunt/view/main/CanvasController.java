@@ -59,6 +59,8 @@ public class CanvasController extends JFrame {
         });
         bottomControlPanel.add(prevButton);
 
+        bottomControlPanel.add(new Box.Filler(new Dimension(2, 0), new Dimension(2, 0), new Dimension(2, 0)));
+
         nextButton.setLabel("Next");
         nextButton.addActionListener(e -> {
             gameManager.next();
@@ -70,7 +72,7 @@ public class CanvasController extends JFrame {
         });
         bottomControlPanel.add(nextButton);
 
-        bottomControlPanel.add(new Box.Filler(new Dimension(0, 0), new Dimension(Integer.MAX_VALUE, 0), new Dimension(0, Integer.MAX_VALUE)));
+        bottomControlPanel.add(new Box.Filler(new Dimension(0, 0), new Dimension(Integer.MAX_VALUE, 0), new Dimension(Integer.MAX_VALUE, 0)));
     }
 
     public void setOffset(Vector2D vector2D) {
