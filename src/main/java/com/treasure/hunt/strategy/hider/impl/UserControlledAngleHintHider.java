@@ -13,8 +13,6 @@ import org.locationtech.jts.geom.Point;
 
 import javax.swing.*;
 
-import static org.locationtech.jts.algorithm.Angle.angleBetweenOriented;
-
 /**
  * This is a type of {@link HideAndSeekHider},
  * which is controlled by the user.
@@ -77,7 +75,12 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
                     double y2 = Double.parseDouble(yPositionTextField2.getText());
                     Point angleLeft = JTSUtils.GEOMETRY_FACTORY.createPoint(new Coordinate(x2, y2));
                     Point angleRight = JTSUtils.GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
-                    checkAngle(angleRight, middle, angleLeft);
+                    if (!JTSUtils.pointInAngle(angleRight, middle, angleLeft, treasureLocation)) {
+                        throw new UserControlledAngleHintHider.WrongAngleException("Treasure  Location not contained in angle");
+                    }
+                    if (!JTSUtils.angleDegreesSize(angleRight, middle, angleLeft, Math.PI)) {
+                        throw new UserControlledAngleHintHider.WrongAngleException("Angle is bigger 180 degrees");
+                    }
                     return new AngleHint(middle, angleLeft, angleRight);
                 } catch (NumberFormatException e) {
                     JOptionPane.showConfirmDialog(null, "Please enter valid numbers", "Error", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
@@ -85,23 +88,6 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
                     JOptionPane.showConfirmDialog(null, "Please enter valid angle: " + e.getMessage(), "Error", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
                 }
             }
-        }
-    }
-
-    /**
-     * @param anglePointRight of the {@link AngleHint}
-     * @param center          of the {@link AngleHint}
-     * @param anglePointLeft  of the {@link AngleHint}
-     * @throws WrongAngleException when the {@link AngleHint} is invalid
-     */
-    private void checkAngle(Point anglePointRight, Point center, Point anglePointLeft) throws WrongAngleException {
-        double angle = angleBetweenOriented(center.getCoordinate(), anglePointLeft.getCoordinate(), anglePointRight.getCoordinate());
-        if (angle >= Math.PI || angle < 0) {
-            throw new WrongAngleException("Angle is bigger 180 degrees");
-        }
-        double angleHintToTreasure = angleBetweenOriented(treasureLocation.getCoordinate(), anglePointLeft.getCoordinate(), anglePointRight.getCoordinate());
-        if (angleHintToTreasure > angle || angleHintToTreasure < 0) {
-            throw new WrongAngleException("Treasure  Location not contained in angle");
         }
     }
 

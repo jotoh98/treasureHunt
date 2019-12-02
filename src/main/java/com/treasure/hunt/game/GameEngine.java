@@ -4,6 +4,8 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.Hint;
+import com.treasure.hunt.strategy.hint.impl.AngleHint;
+import com.treasure.hunt.strategy.hint.impl.CircleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
@@ -111,7 +113,7 @@ public class GameEngine {
             lastHint = hider.move(lastMovement);
         }
         assert (lastHint != null);
-        verifyHint();
+        verifyHint(lastHint, treasurePos);
 
         return new Move(lastHint, lastMovement, treasurePos);
     }
@@ -122,9 +124,8 @@ public class GameEngine {
      * @throws IllegalArgumentException when the {@link Movement} is not valid.
      */
     protected void verifyMovement(Movement movement, Point initialSearcherPosition) {
-        if (movement.getStartingPoint().getX() != initialSearcherPosition.getX() ||
-                movement.getStartingPoint().getY() != initialSearcherPosition.getY()) {
-            throw new IllegalArgumentException("Searcher must start on the point, he stands last.");
+        if (movement.getStartingPoint() != initialSearcherPosition) {
+            throw new IllegalArgumentException("Searcher must start on the point, he stands last");
         }
         for (GeometryItem geometryItem : movement.getPoints()) {
             if (((Point) geometryItem.getObject()).getX() < (float) -WIDTH / 2 ||
@@ -141,14 +142,28 @@ public class GameEngine {
     /**
      * TODO implement:
      * AngleHints must be correct
-     * AngleHints <=180 degrees
-     * CircleHints correct
+     * AngleHints must be of angle [0, 180] !?
      * CircleHints must contain each other !?
      *
      * @return whether the performed {@link Movement}' by the searcher and {@link Hint}'s from the hider followed the rules.
      */
-    protected void verifyHint() {
-
+    protected void verifyHint(Hint hint, Point treasurePosition) {
+        if (hint instanceof AngleHint) {
+            if (!JTSUtils.pointInAngle(
+                    ((AngleHint) hint).getAnglePointRight(),
+                    ((AngleHint) hint).getCenter(),
+                    ((AngleHint) hint).getAnglePointLeft(),
+                    treasurePosition)) {
+                throw new IllegalArgumentException("Treasure does not lie in given Angle.");
+            }
+        }
+        if (hint instanceof CircleHint) {
+            if (((CircleHint) hint).getRadius() < ((CircleHint) hint).getCenter().distance(treasurePosition)) {
+                throw new IllegalArgumentException("The CircleHint does not contain the treasure.\n" +
+                        "It says, " + ((CircleHint) hint).getRadius() + " around " + ((CircleHint) hint).getCenter() + ", " +
+                        "but was " + ((CircleHint) hint).getCenter().distance(treasurePosition));
+            }
+        }
     }
 
     /**

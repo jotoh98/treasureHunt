@@ -1,6 +1,5 @@
 package com.treasure.hunt.utils;
 
-import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.*;
 
@@ -10,7 +9,7 @@ import static org.locationtech.jts.algorithm.Angle.angleBetweenOriented;
  * This is a helper class, containing helper methods for
  * calculations on JTS objects.
  *
- * @author Rank, dorianreineccius
+ * @author axel12, Rank, dorianreineccius
  */
 public class JTSUtils {
     public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
@@ -52,24 +51,63 @@ public class JTSUtils {
     }
 
     /**
-     * @param angleHint where we want the middle point to go, from.
-     * @return {@link Point} going through the middle of the {@link AngleHint}
+     * @param anglePointRight
+     * @param angleCenter
+     * @param anglePointLeft
+     * @return {@link Coordinate} going through the middle of the angle with a distance of 1.
      */
-    public static Coordinate middleOfAngleHint(AngleHint angleHint) {
+    public static Coordinate middleOfAngleHint(Point anglePointRight, Point angleCenter, Point anglePointLeft) {
+        return middleOfAngleHint(anglePointRight.getCoordinate(), angleCenter.getCoordinate(), anglePointLeft.getCoordinate());
+    }
+
+    public static Coordinate middleOfAngleHint(Coordinate anglePointRight, Coordinate angleCenter, Coordinate anglePointLeft) {
         double betweenAngle = angleBetweenOriented(
-                angleHint.getAnglePointRight().getCoordinate(),
-                angleHint.getCenter().getCoordinate(),
-                angleHint.getAnglePointLeft().getCoordinate()
+                anglePointRight,
+                angleCenter,
+                anglePointLeft
         );
 
-        double rightAngle = Angle.angle(angleHint.getCenter().getCoordinate(),
-                angleHint.getAnglePointRight().getCoordinate());
+        double rightAngle = Angle.angle(angleCenter,
+                anglePointRight);
         double resultAngle = Angle.normalizePositive(rightAngle + betweenAngle / 2);
         if (betweenAngle < 0) {
             resultAngle += Math.PI;
         }
-        double x = angleHint.getCenter().getX() + (Math.cos(resultAngle));
-        double y = angleHint.getCenter().getY() + (Math.sin(resultAngle));
+        double x = angleCenter.getX() + (Math.cos(resultAngle));
+        double y = angleCenter.getY() + (Math.sin(resultAngle));
         return new Coordinate(x, y);
+    }
+
+    /**
+     * @param anglePointRight
+     * @param anglePointCenter
+     * @param anglePointLeft
+     * @param point            the {@link Point}, we want to know, whether it lies in the angle
+     * @return true, if {@code point} lies inside the given angle. false, otherwise
+     */
+    public static boolean pointInAngle(Point anglePointRight, Point anglePointCenter, Point anglePointLeft, Point point) {
+        return pointInAngle(anglePointRight.getCoordinate(), anglePointCenter.getCoordinate(), anglePointLeft.getCoordinate(), point.getCoordinate());
+    }
+
+    public static boolean pointInAngle(Coordinate anglePointRight, Coordinate anglePointCenter, Coordinate anglePointLeft, Coordinate point) {
+        double angle = angleBetweenOriented(anglePointRight, anglePointCenter, anglePointLeft);
+        double angleHintToTreasure = angleBetweenOriented(anglePointRight, anglePointCenter, point);
+        return (angleHintToTreasure <= angle && 0 <= angleHintToTreasure);
+    }
+
+    /**
+     * @param anglePointRight
+     * @param anglePointCenter
+     * @param anglePointLeft
+     * @param radians          the allowed degree in radians, the angle may open
+     * @return true, if the given angle is <= {@code radians}. false, otherwise
+     */
+    public static boolean angleDegreesSize(Point anglePointRight, Point anglePointCenter, Point anglePointLeft, double radians) {
+        return angleDegreesSize(anglePointRight.getCoordinate(), anglePointCenter.getCoordinate(), anglePointLeft.getCoordinate(), radians);
+    }
+
+    public static boolean angleDegreesSize(Coordinate anglePointRight, Coordinate anglePointCenter, Coordinate anglePointLeft, double radians) {
+        double angle = angleBetweenOriented(anglePointRight, anglePointCenter, anglePointLeft);
+        return (0 <= angle && angle <= radians);
     }
 }

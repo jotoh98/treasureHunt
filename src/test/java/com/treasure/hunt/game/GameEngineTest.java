@@ -119,7 +119,7 @@ class GameEngineTest {
 
             @Override
             public Hint move(Movement moves) {
-                CircleHint hint = new CircleHint(gf.createPoint(new Coordinate(0, 2)), 0);
+                CircleHint hint = new CircleHint(gf.createPoint(new Coordinate(0, 2)), 2);
                 return hint;
             }
         });
