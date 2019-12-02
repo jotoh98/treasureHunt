@@ -9,7 +9,7 @@ import static org.locationtech.jts.algorithm.Angle.angleBetweenOriented;
  * This is a helper class, containing helper methods for
  * calculations on JTS objects.
  *
- * @author axel12, Rank, dorianreineccius
+ * @author Rank, dorianreineccius
  */
 public class JTSUtils {
     public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();

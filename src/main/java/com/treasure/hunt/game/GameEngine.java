@@ -179,8 +179,9 @@ public class GameEngine {
             return geometryItemsList.get(0).getObject().distance(treasurePos) <= 1;
         } else {
             Point lastPoint = null;
+            Point point;
             for (GeometryItem<Point> geometryItem : geometryItemsList) {
-                Point point = geometryItem.getObject();
+                point = geometryItem.getObject();
                 if (lastPoint == null) {
                     lastPoint = point;
                 } else {
@@ -188,9 +189,13 @@ public class GameEngine {
                     LineSegment lineSegment = new LineSegment(new Coordinate(lastPoint.getX(), lastPoint.getY()),
                             new Coordinate(point.getX(), point.getY()));
                     // Usage of distancePerpendicular is completely incorrect here, since the line will be infinite
+                    System.out.println("Distance: " + lineSegment.distance(new Coordinate(treasurePos.getX(), treasurePos.getY())) +
+                            "lineSegment: " + lineSegment +
+                            "treasurePos: " + treasurePos);
                     if (lineSegment.distance(new Coordinate(treasurePos.getX(), treasurePos.getY())) <= 1) {
                         return true;
                     }
+                    lastPoint = point;
                 }
             }
         }

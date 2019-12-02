@@ -59,7 +59,7 @@ class GameEngineTest {
      * This tests the {@link GameEngine#located(List)} method.
      */
     @Test
-    void bruteForceTest() {
+    void bruteForceTest1() {
         GameEngine gameEngine = new GameEngine(new BruteForceSearcher(), new RevealingHider());
         gameEngine.init();
         simulateSteps(gameEngine, 44);
