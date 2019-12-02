@@ -42,7 +42,6 @@ public class BruteForceSearcher implements Searcher<Hint> {
             x -= lineSegmentDistance;
             movement.addWayPoint(JTSUtils.createPoint(x, y));
         }
-        limit++;
         for (int i = 0; i < movement.getPoints().size() - 1; i++) {
             movement.addAdditionalItem(
                     new GeometryItem(

@@ -124,8 +124,10 @@ public class GameEngine {
      * @throws IllegalArgumentException when the {@link Movement} is not valid.
      */
     protected void verifyMovement(Movement movement, Point initialSearcherPosition) {
-        if (movement.getStartingPoint() != initialSearcherPosition) {
-            throw new IllegalArgumentException("Searcher must start on the point, he stands last");
+        if (movement.getStartingPoint().getX() != initialSearcherPosition.getX() ||
+                movement.getStartingPoint().getY() != initialSearcherPosition.getY()) {
+            throw new IllegalArgumentException("Searcher stands last at " + initialSearcherPosition +
+                    " but continues his movement from " + movement.getStartingPoint());
         }
         for (GeometryItem geometryItem : movement.getPoints()) {
             if (((Point) geometryItem.getObject()).getX() < (float) -WIDTH / 2 ||

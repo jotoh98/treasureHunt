@@ -6,10 +6,7 @@ import com.treasure.hunt.strategy.hider.impl.RevealingHider;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.hint.impl.CircleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
-import com.treasure.hunt.strategy.searcher.impl.MoveOverTreasure1Searcher;
-import com.treasure.hunt.strategy.searcher.impl.MoveOverTreasure2Searcher;
-import com.treasure.hunt.strategy.searcher.impl.NaiveCircleSearcher;
-import com.treasure.hunt.strategy.searcher.impl.StandingSearcher;
+import com.treasure.hunt.strategy.searcher.impl.*;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -17,6 +14,7 @@ import org.locationtech.jts.geom.Point;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -50,12 +48,24 @@ class GameEngineTest {
      */
     @Test
     void moveOnTreasure() {
-        NaiveCircleSearcher naiveCircleSearcher = new NaiveCircleSearcher();
-        GameEngine gameEngine = new GameEngine(naiveCircleSearcher, new RevealingHider());
+        GameEngine gameEngine = new GameEngine(new NaiveCircleSearcher(), new RevealingHider());
         gameEngine.init();
         simulateSteps(gameEngine, 2);
         assertTrue(gameEngine.isFinished());
         assertTrue(gameEngine.treasurePos == gameEngine.searcherPos);
+    }
+
+    /**
+     * This tests the {@link GameEngine#located(List)} method.
+     */
+    @Test
+    void bruteForceTest() {
+        GameEngine gameEngine = new GameEngine(new BruteForceSearcher(), new RevealingHider());
+        gameEngine.init();
+        simulateSteps(gameEngine, 44);
+        assertFalse(gameEngine.isFinished());
+        simulateSteps(gameEngine, 1);
+        assertTrue(gameEngine.isFinished());
     }
 
     /**
