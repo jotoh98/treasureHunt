@@ -56,9 +56,7 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener, 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         Vector2D mouse = new Vector2D(e.getX(), e.getY());
-        System.out.println(mouse.getX() + ":" + mouse.getY());
         Vector2D direction = canvasController.getOffset().subtract(mouse);
-        System.out.println(direction.getX() + ":" + direction.getY());
 
         double oldScale = canvasController.getScale();
         double scrollDelta = -e.getPreciseWheelRotation() * 1e-2;
