@@ -49,7 +49,6 @@ public class Ray extends LineSegment implements Shapeable {
         return new Line2D.Double(p0.x, p0.y, p0.x + rayVector.getX(), p0.y + rayVector.getY());
     }
 
-    @Override
     public Shape toShape(PointTransformation pointTransformation) {
 
         GeneralPath path = new GeneralPath();

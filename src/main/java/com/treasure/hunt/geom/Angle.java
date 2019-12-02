@@ -1,10 +1,10 @@
 package com.treasure.hunt.geom;
 
 import com.treasure.hunt.jts.PointTransformation;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.math.Vector2D;
 
 import java.awt.*;
@@ -12,19 +12,69 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 
-@AllArgsConstructor
+/**
+ * The Angle is an geometric representation of an angle at a certain position.
+ * It is defined by 3 {@link Coordinate}'s ordered the named way in the {@link GeometryUtility#coordinates} array:
+ * <ul>
+ *     <li>the center point,</li>
+ *     <li>the left point and</li>
+ *     <li>the right point.</li>
+ * </ul>
+ * These points are understood in a counter-clockwise looking way from the center point.
+ */
 @Data
-public class GeometryAngle implements Shapeable {
-    Coordinate center;
-    Coordinate left;
-    Coordinate right;
+public class Angle extends LineString implements Shapeable {
+
+    Ray leftRay;
+    Ray rightRay;
+
+    /**
+     * Creates a new <code>Geometry</code> via the specified GeometryFactory.
+     *
+     * @param factory The GeometryFactory suggested to create the <code>Angle</code>
+     */
+    public Angle(GeometryFactory factory, Coordinate center, Coordinate left, Coordinate right) {
+        super(
+                factory.getCoordinateSequenceFactory()
+                        .create(new Coordinate[]{center, left, right}),
+                factory
+        );
+
+        leftRay = new Ray(center, left);
+        rightRay = new Ray(center, right);
+    }
+
+    public Coordinate getCenter() {
+        return leftRay.p0;
+    }
+
+    public void setCenter(Coordinate center) {
+        leftRay.p0 = center;
+        rightRay.p0 = center;
+    }
+
+    public Coordinate getLeft() {
+        return leftRay.p1;
+    }
+
+    public void setLeft(Coordinate left) {
+        leftRay.p1 = left;
+    }
+
+    public Coordinate getRight() {
+        return rightRay.p1;
+    }
+
+    public void setRight(Coordinate right) {
+        rightRay.p1 = right;
+    }
 
     public double rightAngle() {
-        return Angle.angle(center, right);
+        return org.locationtech.jts.algorithm.Angle.angle(getCenter(), getRight());
     }
 
     public double leftAngle() {
-        return Angle.angle(center, left);
+        return org.locationtech.jts.algorithm.Angle.angle(getCenter(), getLeft());
     }
 
     public double toRadians() {
@@ -79,5 +129,10 @@ public class GeometryAngle implements Shapeable {
         generalPath.append(arc, false);
 
         return generalPath;
+    }
+
+    @Override
+    public String getGeometryType() {
+        return "Angle";
     }
 }
