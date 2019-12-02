@@ -11,9 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * A type of {@link Hint} defining an angle, in which the treasure lies.
+ *
  * @author dorianreineccius
  */
-@ToString(of = {"centerPoint", "anglePointLeft", "anglePointRight"})
+@ToString(of = {"anglePointRight", "center", "anglePointLeft"})
 @Getter
 public class AngleHint extends Hint {
     Point anglePointRight;
@@ -26,6 +28,9 @@ public class AngleHint extends Hint {
         this.anglePointLeft = anglePointLeft;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public List<GeometryItem> getGeometryItems() {
         List<GeometryItem> output = new ArrayList<>();
         output.add(new GeometryItem(center, GeometryType.HINT_CENTER));

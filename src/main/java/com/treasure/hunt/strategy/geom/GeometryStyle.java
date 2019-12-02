@@ -13,13 +13,9 @@ import java.awt.*;
 @NoArgsConstructor
 @Data
 public class GeometryStyle {
-
     private boolean visible;
-
     private boolean filled;
-
     private Color outlineColor;
-
     private Color fillColor;
 
     public GeometryStyle(boolean visible, Color outlineColor) {
@@ -40,5 +36,4 @@ public class GeometryStyle {
         }
         return new GeometryStyle(true, Color.black);
     }
-
 }

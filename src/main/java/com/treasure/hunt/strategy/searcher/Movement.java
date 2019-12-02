@@ -15,7 +15,6 @@ import java.util.List;
  * @author dorianreineccius
  */
 public class Movement {
-
     @Getter
     private List<GeometryItem<Point>> points = new ArrayList<>();
     @Getter
@@ -32,6 +31,9 @@ public class Movement {
         this.points.addAll(points);
     }
 
+    /**
+     * @return the first points of the moves-sequence.
+     */
     public Point getStartingPoint() {
         if (points.size() == 0) {
             throw new IllegalStateException("Movement has size of 0.");
@@ -57,6 +59,9 @@ public class Movement {
         addAdditionalItem(new GeometryItem<>(point, GeometryType.WAY_POINT));
     }
 
+    /**
+     * @param geometryItem to add {@link GeometryItem} objects, which are only relevant for displaying
+     */
     public void addAdditionalItem(GeometryItem geometryItem) {
         additionalGeometryItems.add(geometryItem);
     }

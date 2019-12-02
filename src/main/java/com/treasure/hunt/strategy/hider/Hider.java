@@ -16,7 +16,7 @@ import org.locationtech.jts.geom.Point;
 public interface Hider<T extends Hint> {
 
     /**
-     * @param movement the {@link Movement}, the {@link Searcher} did last.
+     * @param movement the {@link Movement}, the {@link Searcher} did last
      * @return T a (new) hint.
      */
     T move(Movement movement);

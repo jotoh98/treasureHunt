@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * This is conventions for GeometryItems,
+ * how to display them.
+ *
  * @author hassel
  */
 public enum GeometryType {

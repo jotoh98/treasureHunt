@@ -18,7 +18,7 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
 
     /**
      * @param movement the {@link Movement}, the {@link com.treasure.hunt.strategy.searcher.Searcher} did last
-     * @return A random but correct {@link AngleHint} openes an angle of [0, PI)
+     * @return A random but correct {@link AngleHint} opening an angle of [0, PI)
      */
     @Override
     public AngleHint move(Movement movement) {
@@ -27,7 +27,9 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
         // generate angle
         double randomAngle = Math.random() * Math.PI; // in [0, PI)
 
+        // generate the spinning of the angle
         double random = Math.random();
+
         double leftAngle = Angle.angle(searcherPos.getCoordinate(),
                 treasurePos.getCoordinate()) + random * randomAngle;
         double leftX = searcherPos.getX() + (Math.cos(leftAngle) * 1);
@@ -36,11 +38,6 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
                 treasurePos.getCoordinate()) - (1 - random) * randomAngle;
         double rightX = searcherPos.getX() + (Math.cos(rightAngle) * 1);
         double rightY = searcherPos.getY() + (Math.sin(rightAngle) * 1);
-
-        /*double angleHintToTreasure = angleBetweenOriented(treasureLocation.getCoordinate(), middle.getCoordinate(), angleLeft.getCoordinate());
-        if (angleHintToTreasure > angle || angleHintToTreasure < 0) {
-            throw new UserControlledAngleHintHider.WrongAngleException("Treasure  Location not contained in angle");
-        }*/
 
         return new AngleHint(
                 JTSUtils.createPoint(rightX, rightY),

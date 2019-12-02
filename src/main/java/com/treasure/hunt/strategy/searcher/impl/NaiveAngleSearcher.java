@@ -12,21 +12,23 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.impl.CoordinateArraySequence;
 
 /**
- * This type of {@link Searcher} just always passes the middle of a given {@link AngleHint}.
+ * This type of {@link Searcher} just always passes the middle of a given {@link AngleHint},
+ * by a distance of 1.
  *
  * @author dorianreineccius
  */
 public class NaiveAngleSearcher implements Searcher<AngleHint> {
     private Point startPosition;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void init(Point startPosition) {
         this.startPosition = startPosition;
     }
 
     /**
-     * Here, actually no {@link Movement} is happening.
-     *
      * @return {@link Movement}, containing only the starting position.
      */
     @Override

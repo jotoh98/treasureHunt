@@ -12,14 +12,19 @@ import org.locationtech.jts.geom.Point;
  * @author dorianreineccius
  */
 public class NaiveCircleSearcher implements HideAndSeekSearcher<CircleHint> {
-
     private Point position;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void init(Point startPosition) {
         position = startPosition;
     }
 
+    /**
+     * @return {@link Movement}, containing only the starting position.
+     */
     @Override
     public Movement move() {
         Movement movement = new Movement();
@@ -28,10 +33,8 @@ public class NaiveCircleSearcher implements HideAndSeekSearcher<CircleHint> {
     }
 
     /**
-     * Always go to the center of the hint.
-     *
-     * @param circleHint the hint, the {@link com.treasure.hunt.strategy.hider.Hider} gave last.
-     * @return The {@link Movement}, the searcher did.
+     * @param circleHint the hint, the {@link com.treasure.hunt.strategy.hider.Hider} gave last
+     * @return {@link Movement}, to the center of the given {@link CircleHint}
      */
     @Override
     public Movement move(CircleHint circleHint) {

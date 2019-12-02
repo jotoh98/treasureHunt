@@ -22,13 +22,13 @@ public interface Searcher<T extends Hint> {
      * Use this to perform a initial move, without a hint given.
      * This is for the case, the searcher starts. (as he does normally)
      *
-     * @return Moves the {@link Movement} the searcher did
+     * @return {@link Movement} the {@link Movement} the searcher did
      */
     Movement move();
 
     /**
      * @param hint the hint, the {@link Hider} gave last.
-     * @return Moves the {@link Movement}, the searcher chose.
+     * @return {@link Movement} the {@link Movement}, this searcher chose.
      */
     Movement move(T hint);
 }
