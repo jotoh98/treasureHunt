@@ -2,8 +2,10 @@ package com.treasure.hunt.game.mods.obstacles;
 
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.strategy.hider.Hider;
+import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.Requires;
+import org.locationtech.jts.geom.Point;
 
 /**
  * In this game modification,
@@ -18,13 +20,12 @@ public class ObstacleGameEngine extends GameEngine {
     }
 
     /**
-     * Checks, whether all followed the rules.
+     * Checks, whether the {@link Searcher} followed the rules.
      * TODO Check, whether the searcher passed a wall.
      *
      * @return whether the game is consistent.
      */
     @Override
-    protected boolean checkConsistency() {
-        return true;
+    protected void verifyMovement(Movement movement, Point initialSearcherPosition) {
     }
 }

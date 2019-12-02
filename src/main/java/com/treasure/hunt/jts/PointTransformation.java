@@ -14,10 +14,8 @@ import java.awt.geom.Point2D;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PointTransformation implements org.locationtech.jts.awt.PointTransformation {
-
     @Setter
     double scale = 1.0;
-
     @Setter
     Vector2D offset = new Vector2D();
 

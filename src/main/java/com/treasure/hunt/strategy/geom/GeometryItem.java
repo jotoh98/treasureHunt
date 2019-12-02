@@ -10,7 +10,6 @@ import org.locationtech.jts.geom.Geometry;
  * @author hassel
  * @see GeometryType for further information about how to classifiy a geometry item.
  */
-
 @Getter
 public class GeometryItem<T extends Geometry> {
     @NonNull

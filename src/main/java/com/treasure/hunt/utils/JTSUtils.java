@@ -7,29 +7,40 @@ import org.locationtech.jts.geom.*;
 import static org.locationtech.jts.algorithm.Angle.angleBetweenOriented;
 
 /**
+ * This is a helper class, containing helper methods for
+ * calculations on JTS objects.
+ *
  * @author Rank, dorianreineccius
  */
 public class JTSUtils {
     public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
+    /**
+     * @param x coordinate.
+     * @param y coordinate.
+     * @return a {@link Point} defined by (x,y)
+     */
     public static Point createPoint(double x, double y) {
         return GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
     }
 
-    // TODO is this necessary?
+    /**
+     * @param A a point
+     * @param B a point
+     * @return a {@link LineString} containing only {@code A} and {@code B}
+     */
     public static LineString createLineString(Point A, Point B) {
         Coordinate[] coords = {A.getCoordinate(), B.getCoordinate()};
         return GEOMETRY_FACTORY.createLineString(coords);
     }
 
     /**
-     * Tests whether line line intersects with the linesegment linesegment
+     * TODO is this necessary ?
      *
-     * @param line
-     * @param lineSegment
-     * @return
+     * @param line        a {@link LineSegment}
+     * @param lineSegment a {@link LineSegment}
+     * @return an intersection {@link Point} of the {@link LineSegment} objects {@code line} and {@code lineSegment}
      */
-    // TODO is this necessary?
     public static Point lineLineSegmentIntersection(LineSegment line, LineSegment lineSegment) {
         Point intersection = GEOMETRY_FACTORY.createPoint(line.lineIntersection(lineSegment));
         LineString lineSegString = createLineString(GEOMETRY_FACTORY.createPoint(lineSegment.p0),

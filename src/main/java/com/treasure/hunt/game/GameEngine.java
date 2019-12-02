@@ -25,6 +25,9 @@ import java.util.List;
 @Slf4j
 @Requires(hider = Hider.class, searcher = Searcher.class)
 public class GameEngine {
+    public static final int HEIGHT = 200;
+    public static final int WIDTH = 200;
+
     protected final Searcher searcher;
     protected final Hider hider;
     /**
@@ -51,6 +54,30 @@ public class GameEngine {
     }
 
     /**
+     * initialize searcher and hider.
+     * initialize searcher and treasure positions.
+     *
+     * @return a {@link Move}, since the initialization must be displayed.
+     */
+    public Move init() {
+        searcherPos = JTSUtils.createPoint(0, 0);
+        searcher.init(searcherPos);
+
+        treasurePos = hider.getTreasureLocation();
+        assert (treasurePos != null);
+
+        // Check, whether treasure spawns in range of searcher
+        if (located(Collections.singletonList(new GeometryItem<>(searcherPos, GeometryType.WAY_POINT)))) {
+            finish();
+        }
+
+        return new Move(
+                null,
+                new Movement(searcherPos),
+                treasurePos);
+    }
+
+    /**
      * This simulates just one step of the simulation.
      * The searcher begins since we want not force him,
      * to take a initial hint, he eventually do not need,
@@ -74,10 +101,7 @@ public class GameEngine {
         }
         assert (lastMovement != null);
         assert (lastMovement.getPoints().size() != 0);
-        if (lastMovement.getStartingPoint().getX() != searcherPos.getX() ||
-                lastMovement.getStartingPoint().getY() != searcherPos.getY()) {
-            throw new IllegalArgumentException("Searcher must start on the point, he stands last.");
-        }
+        verifyMovement(lastMovement, searcherPos);
         searcherPos = lastMovement.getEndPoint();
 
         if (located(lastMovement.getPoints())) {
@@ -87,11 +111,31 @@ public class GameEngine {
             lastHint = hider.move(lastMovement);
         }
         assert (lastHint != null);
+        verifyHint();
 
-        if (!checkConsistency()) {
-            throw new IllegalStateException("Game is no longer consistent!");
-        }
         return new Move(lastHint, lastMovement, treasurePos);
+    }
+
+    /**
+     * @param movement                which gets verified
+     * @param initialSearcherPosition
+     * @throws IllegalArgumentException when the {@link Movement} is not valid.
+     */
+    protected void verifyMovement(Movement movement, Point initialSearcherPosition) {
+        if (movement.getStartingPoint().getX() != initialSearcherPosition.getX() ||
+                movement.getStartingPoint().getY() != initialSearcherPosition.getY()) {
+            throw new IllegalArgumentException("Searcher must start on the point, he stands last.");
+        }
+        for (GeometryItem geometryItem : movement.getPoints()) {
+            if (((Point) geometryItem.getObject()).getX() < (float) -WIDTH / 2 ||
+                    (float) WIDTH / 2 < ((Point) geometryItem.getObject()).getX() ||
+                    ((Point) geometryItem.getObject()).getY() < (float) -HEIGHT / 2 ||
+                    (float) HEIGHT / 2 < ((Point) geometryItem.getObject()).getY()) {
+                throw new IllegalArgumentException("Searcher left the playing area: " +
+                        "(" + ((Point) geometryItem.getObject()).getX() + ", " + ((Point) geometryItem.getObject()).getY() + ") " +
+                        "is not in " + "[" + -WIDTH / 2 + ", " + WIDTH / 2 + "]x[" + -HEIGHT / 2 + ", " + HEIGHT / 2 + "]");
+            }
+        }
     }
 
     /**
@@ -103,8 +147,8 @@ public class GameEngine {
      *
      * @return whether the performed {@link Movement}' by the searcher and {@link Hint}'s from the hider followed the rules.
      */
-    protected boolean checkConsistency() {
-        return true;
+    protected void verifyHint() {
+
     }
 
     /**
@@ -134,30 +178,6 @@ public class GameEngine {
             }
         }
         return false;
-    }
-
-    /**
-     * initialize searcher and hider.
-     * initialize searcher and treasure positions.
-     *
-     * @return a {@link Move}, since the initialization must be displayed.
-     */
-    public Move init() {
-        searcherPos = JTSUtils.createPoint(0, 0);
-        searcher.init(searcherPos);
-
-        treasurePos = hider.getTreasureLocation();
-        assert (treasurePos != null);
-
-        // Check, whether treasure spawns in range of searcher
-        if (located(Collections.singletonList(new GeometryItem<>(searcherPos, GeometryType.WAY_POINT)))) {
-            finish();
-        }
-
-        return new Move(
-                null,
-                new Movement(searcherPos),
-                treasurePos);
     }
 
     /**
