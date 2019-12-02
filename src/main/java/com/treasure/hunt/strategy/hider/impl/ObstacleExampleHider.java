@@ -10,10 +10,6 @@ import java.util.List;
 
 public class ObstacleExampleHider implements ObstacleHider<CircleHint> {
     @Override
-    public void init(Point treasurePosition, List<GeometryItem> obstacles) {
-    }
-
-    @Override
     public Point getTreasureLocation() {
         return null;
     }
@@ -21,5 +17,10 @@ public class ObstacleExampleHider implements ObstacleHider<CircleHint> {
     @Override
     public CircleHint move(Movement movement) {
         return null;
+    }
+
+    @Override
+    public void init(List<GeometryItem> obstacles) {
+
     }
 }

@@ -6,6 +6,10 @@ import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.Requires;
 
+/**
+ * In this modification, the hider may reset the
+ * treasure location in each move.
+ */
 @Requires(hider = HideAndSeekHider.class, searcher = HideAndSeekSearcher.class)
 public class HideAndSeekGameEngine extends GameEngine {
 

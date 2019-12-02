@@ -26,6 +26,13 @@ public class Movement {
         this.points.addAll(points);
     }
 
+    public Point getStartingPoint() {
+        if (points.size() == 0) {
+            throw new IllegalStateException("Movement has size of 0.");
+        }
+        return points.get(0).getObject();
+    }
+
     /**
      * @return the last end-position of the moves-sequence.
      */

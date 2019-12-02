@@ -5,6 +5,10 @@ import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.Requires;
 
+/**
+ * In this game modification,
+ * obstacles are placed in the map.
+ */
 @Requires(hider = ObstacleHider.class, searcher = ObstacleSearcher.class)
 public class ObstacleGameEngine extends GameEngine {
 

@@ -27,7 +27,7 @@ public class GameEngine {
     protected final Searcher searcher;
     protected final Hider hider;
     /**
-     * Safe, whether the game is done or not.
+     * Tells, whether the game is done or not.
      */
     @Getter
     protected boolean finished = false;
@@ -35,9 +35,15 @@ public class GameEngine {
     protected Movement lastMovement;
     protected Point searcherPos;
     protected Point treasurePos;
-
+    /**
+     * Tells, whether a first move is happened in the game yet, or not.
+     */
     protected boolean firstMove = true;
 
+    /**
+     * @param searcher playing the game
+     * @param hider    playing the game
+     */
     public GameEngine(Searcher searcher, Hider hider) {
         this.searcher = searcher;
         this.hider = hider;
@@ -47,12 +53,10 @@ public class GameEngine {
      * This simulates just one step of the simulation.
      * The searcher begins since we want not force him,
      * to take a initial hint, he eventually do not need,
-     * if he works randomized!
+     * f.e. if he works randomized!
      * <p>
      * Updates the searchers position.
-     * <p>
-     * The first step of the searcher goes without an hint,
-     * the next will be with.
+     * @return the {@link Move}, happened in this step.
      */
     public Move move() {
         if (finished) {
@@ -68,6 +72,10 @@ public class GameEngine {
         }
         assert (lastMovement != null);
         assert (lastMovement.getPoints().size() != 0);
+        if (lastMovement.getStartingPoint().getX() != searcherPos.getX() ||
+                lastMovement.getStartingPoint().getY() != searcherPos.getY()) {
+            throw new IllegalArgumentException("Searcher must start on the point, he stands last.");
+        }
         searcherPos = lastMovement.getEndPoint();
 
         if (located(lastMovement.getPoints())) {
@@ -81,35 +89,7 @@ public class GameEngine {
         if (!checkConsistency()) {
             throw new IllegalStateException("Game is no longer consistent!");
         }
-        log.info("" +
-                "treasurePos: " + treasurePos +
-                "searcherPos:  " + searcherPos +
-                "");
         return new Move(lastHint, lastMovement, treasurePos);
-    }
-
-    /**
-     * This simulates the whole game, until its finished.
-     */
-    public void beat() {
-        while (!finished) {
-            move();
-        }
-    }
-
-    /**
-     * Simulates a fixed number of steps.
-     * Breaks, when the game is finished.
-     *
-     * @param steps number of steps
-     */
-    public void move(int steps) {
-        for (int i = 0; i < steps; i++) {
-            if (finished) {
-                break;
-            }
-            move();
-        }
     }
 
     /**
@@ -156,6 +136,7 @@ public class GameEngine {
     /**
      * initialize searcher and hider.
      * initialize searcher and treasure positions.
+     * @return a {@link Move}, since the initialization must be displayed.
      */
     public Move init() {
         searcherPos = JTSUtils.createPoint(0, 0);
@@ -175,6 +156,9 @@ public class GameEngine {
                 treasurePos);
     }
 
+    /**
+     * Sets {@link GameEngine#finished} to true.
+     */
     protected void finish() {
         finished = true;
     }

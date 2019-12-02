@@ -13,6 +13,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+/**
+ * The GameManager stores every {@link Move}-objects, happened in the game,
+ * the {@link View} objects to run them for every move and
+ * runs the GameEngine step for step.
+ */
 public class GameManager {
     /**
      * The {@link View} objects (being {@link Runnable})
@@ -21,10 +26,10 @@ public class GameManager {
     /**
      * Runs the {@link View} objects concurrently.
      */
-    private ExecutorService executorService = Executors.newFixedThreadPool(8);
+    private ExecutorService executorService = Executors.newFixedThreadPool(2);
 
     /**
-     *
+     * Contains the "gameHistory".
      */
     private List<Move> moves = Collections.synchronizedList(new ArrayList<>());
     private GameEngine gameEngine;
@@ -82,6 +87,30 @@ public class GameManager {
     }
 
     /**
+     * This simulates the whole game, until its finished.
+     */
+    public void beat() {
+        while (!gameEngine.isFinished()) {
+            next();
+        }
+    }
+
+    /**
+     * Simulates a fixed number of moves.
+     * Breaks, when the game is finished.
+     *
+     * @param steps number of steps
+     */
+    public void move(int steps) {
+        for (int i = 0; i < steps; i++) {
+            if (gameEngine.finished) {
+                break;
+            }
+            next();
+        }
+    }
+
+    /**
      * Works only for stepView > 0
      */
     public void previous() {
@@ -114,6 +143,9 @@ public class GameManager {
         return geometryItems;
     }
 
+    /**
+     * @return whether the game of the {@link GameEngine} is finished or not.
+     */
     public boolean isGameFinished() {
         return gameEngine.isFinished();
     }

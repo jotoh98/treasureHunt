@@ -19,7 +19,26 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Tests for the {@link GameEngine}.
+ */
 class GameEngineTest {
+
+    /**
+     * This simulates a fixed number of steps.
+     * Breaks, when the game is finished.
+     *
+     * @param gameEngine where the steps will be simulated.
+     * @param moves      fixed number of steps.
+     */
+    private void simulateSteps(GameEngine gameEngine, int moves) {
+        for (int i = 0; i < moves; i++) {
+            if (gameEngine.finished) {
+                break;
+            }
+            gameEngine.move();
+        }
+    }
 
     /**
      * Game simulation test:
@@ -28,42 +47,51 @@ class GameEngineTest {
      * {@link GameEngine#isFinished()} should now return true.
      */
     @Test
-    void spoiledGame() {
-        GameEngine gameEngine = new GameEngine(new NaiveCircleSearcher(), new RevealingHider());
-        gameEngine.init();
-        gameEngine.move(2);
-        assertTrue(gameEngine.isFinished());
-    }
-
-    @Test
     void moveOnTreasure() {
-        GameEngine gameEngine = new GameEngine(new NaiveCircleSearcher(), new RevealingHider());
+        NaiveCircleSearcher naiveCircleSearcher = new NaiveCircleSearcher();
+        GameEngine gameEngine = new GameEngine(naiveCircleSearcher, new RevealingHider());
         gameEngine.init();
-        gameEngine.move(2);
+        simulateSteps(gameEngine, 2);
         assertTrue(gameEngine.isFinished());
+        assertTrue(gameEngine.treasurePos == gameEngine.searcherPos);
     }
 
+    /**
+     * The {@link RevealingHider} places the treasure.
+     * The searcher, in one {@link Movement},
+     * walks first ON the treasure,
+     * the leaves it with a distance > 1.
+     */
     @Test
     void moveOverTreasure1() {
         GameEngine gameEngine = new GameEngine(new MoveOverTreasure1Searcher(), new RevealingHider());
         gameEngine.init();
-        gameEngine.move(2);
+        simulateSteps(gameEngine, 2);
         assertTrue(gameEngine.isFinished());
     }
 
+    /**
+     * The {@link RevealingHider} places the treasure.
+     * The searcher, in one {@link Movement},
+     * walks OVER the treasure, but stops
+     * at a distance > 1.
+     */
     @Test
     void moveOverTreasure2() {
         GameEngine gameEngine = new GameEngine(new MoveOverTreasure2Searcher(), new RevealingHider());
         gameEngine.init();
-        gameEngine.move(2);
+        simulateSteps(gameEngine, 2);
         assertTrue(gameEngine.isFinished());
     }
 
+    /**
+     * Here, the treasure spawns under the searcher.
+     * Thus, the game is instantly finished.
+     */
     @Test
     void spawnOnTreasure() {
         GameEngine gameEngine = new GameEngine(new StandingSearcher(), new InstantWinHider());
         gameEngine.init();
-        gameEngine.move(0);
         assertTrue(gameEngine.isFinished());
     }
 
@@ -94,7 +122,7 @@ class GameEngineTest {
             }
         });
         gameEngine.init();
-        gameEngine.move(2);
+        simulateSteps(gameEngine, 2);
         assertTrue(gameEngine.isFinished());
     }
 }
