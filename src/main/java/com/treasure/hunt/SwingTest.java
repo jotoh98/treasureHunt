@@ -9,7 +9,7 @@ import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.util.AffineTransformation;
 
 /**
- * @authro hassel
+ * @author hassel
  */
 public class SwingTest {
     public static GeometryItem[] exampleGeometryItems() {
