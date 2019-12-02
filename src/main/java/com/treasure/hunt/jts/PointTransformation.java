@@ -8,6 +8,9 @@ import org.locationtech.jts.math.Vector2D;
 
 import java.awt.geom.Point2D;
 
+/**
+ * @author hassel
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 public class PointTransformation implements org.locationtech.jts.awt.PointTransformation {

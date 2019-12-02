@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
  * The GameManager stores every {@link Move}-objects, happened in the game,
  * the {@link View} objects to run them for every move and
  * runs the GameEngine step for step.
+ *
+ * @author dorianreineccius
  */
 public class GameManager {
     /**

@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 import java.awt.*;
 
+/**
+ * @author hassel
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

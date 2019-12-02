@@ -5,22 +5,24 @@ import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import org.locationtech.jts.geom.Point;
 
+/**
+ * An algorithm,
+ * hiding a treasure and giving a searcher {@link Hint}-objects,
+ * such he can find the treasure.
+ *
+ * @param <T> The type of {@link Hint}, this hider can handle.
+ * @author dorianreineccius
+ */
 public interface Hider<T extends Hint> {
 
     /**
-     * This should output the current treasure location,
-     * the {@link Hider} is able to change.
-     *
-     * @return Point the new treasure location
-     */
-    Point getTreasureLocation();
-
-    /**
-     * Use this to tell a hint,
-     * knowing the last Moves of the {@link Searcher}.
-     *
-     * @param movement the moves, the {@link Searcher} did last.
-     * @return T a hint.
+     * @param movement the {@link Movement}, the {@link Searcher} did last.
+     * @return T a (new) hint.
      */
     T move(Movement movement);
+
+    /**
+     * @return the current treasure location
+     */
+    Point getTreasureLocation();
 }

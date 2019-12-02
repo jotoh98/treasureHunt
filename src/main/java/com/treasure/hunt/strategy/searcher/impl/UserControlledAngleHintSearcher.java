@@ -6,6 +6,9 @@ import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.utils.SwingUtils;
 import org.locationtech.jts.geom.Point;
 
+/**
+ * @author axel12
+ */
 public class UserControlledAngleHintSearcher implements HideAndSeekSearcher<Hint> {
     private Point currentPosition;
 

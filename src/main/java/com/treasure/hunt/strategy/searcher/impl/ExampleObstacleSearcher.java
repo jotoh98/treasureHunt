@@ -8,6 +8,9 @@ import org.locationtech.jts.geom.Point;
 
 import java.util.List;
 
+/**
+ * @author axel12
+ */
 public class ExampleObstacleSearcher implements ObstacleSearcher<CircleHint> {
     @Override
     public void init(Point startPosition, List<GeometryItem> obstacles) {

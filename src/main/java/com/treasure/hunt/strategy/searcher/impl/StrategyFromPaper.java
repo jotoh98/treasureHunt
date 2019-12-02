@@ -11,6 +11,9 @@ import org.locationtech.jts.geom.Point;
 
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.angular2correctHalfPlaneHint;
 
+/**
+ * @author Rank
+ */
 public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     int phase; //equals j in the paper. In phase i, the algorithm checks a rectangle with a side length of 2^i
     Point start,

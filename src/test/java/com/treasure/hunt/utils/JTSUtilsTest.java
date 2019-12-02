@@ -7,8 +7,12 @@ import org.locationtech.jts.geom.Coordinate;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Testbench, testing {@link JTSUtils}.
+ *
+ * @author dorianreineccius
+ */
 class JTSUtilsTest {
-
     private Coordinate C = new Coordinate(0, 0),
             N = new Coordinate(0, 1),
             NE = new Coordinate(1, 1),
@@ -54,6 +58,11 @@ class JTSUtilsTest {
         normNW.setY(normNW.y + b);
     }
 
+    /**
+     * The 90Degrees tests open a 90 degree {@link AngleHint} and test,
+     * whether {@link JTSUtils#middleOfAngleHint(AngleHint)} returns a point,
+     * passing the middle of the AngleHint with a distance of 1.
+     */
     @Test
     void test90Degrees1() {
         eq(normNE, JTSUtils.middleOfAngleHint(createAngleHint(E, C, N)));
@@ -94,6 +103,11 @@ class JTSUtilsTest {
         eq(N, JTSUtils.middleOfAngleHint(createAngleHint(NE, C, NW)));
     }
 
+    /**
+     * The 180Degrees tests open a 180 degree {@link AngleHint} and test,
+     * whether {@link JTSUtils#middleOfAngleHint(AngleHint)} returns a point,
+     * passing the middle of the AngleHint with a distance of 1.
+     */
     @Test
     void test180Degrees1() {
         eq(N, JTSUtils.middleOfAngleHint(createAngleHint(E, C, W)));
@@ -142,6 +156,11 @@ class JTSUtilsTest {
         neq(normSE, JTSUtils.middleOfAngleHint(createAngleHint(NE, C, SW)));
     }
 
+    /**
+     * The 270Degrees tests open a 270 degree {@link AngleHint} and test,
+     * whether {@link JTSUtils#middleOfAngleHint(AngleHint)} returns a point,
+     * passing the middle of the AngleHint with a distance of 1.
+     */
     @Test
     void test270Degrees1() {
         eq(normSW, JTSUtils.middleOfAngleHint(createAngleHint(N, C, E)));
@@ -182,6 +201,12 @@ class JTSUtilsTest {
         eq(S, JTSUtils.middleOfAngleHint(createAngleHint(NW, C, NE)));
     }
 
+    /**
+     * @param c1 anglePointRight
+     * @param c2 center
+     * @param c3 anglePointLeft
+     * @return {@link AngleHint} defined by c1, c2, c3
+     */
     private AngleHint createAngleHint(Coordinate c1, Coordinate c2, Coordinate c3) {
         return new AngleHint(
                 JTSUtils.createPoint(c1.x, c1.y),
@@ -189,11 +214,23 @@ class JTSUtilsTest {
                 JTSUtils.createPoint(c3.x, c3.y));
     }
 
+    /**
+     * Tests, whether two {@link Coordinate}'s are approximately equal.
+     *
+     * @param expected {@link Coordinate}
+     * @param actual   {@link Coordinate}
+     */
     private void eq(Coordinate expected, Coordinate actual) {
         assertTrue(Math.abs(expected.x - actual.x) < 0.0001 && Math.abs(expected.y - actual.y) < 0.0001,
                 "Expected: x≈" + expected.x + " and y≈" + expected.y + ", but was ≈(" + actual.x + ", " + actual.y + ").");
     }
 
+    /**
+     * Tests, whether two {@link Coordinate}'s are approximately unequal.
+     *
+     * @param expected {@link Coordinate}
+     * @param actual   {@link Coordinate}
+     */
     private void neq(Coordinate expected, Coordinate actual) {
         assertTrue(Math.abs(expected.x - actual.x) > 0.0001 || Math.abs(expected.y - actual.y) > 0.0001,
                 "Expected: x≠" + expected.x + " or y≠" + expected.y + ", but was ≈(" + actual.x + ", " + actual.y + ").");

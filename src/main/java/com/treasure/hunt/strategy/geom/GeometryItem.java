@@ -7,6 +7,7 @@ import org.locationtech.jts.geom.Geometry;
 /**
  * Classifies a jts geometry item with parameters to distinguish between items for visualization/algorithm usages.
  *
+ * @author hassel
  * @see GeometryType for further information about how to classifiy a geometry item.
  */
 

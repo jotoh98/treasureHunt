@@ -8,10 +8,11 @@ import com.treasure.hunt.utils.Requires;
 /**
  * In this modification, the hints of the hider are wrong with
  * a probability of insecurity.
+ *
+ * @author dorianreineccius
  */
 @Requires(hider = InsecureHider.class, searcher = InsecureSearcher.class)
 public class InsecureGameEngine extends GameEngine {
-
     public InsecureGameEngine(Searcher searcher, Hider hider) {
         super(searcher, hider);
     }

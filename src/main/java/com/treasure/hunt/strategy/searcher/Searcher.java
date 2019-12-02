@@ -4,12 +4,17 @@ import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.Hint;
 import org.locationtech.jts.geom.Point;
 
+/**
+ * An algorithm, trying to find a treasure in the plain,
+ * given {@link Hint}-objects by a {@link Hider}.
+ *
+ * @param <T> the type of {@link Hint}, this searcher can handle.
+ * @author dorianreineccius
+ */
 public interface Searcher<T extends Hint> {
 
     /**
-     * Use this to initialize your searcher.
-     *
-     * @param startPosition the searchers starting position
+     * @param startPosition the searchers starting position, he will initialized with.
      */
     void init(Point startPosition);
 

@@ -19,11 +19,12 @@ import java.util.List;
 
 /**
  * This is the engine which runs a simulation of a treasure hunt.
+ *
+ * @author dorianreineccius
  */
 @Slf4j
 @Requires(hider = Hider.class, searcher = Searcher.class)
 public class GameEngine {
-
     protected final Searcher searcher;
     protected final Hider hider;
     /**
@@ -56,6 +57,7 @@ public class GameEngine {
      * f.e. if he works randomized!
      * <p>
      * Updates the searchers position.
+     *
      * @return the {@link Move}, happened in this step.
      */
     public Move move() {
@@ -93,14 +95,15 @@ public class GameEngine {
     }
 
     /**
-     * @return whether the performed {@link Movement}' by the searcher and {@link Hint}'s from the hider were correct.
+     * TODO implement:
+     * AngleHints must be correct
+     * AngleHints <=180 degrees
+     * CircleHints correct
+     * CircleHints must contain each other !?
+     *
+     * @return whether the performed {@link Movement}' by the searcher and {@link Hint}'s from the hider followed the rules.
      */
     protected boolean checkConsistency() {
-        // TODO implement
-        // AngleHints must be correct
-        // AngleHints <=180 degrees
-        // CircleHints correct
-        // CircleHints must contain eachother !?
         return true;
     }
 
@@ -136,6 +139,7 @@ public class GameEngine {
     /**
      * initialize searcher and hider.
      * initialize searcher and treasure positions.
+     *
      * @return a {@link Move}, since the initialization must be displayed.
      */
     public Move init() {

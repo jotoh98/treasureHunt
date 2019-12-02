@@ -10,6 +10,9 @@ import org.locationtech.jts.geom.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author dorianreineccius
+ */
 @ToString(of = {"centerPoint", "anglePointLeft", "anglePointRight"})
 @Getter
 public class AngleHint extends Hint {

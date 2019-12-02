@@ -3,6 +3,9 @@ package com.treasure.hunt.strategy.geom;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * @author hassel
+ */
 public enum GeometryType {
     // hints
     FALSE_HINT(false, "False Hint"),

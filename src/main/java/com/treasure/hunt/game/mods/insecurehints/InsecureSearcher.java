@@ -6,7 +6,10 @@ import org.locationtech.jts.geom.Point;
 
 /**
  * Nothing to implement here, BUT
- * you should ensure, your {@link Searcher} can handle with insecure hints.
+ * you should ensure, your {@link Searcher} can handle insecure hints.
+ *
+ * @param <T> the type of {@link Hint} this {@link Searcher} can handle.
+ * @author dorianreineccius
  */
 public interface InsecureSearcher<T extends Hint> extends Searcher<T> {
 

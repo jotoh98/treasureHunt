@@ -5,6 +5,9 @@ import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import org.locationtech.jts.geom.Point;
 
+/**
+ * @author axel12
+ */
 public class ExampleSearcher implements Searcher<AngleHint> {
     @Override
     public void init(Point startPosition) {

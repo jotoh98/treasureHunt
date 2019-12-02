@@ -6,6 +6,12 @@ import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Point;
 
+/**
+ * This test {@link Searcher} walks over the treasure,
+ * but does not stop on it.
+ *
+ * @author dorianreineccius
+ */
 public class MoveOverTreasure2Searcher implements Searcher<CircleHint> {
     private Point startPosition;
 

@@ -6,6 +6,9 @@ import org.locationtech.jts.geom.*;
 
 import static org.locationtech.jts.algorithm.Angle.angleBetweenOriented;
 
+/**
+ * @author Rank, dorianreineccius
+ */
 public class JTSUtils {
     public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 

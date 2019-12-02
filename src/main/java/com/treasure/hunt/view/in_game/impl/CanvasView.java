@@ -12,6 +12,12 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This starts a concurrent Thread containing a Canvas,
+ * on which the GameSimulation will be illustrated.
+ *
+ * @author axel12, hassel
+ */
 public class CanvasView extends JPanel implements View {
 
     private ShapeWriter shapeWriter;
@@ -26,22 +32,22 @@ public class CanvasView extends JPanel implements View {
         shapeWriter = new ShapeWriter(pointTransformation);
     }
 
+    /**
+     * This repaints the canvas with the current state of the {@link GameManager}.
+     */
     @Override
     public void run() {
         geometryItems = gameManager.getGeometryItems();
-        revalidate();
-        // This repaints the view, when new geometryItems appear.
         repaint();
     }
 
-    public Shape draw(GeometryItem geometryItem) {
-        return shapeWriter.toShape(geometryItem.getObject());
-    }
-
+    /**
+     * @param graphics where we paint all the new picture.
+     */
     @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D graphics2D = (Graphics2D) g;
+    public void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
+        Graphics2D graphics2D = (Graphics2D) graphics;
 
         for (GeometryItem geometryItem : geometryItems) {
             paintShape(graphics2D, geometryItem);
@@ -49,8 +55,19 @@ public class CanvasView extends JPanel implements View {
 
     }
 
-    public void paintShape(Graphics2D graphics2D, GeometryItem geometryItem) {
+    /**
+     * @param gameManager the {@link GameManager}, the View gets its {@link com.treasure.hunt.game.Move} objects.
+     */
+    @Override
+    public void init(GameManager gameManager) {
+        this.gameManager = gameManager;
+    }
 
+    /**
+     * @param graphics2D   we draw the geometryItem on
+     * @param geometryItem the geometryItem, we want to draw on the graphics2D
+     */
+    private void paintShape(Graphics2D graphics2D, GeometryItem geometryItem) {
         if (!geometryItem.getGeometryStyle().isVisible()) {
             return;
         }
@@ -66,8 +83,11 @@ public class CanvasView extends JPanel implements View {
         graphics2D.draw(shape);
     }
 
-    @Override
-    public void init(GameManager gameManager) {
-        this.gameManager = gameManager;
+    /**
+     * @param geometryItem to convert to a {@link Shape}.
+     * @return the geometryItem converted to a {@link Shape}.
+     */
+    private Shape draw(GeometryItem geometryItem) {
+        return shapeWriter.toShape(geometryItem.getObject());
     }
 }

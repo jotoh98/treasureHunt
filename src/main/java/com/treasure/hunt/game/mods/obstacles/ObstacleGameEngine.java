@@ -8,17 +8,23 @@ import com.treasure.hunt.utils.Requires;
 /**
  * In this game modification,
  * obstacles are placed in the map.
+ *
+ * @author dorianreineccius
  */
 @Requires(hider = ObstacleHider.class, searcher = ObstacleSearcher.class)
 public class ObstacleGameEngine extends GameEngine {
-
     public ObstacleGameEngine(Searcher searcher, Hider hider) {
         super(searcher, hider);
     }
 
+    /**
+     * Checks, whether all followed the rules.
+     * TODO Check, whether the searcher passed a wall.
+     *
+     * @return whether the game is consistent.
+     */
     @Override
     protected boolean checkConsistency() {
-        // TODO, check whether the searcher passed a wall!
         return true;
     }
 }

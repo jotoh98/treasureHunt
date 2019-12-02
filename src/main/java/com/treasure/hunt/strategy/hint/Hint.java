@@ -6,6 +6,9 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author hassel
+ */
 @Data
 public abstract class Hint {
     protected List<GeometryItem> additionalGeometryItems = new ArrayList<>();

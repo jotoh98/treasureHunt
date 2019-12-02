@@ -21,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for the {@link GameEngine}.
+ *
+ * @author dorianreineccius
  */
 class GameEngineTest {
 

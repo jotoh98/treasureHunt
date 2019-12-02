@@ -19,6 +19,9 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * @author axel12, hassel
+ */
 @Slf4j
 public class MainMenuController {
     private final JFrame jFrame = new JFrame("Treasure Hunt");

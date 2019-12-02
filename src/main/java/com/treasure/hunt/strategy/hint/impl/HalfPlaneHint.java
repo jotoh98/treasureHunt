@@ -7,6 +7,9 @@ import org.locationtech.jts.geom.Point;
 
 import java.util.List;
 
+/**
+ * @author Rank
+ */
 public class HalfPlaneHint extends AngleHint {
 
     @Getter

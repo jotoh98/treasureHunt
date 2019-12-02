@@ -12,6 +12,9 @@ import java.awt.*;
 
 import static javax.swing.BorderFactory.createEmptyBorder;
 
+/**
+ * @author axel12, hassel
+ */
 public class CanvasController extends JFrame {
 
     @Getter

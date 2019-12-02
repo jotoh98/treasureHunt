@@ -12,6 +12,9 @@ import org.locationtech.jts.geom.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author dorianreineccius
+ */
 @AllArgsConstructor
 @Getter
 public class CircleHint extends Hint {

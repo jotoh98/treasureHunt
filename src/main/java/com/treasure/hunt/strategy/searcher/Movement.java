@@ -8,6 +8,12 @@ import org.locationtech.jts.geom.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This is a movement of the searcher in the plain,
+ * stored as a list of {@link Point} objects.
+ *
+ * @author dorianreineccius
+ */
 public class Movement {
 
     @Getter
