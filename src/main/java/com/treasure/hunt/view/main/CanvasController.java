@@ -29,7 +29,6 @@ public class CanvasController extends JFrame {
     public CanvasController(CanvasView canvasView, GameManager gameManager) {
         this.canvasView = canvasView;
         this.gameManager = gameManager;
-        gameManager.init(); //!
         CanvasMouseListener canvasMouseListener = new CanvasMouseListener(this);
         canvasView.addMouseMotionListener(canvasMouseListener);
         canvasView.addMouseListener(canvasMouseListener);
@@ -49,7 +48,15 @@ public class CanvasController extends JFrame {
         rightControlPanel.add(offsetPanel);
         rightControlPanel.add(scalePanel);
 
-        nextButton.addActionListener(e -> gameManager.step());
+
+        Button prevButton = new Button();
+        prevButton.setLabel("Previous");
+        prevButton.addActionListener(e -> gameManager.previous());
+        bottomControlPanel.add(prevButton);
+
+        Button nextButton = new Button();
+        nextButton.setLabel("Next");
+        nextButton.addActionListener(e -> gameManager.next());
         bottomControlPanel.add(nextButton);
 
         bottomControlPanel.add(

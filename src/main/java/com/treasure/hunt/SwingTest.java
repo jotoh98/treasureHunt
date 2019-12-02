@@ -1,5 +1,6 @@
 package com.treasure.hunt;
 
+import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.geom.Circle;
 import com.treasure.hunt.geom.Line;
@@ -51,7 +52,14 @@ public class SwingTest {
     public static void uiTest() {
         CanvasView canvasView = new CanvasView();
         List<View> views = Collections.singletonList(canvasView);
-        GameManager gameManager = new GameManager(new NaiveAngleSearcher(), new RandomAngleHintHider(), views);
+        GameManager gameManager = null;
+        try {
+            gameManager = new GameManager(NaiveAngleSearcher.class, RandomAngleHintHider.class,
+                    GameEngine.class, views);
+        } catch (Exception e) {
+            log.error("Something went wrong creating Game Manager instance. Honestly you dont need a logger msg in a " +
+                    "simple swing test but Alex told me to do so. HELP", e);
+        }
         CanvasController canvasController = new CanvasController(canvasView, gameManager);
 
         canvasView.addGeometryItem(new GeometryItem(new Line(0, 0, 0, 1)));

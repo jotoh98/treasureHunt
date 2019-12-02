@@ -1,6 +1,6 @@
 package com.treasure.hunt.view.in_game.impl;
 
-import com.treasure.hunt.game.GameHistory;
+import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.jts.AdvancedShapeWriter;
 import com.treasure.hunt.jts.PointTransformation;
 import com.treasure.hunt.strategy.geom.GeometryItem;
@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 /**
  * This is the awt {@link Shape} view displaying the rendered coordinate system. Being a {@link View} instance, it
- * also reacts and repaints every time a new {@link GeometryItem} is sent to the {@link GameHistory}.
+ * also reacts and repaints every time a new {@link GeometryItem} is sent to the {@link GameManager}.
  *
  * @version 1.0
  */
@@ -29,7 +29,7 @@ public class CanvasView extends JPanel implements View {
     @Getter
     private PointTransformation pointTransformation = new PointTransformation();
 
-    private GameHistory gameHistory;
+    private GameManager gameManager;
     private List<GeometryItem> geometryItems = new ArrayList<>();
 
     private List<GeometryItem> additionalItems = new ArrayList<>();
@@ -45,7 +45,7 @@ public class CanvasView extends JPanel implements View {
     @Override
     public void run() {
         geometryItems = Stream
-                .of(gameHistory.getGeometryItems(), additionalItems)
+                .of(gameManager.getGeometryItems(), additionalItems)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
         revalidate();
@@ -70,7 +70,7 @@ public class CanvasView extends JPanel implements View {
     }
 
     @Override
-    public void init(GameHistory gameHistory) {
-        this.gameHistory = gameHistory;
+    public void init(GameManager gameManager) {
+        this.gameManager = gameManager;
     }
 }

@@ -1,9 +1,10 @@
 package com.treasure.hunt.strategy.hint.impl;
 
-import com.treasure.hunt.geom.GeometryAngle;
+import com.treasure.hunt.geom.Angle;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.Hint;
+import com.treasure.hunt.utils.JTSUtils;
 import lombok.Getter;
 import lombok.ToString;
 import org.locationtech.jts.geom.Coordinate;
@@ -14,10 +15,10 @@ import java.util.List;
 @ToString(of = {"centerPoint", "anglePointLeft", "anglePointRight"})
 @Getter
 public class AngleHint extends Hint {
-    GeometryAngle geometryAngle;
+    Angle geometryAngle;
 
     public AngleHint(Coordinate center, Coordinate anglePointLeft, Coordinate anglePointRight) {
-        geometryAngle = new GeometryAngle(center, anglePointLeft, anglePointRight);
+        geometryAngle = new Angle(JTSUtils.GEOMETRY_FACTORY, center, anglePointLeft, anglePointRight);
         System.out.println(geometryAngle);
     }
 
