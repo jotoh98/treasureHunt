@@ -80,11 +80,21 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         LineSegment hintLine = new LineSegment(hint.getAnglePointLeft().getCoordinate(),
                 hint.getAnglePointRight().getCoordinate());
 
-        Point intersection_AD_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, AD));
-        Point intersection_BC_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, BC));
+        Point intersection_AD_hint = null;
+        Point intersection_BC_hint = null;
+        Point intersection_AB_hint = null;
+        Point intersection_CD_hint = null;
+        if (lineWayIntersection(hintLine, AD) != null)
+            intersection_AD_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, AD));
 
-        Point intersection_AB_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, AB));
-        Point intersection_CD_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, CD));
+        if (lineWayIntersection(hintLine, BC) != null)
+            intersection_BC_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, BC));
+
+        if (lineWayIntersection(hintLine, AB) != null)
+            intersection_AB_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, AB));
+
+        if (lineWayIntersection(hintLine, CD) != null)
+            intersection_CD_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, CD));
 
         Point[] horizontalSplit = splitRectangleHorizontally(A, B, C, D, hint, intersection_AD_hint,
                 intersection_BC_hint);
@@ -109,7 +119,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
 
     private Point[] splitRectangleHorizontally(Point A, Point B, Point C, Point D, HalfPlaneHint hint,
                                                Point intersection_AD_hint, Point intersection_BC_hint) {
-        if (intersection_AD_hint == null || intersection_AD_hint == null) {
+        if (intersection_AD_hint == null || intersection_BC_hint == null) {
             return null;
         }
 
@@ -197,7 +207,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     private Movement badHintSubroutine(HalfPlaneHint hint) {
         //return moveToCenterOfRectangle(A, B, C, D); //testing
 
-        Point direction = GEOMETRY_FACTORY.createPoint(twoStepsOrthogonal(hint, centerOfRectangle(A,B,C,D)));
+        Point direction = GEOMETRY_FACTORY.createPoint(twoStepsOrthogonal(hint, centerOfRectangle(A, B, C, D)));
         Movement move = new Movement();
         move.addWayPoint(direction);
         lastHintWasBad = true;
@@ -383,8 +393,12 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
 
         RectangleHintPair curHintPair = new RectangleHintPair(A, B, C, D, curHint);
         HalfPlaneHint curHintT = phi(phi_k, curHintPair).getHint();
+        HalfPlaneHint.Direction x2_apos = curHintT.getDirection();
+        LineSegment L2_apos = new LineSegment(curHintT.getAnglePointLeft().getCoordinate(),
+                curHintT.getAnglePointRight().getCoordinate());
         // here begins line 24 of the ReduceRectangle routine from the paper:
         // test wether L2_apos is between (p, p_apos) and (m_apos, k_apos)
+        //Angle.angleBetweenOriented(curHintT.getAnglePointRight().getCoordinate(), p.getCoordinate(),);
 
         //if(curHintT.getDirection()==right && )
 
