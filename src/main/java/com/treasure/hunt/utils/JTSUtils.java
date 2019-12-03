@@ -13,28 +13,26 @@ public class JTSUtils {
         return GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
     }
 
-    // TODO is this necessary?
     public static LineString createLineString(Point A, Point B) {
         Coordinate[] coords = {A.getCoordinate(), B.getCoordinate()};
         return GEOMETRY_FACTORY.createLineString(coords);
     }
 
     /**
-     * Tests whether line line intersects with the linesegment linesegment
+     * Tests whether the line line intersects with the linesegment segment
      *
-     * @param line
-     * @param lineSegment
+     * @param line    line with infinite extend
+     * @param segment part of a line
      * @return
      */
-    // TODO is this necessary?
-    public static Point lineLineSegmentIntersection(LineSegment line, LineSegment lineSegment) {
-        Point intersection = GEOMETRY_FACTORY.createPoint(line.lineIntersection(lineSegment));
-        LineString lineSegString = createLineString(GEOMETRY_FACTORY.createPoint(lineSegment.p0),
-                GEOMETRY_FACTORY.createPoint(lineSegment.p1));
-        if (lineSegString.contains(intersection)) {
-            return intersection;
-        }
-        return null;
+    public static Point lineWayIntersection(LineSegment line, LineSegment segment) {
+        Coordinate intersection = line.lineIntersection(segment);
+        if (intersection == null)
+            return null;
+        double distance = GEOMETRY_FACTORY.getPrecisionModel().makePrecise(segment.distance(intersection));
+        if (distance != 0)
+            return null;
+        return GEOMETRY_FACTORY.createPoint(intersection);
     }
 
     /**
