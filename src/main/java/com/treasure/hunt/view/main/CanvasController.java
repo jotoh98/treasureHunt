@@ -3,7 +3,8 @@ package com.treasure.hunt.view.main;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.jts.PointTransformation;
 import com.treasure.hunt.view.in_game.impl.CanvasView;
-import com.treasure.hunt.view.swing.CanvasMouseListener;
+import com.treasure.hunt.view.swing.CanvasViewEventListener;
+import com.treasure.hunt.view.swing.PointInspector;
 import lombok.Getter;
 import org.locationtech.jts.math.Vector2D;
 
@@ -20,8 +21,9 @@ public class CanvasController extends JFrame {
 
     private JPanel rootPanel = new JPanel();
     private JPanel rightControlPanel = new JPanel();
-    private JTextPane offsetPanel = new JTextPane();
     private JTextPane scalePanel = new JTextPane();
+    PointInspector leftUpperInspector = new PointInspector();
+    PointInspector rightLowerInspector = new PointInspector();
 
     private JPanel bottomControlPanel = new JPanel();
     private Button nextButton = new Button("Next");
@@ -29,11 +31,10 @@ public class CanvasController extends JFrame {
     public CanvasController(CanvasView canvasView, GameManager gameManager) {
         this.canvasView = canvasView;
         this.gameManager = gameManager;
-        CanvasMouseListener canvasMouseListener = new CanvasMouseListener(this);
-        canvasView.addMouseMotionListener(canvasMouseListener);
-        canvasView.addMouseListener(canvasMouseListener);
-        canvasView.addMouseWheelListener(canvasMouseListener);
-        setVisible(true);
+        CanvasViewEventListener canvasViewEventListener = new CanvasViewEventListener(this);
+        canvasView.addMouseMotionListener(canvasViewEventListener);
+        canvasView.addMouseListener(canvasViewEventListener);
+        canvasView.addMouseWheelListener(canvasViewEventListener);
         setSize(1080, 600);
         initCanvasWrapper();
     }
@@ -45,7 +46,8 @@ public class CanvasController extends JFrame {
         initBottomControlPanel();
 
         rightControlPanel.setLayout(new BoxLayout(rightControlPanel, BoxLayout.Y_AXIS));
-        rightControlPanel.add(offsetPanel);
+        rightControlPanel.add(leftUpperInspector);
+        rightControlPanel.add(rightLowerInspector);
         rightControlPanel.add(scalePanel);
 
 
@@ -66,6 +68,7 @@ public class CanvasController extends JFrame {
                         new Dimension(0, Integer.MAX_VALUE)
                 )
         );
+        setVisible(true);
     }
 
     private void initRootPanel() {
@@ -81,18 +84,12 @@ public class CanvasController extends JFrame {
         bottomControlPanel.setBorder(createEmptyBorder(10, 10, 10, 10));
     }
 
-    public void updateOffsetPanel() {
+    public void updateInspectors() {
         PointTransformation transformation = canvasView.getPointTransformation();
-        Vector2D leftUpperBoundary = transformation.getLeftUpperBoundary();
-        Vector2D rightLowerBoundary = transformation.getRightLowerBoundary(canvasView);
-
-        offsetPanel.setText(String.format(
-                "[%.2f, %.2f] [%.2f, %.2f]",
-                leftUpperBoundary.getX(),
-                leftUpperBoundary.getY(),
-                rightLowerBoundary.getX(),
-                rightLowerBoundary.getY()
-        ));
+        Vector2D leftUpperBoundary = transformation.getUpperLeftBoundary();
+        Vector2D rightLowerBoundary = transformation.getLowerRightBoundary();
+        leftUpperInspector.setValue(leftUpperBoundary.toCoordinate());
+        rightLowerInspector.setValue(rightLowerBoundary.toCoordinate());
     }
 
     public void updateScalePanel(double scale) {

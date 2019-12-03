@@ -1,16 +1,13 @@
 package com.treasure.hunt.geom;
 
-import com.treasure.hunt.jts.PointTransformation;
+import com.treasure.hunt.jts.AdvancedShapeWriter;
 import lombok.Data;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.math.Vector2D;
 
 import java.awt.*;
-import java.awt.geom.Arc2D;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.Point2D;
 
 /**
  * The Angle is an geometric representation of an angle at a certain position.
@@ -25,9 +22,6 @@ import java.awt.geom.Point2D;
 @Data
 public class Angle extends LineString implements Shapeable {
 
-    Ray leftRay;
-    Ray rightRay;
-
     /**
      * Creates a new <code>Geometry</code> via the specified GeometryFactory.
      *
@@ -39,94 +33,61 @@ public class Angle extends LineString implements Shapeable {
                         .create(new Coordinate[]{center, left, right}),
                 factory
         );
+    }
 
-        leftRay = new Ray(center, left);
-        rightRay = new Ray(center, right);
+    private void setCoordinate(int i, Coordinate c) {
+        points.getCoordinate(i).setX(c.getX());
+        points.getCoordinate(i).setY(c.getY());
     }
 
     public Coordinate getCenter() {
-        return leftRay.p0;
+        return points.getCoordinate(0);
     }
 
     public void setCenter(Coordinate center) {
-        leftRay.p0 = center;
-        rightRay.p0 = center;
+        setCoordinate(0, center);
     }
 
     public Coordinate getLeft() {
-        return leftRay.p1;
+        return points.getCoordinate(1);
     }
 
     public void setLeft(Coordinate left) {
-        leftRay.p1 = left;
+        setCoordinate(1, left);
     }
 
     public Coordinate getRight() {
-        return rightRay.p1;
+        return points.getCoordinate(2);
     }
 
     public void setRight(Coordinate right) {
-        rightRay.p1 = right;
+        setCoordinate(2, right);
     }
 
-    public double rightAngle() {
+    private double rightAngle() {
         return org.locationtech.jts.algorithm.Angle.angle(getCenter(), getRight());
     }
 
-    public double leftAngle() {
+    private double leftAngle() {
         return org.locationtech.jts.algorithm.Angle.angle(getCenter(), getLeft());
     }
 
-    public double toRadians() {
-        return leftAngle() - rightAngle();
+    public double extend() {
+        double extend = leftAngle() - rightAngle();
+        if (extend < 0) {
+            extend += 2 * Math.PI;
+        }
+        return extend;
     }
 
     @Override
-    public Shape toShape(PointTransformation pointTransformation) {
+    public Shape toShape(AdvancedShapeWriter shapeWriter) {
         GeneralPath generalPath = new GeneralPath();
 
-        Point2D destMiddle = new Point2D.Double();
-        pointTransformation.transform(getCenter(), destMiddle);
+        generalPath.append(shapeWriter.createFixedLine(getCenter(), getLeft(), 100), false);
+        generalPath.append(shapeWriter.createFixedLine(getCenter(), getRight(), 100), false);
 
-        double middleX = destMiddle.getX();
-        double middleY = destMiddle.getY();
-
-        Vector2D leftVector = new Vector2D(getCenter(), getLeft());
-        Vector2D rightVector = new Vector2D(getCenter(), getRight());
-
-        leftVector = leftVector.normalize().multiply(100);
-        rightVector = rightVector.normalize().multiply(100);
-
-        generalPath.moveTo(
-                middleX + leftVector.getX(),
-                middleY - leftVector.getY()
-        );
-        generalPath.lineTo(
-                middleX,
-                middleY
-        );
-        generalPath.lineTo(
-                middleX + rightVector.getX(),
-                middleY - rightVector.getY()
-        );
-
-        double extend = leftAngle() - rightAngle();
-
-        if (leftAngle() < rightAngle()) {
-            extend += 2 * Math.PI;
-        }
-
-        Arc2D arc = new Arc2D.Double(
-                middleX - 50,
-                middleY - 50,
-                100,
-                100,
-                Math.toDegrees(rightAngle()),
-                Math.toDegrees(extend),
-                Arc2D.OPEN
-        );
-
-        generalPath.append(arc, false);
+        generalPath.append(shapeWriter.createArc(getCenter(), 100, rightAngle(), extend()), false);
 
         return generalPath;
     }

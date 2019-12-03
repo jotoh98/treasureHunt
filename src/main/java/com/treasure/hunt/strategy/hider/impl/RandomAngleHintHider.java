@@ -24,7 +24,7 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
         Coordinate searcherPos = movement.getEndPoint().getCoordinate();
 
         // generate angle
-        double randomAngle = Math.random() * Math.PI; // in [0, PI)
+        double randomAngle = Math.random() * 2 * Math.PI; // in [0, PI)
         double random = Math.random();
         double leftAngle = Angle.angle(searcherPos,
                 treasurePos.getCoordinate()) + random * randomAngle;

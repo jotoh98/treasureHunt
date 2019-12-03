@@ -183,10 +183,7 @@ class JTSUtilsTest {
     }
 
     private AngleHint createAngleHint(Coordinate c1, Coordinate c2, Coordinate c3) {
-        return new AngleHint(
-                JTSUtils.createPoint(c1.x, c1.y),
-                JTSUtils.createPoint(c2.x, c2.y),
-                JTSUtils.createPoint(c3.x, c3.y));
+        return new AngleHint(c1, c2, c3);
     }
 
     private void eq(Coordinate expected, Coordinate actual) {

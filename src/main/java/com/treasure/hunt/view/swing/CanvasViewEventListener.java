@@ -5,13 +5,15 @@ import com.treasure.hunt.view.in_game.impl.CanvasView;
 import com.treasure.hunt.view.main.CanvasController;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.math.Vector2D;
 
 import java.awt.*;
 import java.awt.event.*;
 
 @RequiredArgsConstructor
-public class CanvasMouseListener implements MouseListener, MouseMotionListener, MouseWheelListener {
+@Slf4j
+public class CanvasViewEventListener implements MouseListener, MouseMotionListener, MouseWheelListener, ComponentListener {
 
     private static final double MIN_SCALE = .1;
     private static final double MAX_SCALE = 1e10;
@@ -48,7 +50,7 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener, 
         Vector2D dragDelta = new Vector2D(e.getX(), e.getY()).subtract(dragOffset);
         canvasController.getCanvasView().getPointTransformation().setOffset(dragDelta);
         canvasController.getCanvasView().repaint();
-        canvasController.updateOffsetPanel();
+        canvasController.updateInspectors();
     }
 
     @Override
@@ -58,6 +60,10 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener, 
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
+        if (e.getWheelRotation() == 0) {
+            return;
+        }
+
         Vector2D mouse = new Vector2D(e.getX(), e.getY());
 
         CanvasView canvasView = canvasController.getCanvasView();
@@ -71,15 +77,39 @@ public class CanvasMouseListener implements MouseListener, MouseMotionListener, 
             scrollAmount = 1 / scrollAmount;
         }
 
+        log.info(String.format("%s %s", e.getWheelRotation(), e.getScrollAmount()));
+
         double newScale = oldScale * scrollAmount;
 
         if (newScale > 0) {
             transformer.setScale(newScale);
             transformer.setOffset(mouse.add(direction.multiply(newScale / oldScale)));
-            transformer.setBoundarySize(canvasView.getWidth(), canvasView.getHeight());
-            canvasController.updateOffsetPanel();
+            canvasController.updateInspectors();
             canvasController.updateScalePanel(newScale);
             canvasView.repaint();
         }
+    }
+
+    @Override
+    public void componentResized(ComponentEvent e) {
+        CanvasView canvasView = canvasController.getCanvasView();
+        int width = canvasView.getWidth();
+        int height = canvasView.getHeight();
+        canvasView.getPointTransformation().updateCanvasSize(width, height);
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
+
     }
 }

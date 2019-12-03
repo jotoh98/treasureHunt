@@ -18,13 +18,14 @@ public class GeometryStyle {
     private Color outlineColor;
 
     private Color fillColor;
+    int zIndex = 0;
 
     public GeometryStyle(boolean visible, Color outlineColor) {
-        this(visible, false, outlineColor, Color.black);
+        this(visible, false, outlineColor, Color.black, 0);
     }
 
     public GeometryStyle(boolean visible, Color outlineColor, Color fillColor) {
-        this(visible, true, outlineColor, fillColor);
+        this(visible, true, outlineColor, fillColor, 0);
     }
 
     public static GeometryStyle getDefaults(GeometryType type) {

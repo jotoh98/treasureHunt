@@ -1,12 +1,11 @@
 package com.treasure.hunt.geom;
 
-import com.treasure.hunt.jts.PointTransformation;
+import com.treasure.hunt.jts.AdvancedShapeWriter;
+import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
-import org.locationtech.jts.math.Vector2D;
 
 import java.awt.*;
-import java.awt.geom.GeneralPath;
 
 public class Line extends Ray {
     public Line(Coordinate p0, Coordinate p1) {
@@ -31,19 +30,12 @@ public class Line extends Ray {
     }
 
     @Override
-    public Shape toShape(PointTransformation pointTransformation) {
-        GeneralPath linePath = new GeneralPath();
+    public Shape toShape(AdvancedShapeWriter shapeWriter) {
+        double diameter = shapeWriter.getPointTransformation().diameter();
 
-        Coordinate start = p0;
+        Coordinate start = JTSUtils.coordinateInDistance(p0, p1, -diameter);
+        Coordinate end = JTSUtils.coordinateInDistance(p0, p1, diameter);
 
-        Vector2D vector2D = new Vector2D(p0, p1);
-
-        Vector2D positiveRay = vector2D.normalize().multiply(pointTransformation.diameter());
-        Vector2D negativeRay = vector2D.normalize().multiply(-pointTransformation.diameter());
-
-        linePath.moveTo(start.getX() + negativeRay.getX(), start.getY() + negativeRay.getY());
-        linePath.lineTo(start.getX() + positiveRay.getX(), start.getY() + positiveRay.getY());
-
-        return linePath;
+        return shapeWriter.createLine(start, end);
     }
 }

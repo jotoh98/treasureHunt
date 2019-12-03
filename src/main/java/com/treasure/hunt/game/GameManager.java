@@ -21,6 +21,7 @@ public class GameManager {
      * The {@link View} objects (being {@link Runnable})
      */
     private List<Runnable> views = new ArrayList<>();
+
     /**
      * Runs the {@link View} objects concurrently.
      */
@@ -66,6 +67,8 @@ public class GameManager {
         stepView++;
         stepSim++;
         runListeners();
+
+
     }
 
     /**

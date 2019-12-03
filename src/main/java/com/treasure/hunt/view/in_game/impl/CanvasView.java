@@ -6,9 +6,12 @@ import com.treasure.hunt.jts.PointTransformation;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.view.in_game.View;
 import lombok.Getter;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.math.Vector2D;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -36,6 +39,7 @@ public class CanvasView extends JPanel implements View {
 
     public CanvasView() {
         shapeWriter = new AdvancedShapeWriter(pointTransformation);
+        pointTransformation.setBoundarySize(getWidth(), getHeight());
     }
 
     public void addGeometryItem(GeometryItem item) {
@@ -62,6 +66,10 @@ public class CanvasView extends JPanel implements View {
         for (GeometryItem geometryItem : geometryItems) {
             paintShape(graphics2D, geometryItem);
         }
+
+        Vector2D boundary = pointTransformation.getLowerRightBoundary();
+        Coordinate o = pointTransformation.transform(new Coordinate());
+        graphics2D.draw(new Line2D.Double(o.x, o.y, (int) boundary.getX(), (int) boundary.getY()));
 
     }
 
