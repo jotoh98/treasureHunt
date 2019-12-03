@@ -25,14 +25,14 @@ public class JTSUtils {
      * @param segment part of a line
      * @return
      */
-    public static Point lineWayIntersection(LineSegment line, LineSegment segment) {
+    public static Coordinate lineWayIntersection(LineSegment line, LineSegment segment) {
         Coordinate intersection = line.lineIntersection(segment);
         if (intersection == null)
             return null;
         double distance = GEOMETRY_FACTORY.getPrecisionModel().makePrecise(segment.distance(intersection));
         if (distance != 0)
             return null;
-        return GEOMETRY_FACTORY.createPoint(intersection);
+        return intersection;
     }
 
     /**

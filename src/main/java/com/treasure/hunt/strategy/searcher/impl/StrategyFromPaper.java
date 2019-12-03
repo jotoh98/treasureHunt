@@ -14,11 +14,11 @@ import static com.treasure.hunt.strategy.geom.GeometryType.CURRENT_PHASE;
 import static com.treasure.hunt.strategy.geom.GeometryType.CURRENT_RECTANGLE;
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
 import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
+import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
 
 public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     int phase; //equals j in the paper. In phase i, the algorithm checks a rectangle with a side length of 2^i
     Point start,
-            location,
             A, B, C, D;
 
     HalfPlaneHint lastBadHint; //only used when last hint was bad
@@ -27,7 +27,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     @Override
     public void init(Point startPosition) {
         start = startPosition;
-        location = (Point) startPosition.copy();
         phase = 1;
         setRectToPhase();
     }
@@ -81,11 +80,11 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         LineSegment hintLine = new LineSegment(hint.getAnglePointLeft().getCoordinate(),
                 hint.getAnglePointRight().getCoordinate());
 
-        Point intersection_AD_hint = JTSUtils.lineLineSegmentIntersection(hintLine, AD);
-        Point intersection_BC_hint = JTSUtils.lineLineSegmentIntersection(hintLine, BC);
+        Point intersection_AD_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, AD));
+        Point intersection_BC_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, BC));
 
-        Point intersection_AB_hint = JTSUtils.lineLineSegmentIntersection(hintLine, AB);
-        Point intersection_CD_hint = JTSUtils.lineLineSegmentIntersection(hintLine, CD);
+        Point intersection_AB_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, AB));
+        Point intersection_CD_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, CD));
 
         Point[] horizontalSplit = splitRectangleHorizontally(A, B, C, D, hint, intersection_AD_hint,
                 intersection_BC_hint);
@@ -198,7 +197,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     private Movement badHintSubroutine(HalfPlaneHint hint) {
         //return moveToCenterOfRectangle(A, B, C, D); //testing
 
-        Point direction = twoStepsOrthogonal(hint, location);
+        Point direction = GEOMETRY_FACTORY.createPoint(twoStepsOrthogonal(hint, centerOfRectangle(A,B,C,D)));
         Movement move = new Movement();
         move.addWayPoint(direction);
         lastHintWasBad = true;
@@ -206,8 +205,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return move;
     }
 
-    // location has to be set accordingly (so that the player is on the hint line)
-    private Point twoStepsOrthogonal(HalfPlaneHint hint, Point cur_pos) {
+    private Coordinate twoStepsOrthogonal(HalfPlaneHint hint, Point cur_pos) {
         Vector2D hintVector = new Vector2D(hint.getLowerHintPoint().getCoordinate(),
                 hint.getUpperHintPoint().getCoordinate());
 
@@ -215,15 +213,15 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
 
         switch (hint.getDirection()) {
             case up:
-                return JTSUtils.createPoint(cur_pos.getX(), cur_pos.getY() + 2);
+                return new Coordinate(cur_pos.getX(), cur_pos.getY() + 2);
             case down:
-                return JTSUtils.createPoint(cur_pos.getX(), cur_pos.getY() - 2);
+                return new Coordinate(cur_pos.getX(), cur_pos.getY() - 2);
             case left:
                 hintVector = hintVector.rotateByQuarterCircle(1);
             case right:
                 hintVector = hintVector.rotateByQuarterCircle(3);
         }
-        return JTSUtils.createPoint(cur_pos.getX() + hintVector.getX(), cur_pos.getY() + hintVector.getY());
+        return new Coordinate(cur_pos.getX() + hintVector.getX(), cur_pos.getY() + hintVector.getY());
     }
 
     private Point centerOfRectangle(Point P1, Point P2, Point P3, Point P4) {
@@ -320,9 +318,75 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
 
     private Movement twoHintsSubroutine(HalfPlaneHint curHint) {
         // TODO
-        // dann die ganzen punkte berechnen die in dem Paper auch gebraucht werden
         // dann die Fälle des Papers durchgehen und dementsprechend returnen
 
+        // variable names are equivalent to the ones used in the ReduceRectangle routine in the paper
+        // (apos for apostrophe)
+        // since A, B, C, D and the hints already exist in normal representation, the transformed ones have a t in the
+        // variable name
+        RectangleHintPair rp = new RectangleHintPair(A, B, C, D, lastBadHint);
+        int phi_k = getBasicTransformation(rp);
+        RectangleHintPair transformed_rp = phi(phi_k, rp);
+        Point At = transformed_rp.getA();
+        Point Bt = transformed_rp.getB();
+        Point Ct = transformed_rp.getC();
+        Point Dt = transformed_rp.getD();
+        HalfPlaneHint hintT = transformed_rp.getHint();
+
+        Point p = centerOfRectangle(At, Bt, Ct, Dt);
+        Coordinate p_apos = twoStepsOrthogonal(hintT, p);
+        // L_1_apos_dash = (p, p_apos)
+
+        LineSegment ABt = new LineSegment(At.getCoordinate(), Bt.getCoordinate());
+        LineSegment ADt = new LineSegment(At.getCoordinate(), Dt.getCoordinate());
+        LineSegment BCt = new LineSegment(Bt.getCoordinate(), Ct.getCoordinate());
+        LineSegment CDt = new LineSegment(Ct.getCoordinate(), Dt.getCoordinate());
+        LineSegment L1_apos = new LineSegment(hintT.getAnglePointLeft().getCoordinate(),
+                hintT.getAnglePointRight().getCoordinate());
+        LineSegment L1_doubleApos = new LineSegment(hintT.getAnglePointLeft().getX() + p_apos.getX(),
+                hintT.getAnglePointLeft().getY() + p_apos.getY(),
+                hintT.getAnglePointRight().getX() + p_apos.getX(),
+                hintT.getAnglePointRight().getY() + p_apos.getY());
+
+        Coordinate a = lineWayIntersection(L1_apos, ADt);
+        Coordinate d = lineWayIntersection(L1_apos, BCt);
+        Coordinate e = new Coordinate(Dt.getX(), d.getY());
+        Coordinate d_apos = null;
+        if (d != null)
+            d_apos = twoStepsOrthogonal(lastBadHint, GEOMETRY_FACTORY.createPoint(d));
+
+        Coordinate f = lineWayIntersection(L1_doubleApos, ABt);
+        Coordinate j = lineWayIntersection(L1_doubleApos, BCt);
+
+        Coordinate j_apos = new Coordinate(Dt.getX(), j.getY());
+        Coordinate t = new Coordinate(f.getX(), D.getY());
+
+        Coordinate m = new Coordinate(At.getX(), p.getY());
+        Coordinate m_apos = new Coordinate(At.getX(), p_apos.getY());
+        Coordinate k = new Coordinate(Bt.getX(), p.getY());
+        Coordinate k_apos = new Coordinate(Bt.getX(), p_apos.getY());
+
+        Coordinate g = new Coordinate(p.getX(), At.getY());
+        Coordinate g_apos = new Coordinate(p_apos.getX(), At.getY());
+        Coordinate h = new Coordinate(p.getX(), Dt.getY());
+        Coordinate h_dash = new Coordinate(p_apos.getX(), Dt.getY());
+
+        Coordinate s, s_apos;
+        double p_to_p_apos_x = p_apos.getX() - p.getX(); // the x coordinate of the vector from p to p_apos
+        double p_to_p_apos_y = p_apos.getY() - p.getY(); // the y coordinate of the vector from p to p_apos
+
+        LineSegment A_s_apos = new LineSegment(At.getX(), At.getY(),
+                At.getX() + p_to_p_apos_x, At.getY() + p_to_p_apos_y);
+        // the line from A to s gets constructed by using the line from p to p' (p_apos)
+        s = new Coordinate(L1_apos.lineIntersection(A_s_apos));
+        s_apos = new Coordinate(L1_doubleApos.lineIntersection(A_s_apos));
+
+        RectangleHintPair curHintPair = new RectangleHintPair(A, B, C, D, curHint);
+        HalfPlaneHint curHintT = phi(phi_k, curHintPair).getHint();
+        // here begins line 24 of the ReduceRectangle routine from the paper:
+        // test wether L2_apos is between (p, p_apos) and (m_apos, k_apos)
+
+        //if(curHintT.getDirection()==right && )
 
         return null;
     }
