@@ -5,6 +5,11 @@ import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import org.locationtech.jts.geom.Point;
 
+/**
+ * This test {@link Searcher} just keeps standing on his starting position.
+ *
+ * @author dorianreineccius
+ */
 public class StandingSearcher implements Searcher<Hint> {
     private Point startPosition;
 

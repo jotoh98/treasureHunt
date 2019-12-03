@@ -7,6 +7,9 @@ import javax.swing.*;
 
 import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
 
+/**
+ * @author axel12
+ */
 public class SwingUtils {
     public static Point promptForPoint(String title, String message) {
         while (true) {

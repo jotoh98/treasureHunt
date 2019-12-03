@@ -9,6 +9,9 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.function.Function;
 
+/**
+ * @author axel12, hassel
+ */
 @RequiredArgsConstructor
 public class ClassListCellRenderer extends JPanel implements ListCellRenderer<Class> {
 

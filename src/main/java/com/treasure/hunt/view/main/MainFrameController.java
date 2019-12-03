@@ -11,6 +11,9 @@ import com.treasure.hunt.view.in_game.impl.CanvasView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author axel12
+ */
 public class MainFrameController {
     private static MainFrameController single_instance = null;
 

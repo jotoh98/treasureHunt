@@ -12,12 +12,20 @@ import org.locationtech.jts.geom.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A type {@link Hint}, defining a circle, in which the treasure lies.
+ *
+ * @author dorianreineccius
+ */
 @AllArgsConstructor
 @Getter
 public class CircleHint extends Hint {
     private Point center;
     private double radius;
 
+    /**
+     * {@inheritDoc}
+     */
     public List<GeometryItem> getGeometryItems() {
         List<GeometryItem> output = new ArrayList<>();
         output.add(new GeometryItem(

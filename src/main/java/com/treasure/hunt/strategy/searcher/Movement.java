@@ -8,8 +8,13 @@ import org.locationtech.jts.geom.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This is a movement of the searcher in the plain,
+ * stored as a list of {@link Point} objects.
+ *
+ * @author dorianreineccius
+ */
 public class Movement {
-
     @Getter
     private List<GeometryItem<Point>> points = new ArrayList<>();
     @Getter
@@ -24,6 +29,16 @@ public class Movement {
 
     public Movement(List<GeometryItem<Point>> points) {
         this.points.addAll(points);
+    }
+
+    /**
+     * @return the first points of the moves-sequence.
+     */
+    public Point getStartingPoint() {
+        if (points.size() == 0) {
+            throw new IllegalStateException("Movement has size of 0.");
+        }
+        return points.get(0).getObject();
     }
 
     /**
@@ -44,6 +59,9 @@ public class Movement {
         addAdditionalItem(new GeometryItem<>(point, GeometryType.WAY_POINT));
     }
 
+    /**
+     * @param geometryItem to add {@link GeometryItem} objects, which are only relevant for displaying
+     */
     public void addAdditionalItem(GeometryItem geometryItem) {
         additionalGeometryItems.add(geometryItem);
     }
