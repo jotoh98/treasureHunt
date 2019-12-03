@@ -4,7 +4,6 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.Movement;
-import io.reactivex.annotations.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.locationtech.jts.geom.Point;
@@ -15,11 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class Move {
-    @Nullable
     private Hint hint;
-    @Nullable
     private Movement movement;
-    @Nullable
     private Point treasureLocation;
 
     /**

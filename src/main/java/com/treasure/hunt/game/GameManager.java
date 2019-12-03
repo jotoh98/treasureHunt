@@ -119,4 +119,22 @@ public class GameManager {
                 .flatMap(move -> move.getGeometryItems().stream()).collect(Collectors.toCollection(ArrayList::new));
         return geometryItems;
     }
+
+    public boolean isGameFinished() {
+        return gameEngine.isFinished();
+    }
+
+    /**
+     * @return true if the shown step is the most up to date one
+     */
+    public boolean isSimStepLatest() {
+        return stepSim == stepView;
+    }
+
+    /**
+     * @return true if the shown step is the first one
+     */
+    public boolean isFirstStepShown() {
+        return stepView == 0;
+    }
 }

@@ -14,9 +14,14 @@ public class PointInspector extends JPanel {
 
     public PointInspector(double x, double y) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        add(xRowPanel);
+        add(yRowPanel);
 
         xRowPanel.setLayout(new BoxLayout(xRowPanel, BoxLayout.X_AXIS));
         yRowPanel.setLayout(new BoxLayout(yRowPanel, BoxLayout.X_AXIS));
+
+        xRowPanel.setSize(100, 30);
+        yRowPanel.setSize(100, 30);
 
         setValue(x, y);
 

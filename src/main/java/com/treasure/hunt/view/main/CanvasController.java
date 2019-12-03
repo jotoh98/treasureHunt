@@ -2,6 +2,7 @@ package com.treasure.hunt.view.main;
 
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.jts.PointTransformation;
+import com.treasure.hunt.utils.SwingUtils;
 import com.treasure.hunt.view.in_game.impl.CanvasView;
 import com.treasure.hunt.view.swing.CanvasViewEventListener;
 import com.treasure.hunt.view.swing.PointInspector;
@@ -52,13 +53,28 @@ public class CanvasController extends JFrame {
 
 
         Button prevButton = new Button();
+        Button nextButton = new Button();
         prevButton.setLabel("Previous");
-        prevButton.addActionListener(e -> gameManager.previous());
+        prevButton.addActionListener(e -> {
+            gameManager.previous();
+            if (gameManager.isFirstStepShown()) {
+                prevButton.setEnabled(false);
+            }
+            nextButton.setEnabled(true);
+        });
         bottomControlPanel.add(prevButton);
 
-        Button nextButton = new Button();
+        bottomControlPanel.add(new Box.Filler(new Dimension(2, 0), new Dimension(2, 0), new Dimension(2, 0)));
+
         nextButton.setLabel("Next");
-        nextButton.addActionListener(e -> gameManager.next());
+        nextButton.addActionListener(e -> {
+            gameManager.next();
+            if (gameManager.isGameFinished() && gameManager.isSimStepLatest()) {
+                nextButton.setEnabled(false);
+                SwingUtils.infoPopUp("The game ended", "Info");
+            }
+            prevButton.setEnabled(true);
+        });
         bottomControlPanel.add(nextButton);
 
         bottomControlPanel.add(
