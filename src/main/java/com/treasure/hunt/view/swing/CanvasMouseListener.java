@@ -1,8 +1,6 @@
 package com.treasure.hunt.view.swing;
 
 import com.treasure.hunt.view.main.CanvasController;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.math.Vector2D;
 
 import java.awt.*;
@@ -11,14 +9,16 @@ import java.awt.event.*;
 /**
  * @author axel12, hassel
  */
-@RequiredArgsConstructor
 public class CanvasMouseListener implements MouseListener, MouseMotionListener, MouseWheelListener {
 
     private static final double MIN_SCALE = .1;
     private static final double MAX_SCALE = 1e2;
     private Vector2D dragOffset;
-    @NonNull
     private CanvasController canvasController;
+
+    public CanvasMouseListener(CanvasController canvasController) {
+        this.canvasController = canvasController;
+    }
 
     @Override
     public void mouseClicked(MouseEvent e) {

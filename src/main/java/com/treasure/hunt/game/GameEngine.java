@@ -10,11 +10,10 @@ import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.Requires;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Point;
+import org.slf4j.Logger;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,18 +23,17 @@ import java.util.List;
  *
  * @author dorianreineccius
  */
-@Slf4j
 @Requires(hider = Hider.class, searcher = Searcher.class)
 public class GameEngine {
     public static final int HEIGHT = 200;
     public static final int WIDTH = 200;
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(GameEngine.class);
 
     protected final Searcher searcher;
     protected final Hider hider;
     /**
      * Tells, whether the game is done or not.
      */
-    @Getter
     protected boolean finished = false;
     protected Hint lastHint;
     protected Movement lastMovement;
@@ -204,5 +202,9 @@ public class GameEngine {
      */
     protected void finish() {
         finished = true;
+    }
+
+    public boolean isFinished() {
+        return this.finished;
     }
 }

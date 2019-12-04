@@ -4,7 +4,6 @@ import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.jts.PointTransformation;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.view.in_game.View;
-import lombok.Getter;
 import org.locationtech.jts.awt.ShapeWriter;
 
 import javax.swing.*;
@@ -22,7 +21,6 @@ public class CanvasView extends JPanel implements View {
 
     private ShapeWriter shapeWriter;
 
-    @Getter
     private PointTransformation pointTransformation = new PointTransformation();
 
     private GameManager gameManager;
@@ -89,5 +87,9 @@ public class CanvasView extends JPanel implements View {
      */
     private Shape draw(GeometryItem geometryItem) {
         return shapeWriter.toShape(geometryItem.getObject());
+    }
+
+    public PointTransformation getPointTransformation() {
+        return this.pointTransformation;
     }
 }

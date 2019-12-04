@@ -1,8 +1,5 @@
 package com.treasure.hunt.strategy.geom;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * This is conventions for GeometryItems,
  * how to display them.
@@ -37,13 +34,8 @@ public enum GeometryType {
     // TODO add more..
     ;
 
-    @Getter
     private final String displayName;
-    @Getter
-    @Setter
     private boolean enabled;
-    @Getter
-    @Setter
     private boolean override;
 
     GeometryType(String displayName, boolean enabled, boolean override) {
@@ -54,5 +46,25 @@ public enum GeometryType {
 
     GeometryType(boolean enabledByDefault, String displayName) {
         this(displayName, enabledByDefault, false);
+    }
+
+    public String getDisplayName() {
+        return this.displayName;
+    }
+
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public boolean isOverride() {
+        return this.override;
+    }
+
+    public void setOverride(boolean override) {
+        this.override = override;
     }
 }

@@ -4,7 +4,6 @@ import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.utils.SwingUtils;
 import com.treasure.hunt.view.in_game.impl.CanvasView;
 import com.treasure.hunt.view.swing.CanvasMouseListener;
-import lombok.Getter;
 import org.locationtech.jts.math.Vector2D;
 
 import javax.swing.*;
@@ -17,14 +16,11 @@ import static javax.swing.BorderFactory.createEmptyBorder;
  */
 public class CanvasController extends JFrame {
 
-    @Getter
     private final CanvasView canvasView;
     private final GameManager gameManager;
 
-    @Getter
     private Vector2D offset = new Vector2D();
 
-    @Getter
     private double scale = 1.0;
 
     CanvasController(CanvasView canvasView, GameManager gameManager) {
@@ -86,5 +82,17 @@ public class CanvasController extends JFrame {
     public void addToScale(double addend) {
         this.scale += addend;
         this.getCanvasView().getPointTransformation().setScale(this.scale);
+    }
+
+    public CanvasView getCanvasView() {
+        return this.canvasView;
+    }
+
+    public Vector2D getOffset() {
+        return this.offset;
+    }
+
+    public double getScale() {
+        return this.scale;
     }
 }

@@ -4,9 +4,6 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.Movement;
-import io.reactivex.annotations.Nullable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
@@ -18,15 +15,16 @@ import java.util.List;
  *
  * @author dorianreineccius
  */
-@AllArgsConstructor
-@Getter
 public class Move {
-    @Nullable
     private Hint hint;
-    @Nullable
     private Movement movement;
-    @Nullable
     private Point treasureLocation;
+
+    public Move(Hint hint, Movement movement, Point treasureLocation) {
+        this.hint = hint;
+        this.movement = movement;
+        this.treasureLocation = treasureLocation;
+    }
 
     /**
      * @return a list of all geometryItems of this.
@@ -45,5 +43,17 @@ public class Move {
             output.add(new GeometryItem(treasureLocation, GeometryType.TREASURE));
         }
         return output;
+    }
+
+    public Hint getHint() {
+        return this.hint;
+    }
+
+    public Movement getMovement() {
+        return this.movement;
+    }
+
+    public Point getTreasureLocation() {
+        return this.treasureLocation;
     }
 }

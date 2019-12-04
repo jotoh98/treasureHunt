@@ -15,7 +15,7 @@ public class MainJavaFX extends Application {
     public void start(Stage stage) throws Exception {
         Parent load = FXMLLoader.load(getClass().getResource("/layout/main.fxml"));
         Scene scene = new Scene(load);
-        scene.getStylesheets().add("/layout/style.css");
+        scene.getStylesheets().add(getClass().getResource("/layout/style.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }

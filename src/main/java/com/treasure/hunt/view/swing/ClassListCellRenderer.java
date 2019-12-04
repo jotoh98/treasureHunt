@@ -1,9 +1,5 @@
 package com.treasure.hunt.view.swing;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -12,16 +8,18 @@ import java.util.function.Function;
 /**
  * @author axel12, hassel
  */
-@RequiredArgsConstructor
 public class ClassListCellRenderer extends JPanel implements ListCellRenderer<Class> {
 
     public final Function<Class, Boolean> isAvailableFunction;
     private final Function<Class, String> getSubTitle;
-    @Getter
-    @Setter
     int hoverIndex = -1;
     private JLabel nameLabel = new JLabel();
     private JLabel subTitleLabel = new JLabel();
+
+    public ClassListCellRenderer(Function<Class, Boolean> isAvailableFunction, Function<Class, String> getSubTitle) {
+        this.isAvailableFunction = isAvailableFunction;
+        this.getSubTitle = getSubTitle;
+    }
 
     @Override
     public Component getListCellRendererComponent(JList<? extends Class> list, Class value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -70,5 +68,13 @@ public class ClassListCellRenderer extends JPanel implements ListCellRenderer<Cl
         add(subTitleLabel);
 
         return this;
+    }
+
+    public int getHoverIndex() {
+        return this.hoverIndex;
+    }
+
+    public void setHoverIndex(int hoverIndex) {
+        this.hoverIndex = hoverIndex;
     }
 }

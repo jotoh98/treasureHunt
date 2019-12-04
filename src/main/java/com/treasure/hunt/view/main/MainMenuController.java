@@ -9,8 +9,8 @@ import com.treasure.hunt.utils.Requires;
 import com.treasure.hunt.view.swing.ClassListCellRenderer;
 import com.treasure.hunt.view.swing.ClassListHoverListener;
 import com.treasure.hunt.view.swing.ClassListMouseListener;
-import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
+import org.slf4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 /**
  * @author axel12, hassel
  */
-@Slf4j
 public class MainMenuController {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(MainMenuController.class);
     private final JFrame jFrame = new JFrame("Treasure Hunt");
     private final JPanel rootPanel = new JPanel();
     private JPanel selectStrategyContainer = new JPanel();
