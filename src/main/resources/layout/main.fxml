@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" id="root" maxHeight="-Infinity" maxWidth="-Infinity"
+            minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1080.0"
+            xmlns="http://javafx.com/javafx/11.0.1" fx:controller="com.treasure.hunt.view.javafx.MainController">
+    <bottom>
+        <HBox BorderPane.alignment="CENTER">
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="5.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label fx:id="messageLabel" text="Info">
+                            <HBox.margin>
+                                <Insets left="10.0"/>
+                            </HBox.margin>
+                        </Label>
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Button mnemonicParsing="false" text="Previous"/>
+                        <Button mnemonicParsing="false" text="Next"/>
+                    </children>
+                </HBox>
+            </children>
+            <styleClass>
+                <String fx:value="toolbar"/>
+                <String fx:value="bottom"/>
+            </styleClass>
+        </HBox>
+    </bottom>
+    <top>
+        <HBox BorderPane.alignment="CENTER">
+            <children>
+                <HBox alignment="CENTER_LEFT" maxWidth="60000.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label text="TreasureHunt"/>
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER_RIGHT" maxWidth="60000.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <ComboBox fx:id="searcherList" maxWidth="250.0" minWidth="150.0" promptText="Select searcher"/>
+                        <ComboBox fx:id="hiderList" maxWidth="250.0" minWidth="150.0" promptText="Select hider"/>
+                        <ComboBox fx:id="gameManagerList" maxWidth="250.0" minWidth="150.0"
+                                  promptText="Select game manager"/>
+                    </children>
+                </HBox>
+                <Button fx:id="startGameButton" disable="true" maxHeight="1.7976931348623157E308"
+                        mnemonicParsing="false" text="Start" textAlignment="CENTER"/>
+            </children>
+            <styleClass>
+                <String fx:value="toolbar"/>
+                <String fx:value="top"/>
+            </styleClass>
+        </HBox>
+    </top>
+    <center>
+        <SplitPane dividerPositions="0.24198250728862974, 0.7094266277939747" BorderPane.alignment="CENTER">
+            <items>
+                <Pane styleClass="widget-wrapper"/>
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="widget-wrapper"/>
+                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="widget-wrapper"/>
+            </items>
+        </SplitPane>
+    </center>
+    <right>
+        <VBox BorderPane.alignment="CENTER">
+            <children>
+                <Button mnemonicParsing="false" wrapText="true">
+                    <graphic>
+                        <Group>
+                            <children>
+                                <Label text="Label"/>
+                            </children>
+                        </Group>
+                    </graphic>
+                    <padding>
+                        <Insets bottom="10.0" left="4.0" right="4.0" top="10.0"/>
+                    </padding>
+                </Button>
+            </children>
+            <styleClass>
+                <String fx:value="toolbar"/>
+                <String fx:value="right"/>
+            </styleClass>
+        </VBox>
+    </right>
+    <left>
+        <VBox BorderPane.alignment="CENTER">
+            <children>
+                <Button mnemonicParsing="false">
+                    <graphic>
+                        <Group>
+                            <children>
+                                <Label rotate="-90.0" text="Label"/>
+                            </children>
+                        </Group>
+                    </graphic>
+                </Button>
+            </children>
+            <styleClass>
+                <String fx:value="toolbar"/>
+                <String fx:value="left"/>
+            </styleClass>
+        </VBox>
+    </left>
+</BorderPane>

@@ -1,0 +1,195 @@
+* {
+    BACKGROUND_COLOR: #383838;
+    BORDER_COLOR: #2a2a2a;
+    DARKER_BACKGROUND: #2f2f2f;
+    DARK_BACKGROUND: #1c1c1c;
+    REQUIRED_RED: red;
+}
+
+#root {
+    -fx-background-color: BACKGROUND_COLOR;
+}
+
+.toolbar,
+.toolbar .combo-box .context-menu,
+.toolbar .combo-box {
+    -fx-background-color: BACKGROUND_COLOR;
+}
+
+.toolbar .combo-box .list-cell {
+    -fx-text-fill: white;
+}
+
+.toolbar .combo-box.required {
+    -fx-border-color: REQUIRED_RED;
+}
+
+.toolbar .combo-box .list-view .list-cell {
+    -fx-text-fill: black;
+}
+
+.toolbar {
+    -fx-padding: 0 7pt;
+    -fx-border-color: BORDER_COLOR;
+}
+
+.toolbar.top,
+.toolbar.bottom {
+    -fx-border-width: 0 0 1pt 0;
+    -fx-padding: 0 0 1pt 10pt;
+}
+
+.toolbar.right,
+.toolbar.left {
+    -fx-padding: 0;
+}
+
+.toolbar.left {
+    -fx-border-width: 0 1pt 0 0;
+}
+
+.toolbar.right {
+    -fx-border-width: 0 0 0 1pt;
+}
+
+.toolbar.bottom {
+    -fx-border-width: 1pt 0 0 0;
+}
+
+.toolbar .button,
+.toolbar .toggle-button {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+    -fx-padding: 3pt 14pt;
+    -fx-font-size: .9em;
+}
+
+.toolbar.right .button,
+.toolbar.left .button,
+.toolbar.right .toggle-button,
+.toolbar.left .toggle-button {
+    -fx-padding: 14pt 4pt;
+}
+
+.toolbar.left .button .label,
+.toolbar.left .toggle-button .label {
+    -fx-rotate: -90deg;
+}
+
+.toolbar.right .button .label,
+.toolbar.right .toggle-button .label {
+    -fx-rotate: 90deg;
+}
+
+.toolbar .button .label,
+.toolbar .button,
+.toolbar .label,
+.toolbar .toggle-button .label,
+.toolbar .toggle-button {
+    -fx-text-fill: white;
+}
+
+.toolbar .button:hover,
+.toolbar .toggle-button:hover {
+    -fx-background-color: DARKER_BACKGROUND;
+}
+
+
+.toolbar .button:pressed,
+.toolbar .toggle-button:selected {
+    -fx-background-color: DARK_BACKGROUND;
+}
+
+.toolbar .combo-box {
+    -fx-border-width: 1pt;
+    -fx-border-color: rgba(255, 255, 255, 0.27);
+    -fx-padding: 0pt;
+    -fx-border-radius: 5pt;
+}
+
+.combo-box > .label {
+    -fx-padding: 2pt 6pt;
+}
+
+.combo-box .menu-item:focused {
+    -fx-background-color: #38b5e2;
+}
+
+.combo-box .menu-item:pressed {
+    -fx-background-color: #226e89;
+}
+
+/*
+.toolbar > * {
+    -fx-spacing: 7;
+}
+
+.toolbar-top {
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 3pt 7pt;
+}
+
+.toolbar-bottom {
+    -fx-padding: 0 0 0 7pt;
+    -fx-border-width: 1 0 0 0;
+}
+
+.toolbar-bottom > * {
+    -fx-spacing: 0;
+}
+
+.toolbar *,
+.tab .tab-label {
+    -fx-text-fill: white;
+    -fx-font-size: 11pt;
+}
+
+.tab .tab-label {
+    -fx-padding: 0;
+}
+
+
+
+.toolbar-rotate .button {
+    -fx-padding: 14pt 5pt;
+}
+
+
+
+.main-canvas {
+    -fx-background-color: #3c3f41;
+}
+
+.tab-pane *.tab-header-background {
+    -fx-background-color: -fx-bg-1, -fx-bg-1, -fx-bg-1;
+    -fx-padding: 0;
+}
+
+.tab-pane:focused .focus-indicator {
+    -fx-border-color: transparent;
+}
+
+.tab-pane .tab {
+    -fx-background-radius: 0;
+    -fx-padding: 0pt 14pt;
+}
+
+.tab-pane .tab-header-area {
+    -fx-padding: 0;
+}
+
+.split-pane:horizontal > .split-pane-divider {
+    -fx-padding: 0 1pt;
+
+}
+
+.split-pane:horizontal {
+    -fx-box-border: transparent;
+}
+
+.widget-wrapper {
+    -fx-background-color: -fx-bg-1;
+    -fx-border-width: 0;
+}*/
