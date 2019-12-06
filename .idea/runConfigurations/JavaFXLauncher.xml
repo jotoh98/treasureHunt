@@ -1,0 +1,15 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="JavaFXLauncher" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="com.treasure.hunt.JavaFXLauncher" />
+    <module name="hunt.main" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.treasure.hunt.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
