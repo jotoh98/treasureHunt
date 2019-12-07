@@ -9,7 +9,7 @@ import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
 import java.util.List;
-
+//TODO: Kind a unnecessary class the more you think about it; Should be replaced by CreatorOfInstances and RunInstanceData in the future
 public class Analyzer {
 
     //Compare multiple different types of runs
