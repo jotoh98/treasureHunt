@@ -1,5 +1,6 @@
 package com.treasure.hunt.utils;
 
+import com.treasure.hunt.analysis.RunInstanceData;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 
@@ -14,4 +15,5 @@ public @interface Requires {
     Class<? extends Searcher> searcher();
 
     Class<? extends Hider> hider();
+
 }

@@ -9,6 +9,7 @@ import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.Requires;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
@@ -22,6 +23,8 @@ import java.util.List;
  */
 @Slf4j
 @Requires(hider = Hider.class, searcher = Searcher.class)
+@Getter
+@Setter
 public class GameEngine {
 
     protected final Searcher searcher;
@@ -29,11 +32,11 @@ public class GameEngine {
     /**
      * Safe, whether the game is done or not.
      */
-    @Getter
+
     protected boolean finished = false;
     protected Hint lastHint;
     protected Movement lastMovement;
-    protected Point searcherPos;
+    protected Point searcherPos = JTSUtils.createPoint(0, 0);
     protected Point treasurePos;
 
     protected boolean firstMove = true;
@@ -158,7 +161,7 @@ public class GameEngine {
      * initialize searcher and treasure positions.
      */
     public Move init() {
-        searcherPos = JTSUtils.createPoint(0, 0);
+
         searcher.init(searcherPos);
 
         treasurePos = hider.getTreasureLocation();

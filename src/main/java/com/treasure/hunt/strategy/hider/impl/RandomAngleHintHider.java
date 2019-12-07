@@ -4,11 +4,16 @@ import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.utils.JTSUtils;
+import lombok.Setter;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Point;
 
+@Setter
 public class RandomAngleHintHider implements Hider<AngleHint> {
-    private Point treasurePos = JTSUtils.createPoint(Math.random() * 100, Math.random() * 100);
+
+
+    private Point treasurePos=JTSUtils.createPoint(Math.random() * 100, Math.random() * 100);
+
 
     /**
      * @return {@link Point} containing treasure location of [0,100)x[0x100)
