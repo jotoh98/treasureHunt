@@ -6,8 +6,12 @@ import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hider.impl.RandomAngleHintHider;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
+import com.treasure.hunt.strategy.searcher.impl.NaiveAngleSearcher;
+import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Point;
+import com.treasure.hunt.utils.JTSUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,27 +29,42 @@ public class CreatorOfInstances {
 
     public List<Move> createRunInstance(){
         List<Move> runInstance=new ArrayList<Move>();
+
         runInstance.add(engine.init());
         while(!engine.isFinished()){
             runInstance.add(engine.move());
         }
+        //to reset the gameengine
+        engine.setFinished(false);
+        engine.setFirstMove(true);
         return runInstance;
     }
-    //TODO look into class Analyzer
+
+
     public RunInstanceData createRunInstanceData(List<Move> runInstance){
-        return Analyzer.create_runInstanceData(runInstance);
+        return new RunInstanceData(runInstance);
     }
 
-    public RunInstancesOverview createRunInstancesOverview(Point startPos, Point treasurePos,Searcher searcher, RandomAngleHintHider hider, int numberofInstances){
+    public RunInstancesOverview createRunInstancesOverview(Point startPos, Point treasurePos, Class<NaiveAngleSearcher> searcher, Class<RandomAngleHintHider> hider, int nrOfInstances) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
 
-        configure(startPos,treasurePos,searcher,hider);
+        configure(startPos,treasurePos,searcher.getDeclaredConstructor().newInstance(),hider.getDeclaredConstructor().newInstance());
         RunInstancesOverview overview=new RunInstancesOverview(new ArrayList<RunInstanceData>());
 
-        for (int i = 0; i < numberofInstances; i++) {
+        for (int i = 0; i < nrOfInstances; i++) {
             overview.add(createRunInstanceData(createRunInstance()));
+
         }
 
         return overview;
+    }
+
+    public void test() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException{
+        RunInstancesOverview testoverview= createRunInstancesOverview(JTSUtils.createPoint(0,0),JTSUtils.createPoint(90,90), NaiveAngleSearcher.class,RandomAngleHintHider.class,100);
+        System.out.println("AvgTarceLength: "+testoverview.getAverageTraceLength());
+        System.out.println("AvgHIntRequests: "+testoverview.getAverageHintRequest());
+        System.out.println("WorstCaseLinearFactor: "+testoverview.getWorstCase().getLinearRunningTimeFactor());
+        System.out.println("Size: "+testoverview.size());
+        testoverview.get(2).printRun();
     }
 
 }
