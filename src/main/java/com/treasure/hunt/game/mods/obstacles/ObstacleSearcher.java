@@ -7,6 +7,10 @@ import org.locationtech.jts.geom.Point;
 
 import java.util.List;
 
+/**
+ * @param <T> the type of {@link Hint} this {@link Searcher} can handle.
+ * @author dorianreineccius
+ */
 public interface ObstacleSearcher<T extends Hint> extends Searcher<T> {
 
     /**

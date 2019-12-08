@@ -4,6 +4,9 @@ import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.metal.MetalTheme;
 
+/**
+ * @author hassel
+ */
 public class TreasureHuntTheme extends MetalTheme {
 
     protected static ColorUIResource darkgrey = new ColorUIResource(0x202020);

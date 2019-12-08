@@ -8,6 +8,9 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.util.AffineTransformation;
 
+/**
+ * @author hassel
+ */
 public class SwingTest {
     public static GeometryItem[] exampleGeometryItems() {
         GeometryFactory geometryFactory = new GeometryFactory();

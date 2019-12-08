@@ -5,6 +5,9 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * @author hassel
+ */
 public class ItemEditorController extends JFrame {
 
     private GeometryItem geometryItem;

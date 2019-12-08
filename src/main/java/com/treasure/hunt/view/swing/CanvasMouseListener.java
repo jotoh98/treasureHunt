@@ -8,6 +8,9 @@ import org.locationtech.jts.math.Vector2D;
 import java.awt.*;
 import java.awt.event.*;
 
+/**
+ * @author axel12, hassel
+ */
 @RequiredArgsConstructor
 public class CanvasMouseListener implements MouseListener, MouseMotionListener, MouseWheelListener {
 
