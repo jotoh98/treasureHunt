@@ -5,26 +5,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.treasure.hunt.game.Move;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import lombok.Getter;
+import lombok.experimental.Delegate;
 import lombok.extern.slf4j.Slf4j;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.rmi.server.UID;
 import java.util.*;
 import java.util.function.Function;
 
 @Slf4j
 @Getter
 public class RunInstanceData implements Comparable<RunInstanceData> {
-
+    @Delegate
     private final List<Move> actualRun;
 
     RunInstanceData(List<Move> actualRun) {
@@ -77,11 +73,11 @@ public class RunInstanceData implements Comparable<RunInstanceData> {
         return this.getRunningTimeFactor((Double opt) -> opt * opt);
     }
 
-    public int getHintRequests() {
+    public double getHintRequests() {
         return actualRun.size();
     }
 
-    //TODO finish this in detail with the possibility to dump this into a json file
+    //TODO finish this in detail with the possibility to dump this into a json file and load json files
 
     public String toJsonString() throws JsonProcessingException {
         String json = new ObjectMapper().writeValueAsString(this);
@@ -108,18 +104,34 @@ public class RunInstanceData implements Comparable<RunInstanceData> {
 
     @Override
     public int compareTo(RunInstanceData instanceData) {
-        return (int) (getLinearRunningTimeFactor()-instanceData.getLinearRunningTimeFactor());
+        return compareBy(RunInstanceData::getLinearRunningTimeFactor, instanceData);
     }
 
-    public int comparebyHints(RunInstanceData runInstance){
-        return getHintRequests()-runInstance.getHintRequests();
+    public int compareBy(Function<RunInstanceData, Double> method, RunInstanceData instanceData) {
+        return (int) Math.signum(method.apply(this) - method.apply(instanceData));
     }
 
-    public int comparebyOptSol(RunInstanceData runInstance){
-        return (int) (getOptSolution()-runInstance.getOptSolution());
+    public int compareByHints(RunInstanceData instanceData) {
+        return compareBy(RunInstanceData::getHintRequests, instanceData);
     }
 
+    public int compareByOptSol(RunInstanceData instanceData) {
+        return compareBy(RunInstanceData::getOptSolution, instanceData);
 
+    }
+
+    public int compareByRunningTime(RunInstanceData instanceData) {
+        return compareBy(RunInstanceData::getLinearRunningTimeFactor, instanceData);
+
+    }
+
+    public void printRun(){
+        List<GeometryItem<Point>> points= new ArrayList<>();
+        this.actualRun.forEach( move -> move.getMovement().getPoints().forEach(point->points.add(point)));
+        for (int i = 0; i < points.size(); i++) {
+            System.out.println("Searcher at : ("+ points.get(i).getObject().getX()+","+points.get(i).getObject().getY()+")");
+        }
+    }
 
 
 }
