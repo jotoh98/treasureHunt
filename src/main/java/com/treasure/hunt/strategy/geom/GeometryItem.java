@@ -1,14 +1,21 @@
 package com.treasure.hunt.strategy.geom;
 
-import org.locationtech.jts.geom.Geometry;
+import com.treasure.hunt.jts.AdvancedShapeWriter;
+import lombok.Getter;
+import lombok.NonNull;
+
+import java.awt.*;
 
 /**
  * Classifies a jts geometry item with parameters to distinguish between items for visualization/algorithm usages.
  *
- * @author hassel
  * @see GeometryType for further information about how to classifiy a geometry item.
  */
-public class GeometryItem<T extends Geometry> {
+
+@Getter
+public class GeometryItem<T> {
+    @NonNull
+    @Getter
     T object;
     GeometryType geometryType;
     GeometryStyle geometryStyle;
@@ -28,15 +35,19 @@ public class GeometryItem<T extends Geometry> {
         this(object, geometryType, GeometryStyle.getDefaults(geometryType));
     }
 
-    public GeometryType getGeometryType() {
-        return this.geometryType;
-    }
+    public void draw(Graphics2D graphics2D, AdvancedShapeWriter shapeWriter) {
+        if (!geometryStyle.isVisible()) {
+            return;
+        }
 
-    public GeometryStyle getGeometryStyle() {
-        return this.geometryStyle;
-    }
+        Shape shape = shapeWriter.toShape(object);
 
-    public T getObject() {
-        return this.object;
+        if (geometryStyle.isFilled()) {
+            graphics2D.setPaint(geometryStyle.getFillColor());
+            graphics2D.fill(shape);
+        }
+        graphics2D.setPaint(geometryStyle.getOutlineColor());
+        graphics2D.setStroke(geometryStyle.toStroke());
+        graphics2D.draw(shape);
     }
 }

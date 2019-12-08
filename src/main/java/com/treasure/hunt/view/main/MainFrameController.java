@@ -15,16 +15,16 @@ import java.util.List;
  * @author axel12
  */
 public class MainFrameController {
-    private static MainFrameController single_instance = null;
+    private static MainFrameController singleInstance = null;
 
     private MainFrameController() {
     }
 
     public static MainFrameController getInstance() {
-        if (single_instance == null) {
-            single_instance = new MainFrameController();
+        if (singleInstance == null) {
+            singleInstance = new MainFrameController();
         }
-        return single_instance;
+        return singleInstance;
     }
 
     public void start() {

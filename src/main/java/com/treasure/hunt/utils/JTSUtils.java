@@ -1,45 +1,33 @@
 package com.treasure.hunt.utils;
 
+import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.*;
+import org.locationtech.jts.math.Vector2D;
 
 import static org.locationtech.jts.algorithm.Angle.angleBetweenOriented;
 
-/**
- * This is a helper class, containing helper methods for
- * calculations on JTS objects.
- *
- * @author Rank, dorianreineccius
- */
 public class JTSUtils {
     public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
-    /**
-     * @param x coordinate.
-     * @param y coordinate.
-     * @return a {@link Point} defined by (x,y)
-     */
     public static Point createPoint(double x, double y) {
         return GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
     }
 
-    /**
-     * @param A a point
-     * @param B a point
-     * @return a {@link LineString} containing only {@code A} and {@code B}
-     */
+    // TODO is this necessary?
     public static LineString createLineString(Point A, Point B) {
         Coordinate[] coords = {A.getCoordinate(), B.getCoordinate()};
         return GEOMETRY_FACTORY.createLineString(coords);
     }
 
     /**
-     * TODO is this necessary ?
+     * Tests whether line line intersects with the linesegment linesegment
      *
-     * @param line        a {@link LineSegment}
-     * @param lineSegment a {@link LineSegment}
-     * @return an intersection {@link Point} of the {@link LineSegment} objects {@code line} and {@code lineSegment}
+     * @param line
+     * @param lineSegment
+     * @return
      */
+    // TODO is this necessary?
     public static Point lineLineSegmentIntersection(LineSegment line, LineSegment lineSegment) {
         Point intersection = GEOMETRY_FACTORY.createPoint(line.lineIntersection(lineSegment));
         LineString lineSegString = createLineString(GEOMETRY_FACTORY.createPoint(lineSegment.p0),
@@ -51,83 +39,51 @@ public class JTSUtils {
     }
 
     /**
-     * @param anglePointRight
-     * @param angleCenter
-     * @param anglePointLeft
-     * @return {@link Coordinate} going through the middle of the angle with a distance of 1.
+     * @param angleHint where we want the middle point to go, from.
+     * @return {@link Point} going through the middle of the {@link AngleHint}
      */
-    public static Coordinate middleOfAngleHint(Point anglePointRight, Point angleCenter, Point anglePointLeft) {
-        return middleOfAngleHint(anglePointRight.getCoordinate(), angleCenter.getCoordinate(), anglePointLeft.getCoordinate());
-    }
-
-    /**
-     * @param anglePointRight
-     * @param angleCenter
-     * @param anglePointLeft
-     * @return {@link Coordinate} going through the middle of the angle with a distance of 1.
-     */
-    public static Coordinate middleOfAngleHint(Coordinate anglePointRight, Coordinate angleCenter, Coordinate anglePointLeft) {
+    public static Coordinate middleOfAngleHint(AngleHint angleHint) {
         double betweenAngle = angleBetweenOriented(
-                anglePointRight,
-                angleCenter,
-                anglePointLeft
+                angleHint.getGeometryAngle().getRight(),
+                angleHint.getGeometryAngle().getCenter(),
+                angleHint.getGeometryAngle().getLeft()
         );
 
-        double rightAngle = Angle.angle(angleCenter,
-                anglePointRight);
+        double rightAngle = Angle.angle(angleHint.getGeometryAngle().getCenter(),
+                angleHint.getGeometryAngle().getRight());
         double resultAngle = Angle.normalizePositive(rightAngle + betweenAngle / 2);
         if (betweenAngle < 0) {
             resultAngle += Math.PI;
         }
-        double x = angleCenter.getX() + (Math.cos(resultAngle));
-        double y = angleCenter.getY() + (Math.sin(resultAngle));
+        double x = angleHint.getGeometryAngle().getCenter().getX() + (Math.cos(resultAngle));
+        double y = angleHint.getGeometryAngle().getCenter().getY() + (Math.sin(resultAngle));
         return new Coordinate(x, y);
     }
 
-    /**
-     * @param anglePointRight
-     * @param anglePointCenter
-     * @param anglePointLeft
-     * @param point            the {@link Point}, we want to know, whether it lies in the angle
-     * @return true, if {@code point} lies inside the given angle. false, otherwise
-     */
-    public static boolean pointInAngle(Point anglePointRight, Point anglePointCenter, Point anglePointLeft, Point point) {
-        return pointInAngle(anglePointRight.getCoordinate(), anglePointCenter.getCoordinate(), anglePointLeft.getCoordinate(), point.getCoordinate());
+    public static Vector2D normalizedVector(Coordinate from, Coordinate to) {
+        return Vector2D.create(from, to).normalize();
     }
 
-    /**
-     * @param anglePointRight
-     * @param anglePointCenter
-     * @param anglePointLeft
-     * @param coordinate       the {@link Coordinate}, we want to know, whether it lies in the angle
-     * @return true, if {@code point} lies inside the given angle. false, otherwise
-     */
-    public static boolean pointInAngle(Coordinate anglePointRight, Coordinate anglePointCenter, Coordinate anglePointLeft, Coordinate coordinate) {
-        double angle = angleBetweenOriented(anglePointRight, anglePointCenter, anglePointLeft);
-        double angleHintToTreasure = angleBetweenOriented(anglePointRight, anglePointCenter, coordinate);
-        return (angleHintToTreasure <= angle && 0 <= angleHintToTreasure);
+    public static Coordinate coordinateInDistance(Coordinate fixed, Coordinate floating, double scale) {
+        return normalizedVector(fixed, floating).multiply(scale).translate(fixed);
     }
 
-    /**
-     * @param anglePointRight
-     * @param anglePointCenter
-     * @param anglePointLeft
-     * @param radians          the allowed degree in radians, the angle may open
-     * @return true, if the given angle is <= {@code radians}. false, otherwise
-     */
-    public static boolean angleDegreesSize(Point anglePointRight, Point anglePointCenter, Point anglePointLeft, double radians) {
-        return angleDegreesSize(anglePointRight.getCoordinate(), anglePointCenter.getCoordinate(), anglePointLeft.getCoordinate(), radians);
+    public static Coordinate normalizedCoordinate(Coordinate fixed, Coordinate floating) {
+        return coordinateInDistance(fixed, floating, 1.0);
     }
 
-    /**
-     * @param anglePointRight
-     * @param anglePointCenter
-     * @param anglePointLeft
-     * @param radians          the allowed degree in radians, the angle may open
-     * @return true, if the given angle is <= {@code radians}. false, otherwise
-     */
-    public static boolean angleDegreesSize(Coordinate anglePointRight, Coordinate anglePointCenter, Coordinate anglePointLeft, double radians) {
-        double angle = angleBetweenOriented(anglePointRight, anglePointCenter, anglePointLeft);
-        return (0 <= angle && angle <= radians);
+    public static boolean signsEqual(Vector2D v0, Vector2D v1) {
+        boolean xSignEqual = (v0.getX() > 0) == (v1.getX() > 0);
+        boolean ySignEqual = (v0.getY() > 0) == (v1.getY() > 0);
+        return xSignEqual && ySignEqual;
+    }
+
+
+    public static Vector2D negateX(Vector2D v) {
+        return new Vector2D(-v.getX(), v.getY());
+    }
+
+    public static Vector2D negateY(Vector2D v) {
+        return negateX(v).negate();
     }
 }

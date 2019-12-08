@@ -3,15 +3,12 @@ package com.treasure.hunt.view.in_game;
 import com.treasure.hunt.game.GameManager;
 
 /**
- * The View concurrently accesses the {@link GameManager}
- * and displays its {@link com.treasure.hunt.game.Move} objects.
- *
- * @author dorianreineccius
+ * The View interface is the input/output
  */
 public interface View extends Runnable {
 
     /**
-     * @param gameManager the {@link GameManager}, the View gets its {@link com.treasure.hunt.game.Move} objects.
+     * @param gameManager the {@link GameManager}, the View gets its inputs.
      */
     void init(GameManager gameManager);
 
