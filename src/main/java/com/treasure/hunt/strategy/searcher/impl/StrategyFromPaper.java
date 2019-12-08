@@ -5,7 +5,6 @@ import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
-import lombok.Value;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.geom.util.AffineTransformation;
 import org.locationtech.jts.math.Vector2D;
@@ -15,6 +14,7 @@ import static com.treasure.hunt.strategy.geom.GeometryType.CURRENT_RECTANGLE;
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
 import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
 import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
+import static org.locationtech.jts.algorithm.Angle.normalizePositive;
 
 public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     int phase; //equals j in the paper. In phase i, the algorithm checks a rectangle with a side length of 2^i
@@ -70,7 +70,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         }
         //now analyse the hint:
         if (lastHintWasBad)
-            return twoHintsSubroutine(hint);
+            return lastHintBadSubroutine(hint);
 
         LineSegment AB = new LineSegment(A.getCoordinate(), B.getCoordinate());
         LineSegment BC = new LineSegment(B.getCoordinate(), C.getCoordinate());
@@ -215,7 +215,11 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return move;
     }
 
-    private Coordinate twoStepsOrthogonal(HalfPlaneHint hint, Point cur_pos) {
+    private Coordinate twoStepsOrthogonal(HalfPlaneHint hint, Point P) {
+        return twoStepsOrthogonal(hint, P.getCoordinate());
+    }
+
+    private Coordinate twoStepsOrthogonal(HalfPlaneHint hint, Coordinate cur_pos) {
         Vector2D hintVector = new Vector2D(hint.getLowerHintPoint().getCoordinate(),
                 hint.getUpperHintPoint().getCoordinate());
 
@@ -239,6 +243,11 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return line13.getCentroid();
     }
 
+    private Coordinate centerOfRectangle(Coordinate[] rect) {
+        LineSegment lineAC = new LineSegment(rect[0], rect[2]);
+        return lineAC.midPoint();
+    }
+
     private Movement moveToCenterOfRectangle(Point P1, Point P2, Point P3, Point P4) {
         Movement ret = new Movement();
         ret.addWayPoint(centerOfRectangle(P1, P2, P3, P4));
@@ -252,7 +261,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Point oldC = C;
         Point oldD = D;
         setRectToPhase();
-        Movement move = rectangleScan(oldA, oldB, oldC, oldD);
+        Movement move = rectangleScan(oldA, oldB, oldC, oldD, new Movement());
         move.addWayPoint(centerOfRectangle(A, B, C, D));
         return move;
     }
@@ -277,9 +286,12 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         D = GEOMETRY_FACTORY.createPoint(rect[3]);
     }
 
-    private Movement rectangleScan(Point A, Point B, Point C, Point D) {
-        Movement move = new Movement();
 
+    private Movement rectangleScan(Point A, Point B, Point C, Point D, Movement move) {
+        return rectangleScan(A.getCoordinate(), B.getCoordinate(), C.getCoordinate(), D.getCoordinate(), move);
+    }
+
+    private Movement rectangleScan(Coordinate A, Coordinate B, Coordinate C, Coordinate D, Movement move) {
         int k = (int) A.distance(B);
         Point[] a = new Point[k + 1];
         Point[] b = new Point[k + 1];
@@ -326,31 +338,40 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return move;
     }
 
-    private Movement twoHintsSubroutine(HalfPlaneHint curHint) {
-        // TODO
-        // dann die Fälle des Papers durchgehen und dementsprechend returnen
+    /**
+     * If the last hint was bad, this function can be called and lastBadHint has to be set accordingly.
+     * The function equals the "else"-part of the first if-condition in Algorithm 3 (Function ReduceRectangle(R))
+     * in the paper.
+     * Variable names are equivalent to the paper, but since a', d', etc. is not a valid variable name in Java,
+     * _apos is used in such cases (apos for apostrophe), e.g. a_apos in this implementation equates to a'
+     * in the paper. _doubleApos signals a double apostrophe.
+     * Since in the paper the variable names A, B, C and D are used for the by phi transformed points of the current
+     * rectangle
+     * At, Bt, Ct and Dt in this implementation equate to A, B, C and D in the paper, since the
+     * not by phi transformed variables of the current rectangle R are also stored with A, B, C and D.
+     * The t signals the transformed state of this variables.
+     * hintT equates to the hint (L1', x1')
+     *
+     * @param curHint
+     * @return
+     */
+    private Movement lastHintBadSubroutine(HalfPlaneHint curHint) {
+        Coordinate[] rect = new Coordinate[]{A.getCoordinate(), B.getCoordinate(), C.getCoordinate(), D.getCoordinate()};
+        int basicTrans = getBasicTransformation(rect, lastBadHint); // basic transformation
+        Coordinate[] transformedRect = phiRectangle(basicTrans, rect);
+        Coordinate At = transformedRect[0];
+        Coordinate Bt = transformedRect[1];
+        Coordinate Ct = transformedRect[2];
+        Coordinate Dt = transformedRect[3];
+        HalfPlaneHint hintT = phiHint(basicTrans, rect, lastBadHint);
 
-        // variable names are equivalent to the ones used in the ReduceRectangle routine in the paper
-        // (apos for apostrophe)
-        // since A, B, C, D and the hints already exist in normal representation, the transformed ones have a t in the
-        // variable name
-        RectangleHintPair rp = new RectangleHintPair(A, B, C, D, lastBadHint);
-        int phi_k = getBasicTransformation(rp);
-        RectangleHintPair transformed_rp = phi(phi_k, rp);
-        Point At = transformed_rp.getA();
-        Point Bt = transformed_rp.getB();
-        Point Ct = transformed_rp.getC();
-        Point Dt = transformed_rp.getD();
-        HalfPlaneHint hintT = transformed_rp.getHint();
-
-        Point p = centerOfRectangle(At, Bt, Ct, Dt);
+        Coordinate p = centerOfRectangle(transformedRect);
         Coordinate p_apos = twoStepsOrthogonal(hintT, p);
-        // L_1_apos_dash = (p, p_apos)
 
-        LineSegment ABt = new LineSegment(At.getCoordinate(), Bt.getCoordinate());
-        LineSegment ADt = new LineSegment(At.getCoordinate(), Dt.getCoordinate());
-        LineSegment BCt = new LineSegment(Bt.getCoordinate(), Ct.getCoordinate());
-        LineSegment CDt = new LineSegment(Ct.getCoordinate(), Dt.getCoordinate());
+        LineSegment ABt = new LineSegment(At, Bt);
+        LineSegment ADt = new LineSegment(At, Dt);
+        LineSegment BCt = new LineSegment(Bt, Ct);
+        LineSegment CDt = new LineSegment(Ct, Dt);
         LineSegment L1_apos = new LineSegment(hintT.getAnglePointLeft().getCoordinate(),
                 hintT.getAnglePointRight().getCoordinate());
         LineSegment L1_doubleApos = new LineSegment(hintT.getAnglePointLeft().getX() + p_apos.getX(),
@@ -363,7 +384,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Coordinate e = new Coordinate(Dt.getX(), d.getY());
         Coordinate d_apos = null;
         if (d != null)
-            d_apos = twoStepsOrthogonal(lastBadHint, GEOMETRY_FACTORY.createPoint(d));
+            d_apos = twoStepsOrthogonal(lastBadHint, d);
 
         Coordinate f = lineWayIntersection(L1_doubleApos, ABt);
         Coordinate j = lineWayIntersection(L1_doubleApos, BCt);
@@ -379,7 +400,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Coordinate g = new Coordinate(p.getX(), At.getY());
         Coordinate g_apos = new Coordinate(p_apos.getX(), At.getY());
         Coordinate h = new Coordinate(p.getX(), Dt.getY());
-        Coordinate h_dash = new Coordinate(p_apos.getX(), Dt.getY());
+        Coordinate h_apos = new Coordinate(p_apos.getX(), Dt.getY());
 
         Coordinate s, s_apos;
         double p_to_p_apos_x = p_apos.getX() - p.getX(); // the x coordinate of the vector from p to p_apos
@@ -391,126 +412,353 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         s = new Coordinate(L1_apos.lineIntersection(A_s_apos));
         s_apos = new Coordinate(L1_doubleApos.lineIntersection(A_s_apos));
 
-        RectangleHintPair curHintPair = new RectangleHintPair(A, B, C, D, curHint);
-        HalfPlaneHint curHintT = phi(phi_k, curHintPair).getHint();
+        HalfPlaneHint curHintT = phiHint(basicTrans, rect, curHint);
         HalfPlaneHint.Direction x2_apos = curHintT.getDirection();
         LineSegment L2_apos = new LineSegment(curHintT.getAnglePointLeft().getCoordinate(),
                 curHintT.getAnglePointRight().getCoordinate());
+
         // here begins line 24 of the ReduceRectangle routine from the paper:
-        // test wether L2_apos is between (p, p_apos) and (m_apos, k_apos)
-        //Angle.angleBetweenOriented(curHintT.getAnglePointRight().getCoordinate(), p.getCoordinate(),);
+        Movement move = new Movement();
+        Coordinate[] newRectangle = null;
 
-        //if(curHintT.getDirection()==right && )
+        LineSegment pp_apos = new LineSegment(p, p_apos);
+        if (x2_apos == right &&
+                normalizePositive(L2_apos.angle()) <= normalizePositive(L1_doubleApos.angle()) &&
+                normalizePositive(L2_apos.angle()) > normalizePositive(pp_apos.angle())) {
+            newRectangle = arrangeRectangle(phiOtherRectangleInverse(basicTrans, rect,
+                    new Coordinate[]{f, Bt, Ct, t}));
+        }
 
-        return null;
+        LineSegment m_apos_k_apos = new LineSegment(m_apos, k_apos);
+        if (x2_apos == right &&
+                normalizePositive(L2_apos.angle()) <= normalizePositive(pp_apos.angle()) &&
+                normalizePositive(L2_apos.angle()) > normalizePositive(m_apos_k_apos.angle())) {
+            move = rectangleScanPhiReverse(basicTrans, rect, m_apos, k_apos, k, m, move);
+            newRectangle = arrangeRectangle(phiOtherRectangleInverse(basicTrans, rect,
+                    new Coordinate[]{g, Bt, Ct, h}));
+        }
+        if ((x2_apos == left || x2_apos == down) &&
+                normalizePositive(L2_apos.angle()) <= normalizePositive(m_apos_k_apos.angle()) &&
+                normalizePositive(L2_apos.angle()) > normalizePositive(L1_doubleApos.angle())) {
+
+            // rectangleScan(phi_reverse(k, (s, s', d', d))
+            move = rectangleScanPhiReverse(basicTrans, rect, s, s_apos, d_apos, d, move);
+            // rectangleScan(phi_reverse(k, (m', k', k, m))
+            move = rectangleScanPhiReverse(basicTrans, rect, m_apos, k_apos, k, m, move);
+            // newRectangle := pkCh
+            newRectangle = arrangeRectangle(phiOtherRectangleInverse(basicTrans, rect,
+                    new Coordinate[]{p, k, Ct, h}));
+        }
+        LineSegment h_apos_g_apos = new LineSegment(h_apos, g_apos);
+        if (x2_apos == left &&
+                normalizePositive(L2_apos.angle()) <= normalizePositive(L1_doubleApos.angle()) &&
+                normalizePositive(L2_apos.angle()) > normalizePositive(h_apos_g_apos.angle())) {
+
+            // rectangleScan(phi_reverse(k, (s, s', d', d))
+            move = rectangleScanPhiReverse(basicTrans, rect, s, s_apos, d_apos, d, move);
+            // rectangleScan(phi_reverse(k, (g, g', h', h))
+            // newRectangle := Agpm
+            newRectangle = arrangeRectangle(phiOtherRectangleInverse(basicTrans, rect,
+                    new Coordinate[]{At, g, p, m}));
+        }
+
+        LineSegment p_apos_k = new LineSegment(p_apos, k);
+
+        if ((x2_apos == left &&
+                normalizePositive(L2_apos.angle()) <= normalizePositive(h_apos_g_apos.angle()) &&
+                normalizePositive(L2_apos.angle()) > normalizePositive(pp_apos.angle())) ||
+                (x2_apos == left &&
+                        normalizePositive(L2_apos.angle()) <= normalizePositive(pp_apos.angle()) &&
+                        normalizePositive(L2_apos.angle()) > normalizePositive(m_apos_k_apos.angle())) ||
+                ((x2_apos == up || x2_apos == right) &&
+                        normalizePositive(L2_apos.angle()) <= normalizePositive(m_apos_k_apos.angle()) &&
+                        normalizePositive(L2_apos.angle()) > normalizePositive(p_apos_k.angle())
+                )
+        ) {
+            // rectangleScan(phireverse(k, (g, g', h', h))
+            move = rectangleScanPhiReverse(basicTrans, rect, g, g_apos, h_apos, h, move);
+            // newRectangle := ABkm
+            newRectangle = arrangeRectangle(phiOtherRectangleInverse(basicTrans, rect,
+                    new Coordinate[]{At, Bt, k, m}));
+        }
+        if (x2_apos == right &&
+                normalizePositive(L2_apos.angle()) <= normalizePositive(p_apos_k.angle()) &&
+                normalizePositive(L2_apos.angle()) > normalizePositive(L1_doubleApos.angle())) {
+            // newRectangle := ABjj'
+            newRectangle = arrangeRectangle(phiOtherRectangleInverse(basicTrans, rect,
+                    new Coordinate[]{At, Bt, j, j_apos}));
+        }
+
+        A = GEOMETRY_FACTORY.createPoint(newRectangle[0]);
+        B = GEOMETRY_FACTORY.createPoint(newRectangle[1]);
+        C = GEOMETRY_FACTORY.createPoint(newRectangle[2]);
+        D = GEOMETRY_FACTORY.createPoint(newRectangle[3]);
+        lastHintWasBad = false;
+        return move;
+    }
+
+    private void assertRectangle(Coordinate[] rect) {
+        if (rect.length != 4)
+            throw new IllegalArgumentException("The rectangle has " + rect.length + " points. It should have 4.");
     }
 
     /**
-     * Returnes the rectangle R of rp and the hint of rp which are mirrored in H, a vertical line
-     * through the center of R.
+     * Returns the result of rho, defined by rectangle rect, applied on hint.
      *
-     * @param rp
+     * @param rect defines rho
+     * @param hint used as input in rho
      * @return
      */
-    private RectangleHintPair rho(RectangleHintPair rp) {
-        Point A = rp.getA();
-        Point B = rp.getB();
-        Point C = rp.getC();
-        Point D = rp.getD();
-
-        LineString AD = JTSUtils.createLineString(A, D);
-        LineString BC = JTSUtils.createLineString(B, C);
-        Point centerAD = AD.getCentroid();
-        Point centerBC = BC.getCentroid();
-
-        AffineTransformation reflection = AffineTransformation.reflectionInstance(centerAD.getX(), centerAD.getY(),
-                centerBC.getX(), centerBC.getY());
-
-        Point newAPLeft = (Point) reflection.transform(rp.getHint().getAnglePointRight());
-        Point newAPRight = (Point) reflection.transform(rp.getHint().getAnglePointLeft());
+    private HalfPlaneHint rhoHint(Coordinate[] rect, HalfPlaneHint hint) {
+        assertRectangle(rect);
+        LineSegment AB = new LineSegment(rect[0], rect[1]);
+        LineSegment CD = new LineSegment(rect[2], rect[3]);
+        Coordinate centerAB = AB.midPoint();
+        Coordinate centerCD = CD.midPoint();
+        AffineTransformation reflection = AffineTransformation.reflectionInstance(centerAB.getX(), centerAB.getY(),
+                centerCD.getX(), centerCD.getY());
+        Point newAPLeft = (Point) reflection.transform(hint.getAnglePointRight());
+        Point newAPRight = (Point) reflection.transform(hint.getAnglePointLeft());
         HalfPlaneHint newHint = new HalfPlaneHint(newAPLeft, newAPRight);
-        return new RectangleHintPair(rp.getA(), rp.getB(), rp.getC(), rp.getD(), newHint);
+        return newHint;
     }
 
-    private RectangleHintPair sigma(int i, RectangleHintPair rp) {
-        if (i < 0 || i > 3) {
-            throw new IllegalArgumentException("sigma was called with i not in [0,3]");
-        }
+    /**
+     * Returns the result of rho, defined by rectangle rect, applied on P.
+     *
+     * @param rect
+     * @param P
+     * @return
+     */
+    private Coordinate rhoPoint(Coordinate[] rect, Coordinate P) {
+        assertRectangle(rect);
+        LineSegment AB = new LineSegment(rect[0], rect[1]);
+        LineSegment CD = new LineSegment(rect[2], rect[3]);
+        Coordinate centerAB = AB.midPoint();
+        Coordinate centerCD = CD.midPoint();
+        AffineTransformation reflection = AffineTransformation.reflectionInstance(centerAB.getX(), centerAB.getY(),
+                centerCD.getX(), centerCD.getY());
 
-        Point A = rp.getA();
-        Point B = rp.getB();
-        Point C = rp.getC();
-        Point D = rp.getD();
+        Coordinate transformedP = new Coordinate();
+        return reflection.transform(P, transformedP);
+    }
 
-        Point newA = null;
-        Point newB = null;
-        Point newC = null;
-        Point newD = null;
-
-        Point r = centerOfRectangle(A, B, C, D);
-        AffineTransformation rotHalfPi = AffineTransformation.rotationInstance(Math.PI / 2, r.getX(), r.getY());
+    /**
+     * sigma is defined like in the paper, P is the Point which is to be transformed and r is the middle point of the
+     * rectangle, i is the index.
+     *
+     * @param i the index of sigma
+     * @param r the center of a rectangle which is used as the point to rotate around
+     * @param P the Point which is to be transformed
+     * @return
+     */
+    private Coordinate sigmaPoint(int i, Coordinate r, Coordinate P) {
         AffineTransformation rot_i = AffineTransformation.rotationInstance(Math.PI * i / 2, r.getX(), r.getY());
+        Coordinate ret = new Coordinate();
+        return rot_i.transform(P, ret);
+    }
 
+    private Coordinate sigmaPointReverse(int i, Coordinate r, Coordinate P) {
+        return sigmaPoint(3 - i, r, P);
+    }
+
+    /**
+     * Returns the result of sigma, defined by index i and rectangle rect, applied on the points in rect.
+     *
+     * @param i
+     * @param rect
+     * @return
+     */
+    private Coordinate[] sigmaRectangle(int i, Coordinate[] rect) {
+        assertRectangle(rect);
+        Coordinate r = centerOfRectangle(rect);
+
+        AffineTransformation rotHalfPi = AffineTransformation.rotationInstance(Math.PI / 2, r.getX(), r.getY());
         if (i == 0 || i == 2) {
-            newA = A;
-            newB = B;
-            newC = C;
-            newD = D;
+            return rect;
         }
         if (i == 1 || i == 3) {
             //rotate rectangle by pi/2
-            newA = (Point) rotHalfPi.transform(B);
-            newB = (Point) rotHalfPi.transform(C);
-            newC = (Point) rotHalfPi.transform(D);
-            newD = (Point) rotHalfPi.transform(A);
+            Coordinate[] transformed = new Coordinate[4];
+            rotHalfPi.transform(rect[1], transformed[0]);
+            rotHalfPi.transform(rect[2], transformed[1]);
+            rotHalfPi.transform(rect[3], transformed[2]);
+            rotHalfPi.transform(rect[0], transformed[3]);
+            return transformed;
         }
-        Point newAPLeft = (Point) rot_i.transform(rp.getHint().getAnglePointLeft());
-        Point newAPRight = (Point) rot_i.transform(rp.getHint().getAnglePointRight());
-        HalfPlaneHint hint = new HalfPlaneHint(newAPLeft, newAPRight);
-        return new RectangleHintPair(newA, newB, newC, newD, hint);
+        throw new IllegalArgumentException("i should be in [0,3] but is equal to " + i);
     }
 
-    private RectangleHintPair sigmaReverse(int i, RectangleHintPair rp) {
-        return sigma(3 - i, rp);
+    private Coordinate[] sigmaRectangleReverse(int i, Coordinate[] rect) {
+        return sigmaRectangle(i, rect);
     }
 
-    private RectangleHintPair phi(int i, RectangleHintPair rp) {
+    /**
+     * Returns the result of phi, defined by rect, with index i, applied on rect.
+     *
+     * @param i
+     * @param rect
+     * @return
+     */
+    private Coordinate[] phiRectangle(int i, Coordinate[] rect) {
+        assertRectangle(rect);
         if (i < 0 || i > 7)
-            throw new IllegalArgumentException("i must be in [0,7]");
-        if (i < 4)
-            return sigma(i, rp);
-        return rho(sigma(i - 4, rp));
+            throw new IllegalArgumentException("i must be in [0,7] but is " + i);
+        Coordinate r = centerOfRectangle(rect);
+        return sigmaRectangle(i % 4, rect);
     }
 
-    private RectangleHintPair reversePhi(int i, RectangleHintPair rp) {
+
+    private Coordinate phiPoint(int i, Coordinate[] rect, Coordinate P) {
+        assertRectangle(rect);
         if (i < 0 || i > 7)
-            throw new IllegalArgumentException("i must be in [0,7]");
+            throw new IllegalArgumentException("i must be in [0,7] but is " + i);
+        Coordinate r = centerOfRectangle(rect);
         if (i < 4)
-            return sigmaReverse(i, rp);
-        return sigmaReverse(i - 4, rho(rp));
+            return sigmaPoint(i, r, P);
+        return sigmaPoint(i, r, rhoPoint(rect, P));
     }
 
-    private int getBasicTransformation(RectangleHintPair rp) {
+    /**
+     * Returns the result of phi, defined by rect, with index i, applied on hint.
+     *
+     * @param i    the index of phi
+     * @param rect the rectangle which defines phi
+     * @param hint the hint that is used as input in phi
+     * @return
+     */
+    private HalfPlaneHint phiHint(int i, Coordinate[] rect, HalfPlaneHint hint) {
+        assertRectangle(rect);
+        if (i < 0 || i > 7)
+            throw new IllegalArgumentException("i must be in [0,7] but is " + i);
+        Coordinate r = centerOfRectangle(rect);
+        HalfPlaneHint transformedHint = new HalfPlaneHint(
+                GEOMETRY_FACTORY.createPoint(sigmaPoint(i % 4, r, hint.getAnglePointLeft().getCoordinate())),
+                GEOMETRY_FACTORY.createPoint(sigmaPoint(i % 4, r, hint.getAnglePointRight().getCoordinate()))
+        );
+        if (i < 4)
+            return transformedHint;
+        return rhoHint(rect, transformedHint);
+    }
+
+    /**
+     * Calculates the inverse phi operation defined by the rectangle rect and applies it on P.
+     *
+     * @param i    the index of phi
+     * @param rect the rectangle which defines phi (and therefore also the inverse of phi)
+     * @param P
+     * @return
+     */
+    private Coordinate phiPointInverse(int i, Coordinate[] rect, Coordinate P) {
+        assertRectangle(rect);
+        if (i < 0 || i > 7)
+            throw new IllegalArgumentException("i must be in [0,7] but is " + i);
+        Coordinate r = centerOfRectangle(rect);
+        if (i < 4) {
+            return sigmaPointReverse(i, r, P);
+        }
+        return sigmaPointReverse(i - 3, r, rhoPoint(rect, P));
+    }
+
+    private Movement rectangleScanPhiReverse(int basicTrans, Coordinate[] phiRect,
+                                             Coordinate A, Coordinate B, Coordinate C, Coordinate D, Movement move) {
+        return rectangleScan(
+                phiPointInverse(basicTrans, phiRect, A),
+                phiPointInverse(basicTrans, phiRect, B),
+                phiPointInverse(basicTrans, phiRect, C),
+                phiPointInverse(basicTrans, phiRect, D),
+                move
+        );
+    }
+
+    /**
+     * Inverts the by rect defined phi , but calculates and returns the inverse points of the points in toTransform.
+     *
+     * @param i           the index of phi
+     * @param rect        the rectangle which defines phi (and therefore also the inverse of phi)
+     * @param toTransform
+     * @return
+     */
+    private Coordinate[] phiOtherRectangleInverse(int i, Coordinate[] rect, Coordinate[] toTransform) {
+        assertRectangle(rect);
+        assertRectangle(toTransform);
+        return new Coordinate[]{
+                phiPointInverse(i, rect, toTransform[0]),
+                phiPointInverse(i, rect, toTransform[1])
+        };
+    }
+
+    /**
+     * Returns the basic transformation for a rectangle-hint-pair, of which the definition can be found in the paper.
+     * (Page 8, below Proposition 3.2)
+     *
+     * @param rect
+     * @param hint
+     * @return
+     */
+    private int getBasicTransformation(Coordinate[] rect, HalfPlaneHint hint) {
         for (int i = 0; i <= 7; i++) {
-            HalfPlaneHint testHint = phi(i, rp).getHint();
-            HalfPlaneHint.Direction testDir = testHint.getDirection();
-            if (testDir == up)
+            HalfPlaneHint testHint = phiHint(i, rect, hint);
+            if (testHint.getDirection() == up)
                 return i;
-            if (testDir == right && testHint.getUpperHintPoint().getX() < testHint.getLowerHintPoint().getX())
+            if (testHint.getDirection() == right &&
+                    testHint.getUpperHintPoint().getX() < testHint.getLowerHintPoint().getX())
                 return i;
         }
         throw new IllegalArgumentException("Somehow there was no basic transformation to be found for this " +
-                "RectangleHintPair. This is not possible.");
+                "rectangle and hint. That is impossible.");
     }
 
-    @Value
-    private class RectangleHintPair {
-        Point A;
-        Point B;
-        Point C;
-        Point D;
-        HalfPlaneHint hint;
-    }
+    /**
+     * Coordinate of rect are rounded in the precision model grid and reordered so tha rect[0] is the upper left point,
+     * rect[1] is the upper right point, rect[2] is the bottom right point and rect[3] is the bottom left point.
+     * If the rectangle is not parallel to the x and y axis, an error is thrown.
+     *
+     * @param rect
+     * @return
+     */
+    private Coordinate[] arrangeRectangle(Coordinate[] rect) {
+        assertRectangle(rect);
+        GEOMETRY_FACTORY.getPrecisionModel().makePrecise(rect[0]);
+        GEOMETRY_FACTORY.getPrecisionModel().makePrecise(rect[1]);
+        GEOMETRY_FACTORY.getPrecisionModel().makePrecise(rect[2]);
+        GEOMETRY_FACTORY.getPrecisionModel().makePrecise(rect[3]);
 
+        Coordinate A = null, B = null, C = null, D = null;
+        double max_x = Double.MIN_VALUE;
+        double max_y = Double.MIN_VALUE;
+        double min_x = Double.MAX_VALUE;
+        double min_y = Double.MAX_VALUE;
+        for (int i = 0; i < 4; i++) {
+            double x = rect[i].getX();
+            double y = rect[i].getY();
+
+            max_x = Math.max(max_x, x);
+            max_y = Math.max(max_y, y);
+            min_x = Math.min(min_x, x);
+            min_y = Math.min(min_y, y);
+
+            if (min_x == x && max_y == y)
+                A = rect[i];
+            if (max_x == x && max_y == y)
+                B = rect[i];
+            if (max_x == x && min_y == y)
+                C = rect[i];
+            if (min_x == x && min_y == y)
+                D = rect[i];
+        }
+        if (A.equals2D(B) || A.equals2D(C) || A.equals2D(D) || B.equals2D(C) || B.equals2D(D) || C.equals2D(D)) {
+            throw new IllegalArgumentException("rect is malformed");
+        }
+        if (A.x != C.x || A.y != B.y || B.x != D.x || C.y != D.y) {
+            throw new IllegalArgumentException("rect is not parallel to x an y axis");
+        }
+        rect[0] = A;
+        rect[1] = B;
+        rect[2] = C;
+        rect[3] = D;
+
+        return rect;
+    }
 }
 
