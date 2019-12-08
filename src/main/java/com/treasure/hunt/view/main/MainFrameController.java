@@ -36,7 +36,7 @@ public class MainFrameController {
         List<View> list = new ArrayList<>();
         CanvasView canvasView = new CanvasView();
         list.add(canvasView);
-        GameManager gameManager = new GameManager(searcherClass, hiderClass, gameEngineClass, list);
+        GameManager gameManager = new GameManager(searcherClass, hiderClass, gameEngineClass);
 
         new CanvasController(canvasView, gameManager);
     }

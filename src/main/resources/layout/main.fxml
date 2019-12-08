@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.layout.*?>
@@ -13,7 +14,7 @@
             <children>
                 <HBox alignment="CENTER_LEFT" spacing="5.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Label fx:id="messageLabel" text="Info">
+                        <Label id="logLabel" fx:id="logLabel" text="Info">
                             <HBox.margin>
                                 <Insets left="10.0"/>
                             </HBox.margin>
@@ -47,10 +48,12 @@
                         <ComboBox fx:id="hiderList" maxWidth="250.0" minWidth="150.0" promptText="Select hider"/>
                         <ComboBox fx:id="gameManagerList" maxWidth="250.0" minWidth="150.0"
                                   promptText="Select game manager"/>
+                        <Button fx:id="startGameButton" disable="true" maxHeight="1.7976931348623157E308"
+                                mnemonicParsing="false" onAction="#onStartButtonClicked" text="Start"
+                                textAlignment="CENTER"/>
                     </children>
                 </HBox>
-                <Button fx:id="startGameButton" disable="true" maxHeight="1.7976931348623157E308"
-                        mnemonicParsing="false" text="Start" textAlignment="CENTER"/>
+
             </children>
             <styleClass>
                 <String fx:value="toolbar"/>
@@ -59,16 +62,24 @@
         </HBox>
     </top>
     <center>
-        <SplitPane dividerPositions="0.24198250728862974, 0.7094266277939747" BorderPane.alignment="CENTER">
+        <SplitPane id="main-splitpane" fx:id="mainSplitPane" dividerPositions="0.2, 0.8" BorderPane.alignment="CENTER">
             <items>
-                <Pane styleClass="widget-wrapper"/>
-                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="widget-wrapper"/>
-                <Pane prefHeight="200.0" prefWidth="200.0" styleClass="widget-wrapper"/>
+                <Pane id="leftWidgetPane" fx:id="leftWidget" styleClass="widget-pane"/>
+                <Pane fx:id="canvasPane">
+                    <children>
+                        <Canvas fx:id="canvas" height="467.0" width="396.0"/>
+                    </children>
+                </Pane>
+                <Pane id="rightWidgetPane" fx:id="rightWidget" styleClass="widget-pane">
+                    <children>
+                        <Label text="Widgets"/>
+                    </children>
+                </Pane>
             </items>
         </SplitPane>
     </center>
     <right>
-        <VBox BorderPane.alignment="CENTER">
+        <VBox fx:id="toolbarRight" BorderPane.alignment="CENTER">
             <children>
                 <Button mnemonicParsing="false" wrapText="true">
                     <graphic>
@@ -90,7 +101,7 @@
         </VBox>
     </right>
     <left>
-        <VBox BorderPane.alignment="CENTER">
+        <VBox fx:id="toolbarLeft" BorderPane.alignment="CENTER">
             <children>
                 <Button mnemonicParsing="false">
                     <graphic>

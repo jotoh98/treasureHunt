@@ -4,6 +4,8 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.view.in_game.View;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.ObservableList;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ public class GameManager {
      * The {@link View} objects (being {@link Runnable})
      */
     private List<Runnable> views = new ArrayList<>();
+
     /**
      * Runs the {@link View} objects concurrently.
      */
@@ -34,6 +37,9 @@ public class GameManager {
      * Contains the "gameHistory".
      */
     private List<Move> moves = Collections.synchronizedList(new ArrayList<>());
+
+    private ObservableList<Move> observableMoves = new SimpleListProperty<>();
+
     private GameEngine gameEngine;
 
     private int stepSim = 0;
@@ -43,13 +49,12 @@ public class GameManager {
      * @param searcherClass   (Sub-)class of {@link Searcher}
      * @param hiderClass      (Sub-)class of {@link Hider}
      * @param gameEngineClass (Sub-)class of {@link GameEngine}
-     * @param views           A list of {@link View} objects ({@link Runnable})
      * @throws NoSuchMethodException     from {@link Class#getDeclaredConstructor(Class[])}
      * @throws IllegalAccessException    from {@link java.lang.reflect.Constructor#newInstance(Object...)}
      * @throws InvocationTargetException from {@link java.lang.reflect.Constructor#newInstance(Object...)}
      * @throws InstantiationException    from {@link java.lang.reflect.Constructor#newInstance(Object...)}
      */
-    public GameManager(Class<? extends Searcher> searcherClass, Class<? extends Hider> hiderClass, Class<? extends GameEngine> gameEngineClass, List<View> views)
+    public GameManager(Class<? extends Searcher> searcherClass, Class<? extends Hider> hiderClass, Class<? extends GameEngine> gameEngineClass)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
 
         Searcher newSearcher = searcherClass.getDeclaredConstructor().newInstance();
@@ -59,17 +64,10 @@ public class GameManager {
                 .newInstance(newSearcher, newHider);
         this.gameEngine = gameEngineInstance;
 
-        // Register Views
-        for (View view : views) {
-            registerListener(view);
-            view.init(this);
-        }
-
         // Do initial move
         moves.add(gameEngine.init());
         stepView++;
         stepSim++;
-        runListeners();
     }
 
     /**
@@ -77,23 +75,11 @@ public class GameManager {
      */
     public void next() {
         if (stepView <= stepSim) {
-
             if (stepView == stepSim) {
-                moves.add(gameEngine.move());
-                runListeners();
+                observableMoves.add(gameEngine.move());
                 stepSim++;
             }
             stepView++;
-        }
-        runListeners();
-    }
-
-    /**
-     * This simulates the whole game, until its finished.
-     */
-    public void beat() {
-        while (!gameEngine.isFinished()) {
-            next();
         }
     }
 
@@ -119,8 +105,17 @@ public class GameManager {
         if (stepView > 0) {
             stepView--;
         }
-        runListeners();
     }
+
+    /**
+     * This simulates the whole game, until its finished.
+     */
+    public void beat() {
+        while (!gameEngine.isFinished()) {
+            next();
+        }
+    }
+
 
     /**
      * @param runnable the views, which gets registered.
@@ -140,9 +135,8 @@ public class GameManager {
      * @return The whole List of geometryItems of the gameHistory
      */
     public List<GeometryItem> getGeometryItems() {
-        ArrayList<GeometryItem> geometryItems = moves.subList(0, stepView).stream()
+        return observableMoves.subList(0, stepView).stream()
                 .flatMap(move -> move.getGeometryItems().stream()).collect(Collectors.toCollection(ArrayList::new));
-        return geometryItems;
     }
 
     /**

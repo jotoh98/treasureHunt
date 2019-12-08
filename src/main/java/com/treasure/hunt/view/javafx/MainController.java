@@ -1,6 +1,8 @@
 package com.treasure.hunt.view.javafx;
 
 import com.treasure.hunt.game.GameEngine;
+import com.treasure.hunt.game.GameManager;
+import com.treasure.hunt.jts.PointTransformation;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.ReflectionUtils;
@@ -8,27 +10,58 @@ import com.treasure.hunt.utils.Requires;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.Group;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
+import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.awt.ShapeWriter;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class MainController {
+
+    public Canvas canvas;
+    public Pane canvasPane;
+    public SplitPane mainSplitPane;
+    public Pane leftWidget;
+    public Pane rightWidget;
+    public VBox toolbarRight;
+    public VBox toolbarLeft;
 
     public ComboBox<Class<? extends Searcher>> searcherList;
     public ComboBox<Class<? extends Hider>> hiderList;
     public ComboBox<Class<? extends GameEngine>> gameManagerList;
     public Button startGameButton;
+    public Label logLabel;
+    @FXML
+    private PointInspectorController pointInspectorController;
+    @FXML
+    private HashMap<String, PointInspectorController> pointInspectorControllers;
+    private ToggleGroup leftToolbarToggle = new ToggleGroup();
+    private ToggleGroup rightToolbarToggle = new ToggleGroup();
+
+    private GameManager gameManager;
+
+    private ShapeWriter shapeWriter = new ShapeWriter(new PointTransformation());
+
 
     public void initialize() {
         setListStringConverters();
         fillLists();
         addPromptBindings();
         bindStartButtonState();
+        resizeCanvasWithSplit();
     }
 
     private void setListStringConverters() {
@@ -152,4 +185,65 @@ public class MainController {
         );
     }
 
+    public void onStartButtonClicked(ActionEvent actionEvent) {
+        Class<? extends Searcher> searcherClass = searcherList.getSelectionModel().getSelectedItem();
+        Class<? extends Hider> hiderClass = hiderList.getSelectionModel().getSelectedItem();
+        Class<? extends GameEngine> gameEngineClass = gameManagerList.getSelectionModel().getSelectedItem();
+        try {
+            gameManager = new GameManager(searcherClass, hiderClass, gameEngineClass);
+        } catch (Exception e) {
+            log.error("Something important crashed", e);
+        }
+    }
+
+    private void addWidget(String toolbarPosition, String buttonText, Pane widgetBox) {
+        VBox toolbar = toolbarRight;
+        Pane widgetWrapper = rightWidget;
+
+        if (toolbarPosition.equals("left")) {
+            toolbar = toolbarLeft;
+            widgetWrapper = leftWidget;
+        }
+
+        addWidgetButton(toolbar, buttonText);
+        widgetWrapper.getChildren().setAll(widgetBox);
+    }
+
+    private void addWidgetButton(VBox toolbar, String text) {
+        ToggleButton toggleButton = new ToggleButton("", new Group(new Label(text)));
+        if (toolbar.equals(toolbarLeft)) {
+            toggleButton.setToggleGroup(leftToolbarToggle);
+        } else {
+            toggleButton.setToggleGroup(rightToolbarToggle);
+        }
+        toolbar.getChildren().add(toggleButton);
+    }
+
+    public void resizeCanvasWithSplit() {
+        mainSplitPane.getDividers().forEach(divider -> divider.positionProperty().addListener(
+                (observableValue, number, t1) -> {
+                    log.info(String.format("%s, %s", canvas.getWidth(), canvas.getHeight()));
+                })
+        );
+
+        canvas.widthProperty().addListener((observableValue, number, t1) -> {
+            drawShapes(canvas.getGraphicsContext2D());
+        });
+
+        canvas.widthProperty().addListener((observableValue, number, t1) -> {
+            drawShapes(canvas.getGraphicsContext2D());
+        });
+        canvas.setStyle("-fx-fill: white");
+        canvas.heightProperty().bind(canvasPane.heightProperty());
+        canvas.widthProperty().bind(canvasPane.widthProperty());
+        drawShapes(canvas.getGraphicsContext2D());
+    }
+
+    private void drawShapes(GraphicsContext gc) {
+        clearCanvas();
+    }
+
+    void clearCanvas() {
+        canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    }
 }
