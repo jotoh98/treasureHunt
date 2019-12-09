@@ -37,8 +37,8 @@ public class JTSUtils {
      * Tests whether the line line intersects with the linesegment segment and returns the intersecting Coordinate
      * (if one exists).
      *
-     * @param line        a {@link LineSegment}
-     * @param lineSegment a {@link LineSegment}
+     * @param line    a {@link LineSegment}
+     * @param segment a {@link LineSegment}
      * @return an intersection {@link Point} of the {@link LineSegment} objects {@code line} and {@code lineSegment}
      */
     public static Coordinate lineWayIntersection(LineSegment line, LineSegment segment) {
