@@ -2,6 +2,7 @@ package com.treasure.hunt.view.javafx;
 
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.game.GameManager;
+import com.treasure.hunt.jts.AdvancedShapeWriter;
 import com.treasure.hunt.jts.PointTransformation;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
@@ -14,13 +15,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import lombok.extern.slf4j.Slf4j;
-import org.locationtech.jts.awt.ShapeWriter;
+import org.jfree.fx.FXGraphics2D;
+import org.locationtech.jts.math.Vector2D;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Modifier;
@@ -28,6 +31,9 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * @author jotoh
+ */
 @Slf4j
 public class MainController {
 
@@ -41,9 +47,12 @@ public class MainController {
 
     public ComboBox<Class<? extends Searcher>> searcherList;
     public ComboBox<Class<? extends Hider>> hiderList;
-    public ComboBox<Class<? extends GameEngine>> gameManagerList;
+    public ComboBox<Class<? extends GameEngine>> gameEngineList;
     public Button startGameButton;
     public Label logLabel;
+    public Button previousButton;
+    public Button nextButton;
+
     @FXML
     private PointInspectorController pointInspectorController;
     @FXML
@@ -53,8 +62,10 @@ public class MainController {
 
     private GameManager gameManager;
 
-    private ShapeWriter shapeWriter = new ShapeWriter(new PointTransformation());
+    private PointTransformation transformation = new PointTransformation();
+    private AdvancedShapeWriter shapeWriter = new AdvancedShapeWriter(transformation);
 
+    private FXGraphics2D graphics2D;
 
     public void initialize() {
         setListStringConverters();
@@ -75,12 +86,12 @@ public class MainController {
             }
 
             @Override
-            public Class<? extends Searcher> fromString(String s) {
+            public Class fromString(String s) {
                 throw new UnsupportedOperationException();
             }
         };
 
-        StringConverter gameManagerStringConverter = new StringConverter<Class>() {
+        StringConverter<Class<? extends GameEngine>> gameManagerStringConverter = new StringConverter<>() {
 
             @Override
             public String toString(Class aClass) {
@@ -104,7 +115,7 @@ public class MainController {
 
         searcherList.setConverter(classStringConverter);
         hiderList.setConverter(classStringConverter);
-        gameManagerList.setConverter(gameManagerStringConverter);
+        gameEngineList.setConverter(gameManagerStringConverter);
     }
 
     private void fillLists() {
@@ -146,7 +157,7 @@ public class MainController {
         ObservableList<Class<? extends GameEngine>> observableGameManagers = FXCollections.observableArrayList(allGameManagers);
         FilteredList<Class<? extends GameEngine>> filteredGameManagers = new FilteredList<>(observableGameManagers);
 
-        gameManagerList.setItems(filteredGameManagers);
+        gameEngineList.setItems(filteredGameManagers);
 
         filteredGameManagers.setPredicate(aClass -> false);
 
@@ -164,7 +175,7 @@ public class MainController {
     private void addPromptBindings() {
         addRequiredListener(searcherList);
         addRequiredListener(hiderList);
-        addRequiredListener(gameManagerList);
+        addRequiredListener(gameEngineList);
     }
 
     private void addRequiredListener(ComboBox comboBox) {
@@ -181,20 +192,11 @@ public class MainController {
     private void bindStartButtonState() {
         startGameButton.disableProperty().bind(searcherList.getSelectionModel().selectedItemProperty().isNull()
                 .or(hiderList.getSelectionModel().selectedItemProperty().isNull())
-                .or(gameManagerList.getSelectionModel().selectedItemProperty().isNull())
+                .or(gameEngineList.getSelectionModel().selectedItemProperty().isNull())
         );
     }
 
-    public void onStartButtonClicked(ActionEvent actionEvent) {
-        Class<? extends Searcher> searcherClass = searcherList.getSelectionModel().getSelectedItem();
-        Class<? extends Hider> hiderClass = hiderList.getSelectionModel().getSelectedItem();
-        Class<? extends GameEngine> gameEngineClass = gameManagerList.getSelectionModel().getSelectedItem();
-        try {
-            gameManager = new GameManager(searcherClass, hiderClass, gameEngineClass);
-        } catch (Exception e) {
-            log.error("Something important crashed", e);
-        }
-    }
+    private Vector2D dragStart = new Vector2D();
 
     private void addWidget(String toolbarPosition, String buttonText, Pane widgetBox) {
         VBox toolbar = toolbarRight;
@@ -219,31 +221,100 @@ public class MainController {
         toolbar.getChildren().add(toggleButton);
     }
 
+    private Vector2D offsetBackup = new Vector2D();
+
+    public void onStartButtonClicked() {
+        Class<? extends Searcher> searcherClass = searcherList.getSelectionModel().getSelectedItem();
+        Class<? extends Hider> hiderClass = hiderList.getSelectionModel().getSelectedItem();
+        Class<? extends GameEngine> gameEngineClass = gameEngineList.getSelectionModel().getSelectedItem();
+
+        assert searcherClass != null;
+        assert hiderClass != null;
+        assert gameEngineClass != null;
+
+        try {
+            gameManager = new GameManager(searcherClass, hiderClass, gameEngineClass);
+            graphics2D = new FXGraphics2D(canvas.getGraphicsContext2D());
+            gameManager.addListener(change -> {
+                drawShapes();
+            });
+            drawShapes();
+        } catch (Exception e) {
+            log.error("Something important crashed", e);
+            logLabel.setText("Could not create game");
+        }
+    }
+
+    public void previousButtonClicked(ActionEvent actionEvent) {
+        gameManager.previous();
+        if (gameManager.isFirstStepShown()) {
+            previousButton.setDisable(true);
+        }
+        nextButton.setDisable(false);
+    }
+
+    public void nextButtonClicked(ActionEvent actionEvent) {
+        gameManager.next();
+        if (gameManager.isGameFinished() && gameManager.isSimStepLatest()) {
+            nextButton.setDisable(true);
+            logLabel.setText("Game ended");
+        }
+        previousButton.setDisable(false);
+    }
+
     public void resizeCanvasWithSplit() {
-        mainSplitPane.getDividers().forEach(divider -> divider.positionProperty().addListener(
-                (observableValue, number, t1) -> {
-                    log.info(String.format("%s, %s", canvas.getWidth(), canvas.getHeight()));
-                })
-        );
-
         canvas.widthProperty().addListener((observableValue, number, t1) -> {
-            drawShapes(canvas.getGraphicsContext2D());
+            drawShapes();
         });
 
         canvas.widthProperty().addListener((observableValue, number, t1) -> {
-            drawShapes(canvas.getGraphicsContext2D());
+            drawShapes();
         });
-        canvas.setStyle("-fx-fill: white");
+
         canvas.heightProperty().bind(canvasPane.heightProperty());
         canvas.widthProperty().bind(canvasPane.widthProperty());
-        drawShapes(canvas.getGraphicsContext2D());
     }
 
-    private void drawShapes(GraphicsContext gc) {
-        clearCanvas();
+    private void drawShapes() {
+        if (gameManager != null) {
+            canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+            gameManager.getGeometryItems().forEach(geometryItem ->
+                    geometryItem.draw(graphics2D, shapeWriter)
+            );
+        }
     }
 
-    void clearCanvas() {
-        canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    public void onCanvasClicked(MouseEvent mouseEvent) {
+        if (gameManager == null) {
+            return;
+        }
+        offsetBackup = transformation.getOffset();
+        dragStart = Vector2D.create(mouseEvent.getX(), mouseEvent.getY());
+    }
+
+    public void onCanvasDragged(MouseEvent mouseEvent) {
+        if (gameManager == null) {
+            return;
+        }
+        Vector2D dragOffset = Vector2D.create(mouseEvent.getX(), mouseEvent.getY()).subtract(dragStart);
+        transformation.setOffset(dragOffset.add(offsetBackup));
+        drawShapes();
+    }
+
+    public void onCanvasZoom(ScrollEvent scrollEvent) {
+        if (gameManager == null) {
+            return;
+        }
+        Vector2D mouse = new Vector2D(scrollEvent.getX(), scrollEvent.getY());
+        Vector2D direction = transformation.getOffset().subtract(mouse);
+
+        double oldScale = transformation.getScale();
+        double newScale = oldScale * Math.exp(scrollEvent.getDeltaY() * 1e-2);
+
+        if (newScale > 0) {
+            transformation.setScale(newScale);
+            transformation.setOffset(mouse.add(direction.multiply(newScale / oldScale)));
+            drawShapes();
+        }
     }
 }

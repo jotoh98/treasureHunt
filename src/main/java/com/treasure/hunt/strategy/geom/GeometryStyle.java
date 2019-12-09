@@ -18,6 +18,7 @@ public class GeometryStyle {
     private Color outlineColor;
 
     private Color fillColor;
+
     int zIndex = 0;
 
     public GeometryStyle(boolean visible, Color outlineColor) {
@@ -31,18 +32,16 @@ public class GeometryStyle {
     public static GeometryStyle getDefaults(GeometryType type) {
         switch (type) {
             case WAY_POINT:
-                return new GeometryStyle(true, Color.red);
-            case SEARCHER_POSITION:
-                return new GeometryStyle(true, Color.black);
-            case POSSIBLE_TREASURE:
-                return new GeometryStyle(true, Color.gray, Color.lightGray);
+                return new GeometryStyle(true, new Color(0xFFFFFF));
+            case TREASURE:
+                return new GeometryStyle(true, new Color(0xFFD700));
             case HINT_ANGLE:
-                return new GeometryStyle(true, Color.lightGray);
+                return new GeometryStyle(true, new Color(0x575757));
         }
-        return new GeometryStyle(true, Color.black);
+        return new GeometryStyle(true, Color.lightGray);
     }
 
-    public Stroke toStroke() {
+    public Stroke getStroke() {
         return new BasicStroke(1);
     }
 

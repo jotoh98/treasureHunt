@@ -3,6 +3,7 @@ package com.treasure.hunt.strategy.geom;
 import com.treasure.hunt.jts.AdvancedShapeWriter;
 import lombok.Getter;
 import lombok.NonNull;
+import org.jfree.fx.FXGraphics2D;
 
 import java.awt.*;
 
@@ -35,19 +36,18 @@ public class GeometryItem<T> {
         this(object, geometryType, GeometryStyle.getDefaults(geometryType));
     }
 
-    public void draw(Graphics2D graphics2D, AdvancedShapeWriter shapeWriter) {
+    public void draw(FXGraphics2D graphics2D, AdvancedShapeWriter shapeWriter) {
         if (!geometryStyle.isVisible()) {
             return;
         }
-
         Shape shape = shapeWriter.toShape(object);
-
         if (geometryStyle.isFilled()) {
-            graphics2D.setPaint(geometryStyle.getFillColor());
+            graphics2D.setColor(geometryStyle.getFillColor());
             graphics2D.fill(shape);
         }
+
         graphics2D.setPaint(geometryStyle.getOutlineColor());
-        graphics2D.setStroke(geometryStyle.toStroke());
+        graphics2D.setStroke(geometryStyle.getStroke());
         graphics2D.draw(shape);
     }
 }

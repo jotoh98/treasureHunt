@@ -8,7 +8,6 @@ import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.hint.impl.CircleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
-import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.Requires;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
@@ -59,8 +58,8 @@ public class GameEngine {
      *
      * @return a {@link Move}, since the initialization must be displayed.
      */
-    public Move init() {
-        searcherPos = JTSUtils.createPoint(0, 0);
+    public Move init(Point p) {
+        searcherPos = p;
         searcher.init(searcherPos);
 
         treasurePos = hider.getTreasureLocation();
@@ -149,11 +148,7 @@ public class GameEngine {
      */
     protected void verifyHint(Hint hint, Point treasurePosition) {
         if (hint instanceof AngleHint) {
-            if (!JTSUtils.pointInAngle(
-                    ((AngleHint) hint).getAnglePointRight(),
-                    ((AngleHint) hint).getCenter(),
-                    ((AngleHint) hint).getAnglePointLeft(),
-                    treasurePosition)) {
+            if (!((AngleHint) hint).getGeometryAngle().inView(treasurePosition.getCoordinate())) {
                 throw new IllegalArgumentException("Treasure does not lie in given Angle.");
             }
         }

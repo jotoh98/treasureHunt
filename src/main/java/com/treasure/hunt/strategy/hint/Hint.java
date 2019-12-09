@@ -12,7 +12,7 @@ import java.util.List;
  * @author hassel
  */
 public abstract class Hint {
-    protected List<GeometryItem> additionalGeometryItems = new ArrayList<>();
+    protected List<GeometryItem<?>> additionalGeometryItems = new ArrayList<>();
 
     public Hint() {
     }
@@ -20,20 +20,20 @@ public abstract class Hint {
     /**
      * @param geometryItem to add {@link GeometryItem} objects, which are only relevant for displaying
      */
-    public void addAdditionalItem(GeometryItem geometryItem) {
+    public void addAdditionalItem(GeometryItem<?> geometryItem) {
         additionalGeometryItems.add(geometryItem);
     }
 
     /**
      * @return a list of this hints {@link GeometryItem} objects.
      */
-    public abstract List<GeometryItem> getGeometryItems();
+    public abstract List<GeometryItem<?>> getGeometryItems();
 
-    public List<GeometryItem> getAdditionalGeometryItems() {
+    public List<GeometryItem<?>> getAdditionalGeometryItems() {
         return this.additionalGeometryItems;
     }
 
-    public void setAdditionalGeometryItems(List<GeometryItem> additionalGeometryItems) {
+    public void setAdditionalGeometryItems(List<GeometryItem<?>> additionalGeometryItems) {
         this.additionalGeometryItems = additionalGeometryItems;
     }
 

@@ -63,7 +63,7 @@ public class HalfPlaneHint extends AngleHint {
     }
 
     @Override
-    public List<GeometryItem> getGeometryItems() {
+    public List<GeometryItem<?>> getGeometryItems() {
         // TODO implement
         return null;
     }

@@ -27,9 +27,9 @@ public class CircleHint extends Hint {
     /**
      * {@inheritDoc}
      */
-    public List<GeometryItem> getGeometryItems() {
-        List<GeometryItem> output = new ArrayList<>();
-        output.add(new GeometryItem(
+    public List<GeometryItem<?>> getGeometryItems() {
+        List<GeometryItem<?>> output = new ArrayList<>();
+        output.add(new GeometryItem<>(
                 new Circle(center.getCoordinate(), radius, JTSUtils.GEOMETRY_FACTORY)
                 , GeometryType.HINT_CENTER));
         return output;

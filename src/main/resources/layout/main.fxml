@@ -23,8 +23,9 @@
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
                     <children>
-                        <Button mnemonicParsing="false" text="Previous"/>
-                        <Button mnemonicParsing="false" text="Next"/>
+                        <Button fx:id="previousButton" disable="true" mnemonicParsing="false"
+                                onAction="#previousButtonClicked" text="Previous"/>
+                        <Button fx:id="nextButton" mnemonicParsing="false" onAction="#nextButtonClicked" text="Next"/>
                     </children>
                 </HBox>
             </children>
@@ -46,10 +47,10 @@
                     <children>
                         <ComboBox fx:id="searcherList" maxWidth="250.0" minWidth="150.0" promptText="Select searcher"/>
                         <ComboBox fx:id="hiderList" maxWidth="250.0" minWidth="150.0" promptText="Select hider"/>
-                        <ComboBox fx:id="gameManagerList" maxWidth="250.0" minWidth="150.0"
+                        <ComboBox fx:id="gameEngineList" maxWidth="250.0" minWidth="150.0"
                                   promptText="Select game manager"/>
                         <Button fx:id="startGameButton" disable="true" maxHeight="1.7976931348623157E308"
-                                mnemonicParsing="false" onAction="#onStartButtonClicked" text="Start"
+                                mnemonicParsing="false" onAction="#onStartButtonClicked" text="Init"
                                 textAlignment="CENTER"/>
                     </children>
                 </HBox>
@@ -65,16 +66,13 @@
         <SplitPane id="main-splitpane" fx:id="mainSplitPane" dividerPositions="0.2, 0.8" BorderPane.alignment="CENTER">
             <items>
                 <Pane id="leftWidgetPane" fx:id="leftWidget" styleClass="widget-pane"/>
-                <Pane fx:id="canvasPane">
+                <Pane id="canvasPane" fx:id="canvasPane">
                     <children>
-                        <Canvas fx:id="canvas" height="467.0" width="396.0"/>
+                        <Canvas id="gameCanvas" fx:id="canvas" height="467.0" onMouseDragged="#onCanvasDragged"
+                                onMousePressed="#onCanvasClicked" onScroll="#onCanvasZoom" width="396.0"/>
                     </children>
                 </Pane>
-                <Pane id="rightWidgetPane" fx:id="rightWidget" styleClass="widget-pane">
-                    <children>
-                        <Label text="Widgets"/>
-                    </children>
-                </Pane>
+                <Pane id="rightWidgetPane" fx:id="rightWidget" styleClass="widget-pane"/>
             </items>
         </SplitPane>
     </center>

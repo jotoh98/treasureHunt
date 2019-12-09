@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class Movement {
     private List<GeometryItem<Point>> points = new ArrayList<>();
-    protected List<GeometryItem> additionalGeometryItems = new ArrayList<>();
+    protected List<GeometryItem<?>> additionalGeometryItems = new ArrayList<>();
 
     public Movement() {
     }
@@ -67,7 +67,7 @@ public class Movement {
         return this.points;
     }
 
-    public List<GeometryItem> getAdditionalGeometryItems() {
+    public List<GeometryItem<?>> getAdditionalGeometryItems() {
         return this.additionalGeometryItems;
     }
 }

@@ -3,13 +3,14 @@ package com.treasure.hunt.game;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
+import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.view.in_game.View;
-import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,10 +24,6 @@ import java.util.stream.Collectors;
  * @author dorianreineccius
  */
 public class GameManager {
-    /**
-     * The {@link View} objects (being {@link Runnable})
-     */
-    private List<Runnable> views = new ArrayList<>();
 
     /**
      * Runs the {@link View} objects concurrently.
@@ -36,9 +33,8 @@ public class GameManager {
     /**
      * Contains the "gameHistory".
      */
-    private List<Move> moves = Collections.synchronizedList(new ArrayList<>());
 
-    private ObservableList<Move> observableMoves = new SimpleListProperty<>();
+    private ObservableList<Move> moves = FXCollections.observableArrayList();
 
     private GameEngine gameEngine;
 
@@ -59,15 +55,19 @@ public class GameManager {
 
         Searcher newSearcher = searcherClass.getDeclaredConstructor().newInstance();
         Hider newHider = hiderClass.getDeclaredConstructor().newInstance();
-        GameEngine gameEngineInstance = gameEngineClass
+
+        this.gameEngine = gameEngineClass
                 .getDeclaredConstructor(Searcher.class, Hider.class)
                 .newInstance(newSearcher, newHider);
-        this.gameEngine = gameEngineInstance;
 
         // Do initial move
-        moves.add(gameEngine.init());
+        moves.add(gameEngine.init(JTSUtils.createPoint(0, 0)));
         stepView++;
         stepSim++;
+    }
+
+    public void addListener(ListChangeListener<? super Move> listChangeListener) {
+        moves.addListener(listChangeListener);
     }
 
     /**
@@ -76,7 +76,7 @@ public class GameManager {
     public void next() {
         if (stepView <= stepSim) {
             if (stepView == stepSim) {
-                observableMoves.add(gameEngine.move());
+                moves.add(gameEngine.move());
                 stepSim++;
             }
             stepView++;
@@ -116,26 +116,11 @@ public class GameManager {
         }
     }
 
-
-    /**
-     * @param runnable the views, which gets registered.
-     */
-    public void registerListener(Runnable runnable) {
-        views.add(runnable);
-    }
-
-    /**
-     * This will run {@link Runnable#run()} of each {@link View}
-     */
-    public void runListeners() {
-        views.forEach(runnable -> executorService.execute(runnable));
-    }
-
     /**
      * @return The whole List of geometryItems of the gameHistory
      */
     public List<GeometryItem> getGeometryItems() {
-        return observableMoves.subList(0, stepView).stream()
+        return moves.subList(0, stepView).stream()
                 .flatMap(move -> move.getGeometryItems().stream()).collect(Collectors.toCollection(ArrayList::new));
     }
 

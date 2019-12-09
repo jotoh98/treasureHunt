@@ -74,7 +74,6 @@ public class CanvasView extends JPanel implements View {
     }
 
     private void paintShape(Graphics2D graphics2D, GeometryItem geometryItem) {
-        geometryItem.draw(graphics2D, shapeWriter);
     }
 
     @Override

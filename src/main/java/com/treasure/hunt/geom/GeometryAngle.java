@@ -1,10 +1,10 @@
 package com.treasure.hunt.geom;
 
 import com.treasure.hunt.jts.AdvancedShapeWriter;
-import lombok.Data;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.math.Vector2D;
 
 import java.awt.*;
 import java.awt.geom.GeneralPath;
@@ -19,15 +19,14 @@ import java.awt.geom.GeneralPath;
  * </ul>
  * These points are understood in a counter-clockwise looking way from the center point.
  */
-@Data
-public class Angle extends LineString implements Shapeable {
+public class GeometryAngle extends LineString implements Shapeable {
 
     /**
      * Creates a new <code>Geometry</code> via the specified GeometryFactory.
      *
      * @param factory The GeometryFactory suggested to create the <code>Angle</code>
      */
-    public Angle(GeometryFactory factory, Coordinate center, Coordinate left, Coordinate right) {
+    public GeometryAngle(GeometryFactory factory, Coordinate center, Coordinate left, Coordinate right) {
         super(
                 factory.getCoordinateSequenceFactory()
                         .create(new Coordinate[]{center, left, right}),
@@ -64,7 +63,16 @@ public class Angle extends LineString implements Shapeable {
         setCoordinate(2, right);
     }
 
-    private double rightAngle() {
+
+    public Vector2D rightVector() {
+        return new Vector2D(getCenter(), getRight());
+    }
+
+    public Vector2D leftVector() {
+        return new Vector2D(getCenter(), getLeft());
+    }
+
+    public double rightAngle() {
         return org.locationtech.jts.algorithm.Angle.angle(getCenter(), getRight());
     }
 
@@ -95,5 +103,17 @@ public class Angle extends LineString implements Shapeable {
     @Override
     public String getGeometryType() {
         return "Angle";
+    }
+
+    public boolean inView(Coordinate coordinate) {
+        GeometryAngle testAngle = copy();
+        testAngle.setRight(coordinate);
+        double testExtend = testAngle.extend();
+        return testExtend >= 0 && testExtend <= extend();
+    }
+
+    @Override
+    public GeometryAngle copy() {
+        return new GeometryAngle(factory, getCenter().copy(), getLeft().copy(), getRight().copy());
     }
 }

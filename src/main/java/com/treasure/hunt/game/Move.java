@@ -9,6 +9,7 @@ import lombok.Getter;
 import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @AllArgsConstructor
@@ -21,8 +22,8 @@ public class Move {
     /**
      * @return a list of all geometryItems of this.
      */
-    public List<GeometryItem> getGeometryItems() {
-        List<GeometryItem> output = new ArrayList<>();
+    public List<GeometryItem<?>> getGeometryItems() {
+        List<GeometryItem<?>> output = new ArrayList<>();
         if (hint != null) {
             output.addAll(hint.getGeometryItems());
             output.addAll(hint.getAdditionalGeometryItems());
@@ -32,8 +33,10 @@ public class Move {
             output.addAll(movement.getAdditionalGeometryItems());
         }
         if (treasureLocation != null) {
-            output.add(new GeometryItem(treasureLocation, GeometryType.TREASURE));
+            output.add(new GeometryItem<>(treasureLocation, GeometryType.TREASURE));
         }
+        output.sort(Comparator.comparingInt(a -> a.getGeometryStyle().getZIndex()));
+
         return output;
     }
 }
