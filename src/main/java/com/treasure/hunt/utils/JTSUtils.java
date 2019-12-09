@@ -9,21 +9,32 @@ import static org.locationtech.jts.algorithm.Angle.angleBetweenOriented;
 public class JTSUtils {
     public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
+    /**
+     * @param x coordinate.
+     * @param y coordinate.
+     * @return a {@link Point} defined by (x,y)
+     */
     public static Point createPoint(double x, double y) {
         return GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
     }
 
+    /**
+     * @param A a point
+     * @param B a point
+     * @return a {@link LineString} containing only {@code A} and {@code B}
+     */
     public static LineString createLineString(Point A, Point B) {
         Coordinate[] coords = {A.getCoordinate(), B.getCoordinate()};
         return GEOMETRY_FACTORY.createLineString(coords);
     }
 
     /**
-     * Tests whether the line line intersects with the linesegment segment
+     * Tests whether the line line intersects with the linesegment segment and returns the intersecting Coordinate
+     * (if one exists).
      *
      * @param line    line with infinite extend
      * @param segment part of a line
-     * @return
+     * @return an intersection {@link Coordinate} of the {@link LineSegment} objects {@code line} and {@code lineSegment}
      */
     public static Coordinate lineWayIntersection(LineSegment line, LineSegment segment) {
         Coordinate intersection = line.lineIntersection(segment);
