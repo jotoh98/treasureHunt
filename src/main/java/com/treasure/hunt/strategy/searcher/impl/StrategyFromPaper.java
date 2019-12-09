@@ -16,6 +16,10 @@ import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
 import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
 import static org.locationtech.jts.algorithm.Angle.normalizePositive;
 
+/**
+ * @author Rank
+ */
+
 public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     int phase; //equals j in the paper. In phase i, the algorithm checks a rectangle with a side length of 2^i
     Point start,

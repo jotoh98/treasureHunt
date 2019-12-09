@@ -8,9 +8,13 @@ import java.util.List;
 
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
 
-@Getter
+/**
+ * @author Rank
+ */
+
 public class HalfPlaneHint extends AngleHint {
 
+    @Getter
     private Direction direction;
     // when the line indicated by anglePointLeft and anglePointRight is not horizontal,
     // right and left indicate where the target is (right indicates the target is in positive x-Direction
@@ -42,7 +46,7 @@ public class HalfPlaneHint extends AngleHint {
     }
 
     /**
-     * This constructor can be used when unsure wether pointOne or piontTwo is the right/left point of the
+     * This constructor can be used when unsure whether pointOne or pointTwo is the right/left point of the
      * hint but the direction of the hint is known.
      *
      * @param pointOne
@@ -112,9 +116,13 @@ public class HalfPlaneHint extends AngleHint {
         this.direction = direction;
     }
 
+    /**
+     * TODO implement
+     * <p>
+     * {@inheritDoc}
+     */
     @Override
     public List<GeometryItem> getGeometryItems() {
-        // TODO implement
         return null;
     }
 

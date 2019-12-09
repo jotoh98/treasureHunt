@@ -85,11 +85,4 @@ public class StrategyFromPaperTest {
         }
         System.out.println();
     }
-
-    @Test
-    void testRho() {
-
-    }
-
-
 }
