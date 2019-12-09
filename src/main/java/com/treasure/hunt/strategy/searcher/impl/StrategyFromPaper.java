@@ -266,6 +266,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return move;
     }
 
+    // returns the rectangle of the current phase, just by using the current phase index (j in the paper, "phase" in
+    // the implementation)
     private Coordinate[] phaseRectangle() {
         double halfDiff = Math.pow(2, phase - 1);
         double startX = start.getX();
@@ -278,6 +280,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return rect;
     }
 
+    // Sets the rectangle ABCD to the rectangle of the current phase.
     private void setRectToPhase() {
         Coordinate[] rect = phaseRectangle();
         A = GEOMETRY_FACTORY.createPoint(rect[0]);
