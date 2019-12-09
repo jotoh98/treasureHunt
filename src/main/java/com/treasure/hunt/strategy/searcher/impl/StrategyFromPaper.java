@@ -17,6 +17,9 @@ import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
 import static org.locationtech.jts.algorithm.Angle.normalizePositive;
 
 /**
+ * This implements the strategy from the paper:
+ * {@literal Treasure Hunt in the Plane with Angular Hints}
+ *
  * @author Rank
  */
 
@@ -28,7 +31,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     HalfPlaneHint lastBadHint; //only used when last hint was bad
     boolean lastHintWasBad = false;
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public void init(Point startPosition) {
         start = startPosition;
         phase = 1;
