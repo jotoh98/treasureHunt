@@ -8,18 +8,14 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
 /**
- * The SpoilerHider always tells the treasurePosition
+ * This {@link com.treasure.hunt.strategy.hider.Hider} always tells the treasurePosition
  * based on an {@link CircleHint} with radius 0.0.
+ *
+ * @author dorianreineccius
  */
 public class RevealingHider implements HideAndSeekHider<CircleHint> {
-
     private GeometryFactory geometryFactory = new GeometryFactory();
     private Point treasurePos = geometryFactory.createPoint(new Coordinate(45, 45));
-
-    @Override
-    public Point getTreasureLocation() {
-        return treasurePos;
-    }
 
     /**
      * @return A {@link CircleHint} telling the exact treasure position
@@ -27,5 +23,13 @@ public class RevealingHider implements HideAndSeekHider<CircleHint> {
     @Override
     public CircleHint move(Movement movement) {
         return new CircleHint(treasurePos, 0);
+    }
+
+    /**
+     * @return the current treasure position
+     */
+    @Override
+    public Point getTreasureLocation() {
+        return treasurePos;
     }
 }

@@ -9,6 +9,7 @@ import org.locationtech.jts.util.GeometricShapeFactory;
 /**
  * Adding a Geometry based Circle to the jts Geometry suite.
  *
+ * @author hassel
  * @see org.locationtech.jts.geom.Geometry
  */
 public class Circle extends Polygon {

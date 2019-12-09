@@ -15,6 +15,9 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
 
+/**
+ * @author hassel
+ */
 public class UIManagerDefaults implements ActionListener, ItemListener {
     private final static String[] COLUMN_NAMES = {"Key", "Value", "Sample"};
     private static String selectedItem;

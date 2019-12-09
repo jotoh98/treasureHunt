@@ -3,6 +3,12 @@ package com.treasure.hunt.strategy.geom;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * This is conventions for GeometryItems,
+ * how to display them.
+ *
+ * @author hassel
+ */
 public enum GeometryType {
     // hints
     FALSE_HINT(false, "False Hint"),

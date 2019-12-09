@@ -5,6 +5,9 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
+/**
+ * @author axel12, hassel
+ */
 public class ClassListMouseListener extends ClassListHoverListener {
     private final List<JList> toBeRePaintedOnSelection;
 

@@ -5,6 +5,9 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+/**
+ * @author hassel
+ */
 public class ClassListHoverListener extends MouseAdapter {
 
     final JList jList;
