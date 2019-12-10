@@ -1,4 +1,4 @@
-package com.treasure.hunt.view.javafx;
+package com.treasure.hunt.view;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;

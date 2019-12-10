@@ -1,7 +1,6 @@
 package com.treasure.hunt.jts;
 
 import com.treasure.hunt.utils.JTSUtils;
-import com.treasure.hunt.view.swing.CanvasViewEventListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,12 +13,11 @@ import java.awt.geom.Point2D;
 /**
  * Transforms a source {@link Coordinate} from a strategy to a AWT {@link Point2D} considering a canvas offset
  * {@link Vector2D} and a viewport scale. These are supplied by a
- * {@link CanvasViewEventListener} through zooming and dragging
+ * scrolling event listener through zooming and dragging
  * actions. Furthermore, it manages the bounding box representing the visual frame of the canvas inside the
  * mathematical vector space. This boundary is used for certain rendering purposes.
  *
  * @version 1.0
- * @see CanvasViewEventListener
  */
 @AllArgsConstructor
 @NoArgsConstructor

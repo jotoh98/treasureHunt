@@ -4,7 +4,6 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
-import com.treasure.hunt.view.in_game.View;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -12,23 +11,16 @@ import javafx.collections.ObservableList;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 /**
  * The GameManager stores every {@link Move}-objects, happened in the game,
- * the {@link View} objects to run them for every move and
+ * the binds the views to update them for every move and
  * runs the GameEngine step for step.
  *
  * @author dorianreineccius
  */
 public class GameManager {
-
-    /**
-     * Runs the {@link View} objects concurrently.
-     */
-    private ExecutorService executorService = Executors.newFixedThreadPool(2);
 
     /**
      * Contains the "gameHistory".

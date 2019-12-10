@@ -1,4 +1,4 @@
-package com.treasure.hunt.view.javafx;
+package com.treasure.hunt.view;
 
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.game.GameManager;
@@ -11,7 +11,6 @@ import com.treasure.hunt.utils.Requires;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
@@ -235,9 +234,7 @@ public class MainController {
         try {
             gameManager = new GameManager(searcherClass, hiderClass, gameEngineClass);
             graphics2D = new FXGraphics2D(canvas.getGraphicsContext2D());
-            gameManager.addListener(change -> {
-                drawShapes();
-            });
+            gameManager.addListener(change -> drawShapes());
             drawShapes();
         } catch (Exception e) {
             log.error("Something important crashed", e);
@@ -245,16 +242,18 @@ public class MainController {
         }
     }
 
-    public void previousButtonClicked(ActionEvent actionEvent) {
+    public void previousButtonClicked() {
         gameManager.previous();
+        drawShapes();
         if (gameManager.isFirstStepShown()) {
             previousButton.setDisable(true);
         }
         nextButton.setDisable(false);
     }
 
-    public void nextButtonClicked(ActionEvent actionEvent) {
+    public void nextButtonClicked() {
         gameManager.next();
+        drawShapes();
         if (gameManager.isGameFinished() && gameManager.isSimStepLatest()) {
             nextButton.setDisable(true);
             logLabel.setText("Game ended");
@@ -263,13 +262,9 @@ public class MainController {
     }
 
     public void resizeCanvasWithSplit() {
-        canvas.widthProperty().addListener((observableValue, number, t1) -> {
-            drawShapes();
-        });
+        canvas.widthProperty().addListener((observableValue, number, t1) -> drawShapes());
 
-        canvas.widthProperty().addListener((observableValue, number, t1) -> {
-            drawShapes();
-        });
+        canvas.widthProperty().addListener((observableValue, number, t1) -> drawShapes());
 
         canvas.heightProperty().bind(canvasPane.heightProperty());
         canvas.widthProperty().bind(canvasPane.widthProperty());
