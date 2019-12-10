@@ -16,6 +16,11 @@ public enum GeometryType {
     HINT_RADIUS(false, "hint-center"),
     TRUE_HINT(false, "True Hint"),
 
+    // HalfPlaneHint
+    HALF_PLANE_POINT_LEFT(false, "left half-plane-point"),
+    HALF_PLANE_POINT_RIGHT(false, "right half-plane-point"),
+
+
     // treasure/no-treasure (areas)
     NO_TREASURE(false, "no treasure"),
     POSSIBLE_TREASURE(false, "possible treasure"),

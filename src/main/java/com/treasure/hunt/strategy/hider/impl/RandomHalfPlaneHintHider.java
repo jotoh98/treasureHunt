@@ -8,7 +8,10 @@ import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Point;
 
 /**
+ * This type of {@link Hider} returns a random {@link HalfPlaneHint},
+ * which is correct.
  *
+ * @author Rank
  */
 public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
     private Point treasurePos = JTSUtils.createPoint(Math.random() * 100, Math.random() * 100);
@@ -30,7 +33,7 @@ public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
     }
 
     /**
-     * @return the current treasure location
+     * @return {@link Point} containing treasure location of [0,100)x[0x100)
      */
     @Override
     public Point getTreasureLocation() {

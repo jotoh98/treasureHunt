@@ -1,9 +1,11 @@
 package com.treasure.hunt.strategy.hint.impl;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.geom.GeometryType;
 import lombok.Getter;
 import org.locationtech.jts.geom.Point;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
@@ -117,13 +119,14 @@ public class HalfPlaneHint extends AngleHint {
     }
 
     /**
-     * TODO implement
-     * <p>
      * {@inheritDoc}
      */
     @Override
     public List<GeometryItem> getGeometryItems() {
-        return null;
+        List<GeometryItem> output = new ArrayList<>();
+        output.add(new GeometryItem(anglePointLeft, GeometryType.HALF_PLANE_POINT_LEFT));
+        output.add(new GeometryItem(anglePointRight, GeometryType.HALF_PLANE_POINT_RIGHT));
+        return output;
     }
 
     public Point getLowerHintPoint() {
@@ -155,5 +158,4 @@ public class HalfPlaneHint extends AngleHint {
     public enum Direction {
         right, left, up, down
     }
-
 }
