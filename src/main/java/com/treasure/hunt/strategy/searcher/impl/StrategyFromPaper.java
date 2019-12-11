@@ -30,12 +30,14 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
 
     HalfPlaneHint lastBadHint; //only used when last hint was bad
     boolean lastHintWasBad = false;
+    Point lastLocation;
 
     /**
      * {@inheritDoc}
      */
     public void init(Point startPosition) {
         start = startPosition;
+        lastLocation = startPosition;
         phase = 1;
         setRectToPhase();
     }
@@ -65,21 +67,30 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return move;
     }
 
+    private Movement setLocationAndReturn(Movement move){
+        lastLocation = move.getEndPoint();
+        return move;
+    }
+
     @Override
     public Movement move() {
-        return addState(incrementPhase());
+        Movement move = new Movement();
+        move.addWayPoint(lastLocation);
+        return addState(incrementPhase(move));
     }
 
     @Override
     public Movement move(HalfPlaneHint hint) {
+        Movement move = new Movement();
+        move.addWayPoint(lastLocation);
         double width = B.getX() - A.getX();
         double height = A.getY() - D.getY();
         if (width < 4 || height < 4) {
-            return addState(incrementPhase());
+            return setLocationAndReturn(addState(incrementPhase(move)));
         }
         //now analyse the hint:
         if (lastHintWasBad)
-            return lastHintBadSubroutine(hint);
+            return setLocationAndReturn(lastHintBadSubroutine(hint, move));
 
         LineSegment AB = new LineSegment(A.getCoordinate(), B.getCoordinate());
         LineSegment BC = new LineSegment(B.getCoordinate(), C.getCoordinate());
@@ -112,7 +123,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             B = horizontalSplit[1];
             C = horizontalSplit[2];
             D = horizontalSplit[3];
-            return addState(moveToCenterOfRectangle(A, B, C, D));
+            return setLocationAndReturn(addState(moveToCenterOfRectangle(A, B, C, D, move)));
         }
         Point[] verticalSplit = splitRectangleVertically(A, B, C, D, hint, intersection_AB_hint,
                 intersection_CD_hint);
@@ -121,9 +132,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             B = verticalSplit[1];
             C = verticalSplit[2];
             D = verticalSplit[3];
-            return addState(moveToCenterOfRectangle(A, B, C, D));
+            return setLocationAndReturn(addState(moveToCenterOfRectangle(A, B, C, D, move)));
         }
-        return addState(badHintSubroutine(hint));
+        return setLocationAndReturn(addState(badHintSubroutine(hint, move)));
     }
 
     private Point[] splitRectangleHorizontally(Point A, Point B, Point C, Point D, HalfPlaneHint hint,
@@ -213,11 +224,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return null;
     }
 
-    private Movement badHintSubroutine(HalfPlaneHint hint) {
+    private Movement badHintSubroutine(HalfPlaneHint hint, Movement move) {
         //return moveToCenterOfRectangle(A, B, C, D); //testing
 
         Point direction = GEOMETRY_FACTORY.createPoint(twoStepsOrthogonal(hint, centerOfRectangle(A, B, C, D)));
-        Movement move = new Movement();
         move.addWayPoint(direction);
         lastHintWasBad = true;
         lastBadHint = hint;
@@ -257,20 +267,19 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return lineAC.midPoint();
     }
 
-    private Movement moveToCenterOfRectangle(Point P1, Point P2, Point P3, Point P4) {
-        Movement ret = new Movement();
-        ret.addWayPoint(centerOfRectangle(P1, P2, P3, P4));
-        return ret;
+    private Movement moveToCenterOfRectangle(Point P1, Point P2, Point P3, Point P4, Movement move) {
+        move.addWayPoint(centerOfRectangle(P1, P2, P3, P4));
+        return move;
     }
 
-    private Movement incrementPhase() {
+    private Movement incrementPhase(Movement move) {
         phase++;
         Point oldA = A;
         Point oldB = B;
         Point oldC = C;
         Point oldD = D;
         setRectToPhase();
-        Movement move = rectangleScan(oldA, oldB, oldC, oldD, new Movement());
+        rectangleScan(oldA, oldB, oldC, oldD, move);
         move.addWayPoint(centerOfRectangle(A, B, C, D));
         return move;
     }
@@ -357,8 +366,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * Variable names are equivalent to the paper, but since a', d', etc. is not a valid variable name in Java,
      * _apos is used in such cases (apos for apostrophe), e.g. a_apos in this implementation equates to a'
      * in the paper. _doubleApos signals a double apostrophe.
-     * Since in the paper the variable names A, B, C and D are used for the by phi transformed points of the current
-     * rectangle
      * At, Bt, Ct and Dt in this implementation equate to A, B, C and D in the paper, since the
      * not by phi transformed variables of the current rectangle R are also stored with A, B, C and D.
      * The t signals the transformed state of this variables.
@@ -367,7 +374,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * @param curHint
      * @return
      */
-    private Movement lastHintBadSubroutine(HalfPlaneHint curHint) {
+    private Movement lastHintBadSubroutine(HalfPlaneHint curHint, Movement move) {
         Coordinate[] rect = new Coordinate[]{A.getCoordinate(), B.getCoordinate(), C.getCoordinate(), D.getCoordinate()};
         int basicTrans = getBasicTransformation(rect, lastBadHint); // basic transformation
         Coordinate[] transformedRect = phiRectangle(basicTrans, rect);
@@ -401,7 +408,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Coordinate f = lineWayIntersection(L1_doubleApos, ABt);
         Coordinate j = lineWayIntersection(L1_doubleApos, BCt);
 
-        Coordinate j_apos = new Coordinate(Dt.getX(), j.getY());
+        Coordinate j_apos = null;
+        if(j!=null)
+            j_apos = new Coordinate(Dt.getX(), j.getY());
         Coordinate t = new Coordinate(f.getX(), D.getY());
 
         Coordinate m = new Coordinate(At.getX(), p.getY());
@@ -430,7 +439,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                 curHintT.getAnglePointRight().getCoordinate());
 
         // here begins line 24 of the ReduceRectangle routine from the paper:
-        Movement move = new Movement();
         Coordinate[] newRectangle = null;
 
         LineSegment pp_apos = new LineSegment(p, p_apos);
