@@ -67,7 +67,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return move;
     }
 
-    private Movement setLocationAndReturn(Movement move){
+    private Movement setLocationAndReturn(Movement move) {
         lastLocation = move.getEndPoint();
         return move;
     }
@@ -386,6 +386,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
 
         Coordinate p = centerOfRectangle(transformedRect);
         Coordinate p_apos = twoStepsOrthogonal(hintT, p);
+        double p_to_p_apos_x = p_apos.getX() - p.getX(); // the x coordinate of the vector from p to p_apos
+        double p_to_p_apos_y = p_apos.getY() - p.getY(); // the y coordinate of the vector from p to p_apos
 
         LineSegment ABt = new LineSegment(At, Bt);
         LineSegment ADt = new LineSegment(At, Dt);
@@ -393,14 +395,18 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         LineSegment CDt = new LineSegment(Ct, Dt);
         LineSegment L1_apos = new LineSegment(hintT.getAnglePointLeft().getCoordinate(),
                 hintT.getAnglePointRight().getCoordinate());
-        LineSegment L1_doubleApos = new LineSegment(hintT.getAnglePointLeft().getX() + p_apos.getX(),
-                hintT.getAnglePointLeft().getY() + p_apos.getY(),
-                hintT.getAnglePointRight().getX() + p_apos.getX(),
-                hintT.getAnglePointRight().getY() + p_apos.getY());
+        LineSegment L1_doubleApos = new LineSegment(
+                hintT.getAnglePointLeft().getX() + p_to_p_apos_x,
+                hintT.getAnglePointLeft().getY() + p_to_p_apos_y,
+                hintT.getAnglePointRight().getX() + p_to_p_apos_x,
+                hintT.getAnglePointRight().getY() + p_to_p_apos_y
+        );
 
         Coordinate a = lineWayIntersection(L1_apos, ADt);
         Coordinate d = lineWayIntersection(L1_apos, BCt);
-        Coordinate e = new Coordinate(Dt.getX(), d.getY());
+        Coordinate e = null;
+        if (d != null)
+            e = new Coordinate(Dt.getX(), d.getY());
         Coordinate d_apos = null;
         if (d != null)
             d_apos = twoStepsOrthogonal(lastBadHint, d);
@@ -409,9 +415,11 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Coordinate j = lineWayIntersection(L1_doubleApos, BCt);
 
         Coordinate j_apos = null;
-        if(j!=null)
+        if (j != null)
             j_apos = new Coordinate(Dt.getX(), j.getY());
-        Coordinate t = new Coordinate(f.getX(), D.getY());
+        Coordinate t = null;
+        if (f != null)
+            t = new Coordinate(f.getX(), D.getY());
 
         Coordinate m = new Coordinate(At.getX(), p.getY());
         Coordinate m_apos = new Coordinate(At.getX(), p_apos.getY());
@@ -424,8 +432,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Coordinate h_apos = new Coordinate(p_apos.getX(), Dt.getY());
 
         Coordinate s, s_apos;
-        double p_to_p_apos_x = p_apos.getX() - p.getX(); // the x coordinate of the vector from p to p_apos
-        double p_to_p_apos_y = p_apos.getY() - p.getY(); // the y coordinate of the vector from p to p_apos
 
         LineSegment A_s_apos = new LineSegment(At.getX(), At.getY(),
                 At.getX() + p_to_p_apos_x, At.getY() + p_to_p_apos_y);
@@ -437,29 +443,33 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         HalfPlaneHint.Direction x2_apos = curHintT.getDirection();
         LineSegment L2_apos = new LineSegment(curHintT.getAnglePointLeft().getCoordinate(),
                 curHintT.getAnglePointRight().getCoordinate());
+        double L2_apos_angle = normalizePositive(L2_apos.angle());
 
         // here begins line 24 of the ReduceRectangle routine from the paper:
         Coordinate[] newRectangle = null;
 
         LineSegment pp_apos = new LineSegment(p, p_apos);
         if (x2_apos == right &&
-                normalizePositive(L2_apos.angle()) <= normalizePositive(L1_doubleApos.angle()) &&
-                normalizePositive(L2_apos.angle()) > normalizePositive(pp_apos.angle())) {
+                L2_apos_angle <= normalizePositive(L1_doubleApos.angle()) &&
+                L2_apos_angle > normalizePositive(pp_apos.angle())) {
+            System.out.println("--------------------------------------------------erster fall"); //testing
             newRectangle = arrangeRectangle(phiOtherRectangleInverse(basicTrans, rect,
                     new Coordinate[]{f, Bt, Ct, t}));
         }
 
         LineSegment m_apos_k_apos = new LineSegment(m_apos, k_apos);
         if (x2_apos == right &&
-                normalizePositive(L2_apos.angle()) <= normalizePositive(pp_apos.angle()) &&
-                normalizePositive(L2_apos.angle()) > normalizePositive(m_apos_k_apos.angle())) {
+                L2_apos_angle <= normalizePositive(pp_apos.angle()) &&
+                L2_apos_angle > normalizePositive(m_apos_k_apos.angle())) {
+            System.out.println("--------------------------------------------------zweiter fall"); //testing
             move = rectangleScanPhiReverse(basicTrans, rect, m_apos, k_apos, k, m, move);
             newRectangle = arrangeRectangle(phiOtherRectangleInverse(basicTrans, rect,
                     new Coordinate[]{g, Bt, Ct, h}));
         }
         if ((x2_apos == left || x2_apos == down) &&
-                normalizePositive(L2_apos.angle()) <= normalizePositive(m_apos_k_apos.angle()) &&
-                normalizePositive(L2_apos.angle()) > normalizePositive(L1_doubleApos.angle())) {
+                L2_apos_angle <= normalizePositive(m_apos_k_apos.angle()) &&
+                L2_apos_angle > normalizePositive(L1_doubleApos.angle())) {
+            System.out.println("--------------------------------------------------dritter fall"); //testing
 
             // rectangleScan(phi_reverse(k, (s, s', d', d))
             move = rectangleScanPhiReverse(basicTrans, rect, s, s_apos, d_apos, d, move);
@@ -471,8 +481,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         }
         LineSegment h_apos_g_apos = new LineSegment(h_apos, g_apos);
         if (x2_apos == left &&
-                normalizePositive(L2_apos.angle()) <= normalizePositive(L1_doubleApos.angle()) &&
-                normalizePositive(L2_apos.angle()) > normalizePositive(h_apos_g_apos.angle())) {
+                L2_apos_angle <= normalizePositive(L1_doubleApos.angle()) &&
+                L2_apos_angle > normalizePositive(h_apos_g_apos.angle())) {
+            System.out.println("--------------------------------------------------vierter fall"); //testing
 
             // rectangleScan(phi_reverse(k, (s, s', d', d))
             move = rectangleScanPhiReverse(basicTrans, rect, s, s_apos, d_apos, d, move);
@@ -485,16 +496,18 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         LineSegment p_apos_k = new LineSegment(p_apos, k);
 
         if ((x2_apos == left &&
-                normalizePositive(L2_apos.angle()) <= normalizePositive(h_apos_g_apos.angle()) &&
-                normalizePositive(L2_apos.angle()) > normalizePositive(pp_apos.angle())) ||
+                L2_apos_angle <= normalizePositive(h_apos_g_apos.angle()) &&
+                L2_apos_angle > normalizePositive(pp_apos.angle())) ||
                 (x2_apos == left &&
-                        normalizePositive(L2_apos.angle()) <= normalizePositive(pp_apos.angle()) &&
-                        normalizePositive(L2_apos.angle()) > normalizePositive(m_apos_k_apos.angle())) ||
+                        L2_apos_angle <= normalizePositive(pp_apos.angle()) &&
+                        L2_apos_angle > normalizePositive(m_apos_k_apos.angle())) ||
                 ((x2_apos == up || x2_apos == right) &&
-                        normalizePositive(L2_apos.angle()) <= normalizePositive(m_apos_k_apos.angle()) &&
-                        normalizePositive(L2_apos.angle()) > normalizePositive(p_apos_k.angle())
+                        L2_apos_angle <= normalizePositive(m_apos_k_apos.angle()) &&
+                        L2_apos_angle > normalizePositive(p_apos_k.angle())
                 )
         ) {
+            System.out.println("--------------------------------------------------fuenfter fall"); //testing
+
             // rectangleScan(phireverse(k, (g, g', h', h))
             move = rectangleScanPhiReverse(basicTrans, rect, g, g_apos, h_apos, h, move);
             // newRectangle := ABkm
@@ -502,8 +515,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                     new Coordinate[]{At, Bt, k, m}));
         }
         if (x2_apos == right &&
-                normalizePositive(L2_apos.angle()) <= normalizePositive(p_apos_k.angle()) &&
-                normalizePositive(L2_apos.angle()) > normalizePositive(L1_doubleApos.angle())) {
+                L2_apos_angle <= normalizePositive(p_apos_k.angle()) &&
+                L2_apos_angle > normalizePositive(L1_doubleApos.angle())) {
+            System.out.println("--------------------------------------------------sechster fall"); //testing
             // newRectangle := ABjj'
             newRectangle = arrangeRectangle(phiOtherRectangleInverse(basicTrans, rect,
                     new Coordinate[]{At, Bt, j, j_apos}));
@@ -599,7 +613,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         }
         if (i == 1 || i == 3) {
             //rotate rectangle by pi/2
-            Coordinate[] transformed = new Coordinate[4];
+            Coordinate[] transformed = new Coordinate[]{new Coordinate(), new Coordinate(),
+                    new Coordinate(), new Coordinate()};
             rotHalfPi.transform(rect[1], transformed[0]);
             rotHalfPi.transform(rect[2], transformed[1]);
             rotHalfPi.transform(rect[3], transformed[2]);
@@ -704,7 +719,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         assertRectangle(toTransform);
         return new Coordinate[]{
                 phiPointInverse(i, rect, toTransform[0]),
-                phiPointInverse(i, rect, toTransform[1])
+                phiPointInverse(i, rect, toTransform[1]),
+                phiPointInverse(i, rect, toTransform[2]),
+                phiPointInverse(i, rect, toTransform[3])
         };
     }
 
@@ -768,10 +785,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                 D = rect[i];
         }
         if (A.equals2D(B) || A.equals2D(C) || A.equals2D(D) || B.equals2D(C) || B.equals2D(D) || C.equals2D(D)) {
-            throw new IllegalArgumentException("rect is malformed");
+            throw new IllegalArgumentException("rect is malformed. It equals " + rect[0] + rect[1] + rect[2] + rect[3]);
         }
         if (A.x != C.x || A.y != B.y || B.x != D.x || C.y != D.y) {
-            throw new IllegalArgumentException("rect is not parallel to x an y axis");
+            throw new IllegalArgumentException("rect is not parallel to x an y axis:" + rect[0] + rect[1] + rect[2] + rect[3]);
         }
         rect[0] = A;
         rect[1] = B;
