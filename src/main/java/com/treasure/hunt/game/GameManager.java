@@ -136,4 +136,8 @@ public class GameManager {
     public boolean isFirstStepShown() {
         return stepView == 0;
     }
+
+    public void destroy() {
+        //TODO: clean up
+    }
 }
