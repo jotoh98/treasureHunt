@@ -4,9 +4,14 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.ObjectBinding;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import org.locationtech.jts.geom.Point;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -30,8 +35,8 @@ public class GameManager {
 
     private GameEngine gameEngine;
 
-    private int stepSim = 0;
-    private int stepView = 0;
+    private IntegerProperty stepSim = new SimpleIntegerProperty(0);
+    private IntegerProperty stepView = new SimpleIntegerProperty(0);
 
     /**
      * @param searcherClass   (Sub-)class of {@link Searcher}
@@ -54,24 +59,32 @@ public class GameManager {
 
         // Do initial move
         moves.add(gameEngine.init(JTSUtils.createPoint(0, 0)));
-        stepView++;
-        stepSim++;
+        stepView.set(stepView.get() + 1);
+        stepSim.set(stepSim.get() + 1);
     }
 
     public void addListener(ListChangeListener<? super Move> listChangeListener) {
         moves.addListener(listChangeListener);
     }
 
+    public ObjectBinding<Move> lastMove() {
+        return Bindings.createObjectBinding(() -> moves.get(stepView.get() - 1), stepView, moves);
+    }
+
+    public ObjectBinding<Point> lastTreasure() {
+        return Bindings.createObjectBinding(() -> moves.get(stepView.get() - 1).getTreasureLocation(), stepView, moves);
+    }
+
     /**
-     * Works only for stepSim <= stepView
+     * Works only for stepSim <= stepView 
      */
     public void next() {
-        if (stepView <= stepSim) {
-            if (stepView == stepSim) {
+        if (stepView.get() <= stepSim.get()) {
+            if (stepView.get() == stepSim.get()) {
                 moves.add(gameEngine.move());
-                stepSim++;
+                stepSim.set(stepSim.get() + 1);
             }
-            stepView++;
+            stepView.set(stepView.get() + 1);
         }
     }
 
@@ -94,8 +107,8 @@ public class GameManager {
      * Works only for stepView > 0
      */
     public void previous() {
-        if (stepView > 0) {
-            stepView--;
+        if (stepView.get() > 0) {
+            stepView.set(stepView.get() - 1);
         }
     }
 
@@ -112,8 +125,9 @@ public class GameManager {
      * @return The whole List of geometryItems of the gameHistory
      */
     public List<GeometryItem> getGeometryItems() {
-        return moves.subList(0, stepView).stream()
-                .flatMap(move -> move.getGeometryItems().stream()).collect(Collectors.toCollection(ArrayList::new));
+        return moves.subList(0, stepView.get()).stream()
+                .flatMap(move -> move.getGeometryItems().stream())
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
@@ -127,13 +141,13 @@ public class GameManager {
      * @return true if the shown step is the most up to date one
      */
     public boolean isSimStepLatest() {
-        return stepSim == stepView;
+        return stepSim.get() == stepView.get();
     }
 
     /**
      * @return true if the shown step is the first one
      */
     public boolean isFirstStepShown() {
-        return stepView == 0;
+        return stepView.get() == 0;
     }
 }

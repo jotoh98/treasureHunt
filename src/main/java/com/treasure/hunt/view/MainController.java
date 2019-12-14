@@ -8,25 +8,29 @@ import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.ReflectionUtils;
 import com.treasure.hunt.utils.Requires;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jfree.fx.FXGraphics2D;
 import org.locationtech.jts.math.Vector2D;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -52,26 +56,36 @@ public class MainController {
     public Button previousButton;
     public Button nextButton;
 
-    @FXML
-    private PointInspectorController pointInspectorController;
-    @FXML
-    private HashMap<String, PointInspectorController> pointInspectorControllers;
     private ToggleGroup leftToolbarToggle = new ToggleGroup();
     private ToggleGroup rightToolbarToggle = new ToggleGroup();
 
-    private GameManager gameManager;
+    @Getter
+    private final ObjectProperty<GameManager> gameManager = new SimpleObjectProperty<>();
 
     private PointTransformation transformation = new PointTransformation();
     private AdvancedShapeWriter shapeWriter = new AdvancedShapeWriter(transformation);
 
     private FXGraphics2D graphics2D;
 
+    private Vector2D dragStart = new Vector2D();
+    private Vector2D offsetBackup = new Vector2D();
+
+
+    private List<Widget<?, ?>> widgets = new ArrayList<>();
+
     public void initialize() {
         setListStringConverters();
         fillLists();
         addPromptBindings();
         bindStartButtonState();
-        resizeCanvasWithSplit();
+        makeCanvasResizable();
+        addTreasureInspector();
+    }
+
+    private void addTreasureInspector() {
+        Widget<PointInspectorController, GridPane> pointInspectorWidget = new Widget<>("/layout/pointInspector.fxml");
+        pointInspectorWidget.getController().init(gameManager.get().lastTreasure());
+        insertWidget("left", "Inspector", pointInspectorWidget.getComponent());
     }
 
     private void setListStringConverters() {
@@ -195,9 +209,11 @@ public class MainController {
         );
     }
 
-    private Vector2D dragStart = new Vector2D();
+    private void addWidget(String path) {
+        widgets.add(new Widget<>(path));
+    }
 
-    private void addWidget(String toolbarPosition, String buttonText, Pane widgetBox) {
+    private void insertWidget(String toolbarPosition, String buttonText, Pane widgetBox) {
         VBox toolbar = toolbarRight;
         Pane widgetWrapper = rightWidget;
 
@@ -206,8 +222,10 @@ public class MainController {
             widgetWrapper = leftWidget;
         }
 
-        addWidgetButton(toolbar, buttonText);
+        widgetBox.prefWidthProperty().bind(widgetWrapper.widthProperty());
         widgetWrapper.getChildren().setAll(widgetBox);
+
+        addWidgetButton(toolbar, buttonText);
     }
 
     private void addWidgetButton(VBox toolbar, String text) {
@@ -220,8 +238,6 @@ public class MainController {
         toolbar.getChildren().add(toggleButton);
     }
 
-    private Vector2D offsetBackup = new Vector2D();
-
     public void onStartButtonClicked() {
         Class<? extends Searcher> searcherClass = searcherList.getSelectionModel().getSelectedItem();
         Class<? extends Hider> hiderClass = hiderList.getSelectionModel().getSelectedItem();
@@ -232,7 +248,7 @@ public class MainController {
         assert gameEngineClass != null;
 
         try {
-            gameManager = new GameManager(searcherClass, hiderClass, gameEngineClass);
+            gameManager.set(new GameManager(searcherClass, hiderClass, gameEngineClass));
             graphics2D = new FXGraphics2D(canvas.getGraphicsContext2D());
             gameManager.addListener(change -> drawShapes());
             drawShapes();
@@ -243,25 +259,25 @@ public class MainController {
     }
 
     public void previousButtonClicked() {
-        gameManager.previous();
+        gameManager.get().previous();
         drawShapes();
-        if (gameManager.isFirstStepShown()) {
+        if (gameManager.get().isFirstStepShown()) {
             previousButton.setDisable(true);
         }
         nextButton.setDisable(false);
     }
 
     public void nextButtonClicked() {
-        gameManager.next();
+        gameManager.get().next();
         drawShapes();
-        if (gameManager.isGameFinished() && gameManager.isSimStepLatest()) {
+        if (gameManager.get().isGameFinished() && gameManager.get().isSimStepLatest()) {
             nextButton.setDisable(true);
             logLabel.setText("Game ended");
         }
         previousButton.setDisable(false);
     }
 
-    public void resizeCanvasWithSplit() {
+    public void makeCanvasResizable() {
         canvas.widthProperty().addListener((observableValue, number, t1) -> drawShapes());
 
         canvas.widthProperty().addListener((observableValue, number, t1) -> drawShapes());
@@ -271,9 +287,9 @@ public class MainController {
     }
 
     private void drawShapes() {
-        if (gameManager != null) {
+        if (gameManager.isNotNull().get()) {
             canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-            gameManager.getGeometryItems().forEach(geometryItem ->
+            gameManager.get().getGeometryItems().forEach(geometryItem ->
                     geometryItem.draw(graphics2D, shapeWriter)
             );
         }

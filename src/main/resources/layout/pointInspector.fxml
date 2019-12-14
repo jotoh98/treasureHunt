@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.String?>
-<GridPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-          minWidth="-Infinity" prefHeight="109.0" prefWidth="311.0" xmlns="http://javafx.com/javafx/11.0.1"
+<GridPane xmlns:fx="http://javafx.com/fxml/1" hgap="10.0" maxWidth="-Infinity" minHeight="-Infinity"
+          minWidth="-Infinity" vgap="10.0" xmlns="http://javafx.com/javafx/11.0.1"
           fx:controller="com.treasure.hunt.view.PointInspectorController">
     <columnConstraints>
         <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="24.0" minWidth="-Infinity" prefWidth="19.0"/>
         <ColumnConstraints hgrow="ALWAYS" maxWidth="354.0" minWidth="10.0"/>
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints/>
-        <RowConstraints maxHeight="229.0" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="28.5" minHeight="0.0" prefHeight="27.5"/>
+        <RowConstraints maxHeight="229.0" minHeight="31.0" prefHeight="32.0" vgrow="SOMETIMES"/>
         <RowConstraints maxHeight="308.0" vgrow="SOMETIMES"/>
     </rowConstraints>
     <children>
         <Label text="x:" GridPane.rowIndex="1"/>
         <Label text="y:" GridPane.rowIndex="2"/>
-        <TextField maxWidth="200.0" minWidth="50.0" GridPane.columnIndex="1" GridPane.rowIndex="1"
-                   fx:id="xCoordinateLabel"/>
-        <TextField fx:id="yCoordinateLabel" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        <TextField maxWidth="200.0" minWidth="50.0" GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                   GridPane.rowIndex="1" GridPane.valignment="CENTER" fx:id="xCoordinateLabel"/>
+        <TextField fx:id="yCoordinateLabel" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2"
+                   GridPane.valignment="CENTER"/>
+        <ComboBox fx:id="modeSelection" maxWidth="200.0" minWidth="60.0" promptText="Select scope"
+                  GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
     </children>
     <styleClass>
         <String fx:value="widget"/>
