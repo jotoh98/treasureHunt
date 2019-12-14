@@ -150,4 +150,8 @@ public class GameManager {
     public boolean isFirstStepShown() {
         return stepView.get() == 0;
     }
+
+    public void destroy() {
+        //TODO: clean up
+    }
 }
