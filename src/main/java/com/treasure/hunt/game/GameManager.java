@@ -59,8 +59,8 @@ public class GameManager {
 
         // Do initial move
         moves.add(gameEngine.init(JTSUtils.createPoint(0, 0)));
-        stepView.set(stepView.get() + 1);
-        stepSim.set(stepSim.get() + 1);
+        stepView.set(0);
+        stepSim.set(0);
     }
 
     public void addListener(ListChangeListener<? super Move> listChangeListener) {
@@ -68,11 +68,11 @@ public class GameManager {
     }
 
     public ObjectBinding<Move> lastMove() {
-        return Bindings.createObjectBinding(() -> moves.get(stepView.get() - 1), stepView, moves);
+        return Bindings.createObjectBinding(() -> moves.get(stepView.get()), stepView, moves);
     }
 
     public ObjectBinding<Point> lastTreasure() {
-        return Bindings.createObjectBinding(() -> moves.get(stepView.get() - 1).getTreasureLocation(), stepView, moves);
+        return Bindings.createObjectBinding(() -> moves.get(stepView.get()).getTreasureLocation(), stepView, moves);
     }
 
     /**
@@ -125,7 +125,7 @@ public class GameManager {
      * @return The whole List of geometryItems of the gameHistory
      */
     public List<GeometryItem> getGeometryItems() {
-        return moves.subList(0, stepView.get()).stream()
+        return moves.subList(0, stepView.get() + 1).stream()
                 .flatMap(move -> move.getGeometryItems().stream())
                 .collect(Collectors.toCollection(ArrayList::new));
     }
@@ -148,7 +148,7 @@ public class GameManager {
      * @return true if the shown step is the first one
      */
     public boolean isFirstStepShown() {
-        return stepView.get() == 0;
+        return stepView.isEqualTo(0).getValue();
     }
 
     public void destroy() {

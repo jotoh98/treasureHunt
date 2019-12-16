@@ -7,6 +7,7 @@ import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.hint.impl.CircleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.impl.*;
+import com.treasure.hunt.utils.JTSUtils;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -49,7 +50,7 @@ class GameEngineTest {
     @Test
     void moveOnTreasure() {
         GameEngine gameEngine = new GameEngine(new NaiveCircleSearcher(), new RevealingHider());
-        gameEngine.init();
+        gameEngine.init(JTSUtils.createPoint(0, 0));
         simulateSteps(gameEngine, 2);
         assertTrue(gameEngine.isFinished());
         assertTrue(gameEngine.treasurePos == gameEngine.searcherPos);

@@ -3,9 +3,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.Group?>
 <?import javafx.scene.layout.*?>
-<?import java.lang.*?>
+<?import java.lang.String?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" id="root" maxHeight="-Infinity" maxWidth="-Infinity"
             minHeight="-Infinity"
             minWidth="-Infinity" prefHeight="600.0" prefWidth="1080.0"
@@ -26,7 +25,8 @@
                     <children>
                         <Button fx:id="previousButton" disable="true" mnemonicParsing="false"
                                 onAction="#previousButtonClicked" text="Previous"/>
-                        <Button fx:id="nextButton" mnemonicParsing="false" onAction="#nextButtonClicked" text="Next"/>
+                        <Button fx:id="nextButton" disable="true" mnemonicParsing="false"
+                                onAction="#nextButtonClicked" text="Next"/>
                     </children>
                 </HBox>
             </children>
@@ -66,8 +66,7 @@
     <center>
         <SplitPane id="main-splitpane" fx:id="mainSplitPane" dividerPositions="0.2, 0.8" BorderPane.alignment="CENTER">
             <items>
-                <Pane id="leftWidgetPane" fx:id="leftWidget" prefHeight="200.0" prefWidth="200.0"
-                      styleClass="widget-pane"/>
+                <fx:include source="widgetBar.fxml" fx:id="leftWidgetBar" styleClass="widget-pane"/>
                 <Pane id="canvasPane" fx:id="canvasPane" prefHeight="200.0" prefWidth="200.0">
                     <children>
                         <Canvas
@@ -79,49 +78,14 @@
                         />
                     </children>
                 </Pane>
-                <Pane id="rightWidgetPane" fx:id="rightWidget" styleClass="widget-pane"/>
+                <fx:include source="widgetBar.fxml" fx:id="rightWidgetBar" styleClass="widget-pane"/>
             </items>
         </SplitPane>
     </center>
     <right>
-        <VBox fx:id="toolbarRight" BorderPane.alignment="CENTER">
-            <children>
-                <Button mnemonicParsing="false" wrapText="true">
-                    <graphic>
-                        <Group>
-                            <children>
-                                <Label text="Label"/>
-                            </children>
-                        </Group>
-                    </graphic>
-                    <padding>
-                        <Insets bottom="10.0" left="4.0" right="4.0" top="10.0"/>
-                    </padding>
-                </Button>
-            </children>
-            <styleClass>
-                <String fx:value="toolbar"/>
-                <String fx:value="right"/>
-            </styleClass>
-        </VBox>
+        <fx:include source="toolbar.fxml" fx:id="rightToolbar"/>
     </right>
     <left>
-        <VBox fx:id="toolbarLeft" BorderPane.alignment="CENTER">
-            <children>
-                <Button mnemonicParsing="false">
-                    <graphic>
-                        <Group>
-                            <children>
-                                <Label rotate="-90.0" text="Label"/>
-                            </children>
-                        </Group>
-                    </graphic>
-                </Button>
-            </children>
-            <styleClass>
-                <String fx:value="toolbar"/>
-                <String fx:value="left"/>
-            </styleClass>
-        </VBox>
+        <fx:include source="toolbar.fxml" fx:id="leftToolbar"/>
     </left>
 </BorderPane>

@@ -17,8 +17,8 @@
 }
 
 .toolbar,
-.toolbar .combo-box,
-.toolbar .combo-box .list-cell {
+.combo-box,
+.combo-box .list-cell {
     -fx-background-color: BACKGROUND_COLOR;
 }
 

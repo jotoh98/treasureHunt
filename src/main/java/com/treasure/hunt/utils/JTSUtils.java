@@ -60,6 +60,15 @@ public class JTSUtils {
                 .translate(angle.getCenter());
     }
 
+    public static Coordinate middleOfAngleHint(Coordinate left, Coordinate center, Coordinate right) {
+        final GeometryAngle angle = new GeometryAngle(GEOMETRY_FACTORY, center, left, right);
+        return angle
+                .rightVector()
+                .rotate(angle.extend() / 2)
+                .normalize()
+                .translate(angle.getCenter());
+    }
+
     /**
      * Utility to get a normalized {@link Vector2D} given by two {@link Coordinate}s.
      *
@@ -135,6 +144,14 @@ public class JTSUtils {
      * @return true, if {@code point} lies inside the given angle. false, otherwise
      */
     public static boolean pointInAngle(GeometryAngle geometryAngle, Coordinate coordinate) {
+        GeometryAngle treasureGeometryAngle = geometryAngle.copy();
+        treasureGeometryAngle.setLeft(coordinate);
+        double testExtend = treasureGeometryAngle.extend();
+        return testExtend >= 0 && testExtend <= geometryAngle.extend();
+    }
+
+    public static boolean pointInAngle(Coordinate center, Coordinate left, Coordinate right, Coordinate coordinate) {
+        final GeometryAngle geometryAngle = new GeometryAngle(GEOMETRY_FACTORY, center, left, right);
         GeometryAngle treasureGeometryAngle = geometryAngle.copy();
         treasureGeometryAngle.setLeft(coordinate);
         double testExtend = treasureGeometryAngle.extend();
