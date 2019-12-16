@@ -1,13 +1,13 @@
-package com.treasure.hunt.view;
+package com.treasure.hunt.view.widget;
 
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
+import javafx.scene.layout.Pane;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class Widget<C, P extends Parent> {
+public class Widget<C, P extends Pane> {
 
     @Getter
     private String resourcePath;

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.141"
+      fx:controller="com.treasure.hunt.view.widget.SaveAndLoadController">
+   <children>
+      <Button onAction="#save" mnemonicParsing="false" text="Save to file"/>
+      <Button onAction="#load" mnemonicParsing="false" text="Load"/>
+   </children>
+</HBox>

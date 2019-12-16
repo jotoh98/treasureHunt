@@ -8,6 +8,9 @@ import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.ReflectionUtils;
 import com.treasure.hunt.utils.Requires;
+import com.treasure.hunt.view.widget.PointInspectorController;
+import com.treasure.hunt.view.widget.SaveAndLoadController;
+import com.treasure.hunt.view.widget.Widget;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -21,7 +24,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
@@ -101,9 +103,12 @@ public class MainController {
     }
 
     private void addTreasureInspector() {
-        Widget<PointInspectorController, GridPane> pointInspectorWidget = new Widget<>("/layout/pointInspector.fxml");
-        pointInspectorWidget.getController().init(gameManager.get().lastTreasure());
+        Widget<PointInspectorController, ?> pointInspectorWidget = new Widget<>("/layout/pointInspector.fxml");
+        pointInspectorWidget.getController().init(gameManager);
         insertWidget(true, "Inspector", pointInspectorWidget.getComponent());
+        Widget<SaveAndLoadController, ?> saveAndLoadWidget = new Widget<>("/layout/saveAndLoad.fxml");
+        saveAndLoadWidget.getController().init(gameManager, logLabel);
+        insertWidget(true, "Save & Load", saveAndLoadWidget.getComponent());
     }
 
     private void setListStringConverters() {

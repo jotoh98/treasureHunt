@@ -75,6 +75,10 @@ public class GameManager {
         return Bindings.createObjectBinding(() -> moves.get(stepView.get()).getTreasureLocation(), stepView, moves);
     }
 
+    public ObjectBinding<Point> lastPoint() {
+        return Bindings.createObjectBinding(() -> moves.get(stepView.get()).getMovement().getEndPoint(), stepView, moves);
+    }
+
     /**
      * Works only for stepSim <= stepView 
      */

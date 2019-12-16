@@ -58,14 +58,19 @@
     -fx-text-fill: lightgrey;
 }
 
-.toolbar .button,
-.toolbar .toggle-button {
-    -fx-background-color: transparent;
+.button,
+.toggle-button {
     -fx-border-width: 0;
     -fx-background-radius: 0;
     -fx-cursor: hand;
     -fx-padding: 3pt 14pt;
     -fx-font-size: .9em;
+    -fx-background-color: DARKER_BACKGROUND;
+}
+
+.toolbar .button,
+.toolbar .toggle-button {
+    -fx-background-color: transparent;
 }
 
 .toolbar.top .button {
@@ -95,8 +100,8 @@
 }
 
 
-.toolbar .button:hover,
-.toolbar .toggle-button:hover {
+.button:hover,
+.toggle-button:hover {
     -fx-background-color: DARKER_BACKGROUND;
 }
 
