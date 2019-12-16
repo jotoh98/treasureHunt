@@ -1,26 +1,19 @@
-package com.treasure.hunt.strategy.hider.implementations;
+package com.treasure.hunt.strategy.hider.impl;
 
 
 import com.treasure.hunt.game.mods.hideandseek.HideAndSeekHider;
 import com.treasure.hunt.jts.Circle;
-
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
-import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.locationtech.jts.algorithm.LineIntersector;
 import org.locationtech.jts.algorithm.RobustLineIntersector;
 import org.locationtech.jts.geom.*;
-
 import org.locationtech.jts.geom.util.AffineTransformation;
-import org.slf4j.Logger;
 
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,8 +29,6 @@ import java.util.stream.Stream;
     possibleArea:           BoundingCircle \ {checkedArea + AreaExcludedByHints)
 
     The Algorithm tries to greedily maximize the possibleArea with each Hint generation
-
-
  */
 @Slf4j
 public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
@@ -93,7 +84,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
      * computes the intersection between a Ray / Half-Line  and a segment, afterwards projects it onto the segment vector if sufficiently close
      * so that the LineIntersector recognizes the intersection to be on the segment argument
      *
-     * @param line  interpreted as Line
+     * @param line    interpreted as Line
      * @param segment interpreted as Segment
      * @return
      */
@@ -103,7 +94,9 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         if (intersection == null) {
             return null;
         }
-        if(line.projectionFactor(intersection) < 0) return null;
+        if (line.projectionFactor(intersection) < 0) {
+            return null;
+        }
         if (intersection.distance(segment.p0) < eps) {
 
             return segment.p0;
@@ -240,10 +233,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         }
         sum += (coords[0].x - coords[coords.length - 1].x) * ((coords[0].y - coords[coords.length - 1].y));
 
-        if (sum >= 0) {
-            return true;
-        }
-        return false;
+        return sum >= 0;
     }
 
     /**
@@ -255,7 +245,6 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
     private AngleHint generateHint(int samples, Point origin) {
         final double twoPi = Math.PI * 2;
 
-
         AngleHint hint;
         double area;
         Geometry resultingGeom;
@@ -265,19 +254,19 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         AngleHint maxAngle = null;
 
         // if player out of bounding area use a use the line orthogonal to the line to the boundingArea Center
-        if(! boundingCircle.getObject().contains(origin)){
+        if (!boundingCircle.getObject().contains(origin)) {
             log.info("player not in bounding circle, giving generic hint");
             // use translation then rotation on Player Point by 90degree the translate back
             //AffineTransform orthAroundPlayer = new AffineTransform(0.0, -1.0 , 2 * origin.getX() , 1.0 , 0.0, -origin.getX() + origin.getY());
             AffineTransformation orthAroundPlayer = new AffineTransformation();
-            orthAroundPlayer.rotate(Math.toRadians(90),origin.getX(),origin.getY());
-            Coordinate orth = new Coordinate(0.0,0.0); //to middle of circle
-            orthAroundPlayer.transform(orth,orth);
+            orthAroundPlayer.rotate(Math.toRadians(90), origin.getX(), origin.getY());
+            Coordinate orth = new Coordinate(0.0, 0.0); //to middle of circle
+            orthAroundPlayer.transform(orth, orth);
 
-            Point right = gf.createPoint(new Coordinate(origin.getX() - (orth.x -origin.getX()), origin.getY() - (orth.y - origin.getY())));
+            Point right = gf.createPoint(new Coordinate(origin.getX() - (orth.x - origin.getX()), origin.getY() - (orth.y - origin.getY())));
             Point left = gf.createPoint(orth);
-            AngleHint ooBHint = new AngleHint(right,origin,left);
-            return  ooBHint;
+            AngleHint ooBHint = new AngleHint(right, origin, left);
+            return ooBHint;
 
         }
 
@@ -286,9 +275,8 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         int numberOfFeatures = 2; // feature 0: area ; feature 1: approximation to get C high
         double[][] features = new double[samples][numberOfFeatures];
 
-
         for (double i = 0; i < samples; i++) {
-            double angle = twoPi *  (i / samples);
+            double angle = twoPi * (i / samples);
             dX = Math.cos(angle);
             dY = Math.sin(angle);
             p1 = gf.createPoint(new Coordinate(origin.getX() + dX, origin.getY() + dY));
@@ -298,10 +286,10 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
 
             resultingGeom = integrateHint(hint);
 
-            features[(int)i][0] = resultingGeom.getArea();
+            features[(int) i][0] = resultingGeom.getArea();
 
             // calc closest Point to origin (the point which results in the biggest Constant C of :  C * minPath = actualPath )
-            Coordinate[] boundary =  resultingGeom.getCoordinates();
+            Coordinate[] boundary = resultingGeom.getCoordinates();
 
             if (features[(int) i][0] > maxArea) {
                 maxGeometry = resultingGeom;
@@ -325,9 +313,10 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
      * @param Player
      * @return the Point
      */
-    private Point getMaxConstant(Coordinate p1, Coordinate p2, Coordinate Player){
-            return gf.createPoint(p1);
+    private Point getMaxConstant(Coordinate p1, Coordinate p2, Coordinate Player) {
+        return gf.createPoint(p1);
     }
+
     /**
      * Returns the current Treasure Location
      * Always places it out of the agents reach until the remaining area
@@ -374,7 +363,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         hint.addAdditionalItem(possibleArea);
         hint.addAdditionalItem(checkedArea);
         hint.addAdditionalItem(boundingCircle);
-        log.info("given Hint: " +  hint.getAnglePointLeft() + ",  "+ hint.getCenter()+ ",  " + hint.getAnglePointRight());
+        log.info("given Hint: " + hint.getAnglePointLeft() + ",  " + hint.getCenter() + ",  " + hint.getAnglePointRight());
         log.info("whole circle area" + boundingCircle.getObject().getArea());
         log.info("possible area " + possibleArea.getObject().getArea());
         return hint;
@@ -386,7 +375,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
      */
     private void adaptBoundingCircle() {
 
-       double distToBoundary = boundingCircleSize - currentPlayersPosition.distance(gf.createPoint(new Coordinate(0.0,0.0)));
+        double distToBoundary = boundingCircleSize - currentPlayersPosition.distance(gf.createPoint(new Coordinate(0.0, 0.0)));
         if ((distToBoundary < circleExtensionDistance || !boundingCircle.getObject().contains(currentPlayersPosition)) && extensions < maxExtensions) {
             log.info("ext distance " + boundingCircle.getObject().isWithinDistance(currentPlayersPosition, circleExtensionDistance));
             log.info("containment " + !boundingCircle.getObject().contains(currentPlayersPosition));
@@ -394,10 +383,10 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
             boundingCircleSize += boundingCircleExtensionDelta;
             log.info("extending Bounding Area by " + boundingCircleSize + "to " + boundingCircleSize);
             boundingCircle = new GeometryItem<>(new Circle(startingPoint.getCoordinate(), boundingCircleSize, gf), GeometryType.BOUNDING_CIRCE);
-            possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{boundingCircle.getObject()}, gf),GeometryType.POSSIBLE_TREASURE);
+            possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{boundingCircle.getObject()}, gf), GeometryType.POSSIBLE_TREASURE);
             //now recompute all the intersections of Hints and the Bounding Circle
             for (AngleHint hint : givenHints) {
-                possibleArea = new GeometryItem<>(integrateHint(hint),GeometryType.POSSIBLE_TREASURE);
+                possibleArea = new GeometryItem<>(integrateHint(hint), GeometryType.POSSIBLE_TREASURE);
             }
             extensions++;
         }

@@ -1,17 +1,13 @@
 package com.treasure.hunt.strategy.hider.impl;
 
 import com.treasure.hunt.game.GameHistory;
-
-import com.treasure.hunt.strategy.hider.implementations.MaxAreaAngularHintStrategy;
-import org.junit.jupiter.api.BeforeEach;
-
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MaxAreaAngularHintStrategyTest {
     private MaxAreaAngularHintStrategy strat;
