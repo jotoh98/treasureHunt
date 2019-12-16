@@ -42,8 +42,9 @@ public enum GeometryType {
     CURRENT_RECTANGLE(true, "current rectangle"),
     RECTANGLE_SCAN(false, "rectangleScan"),
 
-    STANDARD(true, "")
+    STANDARD(true, ""),
 
+    BOUNDING_CIRCE(false,"bounding circle")
     // TODO add more..
     ;
 
