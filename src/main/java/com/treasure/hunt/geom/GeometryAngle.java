@@ -26,7 +26,7 @@ public class GeometryAngle extends LineString implements Shapeable {
      *
      * @param factory The GeometryFactory suggested to create the <code>Angle</code>
      */
-    public GeometryAngle(GeometryFactory factory, Coordinate center, Coordinate left, Coordinate right) {
+    public GeometryAngle(GeometryFactory factory, Coordinate right, Coordinate center, Coordinate left) {
         super(
                 factory.getCoordinateSequenceFactory()
                         .create(new Coordinate[]{center, left, right}),
@@ -114,6 +114,6 @@ public class GeometryAngle extends LineString implements Shapeable {
 
     @Override
     public GeometryAngle copy() {
-        return new GeometryAngle(factory, getCenter().copy(), getLeft().copy(), getRight().copy());
+        return new GeometryAngle(factory, getRight().copy(), getCenter().copy(), getLeft().copy());
     }
 }

@@ -41,9 +41,9 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
         }*/
 
         return new AngleHint(
+                new Coordinate(rightX, rightY),
                 searcherPos,
-                new Coordinate(leftX, leftY),
-                new Coordinate(rightX, rightY)
+                new Coordinate(leftX, leftY)
         );
     }
 }

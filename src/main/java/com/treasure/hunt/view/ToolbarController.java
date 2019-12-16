@@ -5,22 +5,25 @@ import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import lombok.Getter;
 
 public class ToolbarController {
 
     @FXML
     private VBox toolbar;
 
+    @Getter
     private ToggleGroup toggleGroup = new ToggleGroup();
 
     public void initialize() {
     }
 
-    public void bindWidgetBar(Pane widgetBar) {
+    public void bindWidgetBar(SplitPane.Divider divider, Pane widgetBar) {
         widgetBar.visibleProperty().bind(toggleGroup.selectedToggleProperty().isNotNull());
     }
 
