@@ -46,6 +46,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
     private Point currentPlayersPosition;
     private List<AngleHint> givenHints;
     private GeometryFactory gf;
+    private double walkedPathLength;
 
     @Getter
     private GeometryItem<Geometry> possibleArea;
@@ -252,10 +253,9 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
      * @return
      */
     private AngleHint generateHint(int samples, Point origin) {
-        double twoPi = Math.PI * 2;
+        final double twoPi = Math.PI * 2;
 
-        double dX, dY;
-        Point p1, p2;
+
         AngleHint hint;
         double area;
         Geometry resultingGeom;
@@ -271,7 +271,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
             //AffineTransform orthAroundPlayer = new AffineTransform(0.0, -1.0 , 2 * origin.getX() , 1.0 , 0.0, -origin.getX() + origin.getY());
             AffineTransformation orthAroundPlayer = new AffineTransformation();
             orthAroundPlayer.rotate(Math.toRadians(90),origin.getX(),origin.getY());
-            Coordinate orth = new Coordinate(0.0,0.0);
+            Coordinate orth = new Coordinate(0.0,0.0); //to middle of circle
             orthAroundPlayer.transform(orth,orth);
 
             Point right = gf.createPoint(new Coordinate(origin.getX() - (orth.x -origin.getX()), origin.getY() - (orth.y - origin.getY())));
@@ -280,6 +280,12 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
             return  ooBHint;
 
         }
+
+        double dX, dY;
+        Point p1, p2;
+        int numberOfFeatures = 2; // feature 0: area ; feature 1: approximation to get C high
+        double[][] features = new double[samples][numberOfFeatures];
+
 
         for (double i = 0; i < samples; i++) {
             double angle = twoPi *  (i / samples);
@@ -291,11 +297,15 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
             hint = new AngleHint(p1, origin, p2);
 
             resultingGeom = integrateHint(hint);
-            area = resultingGeom.getArea();
 
-            if (area > maxArea) {
+            features[(int)i][0] = resultingGeom.getArea();
+
+            // calc closest Point to origin (the point which results in the biggest Constant C of :  C * minPath = actualPath )
+            Coordinate[] boundary =  resultingGeom.getCoordinates();
+
+            if (features[(int) i][0] > maxArea) {
                 maxGeometry = resultingGeom;
-                maxArea = area;
+                maxArea = features[(int) i][0];
                 maxAngle = hint;
 
             }
@@ -307,7 +317,17 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         return maxAngle;
     }
 
-
+    /**
+     * Calculates the Point on the boundarySegment described by p1,p2 of the possible Area which results in the largest Constant of PathMin * C = PathActual
+     *
+     * @param p1
+     * @param p2
+     * @param Player
+     * @return the Point
+     */
+    private Point getMaxConstant(Coordinate p1, Coordinate p2, Coordinate Player){
+            return gf.createPoint(p1);
+    }
     /**
      * Returns the current Treasure Location
      * Always places it out of the agents reach until the remaining area
@@ -344,8 +364,8 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         for (int coordinateIndex = 0; coordinateIndex < movement.getPoints().size(); coordinateIndex++) {
             visitedCoordinates[coordinateIndex] = movement.getPoints().get(coordinateIndex).getObject().getCoordinate();
         }
-
         LineString walkedPath = gf.createLineString(visitedCoordinates);
+        this.walkedPathLength = walkedPath.getLength();
         Polygon checkedPoly = (Polygon) walkedPath.buffer(1.0);
         checkedArea = new GeometryItem<>(checkedPoly, GeometryType.NO_TREASURE);
 
