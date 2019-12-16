@@ -60,8 +60,8 @@ class JTSUtilsPointInAngleTest {
 
     private boolean inAngle1(Coordinate coordinate) {
         return JTSUtils.pointInAngle(
-                new Coordinate(1, 0),
                 new Coordinate(0, 0),
+                new Coordinate(1, 0),
                 new Coordinate(0, 1),
                 coordinate
         );

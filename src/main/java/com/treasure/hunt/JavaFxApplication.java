@@ -2,7 +2,6 @@ package com.treasure.hunt;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -13,8 +12,9 @@ public class JavaFxApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent load = FXMLLoader.load(getClass().getResource("/layout/main.fxml"));
-        Scene scene = new Scene(load);
+        final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/main.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+
         scene.getStylesheets().add(getClass().getResource("/layout/style.css").toExternalForm());
         stage.setScene(scene);
         stage.show();

@@ -13,9 +13,12 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.scene.Group;
+import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.GridPane;
@@ -29,8 +32,6 @@ import org.locationtech.jts.math.Vector2D;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,10 +44,22 @@ public class MainController {
     public Canvas canvas;
     public Pane canvasPane;
     public SplitPane mainSplitPane;
-    public Pane leftWidget;
-    public Pane rightWidget;
-    public VBox toolbarRight;
-    public VBox toolbarLeft;
+    public Pane leftWidgetBar;
+    public Pane rightWidgetBar;
+
+    public VBox rightToolbar;
+    public VBox leftToolbar;
+
+    @FXML
+    private WidgetBarController leftWidgetBarController;
+    @FXML
+    private WidgetBarController rightWidgetBarController;
+
+    @FXML
+    private ToolbarController rightToolbarController;
+
+    @FXML
+    private ToolbarController leftToolbarController;
 
     public ComboBox<Class<? extends Searcher>> searcherList;
     public ComboBox<Class<? extends Hider>> hiderList;
@@ -55,9 +68,6 @@ public class MainController {
     public Label logLabel;
     public Button previousButton;
     public Button nextButton;
-
-    private ToggleGroup leftToolbarToggle = new ToggleGroup();
-    private ToggleGroup rightToolbarToggle = new ToggleGroup();
 
     @Getter
     private final ObjectProperty<GameManager> gameManager = new SimpleObjectProperty<>();
@@ -70,22 +80,30 @@ public class MainController {
     private Vector2D dragStart = new Vector2D();
     private Vector2D offsetBackup = new Vector2D();
 
-
-    private List<Widget<?, ?>> widgets = new ArrayList<>();
-
     public void initialize() {
         setListStringConverters();
         fillLists();
         addPromptBindings();
         bindStartButtonState();
         makeCanvasResizable();
-        addTreasureInspector();
+        addToolbarStyleClasses();
+        bindWidgetBarVisibility();
+    }
+
+    private void bindWidgetBarVisibility() {
+        leftToolbarController.bindWidgetBar(leftWidgetBar);
+        rightToolbarController.bindWidgetBar(rightWidgetBar);
+    }
+
+    private void addToolbarStyleClasses() {
+        leftToolbar.getStyleClass().add("left");
+        rightToolbar.getStyleClass().add("right");
     }
 
     private void addTreasureInspector() {
         Widget<PointInspectorController, GridPane> pointInspectorWidget = new Widget<>("/layout/pointInspector.fxml");
         pointInspectorWidget.getController().init(gameManager.get().lastTreasure());
-        insertWidget("left", "Inspector", pointInspectorWidget.getComponent());
+        insertWidget(true, "Inspector", pointInspectorWidget.getComponent());
     }
 
     private void setListStringConverters() {
@@ -209,33 +227,18 @@ public class MainController {
         );
     }
 
-    private void addWidget(String path) {
-        widgets.add(new Widget<>(path));
+    private void insertWidget(boolean leftToolbar, String buttonText, Pane widgetBox) {
+        insertWidget(leftToolbar, buttonText, widgetBox, false);
     }
 
-    private void insertWidget(String toolbarPosition, String buttonText, Pane widgetBox) {
-        VBox toolbar = toolbarRight;
-        Pane widgetWrapper = rightWidget;
-
-        if (toolbarPosition.equals("left")) {
-            toolbar = toolbarLeft;
-            widgetWrapper = leftWidget;
-        }
-
-        widgetBox.prefWidthProperty().bind(widgetWrapper.widthProperty());
-        widgetWrapper.getChildren().setAll(widgetBox);
-
-        addWidgetButton(toolbar, buttonText);
-    }
-
-    private void addWidgetButton(VBox toolbar, String text) {
-        ToggleButton toggleButton = new ToggleButton("", new Group(new Label(text)));
-        if (toolbar.equals(toolbarLeft)) {
-            toggleButton.setToggleGroup(leftToolbarToggle);
+    private void insertWidget(boolean leftToolbar, String buttonText, Pane widgetBox, boolean selected) {
+        if (leftToolbar) {
+            leftToolbarController.addButton(buttonText, selected, widgetBox);
+            leftWidgetBarController.addWidget(widgetBox);
         } else {
-            toggleButton.setToggleGroup(rightToolbarToggle);
+            rightToolbarController.addButton(buttonText, selected, widgetBox);
+            rightWidgetBarController.addWidget(widgetBox);
         }
-        toolbar.getChildren().add(toggleButton);
     }
 
     public void onStartButtonClicked() {
@@ -247,15 +250,26 @@ public class MainController {
         assert hiderClass != null;
         assert gameEngineClass != null;
 
+        boolean initialize = gameManager.isNull().get();
+
         try {
             gameManager.set(new GameManager(searcherClass, hiderClass, gameEngineClass));
-            graphics2D = new FXGraphics2D(canvas.getGraphicsContext2D());
-            gameManager.addListener(change -> drawShapes());
-            drawShapes();
         } catch (Exception e) {
             log.error("Something important crashed", e);
             logLabel.setText("Could not create game");
         }
+
+        if (initialize) {
+            graphics2D = new FXGraphics2D(canvas.getGraphicsContext2D());
+            gameManager.addListener(change -> drawShapes());
+            initGameUI();
+        }
+    }
+
+    public void initGameUI() {
+        drawShapes();
+        addTreasureInspector();
+        nextButton.setDisable(false);
     }
 
     public void previousButtonClicked() {
@@ -288,11 +302,15 @@ public class MainController {
 
     private void drawShapes() {
         if (gameManager.isNotNull().get()) {
-            canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+            deleteShapes();
             gameManager.get().getGeometryItems().forEach(geometryItem ->
                     geometryItem.draw(graphics2D, shapeWriter)
             );
         }
+    }
+
+    private void deleteShapes() {
+        canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
     public void onCanvasClicked(MouseEvent mouseEvent) {

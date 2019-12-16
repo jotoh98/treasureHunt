@@ -8,6 +8,7 @@ import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.hint.impl.CircleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
+import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.Requires;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
@@ -74,6 +75,10 @@ public class GameEngine {
                 null,
                 new Movement(searcherPos),
                 treasurePos);
+    }
+
+    public Move init() {
+        return init(JTSUtils.createPoint(0, 0));
     }
 
     /**
