@@ -29,11 +29,13 @@ public enum GeometryType {
     OBSTACLE(false, "no treasure"),
     WAY_POINT(true, "no treasure"),
 
-    STANDARD(true, "")
+    STANDARD(true, ""),
 
+    BOUNDING_CIRCE(false,"bounding circle")
     // TODO add more..
     ;
 
+    @Getter
     private final String displayName;
     private boolean enabled;
     private boolean override;
