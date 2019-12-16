@@ -12,6 +12,12 @@ import org.locationtech.jts.geom.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A Move contains the essential elements of a move happened in the game.
+ * It may consist of a {@link Hint}, a {@link Movement} and the current treasure location.
+ *
+ * @author dorianreineccius
+ */
 @AllArgsConstructor
 @Getter
 public class Move {
@@ -22,6 +28,9 @@ public class Move {
     @Nullable
     private Point treasureLocation;
 
+    /**
+     * @return a list of all geometryItems of this.
+     */
     public List<GeometryItem> getGeometryItems() {
         List<GeometryItem> output = new ArrayList<>();
         if (hint != null) {

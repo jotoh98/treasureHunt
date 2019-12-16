@@ -11,12 +11,21 @@ import org.locationtech.jts.geom.Point;
 
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.angular2correctHalfPlaneHint;
 
+/**
+ * This implements the strategy from the paper:
+ * {@literal Treasure Hunt in the Plane with Angular Hints}
+ *
+ * @author Rank
+ */
 public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     int phase; //equals j in the paper. In phase i, the algorithm checks a rectangle with a side length of 2^i
     Point start,
             location,
             A, B, C, D;
 
+    /**
+     * {@inheritDoc}
+     */
     public void init(Point startPosition) {
         start = startPosition;
         location = (Point) startPosition.copy();

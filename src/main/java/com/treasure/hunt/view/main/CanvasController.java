@@ -1,6 +1,7 @@
 package com.treasure.hunt.view.main;
 
 import com.treasure.hunt.game.GameManager;
+import com.treasure.hunt.utils.SwingUtils;
 import com.treasure.hunt.view.in_game.impl.CanvasView;
 import com.treasure.hunt.view.swing.CanvasMouseListener;
 import lombok.Getter;
@@ -11,6 +12,9 @@ import java.awt.*;
 
 import static javax.swing.BorderFactory.createEmptyBorder;
 
+/**
+ * @author axel12, hassel
+ */
 public class CanvasController extends JFrame {
 
     @Getter
@@ -26,7 +30,6 @@ public class CanvasController extends JFrame {
     CanvasController(CanvasView canvasView, GameManager gameManager) {
         this.canvasView = canvasView;
         this.gameManager = gameManager;
-        gameManager.init(); //!
         CanvasMouseListener canvasMouseListener = new CanvasMouseListener(this);
         canvasView.addMouseMotionListener(canvasMouseListener);
         canvasView.addMouseListener(canvasMouseListener);
@@ -46,11 +49,33 @@ public class CanvasController extends JFrame {
         borderPanel.add(bottomControlPanel, BorderLayout.SOUTH);
         bottomControlPanel.setBackground(Color.gray);
         bottomControlPanel.setBorder(createEmptyBorder(10, 10, 10, 10));
+
+        Button prevButton = new Button();
         Button nextButton = new Button();
+        prevButton.setLabel("Previous");
+        prevButton.addActionListener(e -> {
+            gameManager.previous();
+            if (gameManager.isFirstStepShown()) {
+                prevButton.setEnabled(false);
+            }
+            nextButton.setEnabled(true);
+        });
+        bottomControlPanel.add(prevButton);
+
+        bottomControlPanel.add(new Box.Filler(new Dimension(2, 0), new Dimension(2, 0), new Dimension(2, 0)));
+
         nextButton.setLabel("Next");
-        nextButton.addActionListener(e -> gameManager.step());
+        nextButton.addActionListener(e -> {
+            gameManager.next();
+            if (gameManager.isGameFinished() && gameManager.isSimStepLatest()) {
+                nextButton.setEnabled(false);
+                SwingUtils.infoPopUp("The game ended", "Info");
+            }
+            prevButton.setEnabled(true);
+        });
         bottomControlPanel.add(nextButton);
-        bottomControlPanel.add(new Box.Filler(new Dimension(0, 0), new Dimension(Integer.MAX_VALUE, 0), new Dimension(0, Integer.MAX_VALUE)));
+
+        bottomControlPanel.add(new Box.Filler(new Dimension(0, 0), new Dimension(Integer.MAX_VALUE, 0), new Dimension(Integer.MAX_VALUE, 0)));
     }
 
     public void setOffset(Vector2D vector2D) {

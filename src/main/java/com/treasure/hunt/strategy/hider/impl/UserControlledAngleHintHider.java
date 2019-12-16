@@ -13,17 +13,19 @@ import org.locationtech.jts.geom.Point;
 
 import javax.swing.*;
 
-import static org.locationtech.jts.algorithm.Angle.angleBetweenOriented;
-
+/**
+ * This is a type of {@link HideAndSeekHider},
+ * which is controlled by the user.
+ *
+ * @author axel12
+ */
 public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint> {
     private Point treasureLocation;
 
-    @Override
-    public Point getTreasureLocation() {
-        treasureLocation = SwingUtils.promptForPoint("Provide a treasure position", "...");
-        return this.treasureLocation;
-    }
-
+    /**
+     * @param movement the {@link Movement}, the {@link com.treasure.hunt.strategy.searcher.Searcher} did last
+     * @return an {@link AngleHint} passed by the user
+     */
     @Override
     public AngleHint move(Movement movement) {
         AngleHint angleHint = createAngleDialog(movement.getEndPoint());
@@ -34,6 +36,19 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
         return angleHint;
     }
 
+    /**
+     * @return the current treasure location, passed by the user
+     */
+    @Override
+    public Point getTreasureLocation() {
+        treasureLocation = SwingUtils.promptForPoint("Provide a treasure position", "...");
+        return this.treasureLocation;
+    }
+
+    /**
+     * @param middle the points, where the searcher stands
+     * @return a {@link AngleHint}, passed by the user
+     */
     private AngleHint createAngleDialog(Point middle) {
         while (true) {
             JTextField xPositionTextField = new JTextField();
@@ -60,7 +75,12 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
                     double y2 = Double.parseDouble(yPositionTextField2.getText());
                     Point angleLeft = JTSUtils.GEOMETRY_FACTORY.createPoint(new Coordinate(x2, y2));
                     Point angleRight = JTSUtils.GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
-                    checkAngle(angleLeft, angleRight, middle);
+                    if (!JTSUtils.pointInAngle(angleRight, middle, angleLeft, treasureLocation)) {
+                        throw new UserControlledAngleHintHider.WrongAngleException("Treasure  Location not contained in angle");
+                    }
+                    if (!JTSUtils.angleDegreesSize(angleRight, middle, angleLeft, Math.PI)) {
+                        throw new UserControlledAngleHintHider.WrongAngleException("Angle is bigger 180 degrees");
+                    }
                     return new AngleHint(middle, angleLeft, angleRight);
                 } catch (NumberFormatException e) {
                     JOptionPane.showConfirmDialog(null, "Please enter valid numbers", "Error", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
@@ -71,17 +91,11 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
         }
     }
 
-    private void checkAngle(Point angleLeft, Point angleRight, Point middle) throws WrongAngleException {
-        double angle = angleBetweenOriented(angleRight.getCoordinate(), middle.getCoordinate(), angleLeft.getCoordinate());
-        if (angle >= Math.PI || angle < 0) {
-            throw new WrongAngleException("Angle is bigger 180 degrees");
-        }
-        double angleHintToTreasure = angleBetweenOriented(treasureLocation.getCoordinate(), middle.getCoordinate(), angleLeft.getCoordinate());
-        if (angleHintToTreasure > angle || angleHintToTreasure < 0) {
-            throw new WrongAngleException("Treasure  Location not contained in angle");
-        }
-    }
-
+    /**
+     * Defines an {@link Exception}, where the passed angle were wrong.
+     *
+     * @author axel12
+     */
     private static class WrongAngleException extends Exception {
         WrongAngleException(String message) {
             super(message);

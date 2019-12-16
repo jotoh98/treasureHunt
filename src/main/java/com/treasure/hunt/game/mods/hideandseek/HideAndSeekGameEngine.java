@@ -1,18 +1,21 @@
 package com.treasure.hunt.game.mods.hideandseek;
 
-import com.treasure.hunt.game.GameManager;
+import com.treasure.hunt.game.GameEngine;
+import com.treasure.hunt.game.Move;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.Requires;
-import com.treasure.hunt.view.in_game.View;
 
-import java.util.List;
-
+/**
+ * In this modification, the hider may reset the
+ * treasure location in each move.
+ *
+ * @author dorianreineccius
+ */
 @Requires(hider = HideAndSeekHider.class, searcher = HideAndSeekSearcher.class)
-public class HideAndSeekGameManager extends GameManager {
-
-    public HideAndSeekGameManager(Searcher searcher, Hider hider, List<View> view) {
-        super(searcher, hider, view);
+public class HideAndSeekGameEngine extends GameEngine {
+    public HideAndSeekGameEngine(Searcher searcher, Hider hider) {
+        super(searcher, hider);
     }
 
     /**
@@ -27,8 +30,8 @@ public class HideAndSeekGameManager extends GameManager {
      * After each move of the {@link HideAndSeekHider}, the treasure position
      * will be updated, but it could have not changed.
      */
-    public void step() {
-        super.step();
+    public Move move() {
         treasurePos = hider.getTreasureLocation();
+        return super.move();
     }
 }
