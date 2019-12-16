@@ -1,5 +1,7 @@
 package com.treasure.hunt.strategy.geom;
 
+import lombok.Getter;
+
 /**
  * This is conventions for GeometryItems,
  * how to display them.
