@@ -14,5 +14,7 @@
 .DS_Store
 
 # Maven
+.gradle/
+build/
 log/
-target/
+!.idea/runConfigurations/*
