@@ -1,7 +1,8 @@
-package com.treasure.hunt.strategy.hider.implementations;
+package com.treasure.hunt.strategy.hider.impl;
 
 import com.treasure.hunt.game.GameHistory;
 
+import com.treasure.hunt.strategy.hider.implementations.MaxAreaAngularHintStrategy;
 import org.junit.jupiter.api.BeforeEach;
 
 import org.locationtech.jts.geom.Coordinate;
