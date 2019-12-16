@@ -60,17 +60,18 @@
 
 .button,
 .toggle-button {
-    -fx-border-width: 0;
+    -fx-background-color: transparent;
     -fx-background-radius: 0;
     -fx-cursor: hand;
     -fx-padding: 3pt 14pt;
     -fx-font-size: .9em;
-    -fx-background-color: DARKER_BACKGROUND;
+    -fx-border-width: .5pt;
+    -fx-border-color: rgba(255, 255, 255, 0.27);
 }
 
 .toolbar .button,
 .toolbar .toggle-button {
-    -fx-background-color: transparent;
+    -fx-border-width: 0;
 }
 
 .toolbar.top .button {

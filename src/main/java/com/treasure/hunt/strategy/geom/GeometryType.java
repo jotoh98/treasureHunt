@@ -1,5 +1,7 @@
 package com.treasure.hunt.strategy.geom;
 
+import lombok.Getter;
+
 /**
  * This is conventions for GeometryItems,
  * how to display them.
@@ -29,11 +31,13 @@ public enum GeometryType {
     OBSTACLE(false, "no treasure"),
     WAY_POINT(true, "no treasure"),
 
-    STANDARD(true, "")
+    STANDARD(true, ""),
 
+    BOUNDING_CIRCE(false,"bounding circle")
     // TODO add more..
     ;
 
+    @Getter
     private final String displayName;
     private boolean enabled;
     private boolean override;

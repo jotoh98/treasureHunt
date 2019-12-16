@@ -17,6 +17,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -35,6 +36,7 @@ import org.reflections.Reflections;
 
 import java.lang.reflect.Modifier;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +48,7 @@ public class MainController {
     public Canvas canvas;
     public Pane canvasPane;
     public SplitPane mainSplitPane;
+
     public Pane leftWidgetBar;
     public Pane rightWidgetBar;
 
@@ -93,8 +96,37 @@ public class MainController {
     }
 
     private void bindWidgetBarVisibility() {
-        leftToolbarController.bindWidgetBar(leftWidgetBar);
-        rightToolbarController.bindWidgetBar(rightWidgetBar);
+        mainSplitPane.getItems().remove(0);
+        mainSplitPane.getItems().remove(1);
+
+        widgetBarVisibility(true, leftToolbarController);
+        widgetBarVisibility(false, rightToolbarController);
+    }
+
+    private void widgetBarVisibility(boolean left, ToolbarController toolbarController) {
+        final ObservableList<SplitPane.Divider> dividers = mainSplitPane.getDividers();
+        AtomicReference<Node> savedBar = new AtomicReference<>(leftWidgetBar);
+
+        if (!left) {
+            savedBar.set(rightWidgetBar);
+        }
+
+        final int readPosition = left ? 0 : mainSplitPane.getItems().size() - 1;
+
+        toolbarController.getToggleGroup().selectedToggleProperty().addListener((observableValue, oldItem, newItem) -> {
+            if (newItem == null && oldItem != null) {
+                savedBar.set(mainSplitPane.getItems().get(readPosition));
+                mainSplitPane.getItems().remove(readPosition);
+            } else if (newItem != null && oldItem == null) {
+                if (left) {
+                    mainSplitPane.getItems().add(0, savedBar.get());
+                    dividers.get(0).setPosition(.2);
+                } else {
+                    mainSplitPane.getItems().add(savedBar.get());
+                    dividers.get(readPosition - 1).setPosition(.8);
+                }
+            }
+        });
     }
 
     private void addToolbarStyleClasses() {

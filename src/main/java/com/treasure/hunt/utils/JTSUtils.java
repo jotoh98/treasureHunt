@@ -60,8 +60,8 @@ public class JTSUtils {
                 .translate(angle.getCenter());
     }
 
-    public static Coordinate middleOfAngleHint(Coordinate left, Coordinate center, Coordinate right) {
-        final GeometryAngle angle = new GeometryAngle(GEOMETRY_FACTORY, center, left, right);
+    public static Coordinate middleOfAngleHint(Coordinate right, Coordinate center, Coordinate left) {
+        final GeometryAngle angle = new GeometryAngle(GEOMETRY_FACTORY, right, center, left);
         return angle
                 .rightVector()
                 .rotate(angle.extend() / 2)
@@ -150,10 +150,12 @@ public class JTSUtils {
         return testExtend >= 0 && testExtend <= geometryAngle.extend();
     }
 
-    public static boolean pointInAngle(Coordinate center, Coordinate left, Coordinate right, Coordinate coordinate) {
-        final GeometryAngle geometryAngle = new GeometryAngle(GEOMETRY_FACTORY, center, left, right);
+    public static boolean pointInAngle(Coordinate right, Coordinate center, Coordinate left, Coordinate coordinate) {
+        final GeometryAngle geometryAngle = new GeometryAngle(GEOMETRY_FACTORY, right, center, left);
+
         GeometryAngle treasureGeometryAngle = geometryAngle.copy();
-        treasureGeometryAngle.setLeft(coordinate);
+        treasureGeometryAngle.setRight(coordinate);
+
         double testExtend = treasureGeometryAngle.extend();
         return testExtend >= 0 && testExtend <= geometryAngle.extend();
     }
