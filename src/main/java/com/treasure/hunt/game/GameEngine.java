@@ -92,6 +92,22 @@ public class GameEngine {
      * @return the {@link Move}, happened in this step.
      */
     public Move move() {
+        searcherMove();
+
+        if (located(lastMovement.getPoints())) {
+            finish();
+            return new Move(null, lastMovement, treasurePos);
+        } else {
+            lastHint = hider.move(lastMovement);
+        }
+        assert (lastHint != null);
+
+        verifyHint(lastHint, treasurePos);
+
+        return new Move(lastHint, lastMovement, treasurePos);
+    }
+
+    protected void searcherMove() {
         if (finished) {
             throw new IllegalStateException("Game is already finished");
         }
@@ -106,18 +122,8 @@ public class GameEngine {
         assert (lastMovement != null);
         assert (lastMovement.getPoints().size() != 0);
         verifyMovement(lastMovement, searcherPos);
+
         searcherPos = lastMovement.getEndPoint();
-
-        if (located(lastMovement.getPoints())) {
-            finish();
-            return new Move(null, lastMovement, treasurePos);
-        } else {
-            lastHint = hider.move(lastMovement);
-        }
-        assert (lastHint != null);
-        verifyHint(lastHint, treasurePos);
-
-        return new Move(lastHint, lastMovement, treasurePos);
     }
 
     /**
