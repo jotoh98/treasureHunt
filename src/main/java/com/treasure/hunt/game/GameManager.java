@@ -83,7 +83,7 @@ public class GameManager {
     }
 
     /**
-     * Works only for stepSim <= stepView 
+     * Works only for stepSim &le; stepView 
      */
     public void next() {
         if (stepView.get() <= stepSim.get()) {
@@ -111,7 +111,7 @@ public class GameManager {
     }
 
     /**
-     * Works only for stepView > 0
+     * Works only for stepView &gt; 0
      */
     public void previous() {
         if (stepView.get() > 0) {

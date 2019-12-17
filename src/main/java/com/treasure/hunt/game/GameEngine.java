@@ -57,6 +57,7 @@ public class GameEngine {
      * initialize searcher and hider.
      * initialize searcher and treasure positions.
      *
+     * @param p initial searcher position
      * @return a {@link Move}, since the initialization must be displayed.
      */
     public Move init(Point p) {
@@ -128,7 +129,7 @@ public class GameEngine {
 
     /**
      * @param movement                which gets verified
-     * @param initialSearcherPosition
+     * @param initialSearcherPosition initial searcher position
      * @throws IllegalArgumentException when the {@link Movement} is not valid.
      */
     protected void verifyMovement(Movement movement, Point initialSearcherPosition) {
@@ -154,8 +155,10 @@ public class GameEngine {
      * AngleHints must be correct
      * AngleHints must be of angle [0, 180] !?
      * CircleHints must contain each other !?
+     * Verifies whether the performed {@link Movement}' by the searcher and {@link Hint}'s from the hider followed the rules.
      *
-     * @return whether the performed {@link Movement}' by the searcher and {@link Hint}'s from the hider followed the rules.
+     * @param hint             hint to be verified
+     * @param treasurePosition treasure position
      */
     protected void verifyHint(Hint hint, Point treasurePosition) {
         if (hint instanceof AngleHint) {
@@ -173,6 +176,9 @@ public class GameEngine {
     }
 
     /**
+     * Tests, whether the searcher located the treasure on its path
+     *
+     * @param geometryItemsList searcher path
      * @return whether the searcher located the treasure successfully.
      */
     protected boolean located(List<GeometryItem<Point>> geometryItemsList) {

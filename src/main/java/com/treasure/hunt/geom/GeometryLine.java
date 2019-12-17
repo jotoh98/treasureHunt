@@ -6,7 +6,7 @@ public class GeometryLine extends Geometry {
     /**
      * Creates a new <code>Geometry</code> via the specified GeometryFactory.
      *
-     * @param factory
+     * @param factory the factory to construct the line with
      */
     public GeometryLine(GeometryFactory factory) {
         super(factory);
