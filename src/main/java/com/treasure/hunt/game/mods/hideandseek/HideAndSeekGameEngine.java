@@ -31,7 +31,20 @@ public class HideAndSeekGameEngine extends GameEngine {
      * will be updated, but it could have not changed.
      */
     public Move move() {
-        treasurePos = hider.getTreasureLocation();
-        return super.move();
+        searcherMove();
+
+        if (located(lastMovement.getPoints())) {
+            finish();
+            return new Move(null, lastMovement, treasurePos);
+        } else {
+            lastHint = hider.move(lastMovement);
+        }
+        assert (lastHint != null);
+
+        treasurePos = hider.getTreasureLocation(); // Difference between GameEngine and HideAndSeekGameEngine.
+
+        verifyHint(lastHint, treasurePos);
+
+        return new Move(lastHint, lastMovement, treasurePos);
     }
 }
