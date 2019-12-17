@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.String?>
@@ -67,17 +66,7 @@
         <SplitPane id="main-splitpane" fx:id="mainSplitPane" dividerPositions="0.2, 0.8" BorderPane.alignment="CENTER">
             <items>
                 <fx:include source="widgetBar.fxml" fx:id="leftWidgetBar" styleClass="widget-pane"/>
-                <Pane id="canvasPane" fx:id="canvasPane" prefHeight="200.0" prefWidth="200.0">
-                    <children>
-                        <Canvas
-                                id="gameCanvas"
-                                fx:id="canvas"
-                                onMouseDragged="#onCanvasDragged"
-                                onMousePressed="#onCanvasClicked"
-                                onScroll="#onCanvasZoom"
-                        />
-                    </children>
-                </Pane>
+                <fx:include source="canvas.fxml" fx:id="canvas"/>
                 <fx:include source="widgetBar.fxml" fx:id="rightWidgetBar" styleClass="widget-pane"/>
             </items>
         </SplitPane>
