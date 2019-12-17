@@ -16,7 +16,7 @@ public interface Searcher<T extends Hint> {
     /**
      * @param startPosition the searchers starting position, he will initialized/reset with.
      */
-    void reset(Point startPosition);
+    void init(Point startPosition);
 
     /**
      * Use this to perform a initial move, without a hint given.

@@ -19,11 +19,11 @@ public class BruteForceSearcher implements Searcher<Hint> {
     private int x = 0, y = 0;
 
     public void init(Point startPosition, double insecurity) {
-        reset(startPosition);
+        init(startPosition);
     }
 
     @Override
-    public void reset(Point startPosition) {
+    public void init(Point startPosition) {
         this.lineSegmentDistance = 0;
         this.x = (int) startPosition.getX();
         this.y = (int) startPosition.getY();

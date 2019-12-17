@@ -108,7 +108,7 @@ class GameEngineTest {
     }
 
     /**
-     * {@link GameEngine#located(List)} )} test.
+     * {@link GameEngine#located(List, Point)}  )} test.
      * In this test, the searcher moves <b>past</b> the treasure
      * with a minimum distance of 1.
      * searcher starts at (0,0) as usual.
@@ -120,10 +120,6 @@ class GameEngineTest {
         GameEngine gameEngine = new GameEngine(new NaiveCircleSearcher(), new Hider() {
 
             private Point treasurePos = JTSUtils.GEOMETRY_FACTORY.createPoint(new Coordinate(1, 1));
-
-            @Override
-            public void reset() {
-            }
 
             @Override
             public Point getTreasureLocation() {

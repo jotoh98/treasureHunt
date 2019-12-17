@@ -26,11 +26,6 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
     }
 
     @Override
-    public void reset() {
-        treasureLocation = null;
-    }
-
-    @Override
     public AngleHint move(Movement movement) {
         return createAngleDialog(movement.getEndPoint().getCoordinate());
     }

@@ -18,7 +18,7 @@ public class UserControlledHintSearcher implements HideAndSeekSearcher<Hint> {
      * {@inheritDoc}
      */
     @Override
-    public void reset(Point startPosition) {
+    public void init(Point startPosition) {
         currentPosition = startPosition;
     }
 

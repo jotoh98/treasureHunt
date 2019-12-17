@@ -3,7 +3,6 @@ package com.treasure.hunt.strategy.hider.impl;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
-import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
@@ -22,11 +21,6 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
     @Override
     public Point getTreasureLocation() {
         return treasurePos;
-    }
-
-    @Override
-    public void reset() {
-        treasurePos = JTSUtils.createPoint(Math.random() * 100, Math.random() * 100);
     }
 
     @Override

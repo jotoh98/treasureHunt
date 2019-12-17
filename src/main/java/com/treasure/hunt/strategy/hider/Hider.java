@@ -14,10 +14,6 @@ import org.locationtech.jts.geom.Point;
  * @author dorianreineccius
  */
 public interface Hider<T extends Hint> {
-    /**
-     * Use this to reset your hider.
-     */
-    void reset();
 
     /**
      * @param movement the {@link Movement}, the {@link Searcher} did last

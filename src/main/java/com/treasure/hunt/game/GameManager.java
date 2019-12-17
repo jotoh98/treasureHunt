@@ -25,12 +25,11 @@ import java.util.stream.Collectors;
  * @author dorianreineccius
  */
 public class GameManager {
-
+    private Searcher searcher;
+    private Hider hider;
     /**
      * The gameEngine to simulate the game on.
      */
-    private Searcher searcher;
-    private Hider hider;
     private GameEngine gameEngine;
 
     /**
@@ -59,9 +58,6 @@ public class GameManager {
         this.gameEngine = gameEngineClass
                 .getDeclaredConstructor(Searcher.class, Hider.class)
                 .newInstance(this.searcher, this.hider);
-
-        // initialize/reset gameEngine
-        reset();
     }
 
     public void addListener(ListChangeListener<? super Move> listChangeListener) {
@@ -154,21 +150,5 @@ public class GameManager {
      */
     public boolean isFirstStepShown() {
         return stepView.isEqualTo(0).getValue();
-    }
-
-    /**
-     * This resets the {@link GameEngine} and the corresponding {@link Searcher} and {@link Hider}.
-     */
-    public void reset() {
-        // reset
-        stepView.set(0);
-        stepSim.set(0);
-        moves.clear();
-
-        // reset gameEngine
-        gameEngine.reset();
-
-        // Do initial move
-        moves.add(gameEngine.init());
     }
 }

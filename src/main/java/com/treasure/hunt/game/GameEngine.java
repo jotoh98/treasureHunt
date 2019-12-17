@@ -105,8 +105,7 @@ public class GameEngine {
     public Move init(Point p) {
         // init
         searcherPos = p;
-        searcher.reset(searcherPos);
-        hider.reset();
+        searcher.init(searcherPos);
         treasurePos = hider.getTreasureLocation();
         if (treasurePos == null) {
             throw new IllegalArgumentException(hider + " gave an hint which is null.");
