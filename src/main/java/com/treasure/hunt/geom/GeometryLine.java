@@ -1,114 +1,57 @@
 package com.treasure.hunt.geom;
 
-import org.locationtech.jts.geom.*;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.LineSegment;
 
-public class GeometryLine extends Geometry {
+public class GeometryLine extends LineSegment {
+
     /**
-     * Creates a new <code>Geometry</code> via the specified GeometryFactory.
+     * Infinite lines have a positive infinite length.
      *
-     * @param factory
+     * @return positive infinite length
      */
-    public GeometryLine(GeometryFactory factory) {
-        super(factory);
+    @Override
+    public double getLength() {
+        return Double.POSITIVE_INFINITY;
     }
 
-    @Override
-    public String getGeometryType() {
-        return null;
+    /**
+     * Wrapper for segment length
+     *
+     * @return segment length
+     */
+    public double getSegmentLength() {
+        return super.getLength();
     }
 
+    /**
+     * Override the distance with the infinite-line distance function.
+     *
+     * @param p coordinate of the point to test the distance on
+     * @return distance between the infinite line and the point
+     */
     @Override
-    public Coordinate getCoordinate() {
-        return null;
+    public double distance(Coordinate p) {
+        return super.distancePerpendicular(p);
     }
 
-    @Override
-    public Coordinate[] getCoordinates() {
-        return new Coordinate[0];
+    /**
+     * Explicit wrapper for the segments distance if needed.
+     *
+     * @param p coordinate of the point to test the distance on
+     * @return distance between the line segment and the point
+     */
+    public double segmentDistance(Coordinate p) {
+        return super.distance(p);
     }
 
+    /**
+     * Renames the string representation of GeometryLine
+     *
+     * @return string representation of GeometryLine
+     */
     @Override
-    public int getNumPoints() {
-        return 0;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
-    public int getDimension() {
-        return 0;
-    }
-
-    @Override
-    public Geometry getBoundary() {
-        return null;
-    }
-
-    @Override
-    public int getBoundaryDimension() {
-        return 0;
-    }
-
-    @Override
-    public Geometry reverse() {
-        return null;
-    }
-
-    @Override
-    public boolean equalsExact(Geometry other, double tolerance) {
-        return false;
-    }
-
-    @Override
-    public void apply(CoordinateFilter filter) {
-
-    }
-
-    @Override
-    public void apply(CoordinateSequenceFilter filter) {
-
-    }
-
-    @Override
-    public void apply(GeometryFilter filter) {
-
-    }
-
-    @Override
-    public void apply(GeometryComponentFilter filter) {
-
-    }
-
-    @Override
-    protected Geometry copyInternal() {
-        return null;
-    }
-
-    @Override
-    public void normalize() {
-
-    }
-
-    @Override
-    protected Envelope computeEnvelopeInternal() {
-        return null;
-    }
-
-    @Override
-    protected int compareToSameClass(Object o) {
-        return 0;
-    }
-
-    @Override
-    protected int compareToSameClass(Object o, CoordinateSequenceComparator comp) {
-        return 0;
-    }
-
-    @Override
-    protected int getSortIndex() {
-        return 0;
+    public String toString() {
+        return String.format("GEOMETRYLINE(%s %s, %s %s)", p0.x, p0.y, p1.x, p1.y);
     }
 }

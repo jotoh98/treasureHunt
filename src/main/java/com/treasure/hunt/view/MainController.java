@@ -368,7 +368,7 @@ public class MainController {
     }
 
     public void onCanvasZoom(ScrollEvent scrollEvent) {
-        if (gameManager == null) {
+        if (gameManager.isNull().get()) {
             return;
         }
         Vector2D mouse = new Vector2D(scrollEvent.getX(), scrollEvent.getY());

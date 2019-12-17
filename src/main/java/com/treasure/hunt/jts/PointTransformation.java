@@ -34,6 +34,7 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
     @Getter
     @Setter
     Vector2D offset = new Vector2D(400, 400);
+
     @Setter
     @Getter
     private Vector2D boundarySize = new Vector2D(0, 0);
@@ -61,7 +62,7 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
 
 
     /**
-     * Transform method between {@link Coordinate}'s.
+     * Transform method between {@link Coordinate}s.
      *
      * @param src the coordinate we want to transform
      * @return transformed coordinate

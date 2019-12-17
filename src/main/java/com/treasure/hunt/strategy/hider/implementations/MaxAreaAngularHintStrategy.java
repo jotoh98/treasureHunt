@@ -2,7 +2,7 @@ package com.treasure.hunt.strategy.hider.implementations;
 
 
 import com.treasure.hunt.game.mods.hideandseek.HideAndSeekHider;
-import com.treasure.hunt.geom.Circle;
+import com.treasure.hunt.geom.Ellipse;
 import com.treasure.hunt.geom.GeometryAngle;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
@@ -44,7 +44,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
 
     @Getter
     private GeometryItem<Geometry> possibleArea;
-    private GeometryItem<Circle> boundingCircle;
+    private GeometryItem<Ellipse> boundingCircle;
     private GeometryItem<Polygon> checkedArea; //the area which has been visited by the player
 
     //Algorithm Parameters
@@ -72,7 +72,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         currentPlayersPosition = startingPoint;
         Coordinate py = startingPoint.getCoordinate();
 
-        Circle c = new Circle(startingPoint.getCoordinate(), boundingCircleSize, gf);
+        Ellipse c = new Ellipse(startingPoint.getCoordinate(), boundingCircleSize, gf);
 
         boundingCircle = new GeometryItem<>(c, GeometryType.BOUNDING_CIRCE);
         possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{c}, gf), GeometryType.POSSIBLE_TREASURE);
@@ -385,8 +385,8 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
             extensions++;
             boundingCircleSize += boundingCircleExtensionDelta;
             log.info("extending Bounding Area by " + boundingCircleSize + "to " + boundingCircleSize);
-            boundingCircle = new GeometryItem<>(new Circle(startingPoint.getCoordinate(), boundingCircleSize, gf), GeometryType.BOUNDING_CIRCE);
-            possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{boundingCircle.getObject()}, gf),GeometryType.POSSIBLE_TREASURE);
+            boundingCircle = new GeometryItem<>(new Ellipse(startingPoint.getCoordinate(), boundingCircleSize, gf), GeometryType.BOUNDING_CIRCE);
+            possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{boundingCircle.getObject()}, gf), GeometryType.POSSIBLE_TREASURE);
             //now recompute all the intersections of Hints and the Bounding Circle
             for (AngleHint hint : givenHints) {
                 possibleArea = new GeometryItem<>(integrateHint(hint),GeometryType.POSSIBLE_TREASURE);

@@ -11,13 +11,13 @@ import java.awt.geom.GeneralPath;
 
 /**
  * The Angle is an geometric representation of an angle at a certain position.
- * It is defined by 3 {@link Coordinate}'s ordered the named way in the {@link GeometryUtility#coordinates} array:
+ * It is defined by 3 {@link Coordinate}'s organized in the {@link LineString} in the following order:
  * <ul>
- *     <li>the center point,</li>
- *     <li>the left point and</li>
- *     <li>the right point.</li>
+ *     <li>the right point,</li>
+ *     <li>the center point and</li>
+ *     <li>the left point.</li>
  * </ul>
- * These points are understood in a counter-clockwise looking way from the center point.
+ * These points are named after their counter-clockwise occurrence.
  */
 public class GeometryAngle extends LineString implements Shapeable {
 
@@ -29,57 +29,111 @@ public class GeometryAngle extends LineString implements Shapeable {
     public GeometryAngle(GeometryFactory factory, Coordinate right, Coordinate center, Coordinate left) {
         super(
                 factory.getCoordinateSequenceFactory()
-                        .create(new Coordinate[]{center, left, right}),
+                        .create(new Coordinate[]{right, center, left}),
                 factory
         );
     }
 
+    /**
+     * Set a new {@link Coordinate} at a certain position in the angles {@link org.locationtech.jts.geom.CoordinateSequence}
+     *
+     * @param i position of new coordinate
+     * @param c new coordinate
+     */
     private void setCoordinate(int i, Coordinate c) {
         points.getCoordinate(i).setX(c.getX());
         points.getCoordinate(i).setY(c.getY());
     }
 
-    public Coordinate getCenter() {
+    /**
+     * Getter for right coordinate.
+     *
+     * @return right coordinate
+     */
+    public Coordinate getRight() {
         return points.getCoordinate(0);
     }
 
-    public void setCenter(Coordinate center) {
-        setCoordinate(0, center);
+    /**
+     * Setter for right coordinate.
+     */
+    public void setRight(Coordinate right) {
+        setCoordinate(0, right);
     }
 
-    public Coordinate getLeft() {
+    /**
+     * Getter for central coordinate.
+     *
+     * @return central coordinate
+     */
+    public Coordinate getCenter() {
         return points.getCoordinate(1);
     }
 
-    public void setLeft(Coordinate left) {
-        setCoordinate(1, left);
+    /**
+     * Setter for central coordinate.
+     */
+    public void setCenter(Coordinate center) {
+        setCoordinate(1, center);
     }
 
-    public Coordinate getRight() {
+    /**
+     * Getter for left coordinate.
+     *
+     * @return left coordinate
+     */
+    public Coordinate getLeft() {
         return points.getCoordinate(2);
     }
 
-    public void setRight(Coordinate right) {
-        setCoordinate(2, right);
+    /**
+     * Setter for left coordinate.
+     */
+    public void setLeft(Coordinate left) {
+        setCoordinate(2, left);
     }
 
-
+    /**
+     * Get the vector representing the right arm of the angle.
+     *
+     * @return vector of right arm
+     */
     public Vector2D rightVector() {
         return new Vector2D(getCenter(), getRight());
     }
 
+    /**
+     * Get the vector representing the left arm of the angle.
+     *
+     * @return vector of left arm
+     */
     public Vector2D leftVector() {
         return new Vector2D(getCenter(), getLeft());
     }
 
+    /**
+     * Get the angle between the x-axis and the angles right arm.
+     *
+     * @return angle between x-axis and right arm
+     */
     public double rightAngle() {
         return org.locationtech.jts.algorithm.Angle.angle(getCenter(), getRight());
     }
 
+    /**
+     * Get the angle between the x-axis and the angles left arm.
+     *
+     * @return angle between x-axis and left arm
+     */
     private double leftAngle() {
         return org.locationtech.jts.algorithm.Angle.angle(getCenter(), getLeft());
     }
 
+    /**
+     * Get the {@link GeometryAngle}'s angle between the right and the left arm.
+     *
+     * @return the angles extend
+     */
     public double extend() {
         double extend = leftAngle() - rightAngle();
         if (extend < 0) {
@@ -88,6 +142,14 @@ public class GeometryAngle extends LineString implements Shapeable {
         return extend;
     }
 
+    /**
+     * Implementation of the {@link Shapeable#toShape(AdvancedShapeWriter)} method.
+     * It draws lines from the center with a fixed length of 100 and an arc to signal
+     * the amount and direction of the extend.
+     *
+     * @param shapeWriter shape factory
+     * @return awt shape for a {@link GeometryAngle}
+     */
     @Override
     public Shape toShape(AdvancedShapeWriter shapeWriter) {
         GeneralPath generalPath = new GeneralPath();
@@ -100,11 +162,24 @@ public class GeometryAngle extends LineString implements Shapeable {
         return generalPath;
     }
 
+    /**
+     * Override the Geometry types name.
+     *
+     * @return geometry type name
+     */
     @Override
     public String getGeometryType() {
-        return "Angle";
+        return "GeometryAngle";
     }
 
+    /**
+     * Ask, whether a certain point lays in the view of the angle.
+     * To decide if that requirement is met, the point must lay in between the two angle arms
+     * and in the extends direction.
+     *
+     * @param coordinate the tested point
+     * @return whether the point lays in the view
+     */
     public boolean inView(Coordinate coordinate) {
         GeometryAngle testAngle = copy();
         testAngle.setRight(coordinate);
@@ -112,8 +187,31 @@ public class GeometryAngle extends LineString implements Shapeable {
         return testExtend >= 0 && testExtend <= extend();
     }
 
+    /**
+     * Copy convenience method.
+     *
+     * @return copied {@link GeometryAngle} instance
+     */
     @Override
     public GeometryAngle copy() {
         return new GeometryAngle(factory, getRight().copy(), getCenter().copy(), getLeft().copy());
+    }
+
+    /**
+     * Enhance the string representation of the {@link GeometryAngle}.
+     *
+     * @return string representation of the {@link GeometryAngle}
+     */
+    @Override
+    public String toString() {
+        final Coordinate right = getRight();
+        final Coordinate center = getCenter();
+        final Coordinate left = getLeft();
+        return String.format(
+                "GeometryAngle(right=[%s, %s], center=[%s, %s], left=[%s, %s]",
+                right.x, right.y,
+                center.x, center.y,
+                left.x, left.y
+        );
     }
 }

@@ -52,10 +52,6 @@ public enum GeometryType {
         this(displayName, enabledByDefault, false);
     }
 
-    public String getDisplayName() {
-        return this.displayName;
-    }
-
     public boolean isEnabled() {
         return this.enabled;
     }

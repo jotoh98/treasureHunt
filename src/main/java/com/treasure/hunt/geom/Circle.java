@@ -1,35 +1,33 @@
 package com.treasure.hunt.geom;
 
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.LinearRing;
-import org.locationtech.jts.geom.Polygon;
-import org.locationtech.jts.util.GeometricShapeFactory;
+import org.locationtech.jts.geom.Point;
 
-/**
- * Adding a Geometry based Circle to the jts Geometry suite.
- *
- * @author hassel
- * @see org.locationtech.jts.geom.Geometry
- */
-public class Circle extends Polygon {
-    double radius;
-
-    public Circle(Coordinate coordinate, double radius, int numOfPoints, GeometryFactory geometryFactory) {
-        super(null, null, geometryFactory);
-        GeometricShapeFactory geometricShapeFactory = new GeometricShapeFactory(geometryFactory);
-        geometricShapeFactory.setNumPoints(numOfPoints);
-        geometricShapeFactory.setCentre(coordinate);
-        geometricShapeFactory.setSize(radius * 2);
-        Polygon circle = geometricShapeFactory.createCircle();
-        this.shell = (LinearRing) circle.getExteriorRing();
+public class Circle extends Ellipse {
+    public Circle(Coordinate center, double radius, int numOfPoints, GeometryFactory factory) {
+        super(center, radius, radius, 0d, numOfPoints, factory);
     }
 
-    public Circle(Coordinate coordinate, double radius, GeometryFactory geometryFactory) {
-        this(coordinate, radius, 64, geometryFactory);
+    public Circle(Coordinate center, double radius, GeometryFactory factory) {
+        super(center, radius, radius, 0d, factory);
+
     }
 
-    public static Circle UnitCircle(Coordinate coordinate, GeometryFactory geometryFactory) {
-        return new Circle(coordinate, 1.0, geometryFactory);
+    /**
+     * Add more accurate covers methods for circle-context.
+     *
+     * @param g testing {@link Geometry} item
+     * @return whether Circle covers g or not
+     */
+    @Override
+    public boolean covers(Geometry g) {
+        if (g instanceof Point) {
+            return center.distance(g.getCoordinate()) <= radiusX;
+        }
+        return super.covers(g);
     }
+
+
 }
