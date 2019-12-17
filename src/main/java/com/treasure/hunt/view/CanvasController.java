@@ -3,19 +3,18 @@ package com.treasure.hunt.view;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.jts.AdvancedShapeWriter;
 import com.treasure.hunt.jts.PointTransformation;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
-import lombok.Setter;
 import org.jfree.fx.FXGraphics2D;
 import org.locationtech.jts.math.Vector2D;
 
 public class CanvasController {
     public Canvas canvas;
     public Pane canvasPane;
-    @Setter
     private ObjectProperty<GameManager> gameManager;
 
     private PointTransformation transformation = new PointTransformation();
@@ -42,15 +41,17 @@ public class CanvasController {
     }
 
     void drawShapes() {
-        if (gameManager == null) {
-            return;
-        }
-        if (gameManager.isNotNull().get()) {
-            deleteShapes();
-            gameManager.get().getGeometryItems(true).forEach(geometryItem ->
-                    geometryItem.draw(graphics2D, shapeWriter)
-            );
-        }
+        Platform.runLater(() -> {
+            if (gameManager == null) {
+                return;
+            }
+            if (gameManager.isNotNull().get()) {
+                deleteShapes();
+                gameManager.get().getGeometryItems(true).forEach(geometryItem ->
+                        geometryItem.draw(graphics2D, shapeWriter)
+                );
+            }
+        });
     }
 
     private void deleteShapes() {
@@ -92,5 +93,17 @@ public class CanvasController {
             transformation.setOffset(mouse.add(direction.multiply(newScale / oldScale)));
             drawShapes();
         }
+    }
+
+    public void setGameManager(ObjectProperty<GameManager> gameManager) {
+        this.gameManager = gameManager;
+        gameManager.addListener(observable -> {
+            if (this.gameManager.get() == null) {
+                return;
+            }
+            this.gameManager.get().getStepSim()
+                    .addListener(observable1 -> drawShapes());
+
+        });
     }
 }

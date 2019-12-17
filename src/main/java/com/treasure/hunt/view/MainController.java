@@ -6,6 +6,7 @@ import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.ReflectionUtils;
 import com.treasure.hunt.utils.Requires;
+import com.treasure.hunt.view.widget.BeatWidgetController;
 import com.treasure.hunt.view.widget.PointInspectorController;
 import com.treasure.hunt.view.widget.SaveAndLoadController;
 import com.treasure.hunt.view.widget.Widget;
@@ -71,7 +72,6 @@ public class MainController {
     private final ObjectProperty<GameManager> gameManager = new SimpleObjectProperty<>();
 
 
-
     public void initialize() {
         canvasController.setGameManager(gameManager);
         setListStringConverters();
@@ -121,13 +121,16 @@ public class MainController {
         rightToolbar.getStyleClass().add("right");
     }
 
-    private void addTreasureInspector() {
+    private void addWidgets() {
         Widget<PointInspectorController, ?> pointInspectorWidget = new Widget<>("/layout/pointInspector.fxml");
         pointInspectorWidget.getController().init(gameManager);
         insertWidget(true, "Inspector", pointInspectorWidget.getComponent());
         Widget<SaveAndLoadController, ?> saveAndLoadWidget = new Widget<>("/layout/saveAndLoad.fxml");
         saveAndLoadWidget.getController().init(gameManager, logLabel);
         insertWidget(true, "Save & Load", saveAndLoadWidget.getComponent());
+        Widget<BeatWidgetController, ?> beatWidget = new Widget<>("/layout/beatWidget.fxml");
+        beatWidget.getController().init(gameManager, logLabel);
+        insertWidget(true, "Game controls", beatWidget.getComponent());
     }
 
     private void setListStringConverters() {
@@ -291,13 +294,12 @@ public class MainController {
 
     public void initGameUI() {
         canvasController.drawShapes();
-        addTreasureInspector();
+        addWidgets();
         nextButton.setDisable(false);
     }
 
     public void previousButtonClicked() {
         gameManager.get().previous();
-        canvasController.drawShapes();
         if (gameManager.get().isFirstStepShown()) {
             previousButton.setDisable(true);
         }
@@ -305,11 +307,16 @@ public class MainController {
     }
 
     public void nextButtonClicked() {
-        gameManager.get().next();
-        canvasController.drawShapes();
         if (gameManager.get().isGameFinished() && gameManager.get().isSimStepLatest()) {
             nextButton.setDisable(true);
             logLabel.setText("Game ended");
+            return;
+        }
+        gameManager.get().next();
+        if (gameManager.get().isGameFinished() && gameManager.get().isSimStepLatest()) {
+            nextButton.setDisable(true);
+            logLabel.setText("Game ended");
+            return;
         }
         previousButton.setDisable(false);
     }

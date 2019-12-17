@@ -12,6 +12,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import lombok.Getter;
 import org.locationtech.jts.geom.Point;
 
 import java.lang.reflect.InvocationTargetException;
@@ -30,14 +31,16 @@ import java.util.stream.Stream;
  */
 public class GameManager {
 
+    private Thread beatThread;
+    private volatile boolean beatThreadRunning = true;
     /**
      * Contains the "gameHistory".
      */
-
     private ObservableList<Move> moves = FXCollections.observableArrayList();
 
     private GameEngine gameEngine;
 
+    @Getter
     private IntegerProperty stepSim = new SimpleIntegerProperty(0);
     private IntegerProperty stepView = new SimpleIntegerProperty(0);
 
@@ -126,6 +129,34 @@ public class GameManager {
         while (!gameEngine.isFinished()) {
             next();
         }
+    }
+
+    /**
+     * This simulates the whole game, until its finished.
+     *
+     * @param delay time between each move
+     */
+    public void beat(Integer delay) {
+        beatThreadRunning = true;
+        beatThread = new Thread(() -> {
+            while (!gameEngine.isFinished() && beatThreadRunning) {
+                next();
+                try {
+                    Thread.sleep(delay * 1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        beatThread.setDaemon(true);
+        beatThread.start();
+    }
+
+    /**
+     * Stops the Thread from beating.
+     */
+    public void stopBeat() {
+        beatThreadRunning = false;
     }
 
     /**
