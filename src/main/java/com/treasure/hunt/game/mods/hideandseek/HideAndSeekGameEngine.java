@@ -33,7 +33,7 @@ public class HideAndSeekGameEngine extends GameEngine {
     public Move move() {
         searcherMove();
 
-        if (located(lastMovement.getPoints())) {
+        if (located(lastMovement.getPoints(), treasurePos)) {
             finish();
             return new Move(null, lastMovement, treasurePos);
         } else {

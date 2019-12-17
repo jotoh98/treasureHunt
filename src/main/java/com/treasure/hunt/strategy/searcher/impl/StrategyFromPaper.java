@@ -26,8 +26,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
 
     /**
      * {@inheritDoc}
+     * // TODO: Check whether this method resets the Player correctly
      */
-    public void init(Point startPosition) {
+    public void reset(Point startPosition) {
         start = startPosition;
         location = (Point) startPosition.copy();
         phase = 1;

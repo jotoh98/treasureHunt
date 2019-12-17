@@ -11,6 +11,11 @@ import javax.swing.*;
 
 import static org.locationtech.jts.algorithm.Angle.angleBetweenOriented;
 
+/**
+ * This {@link com.treasure.hunt.strategy.hider.Hider} performs the moves, chosen by the user.
+ *
+ * @author axel12
+ */
 public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint> {
     private Point treasureLocation;
 
@@ -18,6 +23,11 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
     public Point getTreasureLocation() {
         treasureLocation = SwingUtils.promptForPoint("Provide a treasure position", "...");
         return this.treasureLocation;
+    }
+
+    @Override
+    public void reset() {
+        treasureLocation = null;
     }
 
     @Override

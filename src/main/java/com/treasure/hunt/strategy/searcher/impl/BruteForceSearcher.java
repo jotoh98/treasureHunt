@@ -7,17 +7,24 @@ import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Point;
 
+/**
+ * This {@link Searcher} runs in (by 1 growing) square-shaped circles around the
+ * initial spawnpoint (0,0), until he finds the treasure.
+ *
+ * @author dorianreineccius
+ */
 public class BruteForceSearcher implements Searcher<Hint> {
-    private int limit = 1;
+    private static final int LIMIT = 1;
     private int lineSegmentDistance = 0;
     private int x = 0, y = 0;
 
     public void init(Point startPosition, double insecurity) {
-        init(startPosition);
+        reset(startPosition);
     }
 
     @Override
-    public void init(Point startPosition) {
+    public void reset(Point startPosition) {
+        this.lineSegmentDistance = 0;
         this.x = (int) startPosition.getX();
         this.y = (int) startPosition.getY();
     }
@@ -25,7 +32,7 @@ public class BruteForceSearcher implements Searcher<Hint> {
     @Override
     public Movement move() {
         Movement movement = new Movement(JTSUtils.createPoint(x, y));
-        for (int i = 0; i < limit; i++) {
+        for (int i = 0; i < LIMIT; i++) {
             lineSegmentDistance++;
             // up
             y += lineSegmentDistance;

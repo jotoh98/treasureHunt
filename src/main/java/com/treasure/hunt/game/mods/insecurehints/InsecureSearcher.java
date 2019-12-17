@@ -14,11 +14,11 @@ import org.locationtech.jts.geom.Point;
 public interface InsecureSearcher<T extends Hint> extends Searcher<T> {
 
     /**
-     * Use this to initialize your searcher.
+     * Use this to initialize/reset your searcher.
      *
      * @param startPosition the position, the searcher starts on
      * @param insecurity    the probability, the {@link com.treasure.hunt.strategy.hint.Hint} of the {@link InsecureHider} is correct.
      */
     // TODO not sure, whether the searcher may know the insecurity
-    void init(Point startPosition, double insecurity);
+    void reset(Point startPosition, double insecurity);
 }

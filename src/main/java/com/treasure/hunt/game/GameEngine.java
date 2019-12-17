@@ -10,10 +10,10 @@ import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.Requires;
+import lombok.Getter;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Point;
-import org.slf4j.Logger;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,13 +27,13 @@ import java.util.List;
 public class GameEngine {
     public static final int HEIGHT = 200;
     public static final int WIDTH = 200;
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(GameEngine.class);
 
     protected final Searcher searcher;
     protected final Hider hider;
     /**
      * Tells, whether the game is done or not.
      */
+    @Getter
     protected boolean finished = false;
     protected Hint lastHint;
     protected Movement lastMovement;
@@ -54,20 +54,65 @@ public class GameEngine {
     }
 
     /**
+     * @return {@code true}, if the searcher located the treasure successfully. {@code false}, otherwise.
+     */
+    protected static boolean located(List<GeometryItem<Point>> geometryItemsList, Point treasurePosition) {
+        assert geometryItemsList.size() > 0;
+
+        // Did the searcher move ?
+        if (geometryItemsList.size() == 1) {
+            return geometryItemsList.get(0).getObject().distance(treasurePosition) <= 1;
+        } else {
+            Point lastPoint = null;
+            Point point;
+            for (GeometryItem<Point> geometryItem : geometryItemsList) {
+                point = geometryItem.getObject();
+                if (lastPoint != null) {
+                    // Check the gap of each move-segment and treasurePos
+                    LineSegment lineSegment = new LineSegment(new Coordinate(lastPoint.getX(), lastPoint.getY()),
+                            new Coordinate(point.getX(), point.getY()));
+                    // Usage of distancePerpendicular is completely incorrect here, since the line will be infinite
+                    if (lineSegment.distance(new Coordinate(treasurePosition.getX(), treasurePosition.getY())) <= 1) {
+                        return true;
+                    }
+                }
+                lastPoint = point;
+            }
+        }
+        return false;
+    }
+
+    public void reset() {
+        // reset variables
+        this.finished = false;
+        this.lastHint = null;
+        this.lastMovement = null;
+        this.searcherPos = null;
+        this.treasurePos = null;
+        this.firstMove = true;
+    }
+
+    public Move init() {
+        return init(JTSUtils.createPoint(0, 0));
+    }
+
+    /**
      * initialize searcher and hider.
      * initialize searcher and treasure positions.
      *
      * @return a {@link Move}, since the initialization must be displayed.
      */
     public Move init(Point p) {
+        // init
         searcherPos = p;
-        searcher.init(searcherPos);
-
+        searcher.reset(searcherPos);
+        hider.reset();
         treasurePos = hider.getTreasureLocation();
-        assert (treasurePos != null);
-
+        if (treasurePos == null) {
+            throw new IllegalArgumentException(hider + " gave an hint which is null.");
+        }
         // Check, whether treasure spawns in range of searcher
-        if (located(Collections.singletonList(new GeometryItem<>(searcherPos, GeometryType.WAY_POINT)))) {
+        if (located(Collections.singletonList(new GeometryItem<>(searcherPos, GeometryType.WAY_POINT)), treasurePos)) {
             finish();
         }
 
@@ -75,10 +120,6 @@ public class GameEngine {
                 null,
                 new Movement(searcherPos),
                 treasurePos);
-    }
-
-    public Move init() {
-        return init(JTSUtils.createPoint(0, 0));
     }
 
     /**
@@ -92,17 +133,15 @@ public class GameEngine {
      * @return the {@link Move}, happened in this step.
      */
     public Move move() {
+
         searcherMove();
 
-        if (located(lastMovement.getPoints())) {
+        if (located(lastMovement.getPoints(), treasurePos)) {
             finish();
             return new Move(null, lastMovement, treasurePos);
         } else {
-            lastHint = hider.move(lastMovement);
+            hiderMove();
         }
-        assert (lastHint != null);
-
-        verifyHint(lastHint, treasurePos);
 
         return new Move(lastHint, lastMovement, treasurePos);
     }
@@ -120,7 +159,7 @@ public class GameEngine {
             lastMovement = searcher.move(lastHint);
         }
         assert (lastMovement != null);
-        assert (lastMovement.getPoints().size() != 0);
+        assert (lastMovement.getPoints().size() > 0);
         verifyMovement(lastMovement, searcherPos);
 
         searcherPos = lastMovement.getEndPoint();
@@ -172,35 +211,12 @@ public class GameEngine {
         }
     }
 
-    /**
-     * @return whether the searcher located the treasure successfully.
-     */
-    protected boolean located(List<GeometryItem<Point>> geometryItemsList) {
-        assert geometryItemsList.size() > 0;
-
-        // Did the searcher move ?
-        if (geometryItemsList.size() == 1) {
-            return geometryItemsList.get(0).getObject().distance(treasurePos) <= 1;
-        } else {
-            Point lastPoint = null;
-            Point point;
-            for (GeometryItem<Point> geometryItem : geometryItemsList) {
-                point = geometryItem.getObject();
-                if (lastPoint == null) {
-                    lastPoint = point;
-                } else {
-                    // Check the gap of each move-segment and treasurePos
-                    LineSegment lineSegment = new LineSegment(new Coordinate(lastPoint.getX(), lastPoint.getY()),
-                            new Coordinate(point.getX(), point.getY()));
-                    // Usage of distancePerpendicular is completely incorrect here, since the line will be infinite
-                    if (lineSegment.distance(new Coordinate(treasurePos.getX(), treasurePos.getY())) <= 1) {
-                        return true;
-                    }
-                    lastPoint = point;
-                }
-            }
+    protected void hiderMove() {
+        lastHint = hider.move(lastMovement);
+        if (lastHint == null) {
+            throw new IllegalArgumentException(hider + " gave a hint which is null.");
         }
-        return false;
+        verifyHint(lastHint, treasurePos);
     }
 
     /**
@@ -208,9 +224,5 @@ public class GameEngine {
      */
     protected void finish() {
         finished = true;
-    }
-
-    public boolean isFinished() {
-        return this.finished;
     }
 }

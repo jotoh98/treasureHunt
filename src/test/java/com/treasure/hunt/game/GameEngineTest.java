@@ -10,7 +10,6 @@ import com.treasure.hunt.strategy.searcher.impl.*;
 import com.treasure.hunt.utils.JTSUtils;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
 import java.util.List;
@@ -120,8 +119,11 @@ class GameEngineTest {
     void narrowMove() {
         GameEngine gameEngine = new GameEngine(new NaiveCircleSearcher(), new Hider() {
 
-            private GeometryFactory gf = new GeometryFactory();
-            private Point treasurePos = gf.createPoint(new Coordinate(1, 1));
+            private Point treasurePos = JTSUtils.GEOMETRY_FACTORY.createPoint(new Coordinate(1, 1));
+
+            @Override
+            public void reset() {
+            }
 
             @Override
             public Point getTreasureLocation() {
@@ -130,7 +132,7 @@ class GameEngineTest {
 
             @Override
             public Hint move(Movement moves) {
-                CircleHint hint = new CircleHint(gf.createPoint(new Coordinate(0, 2)), 2);
+                CircleHint hint = new CircleHint(JTSUtils.GEOMETRY_FACTORY.createPoint(new Coordinate(0, 2)), 2);
                 return hint;
             }
         });

@@ -3,7 +3,6 @@ package com.treasure.hunt.game;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
-import com.treasure.hunt.utils.JTSUtils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.IntegerProperty;
@@ -28,13 +27,19 @@ import java.util.stream.Collectors;
 public class GameManager {
 
     /**
-     * Contains the "gameHistory".
+     * The gameEngine to simulate the game on.
      */
-
-    private ObservableList<Move> moves = FXCollections.observableArrayList();
-
+    private Searcher searcher;
+    private Hider hider;
     private GameEngine gameEngine;
 
+    /**
+     * Contains the "gameHistory".
+     */
+    private ObservableList<Move> moves = FXCollections.observableArrayList();
+    /**
+     * The properties, to view the current game state.
+     */
     private IntegerProperty stepSim = new SimpleIntegerProperty(0);
     private IntegerProperty stepView = new SimpleIntegerProperty(0);
 
@@ -49,18 +54,14 @@ public class GameManager {
      */
     public GameManager(Class<? extends Searcher> searcherClass, Class<? extends Hider> hiderClass, Class<? extends GameEngine> gameEngineClass)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-
-        Searcher newSearcher = searcherClass.getDeclaredConstructor().newInstance();
-        Hider newHider = hiderClass.getDeclaredConstructor().newInstance();
-
+        this.searcher = searcherClass.getDeclaredConstructor().newInstance();
+        this.hider = hiderClass.getDeclaredConstructor().newInstance();
         this.gameEngine = gameEngineClass
                 .getDeclaredConstructor(Searcher.class, Hider.class)
-                .newInstance(newSearcher, newHider);
+                .newInstance(this.searcher, this.hider);
 
-        // Do initial move
-        moves.add(gameEngine.init(JTSUtils.createPoint(0, 0)));
-        stepView.set(0);
-        stepSim.set(0);
+        // initialize/reset gameEngine
+        reset();
     }
 
     public void addListener(ListChangeListener<? super Move> listChangeListener) {
@@ -155,7 +156,19 @@ public class GameManager {
         return stepView.isEqualTo(0).getValue();
     }
 
-    public void destroy() {
-        //TODO: clean up
+    /**
+     * This reset the {@link GameEngine} and the corresponding {@link Searcher} and {@link Hider}.
+     */
+    public void reset() {
+        // reset
+        stepView.set(0);
+        stepSim.set(0);
+        moves.clear();
+
+        // reset gameEngine
+        gameEngine.reset();
+
+        // Do initial move
+        moves.add(gameEngine.init());
     }
 }

@@ -1,4 +1,4 @@
-package com.treasure.hunt.strategy.hider.implementations;
+package com.treasure.hunt.strategy.hider.impl;
 
 
 import com.treasure.hunt.game.mods.hideandseek.HideAndSeekHider;
@@ -32,6 +32,10 @@ import java.util.stream.Stream;
     The Algorithm tries to greedily maximize the possibleArea with each Hint generation
 
 
+ */
+
+/**
+ * @author kemna
  */
 @Slf4j
 public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
@@ -247,7 +251,6 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
     private AngleHint generateHint(int samples, Point origin) {
         final double twoPi = Math.PI * 2;
 
-
         AngleHint hint;
         double area;
         Geometry resultingGeom;
@@ -277,7 +280,6 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         Point p1, p2;
         int numberOfFeatures = 2; // feature 0: area ; feature 1: approximation to get C high
         double[][] features = new double[samples][numberOfFeatures];
-
 
         for (double i = 0; i < samples; i++) {
             double angle = twoPi *  (i / samples);
@@ -318,8 +320,9 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
      * @return the Point
      */
     private Point getMaxConstant(Coordinate p1, Coordinate p2, Coordinate Player){
-            return gf.createPoint(p1);
+        return gf.createPoint(p1);
     }
+
     /**
      * Returns the current Treasure Location
      * Always places it out of the agents reach until the remaining area
@@ -344,6 +347,11 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         }
         assert false; // please never get here **praying**
         return currentPlayersPosition;
+    }
+
+    @Override
+    public void reset() {
+        // TODO implement
     }
 
     @Override
@@ -378,7 +386,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
      */
     private void adaptBoundingCircle() {
 
-       double distToBoundary = boundingCircleSize - currentPlayersPosition.distance(gf.createPoint(new Coordinate(0.0,0.0)));
+        double distToBoundary = boundingCircleSize - currentPlayersPosition.distance(gf.createPoint(new Coordinate(0.0,0.0)));
         if ((distToBoundary < circleExtensionDistance || !boundingCircle.getObject().contains(currentPlayersPosition)) && extensions < maxExtensions) {
             log.info("ext distance " + boundingCircle.getObject().isWithinDistance(currentPlayersPosition, circleExtensionDistance));
             log.info("containment " + !boundingCircle.getObject().contains(currentPlayersPosition));

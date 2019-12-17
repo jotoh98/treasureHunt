@@ -7,8 +7,7 @@ import com.treasure.hunt.utils.SwingUtils;
 import org.locationtech.jts.geom.Point;
 
 /**
- * This is a type of {@link HideAndSeekSearcher},
- * which is controlled by the user.
+ * This {@link com.treasure.hunt.strategy.searcher.Searcher} performs the moves, chosen by the user.
  *
  * @author axel12
  */
@@ -19,7 +18,7 @@ public class UserControlledHintSearcher implements HideAndSeekSearcher<Hint> {
      * {@inheritDoc}
      */
     @Override
-    public void init(Point startPosition) {
+    public void reset(Point startPosition) {
         currentPosition = startPosition;
     }
 
