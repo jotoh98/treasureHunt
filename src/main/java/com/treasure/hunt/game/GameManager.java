@@ -1,6 +1,7 @@
 package com.treasure.hunt.game;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
@@ -16,7 +17,9 @@ import org.locationtech.jts.geom.Point;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * The GameManager stores every {@link Move}-objects, happened in the game,
@@ -126,12 +129,30 @@ public class GameManager {
     }
 
     /**
+     * @param excludeOverrideItems if true Geometry items that are set to be overridable only the last item is returned
      * @return The whole List of geometryItems of the gameHistory
      */
-    public List<GeometryItem> getGeometryItems() {
-        return moves.subList(0, stepView.get() + 1).stream()
+    public List<GeometryItem> getGeometryItems(Boolean excludeOverrideItems) {
+        ArrayList<GeometryItem> geometryItems = moves.subList(0, stepView.get() + 1).stream()
                 .flatMap(move -> move.getGeometryItems().stream())
                 .collect(Collectors.toCollection(ArrayList::new));
+        if (!excludeOverrideItems) {
+            return geometryItems;
+        }
+        Map<GeometryType, List<GeometryItem>> itemsByType = geometryItems.stream()
+                .collect(Collectors.groupingBy(GeometryItem::getGeometryType));
+        List<GeometryItem> filterList = itemsByType.keySet()
+                .stream()
+                .flatMap(type -> {
+                    List<GeometryItem> itemsOfType = itemsByType.get(type);
+                    if (!type.isOverride()) {
+                        return itemsOfType.stream();
+                    } else {
+                        return Stream.of(itemsOfType.get(itemsOfType.size() - 1));
+                    }
+                })
+                .collect(Collectors.toList());
+        return filterList;
     }
 
     /**
