@@ -193,8 +193,6 @@ public class GameEngine {
      * AngleHints must be correct
      * AngleHints must be of angle [0, 180] !?
      * CircleHints must contain each other !?
-     *
-     * @return whether the performed {@link Movement}' by the searcher and {@link Hint}'s from the hider followed the rules.
      */
     protected void verifyHint(Hint hint, Point treasurePosition) {
         if (hint instanceof AngleHint) {

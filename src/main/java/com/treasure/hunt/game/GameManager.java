@@ -157,7 +157,7 @@ public class GameManager {
     }
 
     /**
-     * This reset the {@link GameEngine} and the corresponding {@link Searcher} and {@link Hider}.
+     * This resets the {@link GameEngine} and the corresponding {@link Searcher} and {@link Hider}.
      */
     public void reset() {
         // reset
