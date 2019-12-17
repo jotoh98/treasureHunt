@@ -11,7 +11,8 @@ public interface InsecureHider<T extends Hint> extends Hider<T> {
     /**
      * Use this to initialize your hider.
      *
-     * @param insecurity the probability, the given hint is correct. It must fulfill 0<=insecurity<=1
+     * @param insecurity the probability, the given hint is correct.
+     *                   It must fulfill 0 &le; insecurity &le; 1
      */
     void init(double insecurity);
 }

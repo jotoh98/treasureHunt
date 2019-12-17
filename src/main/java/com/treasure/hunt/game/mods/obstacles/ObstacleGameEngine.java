@@ -20,10 +20,8 @@ public class ObstacleGameEngine extends GameEngine {
     }
 
     /**
-     * Checks, whether the {@link Searcher} followed the rules.
+     * Checks, whether the {@link Searcher} followed the rules and whether the game is consistent.
      * TODO Check, whether the searcher passed a wall.
-     *
-     * @return whether the game is consistent.
      */
     @Override
     protected void verifyMovement(Movement movement, Point initialSearcherPosition) {

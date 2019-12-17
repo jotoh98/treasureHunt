@@ -16,12 +16,10 @@ import java.awt.geom.Point2D;
 
 /**
  * Enhances the jts {@link ShapeWriter} with handling the render process for {@link Shapeable} instances.
- * In general, it shares a {@link PointTransformation} object with
- * {@link com.treasure.hunt.view.in_game.impl.CanvasView} to translate the {@link Shapeable}'s
+ * In general, it shares a {@link PointTransformation} object to translate the {@link Shapeable}'s
  * Geometry into translated and scaled awt {@link Shape}s.
  *
  * @version 1.0
- * @see com.treasure.hunt.view.in_game.impl.CanvasView
  */
 @Slf4j
 public class AdvancedShapeWriter extends ShapeWriter {

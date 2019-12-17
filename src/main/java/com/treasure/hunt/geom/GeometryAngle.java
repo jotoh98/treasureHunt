@@ -25,6 +25,9 @@ public class GeometryAngle extends LineString implements Shapeable {
      * Creates a new <code>Geometry</code> via the specified GeometryFactory.
      *
      * @param factory The GeometryFactory suggested to create the <code>Angle</code>
+     * @param right   the right angles arm end point
+     * @param center  the central point of the angle
+     * @param left    the left angles arm end point
      */
     public GeometryAngle(GeometryFactory factory, Coordinate right, Coordinate center, Coordinate left) {
         super(
