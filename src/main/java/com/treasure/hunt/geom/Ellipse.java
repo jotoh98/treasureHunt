@@ -91,9 +91,8 @@ public class Ellipse extends Polygon {
      * @param radius new radius
      */
     public void setRadius(double radius) {
-        radiusX = radius;
-        radiusY = radius;
-        updateShell();
+        setRadiusX(radius);
+        setRadiusY(radius);
     }
 
     /**
