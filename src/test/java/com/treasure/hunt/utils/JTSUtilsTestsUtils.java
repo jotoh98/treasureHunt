@@ -5,7 +5,8 @@ import org.locationtech.jts.geom.Coordinate;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * An utility class for JTSUtilsTest classes.
+ * An utility class for testing whether Points are approximately equal,
+ * with an error tolerance of {@link JTSUtilsTestsUtils#ROUNDING_ERROR}.
  *
  * @author dorianreineccius
  */

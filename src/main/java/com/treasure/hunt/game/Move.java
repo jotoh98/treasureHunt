@@ -13,6 +13,11 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
+ * This class contains all essential objects happened in a move.
+ * The {@link Movement}, the {@link com.treasure.hunt.strategy.searcher.Searcher} did.
+ * The {@link Hint}, the {@link com.treasure.hunt.strategy.hider.Hider} gave.
+ * The current treasure location, specified by the {@link com.treasure.hunt.strategy.hider.Hider} given as {@link Point}.
+ *
  * @author dorianreineccius
  */
 @AllArgsConstructor

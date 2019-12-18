@@ -11,6 +11,7 @@ import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.Requires;
 import lombok.Getter;
+import lombok.Setter;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Point;
@@ -34,6 +35,7 @@ public class GameEngine {
      * Tells, whether the game is done or not.
      */
     @Getter
+    @Setter
     protected boolean finished = false;
     protected Hint lastHint;
     protected Movement lastMovement;
@@ -103,7 +105,7 @@ public class GameEngine {
         }
         // Check, whether treasure spawns in range of searcher
         if (located(Collections.singletonList(new GeometryItem<>(searcherPos, GeometryType.WAY_POINT)), treasurePos)) {
-            finish();
+            setFinished(true);
         }
 
         return new Move(
@@ -127,7 +129,7 @@ public class GameEngine {
         searcherMove();
 
         if (located(lastMovement.getPoints(), treasurePos)) {
-            finish();
+            setFinished(true);
             return new Move(null, lastMovement, treasurePos);
         } else {
             hiderMove();
@@ -136,12 +138,25 @@ public class GameEngine {
         return new Move(lastHint, lastMovement, treasurePos);
     }
 
+    /**
+     * Let the {@link GameEngine#hider} make his move.
+     */
+    protected void hiderMove() {
+        lastHint = hider.move(lastMovement);
+        if (lastHint == null) {
+            throw new IllegalArgumentException(hider + " gave a hint which is null.");
+        }
+        verifyHint(lastHint, treasurePos);
+    }
+
+    /**
+     * Let the {@link GameEngine#searcher} make his move.
+     */
     protected void searcherMove() {
         if (finished) {
             throw new IllegalStateException("Game is already finished");
         }
 
-        // Searcher moves
         if (firstMove) {
             firstMove = false;
             lastMovement = searcher.move();
@@ -201,20 +216,5 @@ public class GameEngine {
                         "but was " + ((CircleHint) hint).getCenter().distance(treasurePosition));
             }
         }
-    }
-
-    protected void hiderMove() {
-        lastHint = hider.move(lastMovement);
-        if (lastHint == null) {
-            throw new IllegalArgumentException(hider + " gave a hint which is null.");
-        }
-        verifyHint(lastHint, treasurePos);
-    }
-
-    /**
-     * Sets {@link GameEngine#finished} to true.
-     */
-    protected void finish() {
-        finished = true;
     }
 }

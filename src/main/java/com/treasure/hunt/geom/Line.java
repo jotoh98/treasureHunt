@@ -7,6 +7,9 @@ import org.locationtech.jts.geom.LineSegment;
 
 import java.awt.*;
 
+/**
+ * @author hassel
+ */
 public class Line extends Ray {
     public Line(Coordinate p0, Coordinate p1) {
         super(p0, p1);

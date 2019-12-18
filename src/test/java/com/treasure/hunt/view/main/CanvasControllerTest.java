@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 class CanvasControllerTest {
 
     @Test
-    void uiWorkzFine() {
+    void uiWorksFine() {
     }
 
 }

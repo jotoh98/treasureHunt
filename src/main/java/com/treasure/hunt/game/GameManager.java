@@ -128,7 +128,7 @@ public class GameManager {
     }
 
     /**
-     * This simulates the whole game, until its finished.
+     * This simulates the whole game in the thread {@link GameManager#beatThread}, until its finished.
      *
      * @param delay time between each move
      */
@@ -149,7 +149,7 @@ public class GameManager {
     }
 
     /**
-     * Stops the Thread from beating.
+     * Stops the thread {@link GameManager#beatThread} from beating.
      */
     public void stopBeat() {
         beatThreadRunning = false;

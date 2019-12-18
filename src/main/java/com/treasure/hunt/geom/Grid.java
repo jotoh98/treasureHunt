@@ -9,6 +9,9 @@ import java.awt.*;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
+/**
+ * @author hassel
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 public class Grid implements Shapeable {

@@ -5,6 +5,9 @@ import org.locationtech.jts.math.Vector2D;
 
 import java.util.Arrays;
 
+/**
+ * @author Hassel
+ */
 public abstract class GeometryUtility extends Geometry implements Shapeable {
 
     Coordinate[] coordinates;
