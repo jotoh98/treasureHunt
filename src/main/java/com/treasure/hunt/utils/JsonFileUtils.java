@@ -13,6 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
+/**
+ * @author axel1200
+ */
 public class JsonFileUtils {
     private static final Gson GSON;
 

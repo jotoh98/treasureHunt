@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 
 /**
- * @author hassel
+ * @author jotoh
  */
 public class ReflectionUtils {
     public static Class interfaceGenericsClass(Class baseClass) {

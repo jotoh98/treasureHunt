@@ -5,6 +5,9 @@ import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.math.Vector2D;
 
+/**
+ * @author Rank, dorianreineccius, jotoh, axel12
+ */
 public class JTSUtils {
     public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 

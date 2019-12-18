@@ -12,6 +12,9 @@ import javafx.scene.layout.Pane;
 import org.jfree.fx.FXGraphics2D;
 import org.locationtech.jts.math.Vector2D;
 
+/**
+ * @author axel12
+ */
 public class CanvasController {
     public Canvas canvas;
     public Pane canvasPane;

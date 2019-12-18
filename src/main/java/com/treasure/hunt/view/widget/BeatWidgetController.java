@@ -8,6 +8,9 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author dorianreineccius
+ */
 @Slf4j
 public class BeatWidgetController {
 

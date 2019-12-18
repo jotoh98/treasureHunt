@@ -6,6 +6,11 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @param <C> controller
+ * @param <P> component
+ * @author jotoh
+ */
 @Slf4j
 public class Widget<C, P extends Pane> {
 

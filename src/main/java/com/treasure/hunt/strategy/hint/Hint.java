@@ -9,7 +9,7 @@ import java.util.List;
  * A hint a {@link com.treasure.hunt.strategy.hider.Hider} gives to the {@link com.treasure.hunt.strategy.searcher.Searcher},
  * in order he may find the treasure, the {@link com.treasure.hunt.strategy.hider.Hider} hides.
  *
- * @author hassel
+ * @author jotoh
  */
 public abstract class Hint {
     protected List<GeometryItem<?>> additionalGeometryItems = new ArrayList<>();
