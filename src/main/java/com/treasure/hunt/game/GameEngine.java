@@ -82,16 +82,6 @@ public class GameEngine {
         return false;
     }
 
-    public void reset() {
-        // reset variables
-        this.finished = false;
-        this.lastHint = null;
-        this.lastMovement = null;
-        this.searcherPos = null;
-        this.treasurePos = null;
-        this.firstMove = true;
-    }
-
     public Move init() {
         return init(JTSUtils.createPoint(0, 0));
     }

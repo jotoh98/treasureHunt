@@ -14,7 +14,7 @@ import org.locationtech.jts.geom.Point;
 public interface Searcher<T extends Hint> {
 
     /**
-     * @param startPosition the searchers starting position, he will initialized/reset with.
+     * @param startPosition the searchers starting position, he will initialized with.
      */
     void init(Point startPosition);
 
