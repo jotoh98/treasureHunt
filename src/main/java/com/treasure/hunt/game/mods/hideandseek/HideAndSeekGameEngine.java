@@ -34,7 +34,7 @@ public class HideAndSeekGameEngine extends GameEngine {
         searcherMove();
 
         if (located(lastMovement.getPoints(), treasurePos)) {
-            finish();
+            setFinished(true);
             return new Move(null, lastMovement, treasurePos);
         } else {
             lastHint = hider.move(lastMovement);
