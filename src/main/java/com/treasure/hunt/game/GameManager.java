@@ -29,8 +29,6 @@ import java.util.stream.Stream;
  * @author dorianreineccius
  */
 public class GameManager {
-    private Searcher searcher;
-    private Hider hider;
     /**
      * The gameEngine to simulate the game on.
      */
@@ -60,11 +58,11 @@ public class GameManager {
      */
     public GameManager(Class<? extends Searcher> searcherClass, Class<? extends Hider> hiderClass, Class<? extends GameEngine> gameEngineClass)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        this.searcher = searcherClass.getDeclaredConstructor().newInstance();
-        this.hider = hiderClass.getDeclaredConstructor().newInstance();
+        Searcher searcher = searcherClass.getDeclaredConstructor().newInstance();
+        Hider hider = hiderClass.getDeclaredConstructor().newInstance();
         this.gameEngine = gameEngineClass
                 .getDeclaredConstructor(Searcher.class, Hider.class)
-                .newInstance(this.searcher, this.hider);
+                .newInstance(searcher, hider);
     }
 
     public void addListener(ListChangeListener<? super Move> listChangeListener) {
