@@ -100,6 +100,7 @@ public class GameEngine {
      * initialize searcher and hider.
      * initialize searcher and treasure positions.
      *
+     * @param p initial searcher position
      * @return a {@link Move}, since the initialization must be displayed.
      */
     public Move init(Point p) {
@@ -166,7 +167,7 @@ public class GameEngine {
 
     /**
      * @param movement                which gets verified
-     * @param initialSearcherPosition
+     * @param initialSearcherPosition initial searcher position
      * @throws IllegalArgumentException when the {@link Movement} is not valid.
      */
     protected void verifyMovement(Movement movement, Point initialSearcherPosition) {
@@ -192,6 +193,10 @@ public class GameEngine {
      * AngleHints must be correct
      * AngleHints must be of angle [0, 180] !?
      * CircleHints must contain each other !?
+     * Verifies whether the performed {@link Movement}' by the searcher and {@link Hint}'s from the hider followed the rules.
+     *
+     * @param hint             hint to be verified
+     * @param treasurePosition treasure position
      */
     protected void verifyHint(Hint hint, Point treasurePosition) {
         if (hint instanceof AngleHint) {
@@ -206,6 +211,40 @@ public class GameEngine {
                         "but was " + ((CircleHint) hint).getCenter().distance(treasurePosition));
             }
         }
+    }
+
+    /**
+     * Tests, whether the searcher located the treasure on its path
+     *
+     * @param geometryItemsList searcher path
+     * @return whether the searcher located the treasure successfully.
+     */
+    protected boolean located(List<GeometryItem<Point>> geometryItemsList) {
+        assert geometryItemsList.size() > 0;
+
+        // Did the searcher move ?
+        if (geometryItemsList.size() == 1) {
+            return geometryItemsList.get(0).getObject().distance(treasurePos) <= 1;
+        } else {
+            Point lastPoint = null;
+            Point point;
+            for (GeometryItem<Point> geometryItem : geometryItemsList) {
+                point = geometryItem.getObject();
+                if (lastPoint == null) {
+                    lastPoint = point;
+                } else {
+                    // Check the gap of each move-segment and treasurePos
+                    LineSegment lineSegment = new LineSegment(new Coordinate(lastPoint.getX(), lastPoint.getY()),
+                            new Coordinate(point.getX(), point.getY()));
+                    // Usage of distancePerpendicular is completely incorrect here, since the line will be infinite
+                    if (lineSegment.distance(new Coordinate(treasurePos.getX(), treasurePos.getY())) <= 1) {
+                        return true;
+                    }
+                    lastPoint = point;
+                }
+            }
+        }
+        verifyHint(lastHint, treasurePos);
     }
 
     protected void hiderMove() {

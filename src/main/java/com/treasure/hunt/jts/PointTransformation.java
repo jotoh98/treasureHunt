@@ -122,7 +122,6 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
      *
      * @param width  width of boundary rectangle
      * @param height height of boundary rectangle
-     * @see PointTransformation#setOffset(Vector2D)
      */
     public void setBoundarySize(double width, double height) {
         setBoundarySize(new Vector2D(width, height));

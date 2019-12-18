@@ -11,6 +11,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import lombok.Getter;
 import org.locationtech.jts.geom.Point;
 
 import java.lang.reflect.InvocationTargetException;
@@ -35,6 +36,8 @@ public class GameManager {
      */
     private GameEngine gameEngine;
 
+    private Thread beatThread;
+    private volatile boolean beatThreadRunning = true;
     /**
      * Contains the "gameHistory".
      */
@@ -42,6 +45,7 @@ public class GameManager {
     /**
      * The properties, to view the current game state.
      */
+    @Getter
     private IntegerProperty stepSim = new SimpleIntegerProperty(0);
     private IntegerProperty stepView = new SimpleIntegerProperty(0);
 
@@ -80,7 +84,7 @@ public class GameManager {
     }
 
     /**
-     * Works only for stepSim <= stepView 
+     * Works only for stepSim &le; stepView 
      */
     public void next() {
         if (stepView.get() <= stepSim.get()) {
@@ -108,7 +112,7 @@ public class GameManager {
     }
 
     /**
-     * Works only for stepView > 0
+     * Works only for stepView &gt; 0
      */
     public void previous() {
         if (stepView.get() > 0) {
@@ -123,6 +127,34 @@ public class GameManager {
         while (!gameEngine.isFinished()) {
             next();
         }
+    }
+
+    /**
+     * This simulates the whole game, until its finished.
+     *
+     * @param delay time between each move
+     */
+    public void beat(Integer delay) {
+        beatThreadRunning = true;
+        beatThread = new Thread(() -> {
+            while (!gameEngine.isFinished() && beatThreadRunning) {
+                next();
+                try {
+                    Thread.sleep(delay * 1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        beatThread.setDaemon(true);
+        beatThread.start();
+    }
+
+    /**
+     * Stops the Thread from beating.
+     */
+    public void stopBeat() {
+        beatThreadRunning = false;
     }
 
     /**
