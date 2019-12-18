@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * @author dorianreineccius
+ */
 @AllArgsConstructor
 @Getter
 public class Move {

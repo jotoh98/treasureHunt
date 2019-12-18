@@ -1,4 +1,4 @@
-package com.treasure.hunt.strategy.hider.implementations;
+package com.treasure.hunt.strategy.hider.impl;
 
 
 import com.treasure.hunt.game.mods.hideandseek.HideAndSeekHider;
@@ -30,8 +30,6 @@ import java.util.stream.Stream;
     possibleArea:           BoundingCircle \ {checkedArea + AreaExcludedByHints)
 
     The Algorithm tries to greedily maximize the possibleArea with each Hint generation
-
-
  */
 @Slf4j
 public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
