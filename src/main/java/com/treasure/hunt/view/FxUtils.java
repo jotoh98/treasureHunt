@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import java.io.IOException;
 
 /**
- * @author hassel
+ * @author jotoh
  */
 public class FxUtils {
     public static Controller insert(String filePath) throws IOException {

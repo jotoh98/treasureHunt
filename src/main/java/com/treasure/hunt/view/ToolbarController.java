@@ -13,7 +13,7 @@ import javafx.scene.layout.VBox;
 import lombok.Getter;
 
 /**
- * @author hassel
+ * @author jotoh
  */
 public class ToolbarController {
 

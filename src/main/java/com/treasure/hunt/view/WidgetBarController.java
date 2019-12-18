@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
 
 /**
- * @author hassel
+ * @author jotoh
  */
 public class WidgetBarController {
 

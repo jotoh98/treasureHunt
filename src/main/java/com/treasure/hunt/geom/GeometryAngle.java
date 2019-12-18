@@ -19,7 +19,7 @@ import java.awt.geom.GeneralPath;
  * </ul>
  * These points are understood in a counter-clockwise looking way from the center point.
  *
- * @author hassel
+ * @author jotoh
  */
 public class GeometryAngle extends LineString implements Shapeable {
 

@@ -19,7 +19,7 @@ import java.awt.geom.Point2D;
  * In general, it shares a {@link PointTransformation} object to translate the {@link Shapeable}'s
  * Geometry into translated and scaled awt {@link Shape}s.
  *
- * @author hassel
+ * @author jotoh
  * @version 1.0
  */
 @Slf4j

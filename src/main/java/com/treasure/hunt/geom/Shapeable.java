@@ -5,7 +5,7 @@ import com.treasure.hunt.jts.AdvancedShapeWriter;
 import java.awt.*;
 
 /**
- * @author hassel
+ * @author jotoh
  */
 public interface Shapeable {
     Shape toShape(AdvancedShapeWriter advancedShapeWriter);

@@ -9,7 +9,7 @@ import org.locationtech.jts.math.Vector2D;
 import java.awt.*;
 
 /**
- * @author Hassel
+ * @author jotoh
  */
 public class Ray extends LineSegment implements Shapeable {
     public Ray(Coordinate p0, Coordinate p1) {

@@ -1,7 +1,7 @@
 package com.treasure.hunt.view;
 
 /**
- * @author hassel
+ * @author jotoh
  */
 public class Controller {
 

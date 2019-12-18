@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.awt.*;
 
 /**
- * @author hassel
+ * @author jotoh
  */
 @AllArgsConstructor
 @NoArgsConstructor

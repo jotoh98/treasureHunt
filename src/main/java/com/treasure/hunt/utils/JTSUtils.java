@@ -6,7 +6,7 @@ import org.locationtech.jts.geom.*;
 import org.locationtech.jts.math.Vector2D;
 
 /**
- * @author dorianreineccius, axel12, hassel, Rank
+ * @author dorianreineccius, axel12, jotoh, Rank
  */
 public class JTSUtils {
     public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();

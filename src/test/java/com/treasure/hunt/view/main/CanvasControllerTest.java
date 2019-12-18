@@ -3,7 +3,7 @@ package com.treasure.hunt.view.main;
 import org.junit.jupiter.api.Test;
 
 /**
- * @author hassel
+ * @author jotoh
  */
 class CanvasControllerTest {
 
