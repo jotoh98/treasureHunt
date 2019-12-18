@@ -213,40 +213,6 @@ public class GameEngine {
         }
     }
 
-    /**
-     * Tests, whether the searcher located the treasure on its path
-     *
-     * @param geometryItemsList searcher path
-     * @return whether the searcher located the treasure successfully.
-     */
-    protected boolean located(List<GeometryItem<Point>> geometryItemsList) {
-        assert geometryItemsList.size() > 0;
-
-        // Did the searcher move ?
-        if (geometryItemsList.size() == 1) {
-            return geometryItemsList.get(0).getObject().distance(treasurePos) <= 1;
-        } else {
-            Point lastPoint = null;
-            Point point;
-            for (GeometryItem<Point> geometryItem : geometryItemsList) {
-                point = geometryItem.getObject();
-                if (lastPoint == null) {
-                    lastPoint = point;
-                } else {
-                    // Check the gap of each move-segment and treasurePos
-                    LineSegment lineSegment = new LineSegment(new Coordinate(lastPoint.getX(), lastPoint.getY()),
-                            new Coordinate(point.getX(), point.getY()));
-                    // Usage of distancePerpendicular is completely incorrect here, since the line will be infinite
-                    if (lineSegment.distance(new Coordinate(treasurePos.getX(), treasurePos.getY())) <= 1) {
-                        return true;
-                    }
-                    lastPoint = point;
-                }
-            }
-        }
-        verifyHint(lastHint, treasurePos);
-    }
-
     protected void hiderMove() {
         lastHint = hider.move(lastMovement);
         if (lastHint == null) {
