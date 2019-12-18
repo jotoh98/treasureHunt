@@ -7,6 +7,9 @@ import org.locationtech.jts.geom.Coordinate;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * @author dorianreineccius
+ */
 class JTSUtilsTest {
 
     private Coordinate C = new Coordinate(0, 0),

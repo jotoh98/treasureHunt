@@ -30,8 +30,6 @@ import java.util.stream.Stream;
     possibleArea:           BoundingCircle \ {checkedArea + AreaExcludedByHints)
 
     The Algorithm tries to greedily maximize the possibleArea with each Hint generation
-
-
  */
 
 /**
@@ -325,9 +323,10 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
      * @param Player
      * @return the Point
      */
-    private Point getMaxConstant(Coordinate p1, Coordinate p2, Coordinate Player){
-            return gf.createPoint(p1);
+    private Point getMaxConstant(Coordinate p1, Coordinate p2, Coordinate Player) {
+        return gf.createPoint(p1);
     }
+
     /**
      * Returns the current Treasure Location
      * Always places it out of the agents reach until the remaining area

@@ -11,6 +11,9 @@ import javafx.scene.control.TextField;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Point;
 
+/**
+ * @author axel1200
+ */
 @Slf4j
 public class PointInspectorController {
 

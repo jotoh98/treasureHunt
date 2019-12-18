@@ -6,6 +6,9 @@ import org.locationtech.jts.geom.Coordinate;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * @author kemna
+ */
 class MaxAreaAngularHintStrategyTest {
     private MaxAreaAngularHintStrategy maxAreaAngularHintStrategy;
 

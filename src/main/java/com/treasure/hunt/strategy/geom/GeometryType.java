@@ -6,7 +6,7 @@ import lombok.Getter;
  * This is conventions for GeometryItems,
  * how to display them.
  *
- * @author hassel
+ * @author dorianreineccius, hassel
  */
 public enum GeometryType {
     // hints

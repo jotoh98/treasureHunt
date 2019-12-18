@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
- * @author jotoh
+ * @author hassel
  */
 @Slf4j
 public class MainController {

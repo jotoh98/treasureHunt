@@ -4,6 +4,9 @@ import javafx.fxml.FXMLLoader;
 
 import java.io.IOException;
 
+/**
+ * @author hassel
+ */
 public class FxUtils {
     public static Controller insert(String filePath) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();

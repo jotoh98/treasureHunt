@@ -13,7 +13,6 @@ import java.awt.*;
  * @author hassel
  * @see GeometryType for further information about how to classifiy a geometry item.
  */
-
 @Getter
 public class GeometryItem<T> {
     @NonNull

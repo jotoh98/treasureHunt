@@ -12,6 +12,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import lombok.Getter;
 
+/**
+ * @author hassel
+ */
 public class ToolbarController {
 
     @FXML

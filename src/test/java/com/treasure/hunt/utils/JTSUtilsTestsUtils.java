@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * An utility class for JTSUtilsTest classes.
+ *
+ * @author dorianreineccius
  */
 class JTSUtilsTestsUtils {
     public final static double ROUNDING_ERROR = 0.00001;
