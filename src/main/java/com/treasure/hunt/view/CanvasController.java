@@ -67,11 +67,8 @@ public class CanvasController {
         }
         offsetBackup = transformation.getOffset();
         dragStart = Vector2D.create(mouseEvent.getX(), mouseEvent.getY());
-        System.out.println(offsetBackup);
-        System.out.println(dragStart);
         Vector2D mousePositionInGameContext = dragStart.subtract(offsetBackup);
-        System.out.println(mousePositionInGameContext);
-        System.out.println(gameManager.get().pickGeometryItem(mousePositionInGameContext.getX(), -mousePositionInGameContext.getY()).getGeometry());
+        System.out.println("recognized: " + gameManager.get().pickGeometryItem(mousePositionInGameContext.getX(), -mousePositionInGameContext.getY()).getGeometry());
     }
 
     public void onCanvasDragged(MouseEvent mouseEvent) {
