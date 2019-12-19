@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -193,27 +193,31 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#destroy()">destroy</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beat(javafx.beans.property.ReadOnlyObjectProperty)">beat</a></span>&#8203;(javafx.beans.property.ReadOnlyObjectProperty&lt;java.lang.Double&gt;&nbsp;delay)</code></th>
+<td class="colLast">
+<div class="block">This simulates the whole game, until its finished.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code>javafx.beans.property.BooleanProperty</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGameFinishedProperty()">getGameFinishedProperty</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Delegate for game engine finished property</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGeometryItems(java.lang.Boolean)">getGeometryItems</a></span>&#8203;(java.lang.Boolean&nbsp;excludeOverrideItems)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isFirstStepShown()">isFirstStepShown</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isGameFinished()">isGameFinished</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isSimStepLatest()">isSimStepLatest</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isGameFinished()">isGameFinished</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i7" class="rowColor">
@@ -232,24 +236,51 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i10" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#latestStepViewed()">latestStepViewed</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>javafx.beans.binding.BooleanBinding</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#latestStepViewedBinding()">latestStepViewedBinding</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#move(int)">move</a></span>&#8203;(int&nbsp;steps)</code></th>
 <td class="colLast">
 <div class="block">Simulates a fixed number of moves.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#next()">next</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Works only for stepSim &le; stepView </div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#previous()">previous</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Works only for stepView &gt; 0</div>
+</td>
+</tr>
+<tr id="i15" class="rowColor">
+<td class="colFirst"><code>javafx.beans.binding.BooleanBinding</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stepBackwardImpossibleBinding()">stepBackwardImpossibleBinding</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i16" class="altColor">
+<td class="colFirst"><code>javafx.beans.binding.BooleanBinding</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stepForwardImpossibleBinding()">stepForwardImpossibleBinding</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i17" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stopBeat()">stopBeat</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Stops the Thread from beating.</div>
 </td>
 </tr>
 </table>
@@ -393,6 +424,30 @@ extends java.lang.Object</pre>
 <div class="block">This simulates the whole game, until its finished.</div>
 </li>
 </ul>
+<a id="beat(javafx.beans.property.ReadOnlyObjectProperty)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>beat</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;beat&#8203;(javafx.beans.property.ReadOnlyObjectProperty&lt;java.lang.Double&gt;&nbsp;delay)</pre>
+<div class="block">This simulates the whole game, until its finished.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>delay</code> - time between each move</dd>
+</dl>
+</li>
+</ul>
+<a id="stopBeat()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>stopBeat</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;stopBeat()</pre>
+<div class="block">Stops the Thread from beating.</div>
+</li>
+</ul>
 <a id="getGeometryItems(java.lang.Boolean)">
 <!--   -->
 </a>
@@ -421,23 +476,64 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="isSimStepLatest()">
+<a id="getGameFinishedProperty()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>isSimStepLatest</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;isSimStepLatest()</pre>
+<h4>getGameFinishedProperty</h4>
+<pre class="methodSignature">public&nbsp;javafx.beans.property.BooleanProperty&nbsp;getGameFinishedProperty()</pre>
+<div class="block">Delegate for game engine finished property</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>finished property</dd>
+</dl>
+</li>
+</ul>
+<a id="latestStepViewed()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>latestStepViewed</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;latestStepViewed()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>true if the shown step is the most up to date one</dd>
 </dl>
 </li>
 </ul>
-<a id="isFirstStepShown()">
+<a id="latestStepViewedBinding()">
 <!--   -->
 </a>
 <ul class="blockList">
+<li class="blockList">
+<h4>latestStepViewedBinding</h4>
+<pre class="methodSignature">public&nbsp;javafx.beans.binding.BooleanBinding&nbsp;latestStepViewedBinding()</pre>
+</li>
+</ul>
+<a id="stepForwardImpossibleBinding()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>stepForwardImpossibleBinding</h4>
+<pre class="methodSignature">public&nbsp;javafx.beans.binding.BooleanBinding&nbsp;stepForwardImpossibleBinding()</pre>
+</li>
+</ul>
+<a id="stepBackwardImpossibleBinding()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>stepBackwardImpossibleBinding</h4>
+<pre class="methodSignature">public&nbsp;javafx.beans.binding.BooleanBinding&nbsp;stepBackwardImpossibleBinding()</pre>
+</li>
+</ul>
+<a id="isFirstStepShown()">
+<!--   -->
+</a>
+<ul class="blockListLast">
 <li class="blockList">
 <h4>isFirstStepShown</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;isFirstStepShown()</pre>
@@ -445,15 +541,6 @@ extends java.lang.Object</pre>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>true if the shown step is the first one</dd>
 </dl>
-</li>
-</ul>
-<a id="destroy()">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>destroy</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;destroy()</pre>
 </li>
 </ul>
 </li>
