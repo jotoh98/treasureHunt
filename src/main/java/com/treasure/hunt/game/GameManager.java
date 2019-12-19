@@ -1,5 +1,6 @@
 package com.treasure.hunt.game;
 
+import com.treasure.hunt.analysis.StatisticObject;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
@@ -15,6 +16,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.locationtech.jts.geom.Point;
 
 import java.lang.reflect.InvocationTargetException;
@@ -181,7 +183,7 @@ public class GameManager {
      * @return The whole List of geometryItems of the gameHistory
      */
     public List<GeometryItem> getGeometryItems(Boolean excludeOverrideItems) {
-        ArrayList<GeometryItem> geometryItems = moves.subList(0, viewIndex.get() + 1).stream()
+        ArrayList<GeometryItem> geometryItems = getMovesViewed().stream()
                 .flatMap(move -> move.getGeometryItems().stream())
                 .collect(Collectors.toCollection(ArrayList::new));
         if (!excludeOverrideItems) {
@@ -201,6 +203,14 @@ public class GameManager {
                 })
                 .collect(Collectors.toList());
         return filterList;
+    }
+
+    /**
+     *
+     * @return only viewed moves
+     */
+    private List<Move> getMovesViewed() {
+        return moves.subList(0, viewIndex.get() + 1);
     }
 
     /**
@@ -243,5 +253,9 @@ public class GameManager {
      */
     public boolean isFirstStepShown() {
         return stepBackwardImpossibleBinding().getValue();
+    }
+
+    public ObjectBinding<List<StatisticObject>> getStatistics(){
+        return Bindings.createObjectBinding(() -> gameEngine.getStatistics().calculate(getMovesViewed()),viewIndex);
     }
 }

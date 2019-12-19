@@ -6,10 +6,7 @@ import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.ReflectionUtils;
 import com.treasure.hunt.utils.Requires;
-import com.treasure.hunt.view.widget.BeatWidgetController;
-import com.treasure.hunt.view.widget.PointInspectorController;
-import com.treasure.hunt.view.widget.SaveAndLoadController;
-import com.treasure.hunt.view.widget.Widget;
+import com.treasure.hunt.view.widget.*;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -148,6 +145,9 @@ public class MainController {
         Widget<BeatWidgetController, ?> beatWidget = new Widget<>("/layout/beatWidget.fxml");
         beatWidget.getController().init(gameManager, logLabel);
         insertWidget(true, "Game controls", beatWidget.getComponent());
+        Widget<StatisticsWidgetController, ?> statisticsWidget = new Widget<>("/layout/statisticsWidget.fxml");
+        statisticsWidget.getController().init(gameManager, logLabel);
+        insertWidget(true, "Statistics", statisticsWidget.getComponent());
     }
 
     private void setListStringConverters() {

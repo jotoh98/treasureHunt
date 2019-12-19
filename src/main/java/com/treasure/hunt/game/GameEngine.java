@@ -1,5 +1,6 @@
 package com.treasure.hunt.game;
 
+import com.treasure.hunt.analysis.Statistic;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
@@ -31,9 +32,11 @@ import java.util.List;
 @Getter
 @Setter
 public class GameEngine {
+
     public static final int HEIGHT = 200;
     public static final int WIDTH = 200;
-
+    @Getter
+    private final Statistic statistics= new Statistic();
     protected final Searcher searcher;
     protected final Hider hider;
     /**
