@@ -49,12 +49,12 @@ public class BruteForceSearcher implements Searcher<Hint> {
                     new GeometryItem(
                             JTSUtils.createLineString(
                                     JTSUtils.createPoint(
-                                            movement.getPoints().get(i).getObject().getX(),
-                                            movement.getPoints().get(i).getObject().getY()
+                                            movement.getPoints().get(i).getGeometry().getX(),
+                                            movement.getPoints().get(i).getGeometry().getY()
                                     ),
                                     JTSUtils.createPoint(
-                                            movement.getPoints().get(i + 1).getObject().getX(),
-                                            movement.getPoints().get(i + 1).getObject().getY()
+                                            movement.getPoints().get(i + 1).getGeometry().getX(),
+                                            movement.getPoints().get(i + 1).getGeometry().getY()
                                     )
                             )
                     ));

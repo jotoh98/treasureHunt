@@ -4,6 +4,7 @@ import com.treasure.hunt.jts.AdvancedShapeWriter;
 import lombok.Getter;
 import lombok.NonNull;
 import org.jfree.fx.FXGraphics2D;
+import org.locationtech.jts.geom.Geometry;
 
 import java.awt.*;
 
@@ -14,33 +15,33 @@ import java.awt.*;
  */
 
 @Getter
-public class GeometryItem<T> {
+public class GeometryItem<T extends Geometry> {
     @NonNull
     @Getter
-    T object;
+    T geometry;
     GeometryType geometryType;
     GeometryStyle geometryStyle;
 
-    public GeometryItem(T object, GeometryType geometryType, GeometryStyle geometryStyle) {
-        assert (object != null);
-        this.object = object;
+    public GeometryItem(T geometry, GeometryType geometryType, GeometryStyle geometryStyle) {
+        assert (geometry != null);
+        this.geometry = geometry;
         this.geometryType = geometryType;
         this.geometryStyle = geometryStyle;
     }
 
-    public GeometryItem(T object) {
-        this(object, GeometryType.STANDARD, GeometryStyle.getDefaults(GeometryType.STANDARD));
+    public GeometryItem(T geometry) {
+        this(geometry, GeometryType.STANDARD, GeometryStyle.getDefaults(GeometryType.STANDARD));
     }
 
-    public GeometryItem(T object, GeometryType geometryType) {
-        this(object, geometryType, GeometryStyle.getDefaults(geometryType));
+    public GeometryItem(T geometry, GeometryType geometryType) {
+        this(geometry, geometryType, GeometryStyle.getDefaults(geometryType));
     }
 
     public void draw(FXGraphics2D graphics2D, AdvancedShapeWriter shapeWriter) {
         if (!geometryStyle.isVisible()) {
             return;
         }
-        Shape shape = shapeWriter.toShape(object);
+        Shape shape = shapeWriter.toShape(geometry);
         if (geometryStyle.isFilled()) {
             graphics2D.setColor(geometryStyle.getFillColor());
             graphics2D.fill(shape);

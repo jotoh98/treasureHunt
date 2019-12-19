@@ -65,12 +65,12 @@ public class GameEngine {
 
         // Did the searcher move ?
         if (geometryItemsList.size() == 1) {
-            return geometryItemsList.get(0).getObject().distance(treasurePosition) <= 1;
+            return geometryItemsList.get(0).getGeometry().distance(treasurePosition) <= 1;
         } else {
             Point lastPoint = null;
             Point point;
             for (GeometryItem<Point> geometryItem : geometryItemsList) {
-                point = geometryItem.getObject();
+                point = geometryItem.getGeometry();
                 if (lastPoint == null) {
                     lastPoint = point;
                 } else {
@@ -185,12 +185,12 @@ public class GameEngine {
                     " but continues his movement from " + movement.getStartingPoint());
         }
         for (GeometryItem geometryItem : movement.getPoints()) {
-            if (((Point) geometryItem.getObject()).getX() < (float) -WIDTH / 2 ||
-                    (float) WIDTH / 2 < ((Point) geometryItem.getObject()).getX() ||
-                    ((Point) geometryItem.getObject()).getY() < (float) -HEIGHT / 2 ||
-                    (float) HEIGHT / 2 < ((Point) geometryItem.getObject()).getY()) {
+            if (((Point) geometryItem.getGeometry()).getX() < (float) -WIDTH / 2 ||
+                    (float) WIDTH / 2 < ((Point) geometryItem.getGeometry()).getX() ||
+                    ((Point) geometryItem.getGeometry()).getY() < (float) -HEIGHT / 2 ||
+                    (float) HEIGHT / 2 < ((Point) geometryItem.getGeometry()).getY()) {
                 throw new IllegalArgumentException("Searcher left the playing area: " +
-                        "(" + ((Point) geometryItem.getObject()).getX() + ", " + ((Point) geometryItem.getObject()).getY() + ") " +
+                        "(" + ((Point) geometryItem.getGeometry()).getX() + ", " + ((Point) geometryItem.getGeometry()).getY() + ") " +
                         "is not in " + "[" + -WIDTH / 2 + ", " + WIDTH / 2 + "]x[" + -HEIGHT / 2 + ", " + HEIGHT / 2 + "]");
             }
         }

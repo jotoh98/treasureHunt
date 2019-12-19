@@ -15,6 +15,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
 import java.lang.reflect.InvocationTargetException;
@@ -243,5 +244,30 @@ public class GameManager {
      */
     public boolean isFirstStepShown() {
         return stepBackwardImpossibleBinding().getValue();
+    }
+
+    /**
+     * @param x position on the canvas
+     * @param y position on the canvas
+     * @return the nearest {@link GeometryItem} to x and y
+     */
+    public GeometryItem pickGeometryItem(double x, double y) {
+        if (moves.size() < 1) {
+            throw new IllegalStateException("moves list is empty!");
+        }
+
+        Point mouse = JTSUtils.GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
+
+        GeometryItem nearestGeometryItem = moves.get(0).getGeometryItems().get(0);
+        for (Move move : moves) {
+            for (GeometryItem geometryItem : move.getGeometryItems()) {
+                System.out.println(mouse.distance(geometryItem.getGeometry()) + " distance between " + mouse + " and " + geometryItem.getGeometry());
+                System.out.println(mouse.distance(nearestGeometryItem.getGeometry()) + " distance between " + mouse + " and " + nearestGeometryItem.getGeometry());
+                if (mouse.distance(geometryItem.getGeometry()) < mouse.distance(nearestGeometryItem.getGeometry())) {
+                    nearestGeometryItem = geometryItem;
+                }
+            }
+        }
+        return nearestGeometryItem;
     }
 }
