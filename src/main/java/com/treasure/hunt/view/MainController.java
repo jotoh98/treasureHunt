@@ -80,16 +80,22 @@ public class MainController {
         bindStartButtonState();
         addToolbarStyleClasses();
         bindWidgetBarVisibility();
-        addPrevNextBindings();
+        addBindingsToGameManager();
     }
 
-    private void addPrevNextBindings() {
+    /**
+     * Add property bindings to the {@link GameManager}s members.
+     */
+    private void addBindingsToGameManager() {
         gameManager.addListener(c -> {
             if (gameManager.isNull().get()) {
                 return;
             }
             nextButton.disableProperty().bind(gameManager.get().stepForwardImpossibleBinding());
             previousButton.disableProperty().bind(gameManager.get().stepBackwardImpossibleBinding());
+            gameManager.get().getGameFinishedProperty().addListener(invalidation -> {
+                logLabel.setText("Game ended");
+            });
         });
     }
 
@@ -292,6 +298,7 @@ public class MainController {
 
         try {
             gameManager.set(new GameManager(searcherClass, hiderClass, gameEngineClass));
+            logLabel.setText("Game initialized");
         } catch (Exception e) {
             log.error("Something important crashed", e);
             logLabel.setText("Could not create game");
@@ -314,8 +321,5 @@ public class MainController {
 
     public void nextButtonClicked() {
         gameManager.get().next();
-        if (gameManager.get().isGameFinished() && gameManager.get().latestStepViewed()) {
-            logLabel.setText("Game ended");
-        }
     }
 }
