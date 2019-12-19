@@ -5,16 +5,8 @@ import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.math.Vector2D;
 
-/**
- * Contains JTS Utilities.
- *
- * @author Rank, dorianreineccius, jotoh, axel12
- */
-public final class JTSUtils {
+public class JTSUtils {
     public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
-
-    private JTSUtils() {
-    }
 
     /**
      * Factory method to create a point with a shared {@link GeometryFactory}
