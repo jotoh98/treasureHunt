@@ -9,7 +9,6 @@ public class WidgetBarController {
     private Pane widgetBar;
 
     public void initialize() {
-        System.out.println("hi");
     }
 
     public void addWidget(Pane widget) {
