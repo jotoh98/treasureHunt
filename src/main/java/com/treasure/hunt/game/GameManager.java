@@ -5,20 +5,23 @@ import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.ObjectBinding;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Point;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,10 +32,13 @@ import java.util.stream.Stream;
  *
  * @author dorianreineccius
  */
+@Slf4j
 public class GameManager {
 
     private Thread beatThread;
-    private volatile boolean beatThreadRunning = true;
+
+    @Getter
+    private volatile BooleanProperty beatThreadRunning = new SimpleBooleanProperty(false);
     /**
      * Contains the "gameHistory".
      */
@@ -41,8 +47,7 @@ public class GameManager {
     private GameEngine gameEngine;
 
     @Getter
-    private IntegerProperty stepSim = new SimpleIntegerProperty(0);
-    private IntegerProperty stepView = new SimpleIntegerProperty(0);
+    private IntegerProperty viewIndex = new SimpleIntegerProperty(0);
 
     /**
      * @param searcherClass   (Sub-)class of {@link Searcher}
@@ -65,8 +70,7 @@ public class GameManager {
 
         // Do initial move
         moves.add(gameEngine.init(JTSUtils.createPoint(0, 0)));
-        stepView.set(0);
-        stepSim.set(0);
+        viewIndex.set(0);
     }
 
     public void addListener(ListChangeListener<? super Move> listChangeListener) {
@@ -74,27 +78,26 @@ public class GameManager {
     }
 
     public ObjectBinding<Move> lastMove() {
-        return Bindings.createObjectBinding(() -> moves.get(stepView.get()), stepView, moves);
+        return Bindings.createObjectBinding(() -> moves.get(viewIndex.get()), viewIndex, moves);
     }
 
     public ObjectBinding<Point> lastTreasure() {
-        return Bindings.createObjectBinding(() -> moves.get(stepView.get()).getTreasureLocation(), stepView, moves);
+        return Bindings.createObjectBinding(() -> moves.get(viewIndex.get()).getTreasureLocation(), viewIndex, moves);
     }
 
     public ObjectBinding<Point> lastPoint() {
-        return Bindings.createObjectBinding(() -> moves.get(stepView.get()).getMovement().getEndPoint(), stepView, moves);
+        return Bindings.createObjectBinding(() -> moves.get(viewIndex.get()).getMovement().getEndPoint(), viewIndex, moves);
     }
 
     /**
      * Works only for stepSim &le; stepView 
      */
     public void next() {
-        if (stepView.get() <= stepSim.get()) {
-            if (stepView.get() == stepSim.get()) {
+        if (viewIndex.get() < moves.size()) {
+            if (latestStepViewed()) {
                 moves.add(gameEngine.move());
-                stepSim.set(stepSim.get() + 1);
             }
-            stepView.set(stepView.get() + 1);
+            viewIndex.set(viewIndex.get() + 1);
         }
     }
 
@@ -106,7 +109,7 @@ public class GameManager {
      */
     public void move(int steps) {
         for (int i = 0; i < steps; i++) {
-            if (gameEngine.finished) {
+            if (gameEngine.isFinished()) {
                 break;
             }
             next();
@@ -117,8 +120,8 @@ public class GameManager {
      * Works only for stepView &gt; 0
      */
     public void previous() {
-        if (stepView.get() > 0) {
-            stepView.set(stepView.get() - 1);
+        if (viewIndex.get() > 0) {
+            viewIndex.set(viewIndex.get() - 1);
         }
     }
 
@@ -136,17 +139,30 @@ public class GameManager {
      *
      * @param delay time between each move
      */
-    public void beat(Integer delay) {
-        beatThreadRunning = true;
+    public void beat(ReadOnlyObjectProperty<Double> delay) {
+        if (beatThreadRunning.get()) {
+            log.warn("There's already a beating thread running");
+            return;
+        }
+
+        beatThreadRunning.set(true);
         beatThread = new Thread(() -> {
-            while (!gameEngine.isFinished() && beatThreadRunning) {
-                next();
+            log.debug("Start beating thread");
+            while (!stepForwardImpossibleBinding().get() && beatThreadRunning.get()) {
+                CountDownLatch latch = new CountDownLatch(1);
+                Platform.runLater(() -> {
+                    next();
+                    latch.countDown();
+                });
                 try {
-                    Thread.sleep(delay * 1000);
+                    latch.await();
+                    Thread.sleep((long) (delay.get() * 1000));
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
+            log.debug("Terminating beating thread");
+            Platform.runLater(() -> beatThreadRunning.set(false));
         });
         beatThread.setDaemon(true);
         beatThread.start();
@@ -156,7 +172,8 @@ public class GameManager {
      * Stops the Thread from beating.
      */
     public void stopBeat() {
-        beatThreadRunning = false;
+        log.debug("Stopping beating thread");
+        beatThreadRunning.set(false);
     }
 
     /**
@@ -164,7 +181,7 @@ public class GameManager {
      * @return The whole List of geometryItems of the gameHistory
      */
     public List<GeometryItem> getGeometryItems(Boolean excludeOverrideItems) {
-        ArrayList<GeometryItem> geometryItems = moves.subList(0, stepView.get() + 1).stream()
+        ArrayList<GeometryItem> geometryItems = moves.subList(0, viewIndex.get() + 1).stream()
                 .flatMap(move -> move.getGeometryItems().stream())
                 .collect(Collectors.toCollection(ArrayList::new));
         if (!excludeOverrideItems) {
@@ -194,16 +211,37 @@ public class GameManager {
     }
 
     /**
+     * Delegate for game engine finished property
+     *
+     * @return finished property
+     */
+    public BooleanProperty getGameFinishedProperty() {
+        return gameEngine.getFinished();
+    }
+
+    /**
      * @return true if the shown step is the most up to date one
      */
-    public boolean isSimStepLatest() {
-        return stepSim.get() == stepView.get();
+    public boolean latestStepViewed() {
+        return moves.size() - 1 == viewIndex.get();
+    }
+
+    public BooleanBinding latestStepViewedBinding() {
+        return Bindings.createBooleanBinding(() -> moves.size() - 1 == viewIndex.get(), viewIndex, moves);
+    }
+
+    public BooleanBinding stepForwardImpossibleBinding() {
+        return getGameFinishedProperty().and(latestStepViewedBinding());
+    }
+
+    public BooleanBinding stepBackwardImpossibleBinding() {
+        return viewIndex.isEqualTo(0);
     }
 
     /**
      * @return true if the shown step is the first one
      */
     public boolean isFirstStepShown() {
-        return stepView.isEqualTo(0).getValue();
+        return stepBackwardImpossibleBinding().getValue();
     }
 }

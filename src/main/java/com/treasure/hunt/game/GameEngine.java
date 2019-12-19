@@ -10,10 +10,12 @@ import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.Requires;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import lombok.Getter;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Point;
-import org.slf4j.Logger;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,14 +29,14 @@ import java.util.List;
 public class GameEngine {
     public static final int HEIGHT = 200;
     public static final int WIDTH = 200;
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(GameEngine.class);
 
     protected final Searcher searcher;
     protected final Hider hider;
     /**
      * Tells, whether the game is done or not.
      */
-    protected boolean finished = false;
+    @Getter
+    private BooleanProperty finished = new SimpleBooleanProperty(false);
     protected Hint lastHint;
     protected Movement lastMovement;
     protected Point searcherPos;
@@ -147,6 +149,27 @@ public class GameEngine {
         lastHint = hider.move(lastMovement);
         assert (lastHint != null);
         verifyHint(lastHint, treasurePos);
+
+        return new Move(lastHint, lastMovement, treasurePos);
+    }
+
+    protected void searcherMove() {
+        if (finished.get()) {
+            throw new IllegalStateException("Game is already finished");
+        }
+
+        // Searcher moves
+        if (firstMove) {
+            firstMove = false;
+            lastMovement = searcher.move();
+        } else {
+            lastMovement = searcher.move(lastHint);
+        }
+        assert (lastMovement != null);
+        assert (lastMovement.getPoints().size() != 0);
+        verifyMovement(lastMovement, searcherPos);
+
+        searcherPos = lastMovement.getEndPoint();
     }
 
     /**
@@ -223,10 +246,10 @@ public class GameEngine {
      * Sets {@link GameEngine#finished} to true.
      */
     protected void finish() {
-        finished = true;
+        finished.set(true);
     }
 
-    public boolean isFinished() {
-        return this.finished;
+    protected boolean isFinished() {
+        return finished.get();
     }
 }
