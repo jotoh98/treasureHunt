@@ -16,6 +16,7 @@ import org.locationtech.jts.geom.Point;
  */
 @Setter
 public class RandomAngleHintHider implements Hider<AngleHint> {
+    @Setter
     private Point treasurePos = JTSUtils.createPoint(Math.random() * 100, Math.random() * 100);
 
     /**
@@ -52,7 +53,9 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
      * @return {@link Point} containing treasure location of [0,100)x[0x100)
      */
     @Override
-    public Point getTreasureLocation() {
+    public Point getTreasurePos() {
         return treasurePos;
     }
+
+
 }

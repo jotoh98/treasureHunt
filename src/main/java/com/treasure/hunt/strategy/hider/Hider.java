@@ -24,5 +24,7 @@ public interface Hider<T extends Hint> {
     /**
      * @return the current treasure location
      */
-    Point getTreasureLocation();
+    Point getTreasurePos();
+
+    void setTreasurePos(Point TreasurePos);
 }

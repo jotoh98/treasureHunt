@@ -31,7 +31,7 @@ public class HideAndSeekGameEngine extends GameEngine {
      * will be updated, but it could have not changed.
      */
     public Move move() {
-        treasurePos = hider.getTreasureLocation();
+        treasurePos = hider.getTreasurePos();
         return super.move();
     }
 }

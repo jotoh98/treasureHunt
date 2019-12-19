@@ -7,6 +7,7 @@ import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.SwingUtils;
+import lombok.Setter;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
@@ -19,8 +20,9 @@ import javax.swing.*;
  *
  * @author axel12
  */
+@Setter
 public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint> {
-    private Point treasureLocation;
+    private Point treasurePos;
 
     /**
      * @param movement the {@link Movement}, the {@link com.treasure.hunt.strategy.searcher.Searcher} did last
@@ -40,9 +42,9 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
      * @return the current treasure location, passed by the user
      */
     @Override
-    public Point getTreasureLocation() {
-        treasureLocation = SwingUtils.promptForPoint("Provide a treasure position", "...");
-        return this.treasureLocation;
+    public Point getTreasurePos() {
+        treasurePos = SwingUtils.promptForPoint("Provide a treasure position", "...");
+        return this.treasurePos;
     }
 
     /**
@@ -56,7 +58,7 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
             JTextField xPositionTextField2 = new JTextField();
             JTextField yPositionTextField2 = new JTextField();
             final JComponent[] inputs = new JComponent[]{
-                    new JLabel("Treasure: " + treasureLocation + "; Agent location: " + middle),
+                    new JLabel("Treasure: " + treasurePos + "; Agent location: " + middle),
                     new JLabel("X Position Right"),
                     xPositionTextField,
                     new JLabel("Y Position Right"),
@@ -75,7 +77,7 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
                     double y2 = Double.parseDouble(yPositionTextField2.getText());
                     Point angleLeft = JTSUtils.GEOMETRY_FACTORY.createPoint(new Coordinate(x2, y2));
                     Point angleRight = JTSUtils.GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
-                    if (!JTSUtils.pointInAngle(angleRight, middle, angleLeft, treasureLocation)) {
+                    if (!JTSUtils.pointInAngle(angleRight, middle, angleLeft, treasurePos)) {
                         throw new UserControlledAngleHintHider.WrongAngleException("Treasure  Location not contained in angle");
                     }
                     if (!JTSUtils.angleDegreesSize(angleRight, middle, angleLeft, Math.PI)) {

@@ -68,7 +68,7 @@ public class GameEngine {
         searcherPos = JTSUtils.createPoint(0, 0);
         searcher.init(searcherPos);
 
-        treasurePos = hider.getTreasureLocation();
+        treasurePos = hider.getTreasurePos();
         assert (treasurePos != null);
 
         // Check, whether treasure spawns in range of searcher

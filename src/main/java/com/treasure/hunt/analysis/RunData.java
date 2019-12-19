@@ -15,15 +15,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 @Slf4j
 @Getter
-public class RunInstanceData implements Comparable<RunInstanceData> {
+public class RunData implements Comparable<RunData> {
     @Delegate
     private final List<Move> actualRun;
 
-    RunInstanceData(List<Move> actualRun) {
+    RunData(List<Move> actualRun) {
         this.actualRun = actualRun;
     }
 
@@ -38,14 +39,19 @@ public class RunInstanceData implements Comparable<RunInstanceData> {
 
     public List<Point> getListPoints() {
         List<Point> stepPoints = new ArrayList<>();
-
+        stepPoints.add(getStartPoint());
         for (Move move : actualRun
-        ) {
+        ) { boolean firstElement=true;
             for (GeometryItem<Point> point : move.getMovement().getPoints()
             ) {
-                stepPoints.add(point.getObject());
-            }
+                if(firstElement){
+                    firstElement=false;
+                }else {
+                    stepPoints.add(point.getObject());
+                }
+                }
         }
+        stepPoints.add(getTreasureLocation());
         return stepPoints;
     }
 
@@ -74,7 +80,7 @@ public class RunInstanceData implements Comparable<RunInstanceData> {
     }
 
     public double getHintRequests() {
-        return actualRun.size();
+        return actualRun.size()-1;
     }
 
     //TODO finish this in detail with the possibility to dump this into a json file and load json files
@@ -103,36 +109,53 @@ public class RunInstanceData implements Comparable<RunInstanceData> {
     }
 
     @Override
-    public int compareTo(RunInstanceData instanceData) {
-        return compareBy(RunInstanceData::getLinearRunningTimeFactor, instanceData);
+    public int compareTo(RunData instanceData) {
+        return compareBy(RunData::getLinearRunningTimeFactor, instanceData);
     }
 
-    public int compareBy(Function<RunInstanceData, Double> method, RunInstanceData instanceData) {
+    public int compareBy(Function<RunData, Double> method, RunData instanceData) {
         return (int) Math.signum(method.apply(this) - method.apply(instanceData));
     }
 
-    public int compareByHints(RunInstanceData instanceData) {
-        return compareBy(RunInstanceData::getHintRequests, instanceData);
+    public int compareByHints(RunData instanceData) {
+        return compareBy(RunData::getHintRequests, instanceData);
     }
 
-    public int compareByOptSol(RunInstanceData instanceData) {
-        return compareBy(RunInstanceData::getOptSolution, instanceData);
-
-    }
-
-    public int compareByRunningTime(RunInstanceData instanceData) {
-        return compareBy(RunInstanceData::getLinearRunningTimeFactor, instanceData);
+    public int compareByOptSol(RunData instanceData) {
+        return compareBy(RunData::getOptSolution, instanceData);
 
     }
 
-    public void printRun(){
-        List<GeometryItem<Point>> points= new ArrayList<>();
-        this.actualRun.forEach( move -> move.getMovement().getPoints().forEach(point->points.add(point)));
-        for (int i = 0; i < points.size(); i++) {
-            System.out.println("Searcher at : ("+ points.get(i).getObject().getX()+","+points.get(i).getObject().getY()+")");
+    public int compareByRunningTime(RunData instanceData) {
+        return compareBy(RunData::getLinearRunningTimeFactor, instanceData);
+
+    }
+
+    public void printRun() {
+        actualRun.forEach(move -> {
+            List<GeometryItem<Point>> points = move.getMovement().getPoints();
+            if (points.size() > 4) {
+                log.info(String.format("Searcher movement: %s (%s more) %s ",
+                        points.get(0).toString(),
+                        points.size() - 2,
+                        points.get(points.size() - 1).toString()));
+            } else {
+                String neu = "Searcher movement: ";
+                for (GeometryItem<Point> point : points) {
+                    neu = neu.concat(point.getObject().toString()).concat(" ");
+                }
+                log.info(neu);
+            }
+
+        });
+        List<Point> pointy=getListPoints();
+        pointy.forEach(point ->
+            log.info(String.format("Searcher at: %s",point.toString())));
         }
-    }
 
+    public double getHintTraceLengthRatio() {
+        return getHintRequests() / getTraceLength();
+    }
 
 }
 
