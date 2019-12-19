@@ -12,6 +12,9 @@ import org.locationtech.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author dorianreineccius, hassel
+ */
 @Getter
 @Slf4j
 public class AngleHint extends Hint {

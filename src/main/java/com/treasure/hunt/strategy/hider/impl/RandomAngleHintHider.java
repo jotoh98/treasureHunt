@@ -8,6 +8,9 @@ import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
+/**
+ * @author dorianreineccius
+ */
 public class RandomAngleHintHider implements Hider<AngleHint> {
     private Point treasurePos = JTSUtils.createPoint(Math.random() * 100, Math.random() * 100);
 

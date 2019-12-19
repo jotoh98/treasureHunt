@@ -244,8 +244,4 @@ public class GameManager {
     public boolean isFirstStepShown() {
         return stepBackwardImpossibleBinding().getValue();
     }
-
-    public void destroy() {
-        //TODO: clean up
-    }
 }
