@@ -52,4 +52,9 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
     public Point getTreasurePos() {
         return treasurePos;
     }
+
+    @Override
+    public void setTreasureDistance(double treasureDistance) {
+        //TODO: implement
+    }
 }

@@ -26,5 +26,8 @@ public interface Hider<T extends Hint> {
      */
     Point getTreasurePos();
 
-    void setTreasurePos(Point TreasurePos);
+    /**
+     * @param treasureDistance the distance between start position and treasure
+     * */
+    void setTreasureDistance(double treasureDistance);
 }

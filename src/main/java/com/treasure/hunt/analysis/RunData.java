@@ -1,21 +1,12 @@
 package com.treasure.hunt.analysis;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.treasure.hunt.game.Move;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import lombok.Getter;
 import lombok.experimental.Delegate;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Point;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 @Slf4j
@@ -81,31 +72,6 @@ public class RunData implements Comparable<RunData> {
 
     public double getHintRequests() {
         return actualRun.size()-1;
-    }
-
-    //TODO finish this in detail with the possibility to dump this into a json file and load json files
-
-    public String toJsonString() throws JsonProcessingException {
-        String json = new ObjectMapper().writeValueAsString(this);
-        return json;
-    }
-
-    public void saveRunInstance() throws IOException {
-        saveRunInstance("C:\\Users\\Shlohmo\\Documents\\treasureHunt\\src\\main\\java\\com\\treasure\\hunt\\analysis\\RunInstanceSaveFolder");
-    }
-
-    public void saveRunInstance(String path) {
-
-        String hash = ((Integer) System.identityHashCode(this)).toString();
-        String filepath = path + "\\RunInstanceSaveFolder\\" + hash + ".txt";
-
-        try {
-            Path file = Paths.get(filepath);
-            Files.write(file, Collections.singletonList(this.toJsonString()), StandardCharsets.UTF_8);
-
-        } catch (IOException e) {
-            log.error("Could not create or write file, Dorians Schuld", e);
-        }
     }
 
     @Override

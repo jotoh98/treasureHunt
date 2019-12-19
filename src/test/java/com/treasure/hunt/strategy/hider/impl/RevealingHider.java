@@ -29,7 +29,12 @@ public class RevealingHider implements HideAndSeekHider<CircleHint> {
      * @return the current treasure position
      */
     @Override
-    public Point getTreasureLocation() {
+    public Point getTreasurePos() {
         return treasurePos;
+    }
+
+    @Override
+    public void setTreasureDistance(double treasureDistance) {
+        //TODO implement
     }
 }

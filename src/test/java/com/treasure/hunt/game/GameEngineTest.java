@@ -56,7 +56,7 @@ class GameEngineTest {
     }
 
     /**
-     * This tests the {@link GameEngine#located(List)} method.
+     * This tests the {@link GameEngine#located} method.
      */
     @Test
     void bruteForceTest1() {
@@ -108,7 +108,7 @@ class GameEngineTest {
     }
 
     /**
-     * {@link GameEngine#located(List)} )} test.
+     * {@link GameEngine#located} )} test.
      * In this test, the searcher moves <b>past</b> the treasure
      * with a minimum distance of 1.
      * searcher starts at (0,0) as usual.
@@ -123,8 +123,13 @@ class GameEngineTest {
             private Point treasurePos = gf.createPoint(new Coordinate(1, 1));
 
             @Override
-            public Point getTreasureLocation() {
+            public Point getTreasurePos() {
                 return treasurePos;
+            }
+
+            @Override
+            public void setTreasureDistance(double treasureDistance) {
+                //TODO implement
             }
 
             @Override

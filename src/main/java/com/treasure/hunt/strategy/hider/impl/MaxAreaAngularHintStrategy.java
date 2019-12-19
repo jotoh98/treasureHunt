@@ -331,7 +331,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
      * @return current treasure location
      */
     @Override
-    public Point getTreasureLocation() {
+    public Point getTreasurePos() {
         if (possibleArea.getObject().getArea() <= searcherScoutRadius * searcherScoutRadius * Math.PI) {
             return currentPlayersPosition;
         }
@@ -373,6 +373,11 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         log.info("whole circle area" + boundingCircle.getObject().getArea());
         log.info("possible area " + possibleArea.getObject().getArea());
         return hint;
+    }
+
+    @Override
+    public void setTreasureDistance(double treasureDistance) {
+        //TODO: implement the distance between start and treasure position
     }
 
     /**

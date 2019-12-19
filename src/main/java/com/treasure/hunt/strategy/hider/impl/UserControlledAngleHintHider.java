@@ -26,6 +26,11 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
     }
 
     @Override
+    public void setTreasureDistance(double treasureDistance) {
+
+    }
+
+    @Override
     public AngleHint move(Movement movement) {
         return createAngleDialog(movement.getEndPoint().getCoordinate());
     }
@@ -72,7 +77,7 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
         if (angle >= Math.PI || angle < 0) {
             throw new WrongAngleException("Angle is bigger 180 degrees");
         }
-        double angleHintToTreasure = angleBetweenOriented(treasureLocation.getCoordinate(), middle, angleLeft);
+        double angleHintToTreasure = angleBetweenOriented(treasurePos.getCoordinate(), middle, angleLeft);
         if (angleHintToTreasure > angle || angleHintToTreasure < 0) {
             throw new WrongAngleException("Treasure  Location not contained in angle");
         }
