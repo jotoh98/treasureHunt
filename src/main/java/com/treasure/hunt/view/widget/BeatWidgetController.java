@@ -1,8 +1,11 @@
 package com.treasure.hunt.view.widget;
 
 import com.treasure.hunt.game.GameManager;
+import javafx.beans.InvalidationListener;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -14,30 +17,59 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class BeatWidgetController {
 
-    final int initialValue = 3;
-    public Spinner<Integer> timeBetweenMovesSpinner;
+    final int initialValue = 1;
+    public Spinner<Double> timeBetweenMovesSpinner;
+    public Button playToggle;
     private ObjectProperty<GameManager> gameManager;
     private Label logLabel;
 
     public void initialize() {
-        SpinnerValueFactory<Integer> valueFactory =
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 20, initialValue);
+        SpinnerValueFactory<Double> valueFactory =
+                new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 10, initialValue, 0.25);
         timeBetweenMovesSpinner.setValueFactory(valueFactory);
+    }
+
+    private void bindPlayToggleButton() {
+        InvalidationListener listener = c -> {
+            if (gameManager.isNull().get()) {
+                return;
+            }
+
+            playToggle.textProperty().bind(Bindings.createStringBinding(
+                    () -> {
+                        boolean impossible = gameManager.get().stepForwardImpossibleBinding().get();
+                        if (impossible) {
+                            return "Game finished";
+                        }
+                        boolean running = gameManager.get().getBeatThreadRunning().get();
+
+                        return running ? "Stop" : "Start";
+                    },
+                    gameManager.get().getBeatThreadRunning(),
+                    gameManager.get().stepForwardImpossibleBinding(),
+                    gameManager.get().getViewIndex()
+            ));
+
+            playToggle.disableProperty().bind(gameManager.get().stepForwardImpossibleBinding());
+        };
+        gameManager.addListener(listener);
+        listener.invalidated(gameManager);
     }
 
     public void init(ObjectProperty<GameManager> gameManager, Label logLabel) {
         this.gameManager = gameManager;
         this.logLabel = logLabel;
+        bindPlayToggleButton();
     }
 
-    public void play(ActionEvent actionEvent) {
-        gameManager.get().beat(timeBetweenMovesSpinner.getValue());
-        logLabel.setText("Game running.");
-    }
+    public void playToggle(ActionEvent actionEvent) {
+        GameManager gameManagerState = this.gameManager.get();
 
-    public void stop(ActionEvent actionEvent) {
-        gameManager.get().stopBeat();
-        logLabel.setText("Game stopped.");
+        if (gameManagerState.getBeatThreadRunning().get()) {
+            gameManagerState.stopBeat();
+        } else {
+            gameManagerState.beat(timeBetweenMovesSpinner.valueProperty());
+        }
     }
 }
 

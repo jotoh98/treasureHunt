@@ -104,7 +104,7 @@ public class CanvasController {
             if (this.gameManager.get() == null) {
                 return;
             }
-            this.gameManager.get().getStepSim()
+            this.gameManager.get().getViewIndex()
                     .addListener(observable1 -> drawShapes());
 
         });

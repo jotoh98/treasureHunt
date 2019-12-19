@@ -14,9 +14,6 @@ import java.util.List;
 public abstract class Hint {
     protected List<GeometryItem<?>> additionalGeometryItems = new ArrayList<>();
 
-    public Hint() {
-    }
-
     /**
      * @param geometryItem to add {@link GeometryItem} objects, which are only relevant for displaying
      */

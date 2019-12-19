@@ -80,6 +80,23 @@ public class MainController {
         bindStartButtonState();
         addToolbarStyleClasses();
         bindWidgetBarVisibility();
+        addBindingsToGameManager();
+    }
+
+    /**
+     * Add property bindings to the {@link GameManager}s members.
+     */
+    private void addBindingsToGameManager() {
+        gameManager.addListener(c -> {
+            if (gameManager.isNull().get()) {
+                return;
+            }
+            nextButton.disableProperty().bind(gameManager.get().stepForwardImpossibleBinding());
+            previousButton.disableProperty().bind(gameManager.get().stepBackwardImpossibleBinding());
+            gameManager.get().getGameFinishedProperty().addListener(invalidation -> {
+                logLabel.setText("Game ended");
+            });
+        });
     }
 
     private void bindWidgetBarVisibility() {
@@ -154,7 +171,7 @@ public class MainController {
             @Override
             public String toString(Class aClass) {
                 if (aClass == null) {
-                    return null;
+                    return "null";
                 }
                 Requires requires = (Requires) aClass.getAnnotation(Requires.class);
                 return String.format(
@@ -209,17 +226,17 @@ public class MainController {
                 })
         );
 
-        Set<Class<? extends GameEngine>> allGameManagers = reflections.getSubTypesOf(GameEngine.class);
-        allGameManagers = allGameManagers.stream().filter(aClass -> !Modifier.isAbstract(aClass.getModifiers())).collect(Collectors.toSet());
-        allGameManagers.add(GameEngine.class);
-        ObservableList<Class<? extends GameEngine>> observableGameManagers = FXCollections.observableArrayList(allGameManagers);
-        FilteredList<Class<? extends GameEngine>> filteredGameManagers = new FilteredList<>(observableGameManagers);
+        Set<Class<? extends GameEngine>> allGameEngines = reflections.getSubTypesOf(GameEngine.class);
+        allGameEngines = allGameEngines.stream().filter(aClass -> !Modifier.isAbstract(aClass.getModifiers())).collect(Collectors.toSet());
+        allGameEngines.add(GameEngine.class);
+        ObservableList<Class<? extends GameEngine>> observableGameEngines = FXCollections.observableArrayList(allGameEngines);
+        FilteredList<Class<? extends GameEngine>> filteredGameEngines = new FilteredList<>(observableGameEngines);
 
-        gameEngineList.setItems(filteredGameManagers);
+        gameEngineList.setItems(filteredGameEngines);
 
-        filteredGameManagers.setPredicate(aClass -> false);
+        filteredGameEngines.setPredicate(aClass -> false);
 
-        hiderList.getSelectionModel().selectedItemProperty().addListener(observable -> filteredGameManagers.setPredicate(aClass -> {
+        hiderList.getSelectionModel().selectedItemProperty().addListener(observable -> filteredGameEngines.setPredicate(aClass -> {
             Class selectedSearch = searcherList.getSelectionModel().getSelectedItem();
             Class selectedHide = hiderList.getSelectionModel().getSelectedItem();
             if (selectedHide == null || selectedSearch == null) {
@@ -281,6 +298,7 @@ public class MainController {
 
         try {
             gameManager.set(new GameManager(searcherClass, hiderClass, gameEngineClass));
+            logLabel.setText("Game initialized");
         } catch (Exception e) {
             log.error("Something important crashed", e);
             logLabel.setText("Could not create game");
@@ -295,29 +313,13 @@ public class MainController {
     public void initGameUI() {
         canvasController.drawShapes();
         addWidgets();
-        nextButton.setDisable(false);
     }
 
     public void previousButtonClicked() {
         gameManager.get().previous();
-        if (gameManager.get().isFirstStepShown()) {
-            previousButton.setDisable(true);
-        }
-        nextButton.setDisable(false);
     }
 
     public void nextButtonClicked() {
-        if (gameManager.get().isGameFinished() && gameManager.get().isSimStepLatest()) {
-            nextButton.setDisable(true);
-            logLabel.setText("Game ended");
-            return;
-        }
         gameManager.get().next();
-        if (gameManager.get().isGameFinished() && gameManager.get().isSimStepLatest()) {
-            nextButton.setDisable(true);
-            logLabel.setText("Game ended");
-            return;
-        }
-        previousButton.setDisable(false);
     }
 }
