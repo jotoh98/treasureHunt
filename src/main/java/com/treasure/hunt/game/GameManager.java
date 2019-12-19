@@ -261,8 +261,6 @@ public class GameManager {
         GeometryItem nearestGeometryItem = moves.get(0).getGeometryItems().get(0);
         for (Move move : moves.subList(0, viewIndex.get() + 1)) {
             for (GeometryItem geometryItem : move.getGeometryItems()) {
-                System.out.println(mouse.distance(geometryItem.getGeometry()) + " distance from " + mouse + " and " + geometryItem.getGeometry());
-                System.out.println(mouse.distance(nearestGeometryItem.getGeometry()) + " distance from " + mouse + " and " + nearestGeometryItem.getGeometry());
                 if (mouse.distance(geometryItem.getGeometry()) < mouse.distance(nearestGeometryItem.getGeometry())) {
                     nearestGeometryItem = geometryItem;
                 }
