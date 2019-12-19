@@ -174,6 +174,9 @@ public final class JTSUtils {
     }
 
     public static GeometryAngle validRandomAngle(Coordinate searcher, Coordinate treasure, double maxExtend) {
+        if (maxExtend <= 0) {
+            return null;
+        }
         double givenAngle = Angle.angle(searcher, treasure);
         double extend = Math.random() * maxExtend;
         double start = givenAngle - extend * Math.random();
