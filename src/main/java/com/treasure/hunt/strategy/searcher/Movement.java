@@ -2,7 +2,6 @@ package com.treasure.hunt.strategy.searcher;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
-import lombok.Getter;
 import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
@@ -15,10 +14,8 @@ import java.util.List;
  * @author dorianreineccius
  */
 public class Movement {
-    @Getter
     private List<GeometryItem<Point>> points = new ArrayList<>();
-    @Getter
-    protected List<GeometryItem> additionalGeometryItems = new ArrayList<>();
+    protected List<GeometryItem<?>> additionalGeometryItems = new ArrayList<>();
 
     public Movement() {
     }
@@ -64,5 +61,13 @@ public class Movement {
      */
     public void addAdditionalItem(GeometryItem geometryItem) {
         additionalGeometryItems.add(geometryItem);
+    }
+
+    public List<GeometryItem<Point>> getPoints() {
+        return this.points;
+    }
+
+    public List<GeometryItem<?>> getAdditionalGeometryItems() {
+        return this.additionalGeometryItems;
     }
 }

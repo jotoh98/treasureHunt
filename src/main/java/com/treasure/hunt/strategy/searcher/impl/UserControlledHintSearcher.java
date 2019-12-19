@@ -29,8 +29,8 @@ public class UserControlledHintSearcher implements HideAndSeekSearcher<Hint> {
     @Override
     public Movement move() {
         Point moveTo = SwingUtils.promptForPoint("Please provide a initial move location", "");
-        currentPosition = moveTo;
         Movement movement = new Movement(currentPosition);
+        currentPosition = moveTo;
         movement.addWayPoint(moveTo);
         return movement;
     }
@@ -41,8 +41,8 @@ public class UserControlledHintSearcher implements HideAndSeekSearcher<Hint> {
     @Override
     public Movement move(Hint hint) {
         Point moveTo = SwingUtils.promptForPoint("Please provide a move location", "Hint is: " + hint);
-        currentPosition = moveTo;
         Movement movement = new Movement(currentPosition);
+        currentPosition = moveTo;
         movement.addWayPoint(moveTo);
         return movement;
     }

@@ -14,51 +14,51 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class JTSUtilsPointInAngleTest {
     @Test
     void pointInAngle1() {
-        assertTrue(inAngle1(new Coordinate(0, 0)));
-        assertTrue(inAngle1(new Coordinate(0, 1)));
-        assertTrue(inAngle1(new Coordinate(1, 0)));
-        assertTrue(inAngle1(new Coordinate(1, 1)));
-        assertTrue(inAngle1(new Coordinate(76, 23)));
+        assertTrue(inUpperRightQuadrant(new Coordinate(0, 0)));
+        assertTrue(inUpperRightQuadrant(new Coordinate(0, 1)));
+        assertTrue(inUpperRightQuadrant(new Coordinate(1, 0)));
+        assertTrue(inUpperRightQuadrant(new Coordinate(1, 1)));
+        assertTrue(inUpperRightQuadrant(new Coordinate(76, 23)));
 
-        assertFalse(inAngle1(new Coordinate(-1, 0)));
-        assertFalse(inAngle1(new Coordinate(0, -1)));
-        assertFalse(inAngle1(new Coordinate(-1, -1)));
-        assertFalse(inAngle1(new Coordinate(-54, -23)));
+        assertFalse(inUpperRightQuadrant(new Coordinate(-1, 0)));
+        assertFalse(inUpperRightQuadrant(new Coordinate(0, -1)));
+        assertFalse(inUpperRightQuadrant(new Coordinate(-1, -1)));
+        assertFalse(inUpperRightQuadrant(new Coordinate(-54, -23)));
     }
 
     @Test
     void pointInAngle2() {
-        assertTrue(inAngle2(new Coordinate(0, 0)));
-        assertTrue(inAngle2(new Coordinate(0, 1)));
-        assertTrue(inAngle2(new Coordinate(1, 0)));
-        assertTrue(inAngle2(new Coordinate(1, 1)));
-        assertTrue(inAngle2(new Coordinate(-1, 0)));
-        assertTrue(inAngle2(new Coordinate(-1, 1)));
-        assertTrue(inAngle2(new Coordinate(12, 34)));
+        assertTrue(inUpperHalfPlane(new Coordinate(0, 0)));
+        assertTrue(inUpperHalfPlane(new Coordinate(0, 1)));
+        assertTrue(inUpperHalfPlane(new Coordinate(1, 0)));
+        assertTrue(inUpperHalfPlane(new Coordinate(1, 1)));
+        assertTrue(inUpperHalfPlane(new Coordinate(-1, 0)));
+        assertTrue(inUpperHalfPlane(new Coordinate(-1, 1)));
+        assertTrue(inUpperHalfPlane(new Coordinate(12, 34)));
 
-        assertFalse(inAngle2(new Coordinate(0, -1)));
-        assertFalse(inAngle2(new Coordinate(1, -1)));
-        assertFalse(inAngle2(new Coordinate(-1, -1)));
-        assertFalse(inAngle2(new Coordinate(12, -34)));
+        assertFalse(inUpperHalfPlane(new Coordinate(0, -1)));
+        assertFalse(inUpperHalfPlane(new Coordinate(1, -1)));
+        assertFalse(inUpperHalfPlane(new Coordinate(-1, -1)));
+        assertFalse(inUpperHalfPlane(new Coordinate(12, -34)));
     }
 
     @Test
     void pointInAngle3() {
-        assertTrue(inAngle3(new Coordinate(0, 0)));
-        assertTrue(inAngle3(new Coordinate(0, -1)));
-        assertTrue(inAngle3(new Coordinate(1, 0)));
-        assertTrue(inAngle3(new Coordinate(1, -1)));
-        assertTrue(inAngle3(new Coordinate(-1, 0)));
-        assertTrue(inAngle3(new Coordinate(-1, -1)));
-        assertTrue(inAngle3(new Coordinate(12, -34)));
+        assertTrue(inLowerHalfPlane(new Coordinate(0, 0)));
+        assertTrue(inLowerHalfPlane(new Coordinate(0, -1)));
+        assertTrue(inLowerHalfPlane(new Coordinate(1, 0)));
+        assertTrue(inLowerHalfPlane(new Coordinate(1, -1)));
+        assertTrue(inLowerHalfPlane(new Coordinate(-1, 0)));
+        assertTrue(inLowerHalfPlane(new Coordinate(-1, -1)));
+        assertTrue(inLowerHalfPlane(new Coordinate(12, -34)));
 
-        assertFalse(inAngle3(new Coordinate(0, 1)));
-        assertFalse(inAngle3(new Coordinate(1, 1)));
-        assertFalse(inAngle3(new Coordinate(-1, 1)));
-        assertFalse(inAngle3(new Coordinate(12, 34)));
+        assertFalse(inLowerHalfPlane(new Coordinate(0, 1)));
+        assertFalse(inLowerHalfPlane(new Coordinate(1, 1)));
+        assertFalse(inLowerHalfPlane(new Coordinate(-1, 1)));
+        assertFalse(inLowerHalfPlane(new Coordinate(12, 34)));
     }
 
-    private boolean inAngle1(Coordinate coordinate) {
+    private boolean inUpperRightQuadrant(Coordinate coordinate) {
         return JTSUtils.pointInAngle(
                 new Coordinate(1, 0),
                 new Coordinate(0, 0),
@@ -67,7 +67,7 @@ class JTSUtilsPointInAngleTest {
         );
     }
 
-    private boolean inAngle2(Coordinate coordinate) {
+    private boolean inUpperHalfPlane(Coordinate coordinate) {
         return JTSUtils.pointInAngle(
                 new Coordinate(1, 0),
                 new Coordinate(0, 0),
@@ -76,7 +76,7 @@ class JTSUtilsPointInAngleTest {
         );
     }
 
-    private boolean inAngle3(Coordinate coordinate) {
+    private boolean inLowerHalfPlane(Coordinate coordinate) {
         return JTSUtils.pointInAngle(
                 new Coordinate(-1, 0),
                 new Coordinate(0, 0),

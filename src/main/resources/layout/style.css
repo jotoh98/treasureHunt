@@ -1,0 +1,225 @@
+* {
+    BACKGROUND_COLOR: #383838;
+    BORDER_COLOR: #2a2a2a;
+    LIGHTER_BACKGROUND: #3e4042;
+    DARKER_BACKGROUND: #2f2f2f;
+    DARK_BACKGROUND: #1c1c1c;
+    REQUIRED_RED: red;
+}
+
+#root,
+#main-splitpane {
+    -fx-background-color: BACKGROUND_COLOR;
+}
+
+#logLabel {
+    -fx-text-fill: darkgrey;
+}
+
+.toolbar,
+.combo-box,
+.combo-box .list-cell {
+    -fx-background-color: BACKGROUND_COLOR;
+}
+
+.toolbar {
+    -fx-padding: 0 7pt;
+    -fx-border-color: BORDER_COLOR;
+}
+
+.toolbar.top,
+.toolbar.bottom {
+    -fx-border-width: 0 0 1pt 0;
+    -fx-padding: 0 0 0 10pt;
+}
+
+.toolbar.right,
+.toolbar.left {
+    -fx-padding: 0;
+}
+
+.toolbar.top {
+    -fx-padding: 2pt 10pt;
+}
+
+.toolbar.left {
+    -fx-border-width: 0 1pt 0 0;
+}
+
+.toolbar.right {
+    -fx-border-width: 0 0 0 1pt;
+}
+
+.toolbar.bottom {
+    -fx-border-width: 1pt 0 0 0;
+}
+
+.toolbar * {
+    -fx-text-fill: lightgrey;
+}
+
+.button,
+.toggle-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+    -fx-padding: 3pt 14pt;
+    -fx-font-size: .9em;
+    -fx-border-width: .5pt;
+    -fx-border-color: rgba(255, 255, 255, 0.27);
+}
+
+.toolbar .button,
+.toolbar .toggle-button {
+    -fx-border-width: 0;
+}
+
+.toolbar.top .button {
+    -fx-background-radius: 2pt;
+    -fx-padding: 1pt 10pt;
+}
+
+.toolbar.top .button:hover {
+    -fx-background-color: derive(black, 50%);
+}
+
+.toolbar.right .button,
+.toolbar.left .button,
+.toolbar.right .toggle-button,
+.toolbar.left .toggle-button {
+    -fx-padding: 14pt 4pt;
+}
+
+.toolbar.left .button .label,
+.toolbar.left .toggle-button .label {
+    -fx-rotate: -90deg;
+}
+
+.toolbar.right .button .label,
+.toolbar.right .toggle-button .label {
+    -fx-rotate: 90deg;
+}
+
+
+.button:hover,
+.toggle-button:hover {
+    -fx-background-color: DARKER_BACKGROUND;
+}
+
+
+.toolbar .button:pressed,
+.toolbar .toggle-button:selected {
+    -fx-background-color: DARK_BACKGROUND;
+}
+
+.combo-box {
+    -fx-border-width: .5pt;
+    -fx-border-color: rgba(255, 255, 255, 0.27);
+    -fx-padding: 1.5pt 0pt;
+    -fx-border-radius: 2pt;
+}
+
+.combo-box .arrow {
+    -fx-background-color: white;
+}
+
+.combo-box .list-cell {
+    -fx-padding: 0pt 4pt;
+    -fx-background-color: transparent;
+}
+
+.combo-box-popup .list-view {
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-background-color: black;
+}
+
+.combo-box-popup .list-view {
+    -fx-border-width: 0;
+}
+
+.combo-box-popup .list-view .list-cell {
+    -fx-padding: 3pt 5pt;
+    -fx-cursor: hand;
+}
+
+.combo-box-popup .list-view .list-cell:hover {
+    -fx-background-color: #2946b4;
+    -fx-text-fill: white;
+}
+
+.combo-box .list-view .scroll-bar .increment-button,
+.combo-box .list-view .scroll-bar .decrement-button {
+}
+
+#main-splitpane:horizontal > .split-pane-divider {
+    -fx-padding: 0;
+    -fx-pref-width: 2pt;
+    -fx-background-color: transparent;
+}
+
+#main-splitpane:horizontal {
+    -fx-box-border: transparent;
+}
+
+.scroll-bar:horizontal .track,
+.scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-border-radius: 2em;
+}
+
+.scroll-bar:horizontal .increment-button,
+.scroll-bar:horizontal .decrement-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-padding: 0 0 10 0;
+
+}
+
+.scroll-bar:vertical .increment-button,
+.scroll-bar:vertical .decrement-button {
+
+    -fx-background-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-padding: 0 10 0 0;
+
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-shape: " ";
+    -fx-padding: 0;
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color: derive(black, 90%);
+    -fx-background-insets: 2, 0, 0;
+    -fx-background-radius: 2em;
+
+}
+
+.widget {
+    -fx-padding: 5pt;
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+}
+
+.widget-pane * {
+    -fx-text-fill: white;
+}
+
+.text-field {
+    -fx-border-radius: .5pt;
+    -fx-min-width: 50pt;
+    -fx-max-width: 200pt;
+    -fx-border-color: BORDER_COLOR;
+    -fx-background-color: BACKGROUND_COLOR;
+    -fx-background-radius: 0;
+}
+
+.widget-pane {
+    -fx-background-color: LIGHTER_BACKGROUND;
+    -fx-border-color: transparent;
+}
