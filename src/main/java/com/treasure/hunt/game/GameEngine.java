@@ -149,10 +149,11 @@ public class GameEngine {
         lastHint = hider.move(lastMovement);
         assert (lastHint != null);
         verifyHint(lastHint, treasurePos);
-
-        return new Move(lastHint, lastMovement, treasurePos);
     }
 
+    /**
+     * Lets the {@link GameEngine#searcher} make its move.
+     */
     protected void searcherMove() {
         if (finished.get()) {
             throw new IllegalStateException("Game is already finished");
@@ -218,28 +219,6 @@ public class GameEngine {
                         "but was " + ((CircleHint) hint).getCenter().distance(treasurePosition));
             }
         }
-    }
-
-    /**
-     * Lets the {@link GameEngine#searcher} make its move.
-     */
-    protected void searcherMove() {
-        if (finished) {
-            throw new IllegalStateException("Game is already finished");
-        }
-
-        // Searcher moves
-        if (firstMove) {
-            firstMove = false;
-            lastMovement = searcher.move();
-        } else {
-            lastMovement = searcher.move(lastHint);
-        }
-        assert (lastMovement != null);
-        assert (lastMovement.getPoints().size() != 0);
-        verifyMovement(lastMovement, searcherPos);
-
-        searcherPos = lastMovement.getEndPoint();
     }
 
     /**
