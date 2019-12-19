@@ -4,12 +4,8 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
 
 public class WidgetBarController {
-
     @FXML
     private Pane widgetBar;
-
-    public void initialize() {
-    }
 
     public void addWidget(Pane widget) {
         widget.prefWidthProperty().bind(widgetBar.widthProperty());

@@ -253,7 +253,7 @@ public class GameManager {
      */
     public GeometryItem pickGeometryItem(double x, double y) {
         if (moves.size() < 1) {
-            throw new IllegalStateException("moves list is empty!");
+            return null;
         }
 
         Point mouse = JTSUtils.GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
@@ -266,6 +266,11 @@ public class GameManager {
                 }
             }
         }
-        return nearestGeometryItem;
+        if (mouse.distance(nearestGeometryItem.getGeometry()) <= 2) {
+            return nearestGeometryItem;
+        } else {
+            return null;
+        }
+
     }
 }

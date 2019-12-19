@@ -3,6 +3,7 @@ package com.treasure.hunt.view;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.jts.AdvancedShapeWriter;
 import com.treasure.hunt.jts.PointTransformation;
+import com.treasure.hunt.strategy.geom.GeometryItem;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.canvas.Canvas;
@@ -10,9 +11,15 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import org.jfree.fx.FXGraphics2D;
+import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.math.Vector2D;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class CanvasController {
+    Logger log = LoggerFactory.getLogger("GeometryItemLogger");
+
     public Canvas canvas;
     public Pane canvasPane;
     private ObjectProperty<GameManager> gameManager;
@@ -69,7 +76,11 @@ public class CanvasController {
         dragStart = Vector2D.create(mouseEvent.getX(), mouseEvent.getY());
         Vector2D mousePositionInGameContext = dragStart.subtract(offsetBackup);
         mousePositionInGameContext = mousePositionInGameContext.multiply(1 / transformation.getScale());
-        System.out.println("recognized: " + gameManager.get().pickGeometryItem(mousePositionInGameContext.getX(), -mousePositionInGameContext.getY()).getGeometry());
+        GeometryItem geometryItem = gameManager.get().pickGeometryItem(mousePositionInGameContext.getX(), -mousePositionInGameContext.getY());
+        if (geometryItem != null) {
+            Geometry geometry = geometryItem.getGeometry();
+            log.info("recognized: " + geometry);
+        }
     }
 
     public void onCanvasDragged(MouseEvent mouseEvent) {
