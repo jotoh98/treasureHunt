@@ -2,6 +2,7 @@ package com.treasure.hunt.utils;
 
 import com.treasure.hunt.geom.GeometryAngle;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
+import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.math.Vector2D;
 
@@ -170,5 +171,15 @@ public final class JTSUtils {
 
     public static Vector2D lineVector(LineSegment lineSegment) {
         return new Vector2D(lineSegment.p0, lineSegment.p1);
+    }
+
+    public static GeometryAngle validRandomAngle(Coordinate searcher, Coordinate treasure, double maxExtend) {
+        if (maxExtend <= 0) {
+            return null;
+        }
+        double givenAngle = Angle.angle(searcher, treasure);
+        double extend = Math.random() * maxExtend;
+        double start = givenAngle - extend * Math.random();
+        return new GeometryAngle(GEOMETRY_FACTORY, searcher, start, extend);
     }
 }
