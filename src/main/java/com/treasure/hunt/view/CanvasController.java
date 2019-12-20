@@ -24,6 +24,9 @@ import org.locationtech.jts.math.Vector2D;
 import java.awt.*;
 
 @Slf4j
+/**
+ * @author axel12
+ */
 public class CanvasController {
     public Canvas canvas;
     public Pane canvasPane;
