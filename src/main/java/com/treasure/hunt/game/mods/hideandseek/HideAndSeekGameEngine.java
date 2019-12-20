@@ -7,7 +7,8 @@ import com.treasure.hunt.utils.Requires;
 
 /**
  * In this modification, the hider may reset the
- * treasure location in each move.
+ * treasure location in each move,
+ * after the {@link Searcher} did his {@link com.treasure.hunt.strategy.searcher.Movement}.
  *
  * @author dorianreineccius
  */
@@ -18,8 +19,7 @@ public class HideAndSeekGameEngine extends GameEngine {
     }
 
     /**
-     * In this modification, the {@link GameEngine#hider} can reset the treasure position
-     * and then gives his hint
+     * Let the {@link GameEngine#hider} reset the treasure position and give his {@link com.treasure.hunt.strategy.hint.Hint}.
      */
     protected void moveHider() {
         treasurePos = hider.getTreasureLocation(); // Difference between GameEngine and HideAndSeekGameEngine.

@@ -109,7 +109,7 @@ public class CanvasController {
         mousePositionInGameContext = mousePositionInGameContext.multiply(1 / transformation.getScale());
         GeometryItem geometryItem = gameManager.get().pickGeometryItem(
                 new Coordinate(mousePositionInGameContext.getX(), -mousePositionInGameContext.getY()),
-                3 * transformation.getScale());
+                3);
         if (geometryItem != null) {
             Geometry geometry = geometryItem.getGeometry();
             log.info("recognized: " + geometry);

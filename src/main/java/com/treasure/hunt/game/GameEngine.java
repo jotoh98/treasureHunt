@@ -122,7 +122,7 @@ public class GameEngine {
 
         // Check, whether treasure spawns in range of searcher
         if (located(Collections.singletonList(new GeometryItem<>(searcherPos, GeometryType.WAY_POINT)), treasurePos)) {
-            finish();
+            setFinished(true);
         }
 
         return new Move(
@@ -143,7 +143,7 @@ public class GameEngine {
         searcherMove();
 
         if (located(lastMovement.getPoints(), treasurePos)) {
-            finish();
+            setFinished(true);
             return new Move(null, lastMovement, treasurePos);
         } else {
             hiderMove();
@@ -236,8 +236,8 @@ public class GameEngine {
     /**
      * Setter for {@link GameEngine#finished}.
      */
-    protected void finish() {
-        finished.set(true);
+    protected void setFinished(boolean bool) {
+        finished.set(bool);
     }
 
     /**
