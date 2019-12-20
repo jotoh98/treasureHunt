@@ -1,10 +1,12 @@
 package com.treasure.hunt.utils;
 
+import com.treasure.hunt.geom.GeometryAngle;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JTSUtilsTest {
@@ -194,5 +196,34 @@ class JTSUtilsTest {
     private void neq(Coordinate expected, Coordinate actual) {
         assertTrue(Math.abs(expected.x - actual.x) > 0.0001 || Math.abs(expected.y - actual.y) > 0.0001,
                 "Expected: x≠" + expected.x + " or y≠" + expected.y + ", but was ≈(" + actual.x + ", " + actual.y + ").");
+    }
+
+    @Test
+    void randomAngleTest() {
+        for (int i = 0; i < 100; i++) {
+            final Coordinate searcher = new Coordinate(Math.random() * 100, Math.random() * 100);
+            final Coordinate treasure = new Coordinate(Math.random() * 100, Math.random() * 100);
+            final GeometryAngle angle = JTSUtils.validRandomAngle(searcher, treasure, 2 * Math.PI);
+            assertInAngle(angle, treasure);
+        }
+    }
+
+    @Test
+    void invalidRandomAngles() {
+        final Coordinate searcher = new Coordinate(Math.random() * 100, Math.random() * 100);
+        final Coordinate treasure = new Coordinate(Math.random() * 100, Math.random() * 100);
+        final GeometryAngle invalidExtend = JTSUtils.validRandomAngle(searcher, treasure, 0);
+        assertNull(invalidExtend);
+    }
+
+    @Test
+    void treasureAtRandomAngleCenter() {
+        final Coordinate sameCoordinate = new Coordinate();
+        final GeometryAngle emptyAngle = JTSUtils.validRandomAngle(sameCoordinate, sameCoordinate, 2 * Math.PI);
+        assertInAngle(emptyAngle, sameCoordinate);
+    }
+
+    void assertInAngle(GeometryAngle angle, Coordinate coordinate) {
+        assertTrue(JTSUtils.pointInAngle(angle, coordinate));
     }
 }

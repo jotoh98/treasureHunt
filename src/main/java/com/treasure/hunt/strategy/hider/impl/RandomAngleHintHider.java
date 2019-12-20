@@ -4,7 +4,6 @@ import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.utils.JTSUtils;
-import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
@@ -38,9 +37,7 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
         double rightY = searcherPos.getY() + (Math.sin(rightAngle) * 1);
 
         return new AngleHint(
-                new Coordinate(rightX, rightY),
-                searcherPos,
-                new Coordinate(leftX, leftY)
+                JTSUtils.validRandomAngle(searcherPos, treasurePos.getCoordinate(), 2 * Math.PI)
         );
     }
 }
