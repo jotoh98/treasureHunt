@@ -2,7 +2,8 @@ package com.treasure.hunt.view;
 
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.geom.CircleHighlighter;
-import com.treasure.hunt.geom.RectangleHighlighter;
+import com.treasure.hunt.geom.RectangleFixedHighlighter;
+import com.treasure.hunt.geom.RectangleVariableHighlighter;
 import com.treasure.hunt.jts.AdvancedShapeWriter;
 import com.treasure.hunt.jts.PointTransformation;
 import com.treasure.hunt.strategy.geom.GeometryItem;
@@ -19,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jfree.fx.FXGraphics2D;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.math.Vector2D;
 
@@ -128,12 +130,42 @@ public class CanvasController {
             Geometry geometry = geometryItem.getGeometry();
             log.info("recognized: " + geometry); // TODO delete
             this.selected = geometryItem;
-            this.highlighter = new GeometryItem(
-                    new RectangleHighlighter(
-                            selected.getGeometry().getCoordinate(),
-                            50, 50, JTSUtils.GEOMETRY_FACTORY),
-                    GeometryType.STANDARD,
-                    new GeometryStyle(true, Color.YELLOW));
+            if (geometryItem.getGeometry() instanceof Point) {
+                this.highlighter = new GeometryItem(
+                        new RectangleFixedHighlighter(
+                                selected.getGeometry().getCoordinate(),
+                                50, 50, JTSUtils.GEOMETRY_FACTORY),
+                        GeometryType.STANDARD,
+                        new GeometryStyle(true, Color.YELLOW));
+            } else if (geometryItem.getGeometry() instanceof LineString) {
+                double minX = geometryItem.getGeometry().getCoordinates()[0].x;
+                double maxY = geometryItem.getGeometry().getCoordinates()[0].y;
+                double maxX = geometryItem.getGeometry().getCoordinates()[0].x;
+                double minY = geometryItem.getGeometry().getCoordinates()[0].y;
+                for (Coordinate coord : geometryItem.getGeometry().getCoordinates()) {
+                    if (coord.x < minX) {
+                        minX = coord.x;
+                    }
+                    if (coord.x > maxX) {
+                        maxX = coord.x;
+                    }
+                    if (coord.y < minY) {
+                        minY = coord.y;
+                    }
+                    if (coord.y > minY) {
+                        maxY = coord.y;
+                    }
+                }
+                this.highlighter = new GeometryItem(
+                        new RectangleVariableHighlighter(
+                                new Coordinate(minX, maxY),
+                                maxX - minX, maxY - minY,
+                                JTSUtils.GEOMETRY_FACTORY),
+                        GeometryType.STANDARD,
+                        new GeometryStyle(true, Color.YELLOW));
+                System.out.println(minX + ":" + minY + ":" + maxX + ":" + maxY);
+                System.out.println("width: " + (maxX - minX) + " height: " + (maxY - minY));
+            }
         }
     }
 
