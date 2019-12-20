@@ -12,7 +12,8 @@ import static org.locationtech.jts.algorithm.Angle.angleBetweenOriented;
  * @author Rank, dorianreineccius
  */
 public class JTSUtils {
-    public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
+    public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(1000));
+    //public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
     /**
      * @param x coordinate.
@@ -49,6 +50,11 @@ public class JTSUtils {
         if (distance != 0)
             return null;
         return intersection;
+    }
+
+    public static boolean doubleEqual(double a, double b) {
+        return (0 == GEOMETRY_FACTORY.getPrecisionModel().makePrecise(a - b));
+
     }
 
     /**

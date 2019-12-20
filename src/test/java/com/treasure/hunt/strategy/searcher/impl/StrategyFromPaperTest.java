@@ -22,25 +22,25 @@ public class StrategyFromPaperTest {
         strat.init(JTSUtils.createPoint(0, 0));
     }
 
+    void assertPoints(List<GeometryItem<Point>> strat_points, Point[] true_points) {
+        assertTrue(strat_points.size() == true_points.length,
+                "Length of moves equals " + strat_points.size() + " and should equal " + true_points.length);
+        for (int i = 0; i < true_points.length; i++) {
+            assertTrue(true_points[i].equalsExact(strat_points.get(i).getObject(), 0.000000000000001),
+                    "Point " + i + " equals " + strat_points.get(i).getObject().toString() + " and should equal " +
+                            true_points[i].toString());
+        }
+    }
+
     @Test
     void moveOnce() {
         Movement move = strat.move();
         List<GeometryItem<Point>> points = move.getPoints();
         Point[] true_points = new Point[]{
-                createPoint(-1, 1), createPoint(-1, -1), createPoint(0, -1), createPoint(0, 1),
-                createPoint(1, 1), createPoint(1, -1), createPoint(0, 0)
+                createPoint(0, 0), createPoint(-1, 1), createPoint(-1, -1), createPoint(0, -1),
+                createPoint(0, 1), createPoint(1, 1), createPoint(1, -1), createPoint(0, 0)
         };
         assertPoints(points, true_points);
-    }
-
-    void assertPoints(List<GeometryItem<Point>> strat, Point[] true_points) {
-        assertTrue(strat.size() == true_points.length,
-                "Length of moves equals " + strat.size() + " and should equal " + true_points.length);
-        for (int i = 0; i < true_points.length; i++) {
-            assertTrue(true_points[i].equalsExact(strat.get(i).getObject(), 0.000000000000001),
-                    "Point " + i + " equals " + strat.get(i).getObject().toString() + " and should equal " +
-                            true_points[i].toString());
-        }
     }
 
     @Test
@@ -48,11 +48,12 @@ public class StrategyFromPaperTest {
         moveOnce();
         HalfPlaneHint hint = new HalfPlaneHint(createPoint(-2, 1), createPoint(2, -1), right);
         List<GeometryItem<Point>> points = strat.move(hint).getPoints();
-        assertPoints(points, new Point[]{createPoint(0, 0.5)});
+        assertPoints(points, new Point[]{createPoint(0, 0), createPoint(0, 0.5)});
 
         hint = new HalfPlaneHint(createPoint(-2, 0.5), createPoint(2, 0.5), down);
         points = strat.move(hint).getPoints();
         Point[] true_points = new Point[]{
+                createPoint(0, 0.5),
                 createPoint(-2, 2), createPoint(-2, -1), createPoint(-1, -1), createPoint(-1, 2),
                 createPoint(0, 2), createPoint(0, -1), createPoint(1, -1), createPoint(1, 2),
                 createPoint(2, 2), createPoint(2, -1), createPoint(0, 0)
@@ -65,17 +66,17 @@ public class StrategyFromPaperTest {
         moveTwice();
         HalfPlaneHint hint = new HalfPlaneHint(createPoint(-4, 3), createPoint(4, -3), left);
         List<GeometryItem<Point>> points = strat.move(hint).getPoints();
-        Point[] true_points = new Point[]{createPoint(0, -0.5)};
+        Point[] true_points = new Point[]{createPoint(0, 0), createPoint(0, -0.5)};
         assertPoints(points, true_points);
 
         hint = new HalfPlaneHint(createPoint(2.5, 3), createPoint(-2.5, -4), right);
         points = strat.move(hint).getPoints();
-        true_points = new Point[]{createPoint(0.75, -0.5)};
+        true_points = new Point[]{createPoint(0, -0.5), createPoint(0.75, -0.5)};
         assertPoints(points, true_points);
 
         hint = new HalfPlaneHint(createPoint(-4, -0.5), createPoint(4, -0.5), up);
         points = strat.move(hint).getPoints();
-        true_points = new Point[]{createPoint(0.75, 1.25)};
+        true_points = new Point[]{createPoint(0.75, -0.5), createPoint(0.75, 1.25)};
         assertPoints(points, true_points);
 
         hint = new HalfPlaneHint(createPoint(-2.5, 3), createPoint(4, -0.5), right);
@@ -84,5 +85,26 @@ public class StrategyFromPaperTest {
             System.out.print(points.get(i).getObject());
         }
         System.out.println();
+    }
+
+    @Test
+    void moveBadHint() {
+        moveOnce();
+        HalfPlaneHint hint = new HalfPlaneHint(createPoint(0, 0),
+                createPoint(0.8269335876981098, -0.5622996012240562));
+        List<GeometryItem<Point>> points = strat.move(hint).getPoints();
+        Point[] true_points = new Point[]{createPoint(0, 0),
+                createPoint(1.1245992024481124, 1.6538671753962195)};
+        hint = new HalfPlaneHint(createPoint(1.1245992024481124, 1.6538671753962195),
+                createPoint(1.2148090667719662, 0.6579443970751934));
+        strat.move(hint);
+    }
+
+    @Test
+    void testStrategyFromPaperInternMethods() {
+        StrategyFromPaper.TestThisClass tester = new StrategyFromPaper.TestThisClass(strat);
+        tester.testBadCases();
+        tester.testPhiHint();
+        tester.testPhiRectangle();
     }
 }
