@@ -6,11 +6,15 @@ import org.locationtech.jts.geom.*;
 import org.locationtech.jts.math.Vector2D;
 
 /**
- * Contains JTS Utilities.
+ * A utility class for the work with {@link org.locationtech.jts}.
  *
  * @author Rank, dorianreineccius, jotoh, axel12
  */
 public final class JTSUtils {
+    /**
+     * A static final shared {@link GeometryFactory} we use, such that every usage
+     * uses the same settings of the geometry factory.
+     */
     public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
     private JTSUtils() {
@@ -112,7 +116,7 @@ public final class JTSUtils {
     }
 
     /**
-     * Proof, that the x- or y-coordinates of two vectors have the same sign.
+     * Proofs, that the x- or y-coordinates of two vectors have the same sign.
      *
      * @param v0 first vector to check
      * @param v1 second vector to check
@@ -145,7 +149,7 @@ public final class JTSUtils {
     }
 
     /**
-     * Test, if a given coordinate lays inside of the viewing angle given by a {@link GeometryAngle}.
+     * Tests, whether a given coordinate lays inside of the viewing angle given by a {@link GeometryAngle}.
      *
      * @param geometryAngle the view {@link GeometryAngle} the method looks upon searching the given point
      * @param coordinate    the {@link Coordinate}, we want to know, whether it lies in the angle

@@ -10,6 +10,7 @@ import java.awt.*;
 /**
  * Classifies a jts geometry item with parameters to distinguish between items for visualization/algorithm usages.
  *
+ * @author jotoh, dorianreineccius
  * @see GeometryType for further information about how to classifiy a geometry item.
  */
 

@@ -17,6 +17,7 @@ import java.awt.geom.Point2D;
  * actions. Furthermore, it manages the bounding box representing the visual frame of the canvas inside the
  * mathematical vector space. This boundary is used for certain rendering purposes.
  *
+ * @author jotoh
  * @version 1.0
  */
 @AllArgsConstructor
