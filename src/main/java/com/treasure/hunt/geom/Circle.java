@@ -17,6 +17,10 @@ public class Circle extends Polygon {
      * The radius of the circle.
      */
     double radius;
+    /**
+     * The coordinate of this circle's center.
+     */
+    Coordinate coordinate;
 
     /**
      * The constructor
@@ -28,6 +32,10 @@ public class Circle extends Polygon {
      */
     public Circle(Coordinate coordinate, double radius, int numOfPoints, GeometryFactory geometryFactory) {
         super(null, null, geometryFactory);
+
+        this.radius = radius;
+        this.coordinate = coordinate;
+
         GeometricShapeFactory geometricShapeFactory = new GeometricShapeFactory(geometryFactory);
         geometricShapeFactory.setNumPoints(numOfPoints);
         geometricShapeFactory.setCentre(coordinate);

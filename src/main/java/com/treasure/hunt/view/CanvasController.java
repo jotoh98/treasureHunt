@@ -1,7 +1,7 @@
 package com.treasure.hunt.view;
 
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.geom.Circle;
+import com.treasure.hunt.geom.CircleHighlighter;
 import com.treasure.hunt.jts.AdvancedShapeWriter;
 import com.treasure.hunt.jts.PointTransformation;
 import com.treasure.hunt.strategy.geom.GeometryItem;
@@ -72,7 +72,8 @@ public class CanvasController {
                 for (GeometryItem geometryItem : gameManager.get().getGeometryItems(true)) {
                     if (geometryItem.getGeometry() instanceof Point) {
                         GeometryItem greenCircle = new GeometryItem<>(
-                                new Circle(geometryItem.getGeometry().getCoordinate(), 3, JTSUtils.GEOMETRY_FACTORY),
+                                new CircleHighlighter(geometryItem.getGeometry().getCoordinate(),
+                                        50, 64, JTSUtils.GEOMETRY_FACTORY),
                                 GeometryType.STANDARD,
                                 new GeometryStyle(true, Color.GREEN)
                         );
@@ -109,7 +110,7 @@ public class CanvasController {
         mousePositionInGameContext = mousePositionInGameContext.multiply(1 / transformation.getScale());
         GeometryItem geometryItem = gameManager.get().pickGeometryItem(
                 new Coordinate(mousePositionInGameContext.getX(), -mousePositionInGameContext.getY()),
-                3);
+                50 / transformation.getScale());
         if (geometryItem != null) {
             Geometry geometry = geometryItem.getGeometry();
             log.info("recognized: " + geometry);
