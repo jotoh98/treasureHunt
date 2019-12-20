@@ -204,12 +204,29 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.geom">
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate)">GeometryAngle</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;right,
+             org.locationtech.jts.geom.Coordinate&nbsp;center,
+             org.locationtech.jts.geom.Coordinate&nbsp;left)</code></th>
+<td class="colLast">
+<div class="block">GeometryAngle with standard geometry factory.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.locationtech.jts.geom.GeometryFactory,org.locationtech.jts.geom.Coordinate,double,double)">GeometryAngle</a></span>&#8203;(org.locationtech.jts.geom.GeometryFactory&nbsp;factory,
+             org.locationtech.jts.geom.Coordinate&nbsp;center,
+             double&nbsp;start,
+             double&nbsp;extend)</code></th>
+<td class="colLast">
+<div class="block">GeometryAngle constructor via the central <code>Coordinate</code>, the start angle and the angles extend.</div>
+</td>
+</tr>
+<tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.locationtech.jts.geom.GeometryFactory,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate)">GeometryAngle</a></span>&#8203;(org.locationtech.jts.geom.GeometryFactory&nbsp;factory,
              org.locationtech.jts.geom.Coordinate&nbsp;right,
              org.locationtech.jts.geom.Coordinate&nbsp;center,
              org.locationtech.jts.geom.Coordinate&nbsp;left)</code></th>
 <td class="colLast">
-<div class="block">Creates a new <code>Geometry</code> via the specified GeometryFactory.</div>
+<div class="block">GeometryAngle constructor via three <code>Coordinate</code>s.</div>
 </td>
 </tr>
 </table>
@@ -341,20 +358,58 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.geom">
 <a id="&lt;init&gt;(org.locationtech.jts.geom.GeometryFactory,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>GeometryAngle</h4>
 <pre>public&nbsp;GeometryAngle&#8203;(org.locationtech.jts.geom.GeometryFactory&nbsp;factory,
                      org.locationtech.jts.geom.Coordinate&nbsp;right,
                      org.locationtech.jts.geom.Coordinate&nbsp;center,
                      org.locationtech.jts.geom.Coordinate&nbsp;left)</pre>
-<div class="block">Creates a new <code>Geometry</code> via the specified GeometryFactory.</div>
+<div class="block">GeometryAngle constructor via three <code>Coordinate</code>s.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>factory</code> - The GeometryFactory suggested to create the <code>Angle</code></dd>
 <dd><code>right</code> - the right angles arm end point</dd>
 <dd><code>center</code> - the central point of the angle</dd>
 <dd><code>left</code> - the left angles arm end point</dd>
+</dl>
+</li>
+</ul>
+<a id="&lt;init&gt;(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>GeometryAngle</h4>
+<pre>public&nbsp;GeometryAngle&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;right,
+                     org.locationtech.jts.geom.Coordinate&nbsp;center,
+                     org.locationtech.jts.geom.Coordinate&nbsp;left)</pre>
+<div class="block">GeometryAngle with standard geometry factory.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>right</code> - the right angles arm end point</dd>
+<dd><code>center</code> - the central point of the angle</dd>
+<dd><code>left</code> - the left angles arm end point</dd>
+</dl>
+</li>
+</ul>
+<a id="&lt;init&gt;(org.locationtech.jts.geom.GeometryFactory,org.locationtech.jts.geom.Coordinate,double,double)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>GeometryAngle</h4>
+<pre>public&nbsp;GeometryAngle&#8203;(org.locationtech.jts.geom.GeometryFactory&nbsp;factory,
+                     org.locationtech.jts.geom.Coordinate&nbsp;center,
+                     double&nbsp;start,
+                     double&nbsp;extend)</pre>
+<div class="block">GeometryAngle constructor via the central <code>Coordinate</code>, the start angle and the angles extend.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>factory</code> - The GeometryFactory suggested to create the <code>Angle</code></dd>
+<dd><code>center</code> - the central point of the angle</dd>
+<dd><code>start</code> - starting angle relative to x-axis</dd>
+<dd><code>extend</code> - angle extend</dd>
 </dl>
 </li>
 </ul>
