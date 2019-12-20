@@ -7,8 +7,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * @param <C> controller
- * @param <P> component
  * @author jotoh
  */
 @Slf4j
