@@ -36,6 +36,10 @@ import java.util.stream.Stream;
 @Slf4j
 public class GameManager {
 
+    /**
+     * A thread that is invoked by {@link GameManager#beat(ReadOnlyObjectProperty)} and stopped by {@link GameManager#stopBeat()}.
+     * He executes {@link GameManager#move(int)} in a given interval.
+     */
     private Thread beatThread;
 
     @Getter
@@ -252,7 +256,8 @@ public class GameManager {
         GeometryItem nearestGeometryItem = moves.get(0).getGeometryItems().get(0);
         for (Move move : moves.subList(0, viewIndex.get() + 1)) {
             for (GeometryItem geometryItem : move.getGeometryItems()) {
-                if (mouse.distance(geometryItem.getGeometry()) < mouse.distance(nearestGeometryItem.getGeometry())) {
+                if (mouse.distance(geometryItem.getGeometry()) < mouse.distance(nearestGeometryItem.getGeometry()) &&
+                        geometryItem.getGeometryStyle().isVisible()) {
                     nearestGeometryItem = geometryItem;
                 }
             }

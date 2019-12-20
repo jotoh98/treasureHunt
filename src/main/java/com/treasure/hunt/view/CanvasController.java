@@ -2,6 +2,7 @@ package com.treasure.hunt.view;
 
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.geom.CircleHighlighter;
+import com.treasure.hunt.geom.RectangleHighlighter;
 import com.treasure.hunt.jts.AdvancedShapeWriter;
 import com.treasure.hunt.jts.PointTransformation;
 import com.treasure.hunt.strategy.geom.GeometryItem;
@@ -25,9 +26,17 @@ import java.awt.*;
 
 @Slf4j
 /**
- * @author axel12
+ * @author axel12, dorianreineccius
  */
 public class CanvasController {
+    /**
+     * The maximum distance on canvas between the mouse and a {@link GeometryItem},
+     * in which the mouse can select a {@link GeometryItem} on click.
+     */
+    public static final double MOUSE_RECOGNIZE_DISTANCE = 50;
+    private GeometryItem selected;
+    private GeometryItem highlighter;
+
     public Canvas canvas;
     public Pane canvasPane;
     private ObjectProperty<GameManager> gameManager;
@@ -80,6 +89,10 @@ public class CanvasController {
                         greenCircle.draw(graphics2D, shapeWriter);
                     }
                 }
+                // TODO not delete
+                if (this.highlighter != null) {
+                    this.highlighter.draw(graphics2D, shapeWriter);
+                }
             }
         });
     }
@@ -107,13 +120,20 @@ public class CanvasController {
         offsetBackup = transformation.getOffset();
         dragStart = Vector2D.create(mouseEvent.getX(), mouseEvent.getY());
         Vector2D mousePositionInGameContext = dragStart.subtract(offsetBackup);
-        mousePositionInGameContext = mousePositionInGameContext.multiply(1 / transformation.getScale());
+        mousePositionInGameContext = mousePositionInGameContext.divide(transformation.getScale());
         GeometryItem geometryItem = gameManager.get().pickGeometryItem(
                 new Coordinate(mousePositionInGameContext.getX(), -mousePositionInGameContext.getY()),
-                50 / transformation.getScale());
+                MOUSE_RECOGNIZE_DISTANCE / transformation.getScale());
         if (geometryItem != null) {
             Geometry geometry = geometryItem.getGeometry();
-            log.info("recognized: " + geometry);
+            log.info("recognized: " + geometry); // TODO delete
+            this.selected = geometryItem;
+            this.highlighter = new GeometryItem(
+                    new RectangleHighlighter(
+                            selected.getGeometry().getCoordinate(),
+                            50, 50, JTSUtils.GEOMETRY_FACTORY),
+                    GeometryType.STANDARD,
+                    new GeometryStyle(true, Color.YELLOW));
         }
     }
 

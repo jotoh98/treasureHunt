@@ -14,7 +14,6 @@ public class CircleHighlighter extends Circle implements Shapeable {
 
     @Override
     public Shape toShape(AdvancedShapeWriter shapeWriter) {
-        // dest - radius
         Point dest = new Point();
 
         shapeWriter.transform(coordinate, dest);
