@@ -13,9 +13,9 @@ import java.awt.geom.GeneralPath;
  * The Angle is an geometric representation of an angle at a certain position.
  * It is defined by 3 {@link Coordinate}'s ordered the named way in the {@link GeometryUtility#coordinates} array:
  * <ul>
- *     <li>the center point,</li>
- *     <li>the left point and</li>
- *     <li>the right point.</li>
+ *     <li>the right point,</li>
+ *     <li>the center point and</li>
+ *     <li>the left point.</li>
  * </ul>
  * These points are understood in a counter-clockwise looking way from the center point.
  */

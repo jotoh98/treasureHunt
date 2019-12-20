@@ -28,7 +28,6 @@ public enum GeometryType {
     TREASURE(true, "no treasure"),
 
     // Obstacle add-on
-    OBSTACLE(false, "no treasure"),
     WAY_POINT(true, "no treasure"),
 
     STANDARD(true, ""),

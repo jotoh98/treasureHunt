@@ -13,7 +13,6 @@ import java.awt.*;
  *
  * @see GeometryType for further information about how to classifiy a geometry item.
  */
-
 @Getter
 public class GeometryItem<T extends Geometry> {
     @NonNull
@@ -37,6 +36,12 @@ public class GeometryItem<T extends Geometry> {
         this(geometry, geometryType, GeometryStyle.getDefaults(geometryType));
     }
 
+    /**
+     * This draws {@code this} GeometryItem on the {@code graphics2D}.
+     *
+     * @param graphics2D  the {@link Graphics2D} to draw {@code this} on.
+     * @param shapeWriter the {@link org.locationtech.jts.awt.ShapeWriter} converting the {@link Geometry} of {@code this} to a {@link Shape}.
+     */
     public void draw(FXGraphics2D graphics2D, AdvancedShapeWriter shapeWriter) {
         if (!geometryStyle.isVisible()) {
             return;

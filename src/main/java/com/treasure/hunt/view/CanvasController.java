@@ -1,25 +1,30 @@
 package com.treasure.hunt.view;
 
 import com.treasure.hunt.game.GameManager;
+import com.treasure.hunt.geom.Circle;
 import com.treasure.hunt.jts.AdvancedShapeWriter;
 import com.treasure.hunt.jts.PointTransformation;
 import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.geom.GeometryStyle;
+import com.treasure.hunt.strategy.geom.GeometryType;
+import com.treasure.hunt.utils.JTSUtils;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
+import lombok.extern.slf4j.Slf4j;
 import org.jfree.fx.FXGraphics2D;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.math.Vector2D;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 
+@Slf4j
 public class CanvasController {
-    Logger log = LoggerFactory.getLogger("GeometryItemLogger");
-
     public Canvas canvas;
     public Pane canvasPane;
     private ObjectProperty<GameManager> gameManager;
@@ -47,6 +52,9 @@ public class CanvasController {
         canvas.widthProperty().bind(canvasPane.widthProperty());
     }
 
+    /**
+     * This method clears and draws all current {@link GeometryItem} given by the {@link GameManager} on the canvas.
+     */
     void drawShapes() {
         Platform.runLater(() -> {
             if (gameManager == null) {
@@ -57,10 +65,24 @@ public class CanvasController {
                 gameManager.get().getGeometryItems(true).forEach(geometryItem ->
                         geometryItem.draw(graphics2D, shapeWriter)
                 );
+                // TODO delete the following loop! (testing purposes)
+                for (GeometryItem geometryItem : gameManager.get().getGeometryItems(true)) {
+                    if (geometryItem.getGeometry() instanceof Point) {
+                        GeometryItem greenCircle = new GeometryItem<>(
+                                new Circle(geometryItem.getGeometry().getCoordinate(), 3, JTSUtils.GEOMETRY_FACTORY),
+                                GeometryType.STANDARD,
+                                new GeometryStyle(true, Color.GREEN)
+                        );
+                        greenCircle.draw(graphics2D, shapeWriter);
+                    }
+                }
             }
         });
     }
 
+    /**
+     * This clears the {@link GeometryItem}'s from the canvas.
+     */
     private void deleteShapes() {
         if (gameManager == null) {
             return;
@@ -68,6 +90,12 @@ public class CanvasController {
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
+    /**
+     * This is executed, when the mouse is been clicked on the canvas.
+     * It will select the nearest {@link GeometryItem} to the clicked position.
+     *
+     * @param mouseEvent corresponding {@link MouseEvent}
+     */
     public void onCanvasClicked(MouseEvent mouseEvent) {
         if (gameManager == null) {
             return;
@@ -76,7 +104,9 @@ public class CanvasController {
         dragStart = Vector2D.create(mouseEvent.getX(), mouseEvent.getY());
         Vector2D mousePositionInGameContext = dragStart.subtract(offsetBackup);
         mousePositionInGameContext = mousePositionInGameContext.multiply(1 / transformation.getScale());
-        GeometryItem geometryItem = gameManager.get().pickGeometryItem(mousePositionInGameContext.getX(), -mousePositionInGameContext.getY());
+        GeometryItem geometryItem = gameManager.get().pickGeometryItem(
+                new Coordinate(mousePositionInGameContext.getX(), -mousePositionInGameContext.getY()),
+                3 * transformation.getScale());
         if (geometryItem != null) {
             Geometry geometry = geometryItem.getGeometry();
             log.info("recognized: " + geometry);
@@ -117,7 +147,6 @@ public class CanvasController {
             }
             this.gameManager.get().getViewIndex()
                     .addListener(observable1 -> drawShapes());
-
         });
     }
 }

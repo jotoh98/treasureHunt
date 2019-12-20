@@ -128,15 +128,6 @@ public class GameManager {
 
     /**
      * This simulates the whole game, until its finished.
-     */
-    public void beat() {
-        while (!gameEngine.isFinished()) {
-            next();
-        }
-    }
-
-    /**
-     * This simulates the whole game, until its finished.
      *
      * @param delay time between each move
      */
@@ -247,16 +238,16 @@ public class GameManager {
     }
 
     /**
-     * @param x position on the canvas
-     * @param y position on the canvas
-     * @return the nearest {@link GeometryItem} to x and y
+     * @param coordinate the point on the canvas, we want to get the closest {@link GeometryType} to.
+     * @param distance   the maximum distance to a potential {@link GeometryItem}.
+     * @return the nearest {@link GeometryItem} to {@code (x,y)}, with a maximum distance of {@code distance}.
      */
-    public GeometryItem pickGeometryItem(double x, double y) {
+    public GeometryItem pickGeometryItem(Coordinate coordinate, double distance) {
         if (moves.size() < 1) {
             return null;
         }
 
-        Point mouse = JTSUtils.GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
+        Point mouse = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinate);
 
         GeometryItem nearestGeometryItem = moves.get(0).getGeometryItems().get(0);
         for (Move move : moves.subList(0, viewIndex.get() + 1)) {
@@ -266,11 +257,10 @@ public class GameManager {
                 }
             }
         }
-        if (mouse.distance(nearestGeometryItem.getGeometry()) <= 2) {
+        if (mouse.distance(nearestGeometryItem.getGeometry()) <= distance) {
             return nearestGeometryItem;
         } else {
             return null;
         }
-
     }
 }
