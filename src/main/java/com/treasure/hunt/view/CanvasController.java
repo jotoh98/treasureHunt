@@ -167,6 +167,7 @@ public class CanvasController {
                 System.out.println("width: " + (maxX - minX) + " height: " + (maxY - minY));
             }
         }
+        drawShapes();
     }
 
     public void onCanvasDragged(MouseEvent mouseEvent) {

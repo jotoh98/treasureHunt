@@ -4,6 +4,9 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
 
+/**
+ * @author dorianreineccius
+ */
 public class RectangleVariableHighlighter extends Polygon {
     /**
      * Coordinate of the upper left corner.

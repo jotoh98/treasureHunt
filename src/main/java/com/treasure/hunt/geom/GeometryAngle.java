@@ -19,6 +19,8 @@ import java.awt.geom.GeneralPath;
  *     <li>the left point.</li>
  * </ul>
  * These points are understood in a counter-clockwise looking way from the center point.
+ *
+ * @author jotoh
  */
 public class GeometryAngle extends LineString implements Shapeable {
 

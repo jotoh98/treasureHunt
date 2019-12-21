@@ -6,6 +6,9 @@ import org.locationtech.jts.geom.GeometryFactory;
 
 import java.awt.*;
 
+/**
+ * @author dorianreineccius
+ */
 public class RectangleFixedHighlighter extends RectangleVariableHighlighter implements Shapeable {
     /**
      * Coordinate of the upper left corner.

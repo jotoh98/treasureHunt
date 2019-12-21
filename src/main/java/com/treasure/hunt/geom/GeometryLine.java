@@ -2,6 +2,9 @@ package com.treasure.hunt.geom;
 
 import org.locationtech.jts.geom.*;
 
+/**
+ * @authro jotoh
+ */
 public class GeometryLine extends Geometry {
     /**
      * Creates a new <code>Geometry</code> via the specified GeometryFactory.

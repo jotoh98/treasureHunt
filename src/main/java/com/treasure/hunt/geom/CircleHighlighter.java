@@ -7,6 +7,9 @@ import org.locationtech.jts.geom.GeometryFactory;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 
+/**
+ * @author dorianreineccius
+ */
 public class CircleHighlighter extends Circle implements Shapeable {
     public CircleHighlighter(Coordinate coordinate, double radius, int numOfPoints, GeometryFactory geometryFactory) {
         super(coordinate, radius, numOfPoints, geometryFactory);

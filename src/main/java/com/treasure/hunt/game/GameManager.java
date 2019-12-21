@@ -11,7 +11,6 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -76,10 +75,6 @@ public class GameManager {
         // Do initial move
         moves.add(gameEngine.init(JTSUtils.createPoint(0, 0)));
         viewIndex.set(0);
-    }
-
-    public void addListener(ListChangeListener<? super Move> listChangeListener) {
-        moves.addListener(listChangeListener);
     }
 
     public ObjectBinding<Move> lastMove() {
@@ -200,15 +195,6 @@ public class GameManager {
     }
 
     /**
-     * @return whether the game of the {@link GameEngine} is finished or not.
-     */
-    public boolean isGameFinished() {
-        return gameEngine.isFinished();
-    }
-
-    /**
-     * Delegate for game engine finished property
-     *
      * @return finished property
      */
     public BooleanProperty getGameFinishedProperty() {
@@ -216,7 +202,7 @@ public class GameManager {
     }
 
     /**
-     * @return true if the shown step is the most up to date one
+     * @return {@code true}, if the shown step is the most up to date one. {@code false}, otherwise.
      */
     public boolean latestStepViewed() {
         return moves.size() - 1 == viewIndex.get();
@@ -235,7 +221,7 @@ public class GameManager {
     }
 
     /**
-     * @return true if the shown step is the first one
+     * @return {@code true}, if the shown step is the first one. {@code false}, otherwise.
      */
     public boolean isFirstStepShown() {
         return stepBackwardImpossibleBinding().getValue();
@@ -256,8 +242,8 @@ public class GameManager {
         GeometryItem nearestGeometryItem = moves.get(0).getGeometryItems().get(0);
         for (Move move : moves.subList(0, viewIndex.get() + 1)) {
             for (GeometryItem geometryItem : move.getGeometryItems()) {
-                if (mouse.distance(geometryItem.getGeometry()) < mouse.distance(nearestGeometryItem.getGeometry()) &&
-                        geometryItem.getGeometryStyle().isVisible()) {
+                if (mouse.distance(geometryItem.getGeometry()) < mouse.distance(nearestGeometryItem.getGeometry())
+                    /*&& geometryItem.getGeometryStyle().isVisible()*/) {
                     nearestGeometryItem = geometryItem;
                 }
             }
