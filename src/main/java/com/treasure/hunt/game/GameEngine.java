@@ -210,7 +210,6 @@ public class GameEngine {
 
     /**
      * TODO implement:
-     * AngleHints must be correct
      * AngleHints must be of angle [0, 180] !?
      * CircleHints must contain each other !?
      * Verifies whether the {@link Hint} {@code hint} given by the {@link Hider} followed the rules.

@@ -116,9 +116,9 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
 
 
     /**
-     * Computes the 2 Intersections between the bounding circle and the current hint, then
-     * Merges the resulting Polygon and the remaining possible Area
-     * to the new possible Area
+     * Computes the 2 intersections between the bounding circle and the current hint,
+     * then merges the resulting polygon and the remaining possible area
+     * to the new possible area
      *
      * @param hint The hint to integrate
      * @return TODO

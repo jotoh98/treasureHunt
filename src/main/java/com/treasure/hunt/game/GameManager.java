@@ -34,7 +34,10 @@ import java.util.stream.Stream;
  */
 @Slf4j
 public class GameManager {
-
+    /**
+     * A thread that is invoked by {@link GameManager#beat(ReadOnlyObjectProperty)} and stopped by {@link GameManager#stopBeat()}.
+     * He executes {@link GameManager#move(int)} in a given interval.
+     */
     private Thread beatThread;
 
     @Getter
@@ -220,7 +223,7 @@ public class GameManager {
     }
 
     /**
-     * @return true if the shown step is the most up to date one
+     * @return {@code true}, if the shown step is the most up to date one. {@code false}, otherwise.
      */
     public boolean latestStepViewed() {
         return moves.size() - 1 == viewIndex.get();
@@ -239,7 +242,7 @@ public class GameManager {
     }
 
     /**
-     * @return true if the shown step is the first one
+     * @return {@code true}, if the shown step is the first one. {@code false}, otherwise.
      */
     public boolean isFirstStepShown() {
         return stepBackwardImpossibleBinding().getValue();
