@@ -41,9 +41,6 @@ public class GameEngine {
     protected final Coordinate initialSearcherCoordinate;
 
     /**
-     * Running time variables
-     */
-    /**
      * Tells, whether the game is done or not.
      */
     @Getter
