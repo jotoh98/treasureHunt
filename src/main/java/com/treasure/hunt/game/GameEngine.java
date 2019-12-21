@@ -79,11 +79,12 @@ public class GameEngine {
     /**
      * The constructor.
      *
-     * @param searcher playing the game
-     * @param hider    playing the game
+     * @param searcher                  playing the game
+     * @param hider                     playing the game
+     * @param initialSearcherCoordinate the initial Searcher {@link Coordinate}.
      */
-    public GameEngine(Searcher searcher, Hider hider, Coordinate initialSearcherPosition) {
-        this(searcher, hider, initialSearcherPosition, 200, 200);
+    public GameEngine(Searcher searcher, Hider hider, Coordinate initialSearcherCoordinate) {
+        this(searcher, hider, initialSearcherCoordinate, 200, 200);
     }
 
     /**
