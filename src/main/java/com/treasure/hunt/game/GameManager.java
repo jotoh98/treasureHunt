@@ -34,7 +34,6 @@ import java.util.stream.Stream;
  */
 @Slf4j
 public class GameManager {
-
     /**
      * A thread that is invoked by {@link GameManager#beat(ReadOnlyObjectProperty)} and stopped by {@link GameManager#stopBeat()}.
      * He executes {@link GameManager#move(int)} in a given interval.

@@ -37,6 +37,10 @@ public class CanvasController {
     public static final double MOUSE_RECOGNIZE_DISTANCE = 50;
     private GeometryItem selected;
     private GeometryItem highlighter;
+    /**
+     * Determines, whether the mouse was dragged.
+     */
+    private boolean dragged = false;
 
     public Canvas canvas;
     public Pane canvasPane;
@@ -112,9 +116,11 @@ public class CanvasController {
          * Only execute this (selecting a GeometryItem),
          * when the canvas will not be moved.
          */
-        if (mouseEvent.getX() != dragStart.getX() || mouseEvent.getY() != dragStart.getY()) {
+        if (dragged) {
+            dragged = false;
             return;
         }
+        dragged = false;
 
         Vector2D mousePositionInGameContext = dragStart.subtract(offsetBackup);
         mousePositionInGameContext = mousePositionInGameContext.divide(transformation.getScale());
@@ -192,6 +198,7 @@ public class CanvasController {
      * @param mouseEvent corresponding {@link MouseEvent}
      */
     public void onCanvasDragged(MouseEvent mouseEvent) {
+        dragged = true;
         if (gameManager == null) {
             return;
         }

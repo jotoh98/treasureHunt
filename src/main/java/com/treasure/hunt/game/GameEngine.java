@@ -106,29 +106,14 @@ public class GameEngine {
     }
 
     /**
-     * initialize searcher and treasure positions.
-     *
-     * @param p initial searcher position
-     * @return a {@link Move}, since the initialization must be displayed.
+     * @param coordinate the {@link Coordinate}, we want to test, whether it is out of map.
+     * @return {@code true}, if {@code coordinate} is out of map. {@code false}, otherwise.
      */
-    public Move init(Point p) {
-        searcherPos = p;
-        searcher.init(searcherPos);
-
-        treasurePos = hider.getTreasureLocation();
-        if (treasurePos == null) {
-            throw new IllegalArgumentException(hider + " gave a treasurePosition which is null.");
-        }
-
-        // Check, whether treasure spawns in range of searcher
-        if (located(Collections.singletonList(new GeometryItem<>(searcherPos, GeometryType.WAY_POINT)), treasurePos)) {
-            setFinished(true);
-        }
-
-        return new Move(
-                null,
-                new Movement(searcherPos),
-                treasurePos);
+    public static boolean outOfMap(Coordinate coordinate) {
+        return (coordinate.x < -WIDTH / 2 ||
+                WIDTH / 2 < coordinate.x ||
+                coordinate.y < -HEIGHT / 2 ||
+                HEIGHT / 2 < coordinate.y);
     }
 
     /**
@@ -184,28 +169,32 @@ public class GameEngine {
     }
 
     /**
-     * Verifies whether the performed {@link Movement} {@code movement} by the {@link Searcher} followed the rules.
+     * initialize searcher and treasure positions.
      *
-     * @param movement                which gets verified
-     * @param initialSearcherPosition initial searcher position
-     * @throws IllegalArgumentException when the {@link Movement} is not valid.
+     * @param p initial searcher position
+     * @return a {@link Move}, since the initialization must be displayed.
      */
-    protected void verifyMovement(Movement movement, Point initialSearcherPosition) {
-        if (movement.getStartingPoint().getX() != initialSearcherPosition.getX() ||
-                movement.getStartingPoint().getY() != initialSearcherPosition.getY()) {
-            throw new IllegalArgumentException("Searcher stands last at " + initialSearcherPosition +
-                    " but continues his movement from " + movement.getStartingPoint());
+    public Move init(Point p) {
+        searcherPos = p;
+        searcher.init(searcherPos);
+
+        treasurePos = hider.getTreasureLocation();
+        if (outOfMap(treasurePos.getCoordinate())) {
+            throw new IllegalArgumentException(treasurePos + " lies out of map.");
         }
-        for (GeometryItem geometryItem : movement.getPoints()) {
-            if (((Point) geometryItem.getGeometry()).getX() < (float) -WIDTH / 2 ||
-                    (float) WIDTH / 2 < ((Point) geometryItem.getGeometry()).getX() ||
-                    ((Point) geometryItem.getGeometry()).getY() < (float) -HEIGHT / 2 ||
-                    (float) HEIGHT / 2 < ((Point) geometryItem.getGeometry()).getY()) {
-                throw new IllegalArgumentException("Searcher left the playing area: " +
-                        "(" + ((Point) geometryItem.getGeometry()).getX() + ", " + ((Point) geometryItem.getGeometry()).getY() + ") " +
-                        "is not in " + "[" + -WIDTH / 2 + ", " + WIDTH / 2 + "]x[" + -HEIGHT / 2 + ", " + HEIGHT / 2 + "]");
-            }
+        if (treasurePos == null) {
+            throw new IllegalArgumentException(hider + " gave a treasurePosition which is null.");
         }
+
+        // Check, whether treasure spawns in range of searcher
+        if (located(Collections.singletonList(new GeometryItem<>(searcherPos, GeometryType.WAY_POINT)), treasurePos)) {
+            setFinished(true);
+        }
+
+        return new Move(
+                null,
+                new Movement(searcherPos),
+                treasurePos);
     }
 
     /**
@@ -228,6 +217,28 @@ public class GameEngine {
                 throw new IllegalArgumentException("The CircleHint does not contain the treasure.\n" +
                         "It says, " + ((CircleHint) hint).getRadius() + " around " + ((CircleHint) hint).getCenter() + ", " +
                         "but was " + ((CircleHint) hint).getCenter().distance(treasurePosition));
+            }
+        }
+    }
+
+    /**
+     * Verifies whether the performed {@link Movement} {@code movement} by the {@link Searcher} followed the rules.
+     *
+     * @param movement                which gets verified
+     * @param initialSearcherPosition initial searcher position
+     * @throws IllegalArgumentException when the {@link Movement} is not valid.
+     */
+    protected void verifyMovement(Movement movement, Point initialSearcherPosition) {
+        if (movement.getStartingPoint().getX() != initialSearcherPosition.getX() ||
+                movement.getStartingPoint().getY() != initialSearcherPosition.getY()) {
+            throw new IllegalArgumentException("Searcher stands last at " + initialSearcherPosition +
+                    " but continues his movement from " + movement.getStartingPoint());
+        }
+        for (GeometryItem geometryItem : movement.getPoints()) {
+            if (outOfMap(geometryItem.getGeometry().getCoordinate())) {
+                throw new IllegalArgumentException("Searcher left the playing area: " +
+                        "(" + ((Point) geometryItem.getGeometry()).getX() + ", " + ((Point) geometryItem.getGeometry()).getY() + ") " +
+                        "is not in " + "[" + -WIDTH / 2 + ", " + WIDTH / 2 + "]x[" + -HEIGHT / 2 + ", " + HEIGHT / 2 + "]");
             }
         }
     }
