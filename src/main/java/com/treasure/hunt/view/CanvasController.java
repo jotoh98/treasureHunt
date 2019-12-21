@@ -2,7 +2,6 @@ package com.treasure.hunt.view;
 
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.geom.CircleHighlighter;
-import com.treasure.hunt.geom.RectangleFixedHighlighter;
 import com.treasure.hunt.geom.RectangleVariableHighlighter;
 import com.treasure.hunt.jts.AdvancedShapeWriter;
 import com.treasure.hunt.jts.PointTransformation;
@@ -79,19 +78,6 @@ public class CanvasController {
                 gameManager.get().getGeometryItems(true).forEach(geometryItem ->
                         geometryItem.draw(graphics2D, shapeWriter)
                 );
-                // TODO delete the following loop! (testing purposes)
-                for (GeometryItem geometryItem : gameManager.get().getGeometryItems(true)) {
-                    if (geometryItem.getGeometry() instanceof Point) {
-                        GeometryItem greenCircle = new GeometryItem<>(
-                                new CircleHighlighter(geometryItem.getGeometry().getCoordinate(),
-                                        50, 64, JTSUtils.GEOMETRY_FACTORY),
-                                GeometryType.STANDARD,
-                                new GeometryStyle(true, Color.GREEN)
-                        );
-                        greenCircle.draw(graphics2D, shapeWriter);
-                    }
-                }
-                // TODO not delete
                 if (this.highlighter != null) {
                     this.highlighter.draw(graphics2D, shapeWriter);
                 }
@@ -141,12 +127,12 @@ public class CanvasController {
             log.info("recognized: " + geometry); // TODO delete
             this.selected = geometryItem;
             if (geometryItem.getGeometry() instanceof Point) {
-                this.highlighter = new GeometryItem(
-                        new RectangleFixedHighlighter(
-                                selected.getGeometry().getCoordinate(),
-                                50, 50, JTSUtils.GEOMETRY_FACTORY),
+                this.highlighter = new GeometryItem<>(
+                        new CircleHighlighter(geometryItem.getGeometry().getCoordinate(),
+                                MOUSE_RECOGNIZE_DISTANCE, 64, JTSUtils.GEOMETRY_FACTORY),
                         GeometryType.STANDARD,
-                        new GeometryStyle(true, Color.YELLOW));
+                        new GeometryStyle(true, Color.GREEN)
+                );
             } else if (geometryItem.getGeometry() instanceof LineString) {
                 double minX = geometryItem.getGeometry().getCoordinates()[0].x;
                 double maxY = geometryItem.getGeometry().getCoordinates()[0].y;
