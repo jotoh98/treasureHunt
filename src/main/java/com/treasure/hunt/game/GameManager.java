@@ -5,7 +5,6 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
-import com.treasure.hunt.utils.JTSUtils;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -16,6 +15,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
 import java.lang.reflect.InvocationTargetException;
@@ -50,7 +50,7 @@ public class GameManager {
     ObservableList<Move> moves = FXCollections.observableArrayList();
 
     private GameEngine gameEngine;
-
+    private BooleanProperty finished = new SimpleBooleanProperty(false);
     @Getter
     private IntegerProperty viewIndex = new SimpleIntegerProperty(0);
 
@@ -70,11 +70,11 @@ public class GameManager {
         Hider newHider = hiderClass.getDeclaredConstructor().newInstance();
 
         this.gameEngine = gameEngineClass
-                .getDeclaredConstructor(Searcher.class, Hider.class)
-                .newInstance(newSearcher, newHider);
+                .getDeclaredConstructor(Searcher.class, Hider.class, Coordinate.class)
+                .newInstance(newSearcher, newHider, new Coordinate(0, 0));
 
         // Do initial move
-        moves.add(gameEngine.init(JTSUtils.createPoint(0, 0)));
+        moves.add(gameEngine.init());
         viewIndex.set(0);
     }
 
@@ -103,6 +103,9 @@ public class GameManager {
                 moves.add(gameEngine.move());
             }
             viewIndex.set(viewIndex.get() + 1);
+        }
+        if (gameEngine.isFinished()) {
+            finished.set(true);
         }
     }
 
@@ -213,19 +216,12 @@ public class GameManager {
     }
 
     /**
-     * @return whether the game of the {@link GameEngine} is finished or not.
-     */
-    public boolean isGameFinished() {
-        return gameEngine.isFinished();
-    }
-
-    /**
      * Delegate for game engine finished property
      *
      * @return finished property
      */
     public BooleanProperty getGameFinishedProperty() {
-        return gameEngine.getFinished();
+        return finished;
     }
 
     /**
