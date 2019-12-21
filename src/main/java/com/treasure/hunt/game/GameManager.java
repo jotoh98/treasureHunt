@@ -242,7 +242,7 @@ public class GameManager {
         for (Move move : moves.subList(0, viewIndex.get() + 1)) {
             for (GeometryItem geometryItem : move.getGeometryItems()) {
                 if (mouse.distance(geometryItem.getGeometry()) < mouse.distance(nearestGeometryItem.getGeometry())
-                    /*&& geometryItem.getGeometryStyle().isVisible()*/) {
+                        && geometryItem.getGeometryStyle().isVisible()) {
                     nearestGeometryItem = geometryItem;
                 }
             }

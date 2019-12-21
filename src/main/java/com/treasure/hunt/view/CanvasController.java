@@ -165,8 +165,6 @@ public class CanvasController {
                                 JTSUtils.GEOMETRY_FACTORY),
                         GeometryType.STANDARD,
                         new GeometryStyle(true, Color.YELLOW));
-                System.out.println(minX + ":" + minY + ":" + maxX + ":" + maxY);
-                System.out.println("width: " + (maxX - minX) + " height: " + (maxY - minY));
             }
         }
         drawShapes();
