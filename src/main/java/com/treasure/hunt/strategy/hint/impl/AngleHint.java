@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author dorianreineccius, hassel
+ * @author dorianreineccius, jotoh
  */
 @Getter
 @Slf4j

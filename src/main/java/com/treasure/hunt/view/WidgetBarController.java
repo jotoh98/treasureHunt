@@ -3,6 +3,9 @@ package com.treasure.hunt.view;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
 
+/**
+ * @author jotoh
+ */
 public class WidgetBarController {
 
     @FXML

@@ -13,13 +13,24 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
+ * This contains every essential data, produced in each move.
+ *
  * @author dorianreineccius
  */
 @AllArgsConstructor
 @Getter
 public class Move {
+    /**
+     * The {@link Hint} the {@link com.treasure.hunt.strategy.hider.Hider} gave.
+     */
     private Hint hint;
+    /**
+     * The {@link Movement} the {@link com.treasure.hunt.strategy.searcher.Searcher} did.
+     */
     private Movement movement;
+    /**
+     * The current location of the treasure.
+     */
     private Point treasureLocation;
 
     /**
