@@ -3,7 +3,7 @@ package com.treasure.hunt.geom;
 import org.locationtech.jts.geom.*;
 
 /**
- * @authro jotoh
+ * @author jotoh
  */
 public class GeometryLine extends Geometry {
     /**

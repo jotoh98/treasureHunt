@@ -235,6 +235,8 @@ public class GameEngine {
 
     /**
      * Setter for {@link GameEngine#finished}.
+     *
+     * @param bool the value to assign to {@link GameEngine#finished}.
      */
     protected void setFinished(boolean bool) {
         finished.set(bool);
