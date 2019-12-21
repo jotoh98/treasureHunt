@@ -110,8 +110,10 @@ public class CanvasController {
     }
 
     /**
-     * This is executed, when the mouse is been clicked on the canvas.
-     * It will select the nearest {@link GeometryItem} to the clicked position.
+     * Executed when the mouse was pressed and released.
+     * TODO To much game logic in here!!11 maybe wrap into GameManager
+     * Executing this will select a {@link GeometryItem} nearest to the mouse position,
+     * with a maximum distance of {@link CanvasController#MOUSE_RECOGNIZE_DISTANCE}.
      *
      * @param mouseEvent corresponding {@link MouseEvent}
      */
@@ -119,10 +121,18 @@ public class CanvasController {
         if (gameManager == null) {
             return;
         }
-        offsetBackup = transformation.getOffset();
-        dragStart = Vector2D.create(mouseEvent.getX(), mouseEvent.getY());
+
+        /*
+         * Only execute this (selecting a GeometryItem),
+         * when the canvas will not be moved.
+         */
+        if (mouseEvent.getX() != dragStart.getX() || mouseEvent.getY() != dragStart.getY()) {
+            return;
+        }
+
         Vector2D mousePositionInGameContext = dragStart.subtract(offsetBackup);
         mousePositionInGameContext = mousePositionInGameContext.divide(transformation.getScale());
+
         GeometryItem geometryItem = gameManager.get().pickGeometryItem(
                 new Coordinate(mousePositionInGameContext.getX(), -mousePositionInGameContext.getY()),
                 MOUSE_RECOGNIZE_DISTANCE / transformation.getScale());
@@ -170,10 +180,36 @@ public class CanvasController {
         drawShapes();
     }
 
+    /**
+     * This is executed, when the mouse is pressed
+     * and not actually released.
+     * <p>
+     * It will set {@link CanvasController#offsetBackup} and {@link CanvasController#dragStart}
+     * relative to the mouse position.
+     *
+     * @param mouseEvent corresponding {@link MouseEvent}
+     */
+    public void onCanvasPressed(MouseEvent mouseEvent) {
+        if (gameManager == null) {
+            return;
+        }
+        offsetBackup = transformation.getOffset();
+        dragStart = Vector2D.create(mouseEvent.getX(), mouseEvent.getY());
+    }
+
+    /**
+     * This will be executed, when the mouse is pressed (and not released)
+     * and moves over the canvas
+     * <p>
+     * It will swipe the game to the dragged position.
+     *
+     * @param mouseEvent corresponding {@link MouseEvent}
+     */
     public void onCanvasDragged(MouseEvent mouseEvent) {
         if (gameManager == null) {
             return;
         }
+
         Vector2D dragOffset = Vector2D.create(mouseEvent.getX(), mouseEvent.getY()).subtract(dragStart);
         transformation.setOffset(dragOffset.add(offsetBackup));
         drawShapes();
