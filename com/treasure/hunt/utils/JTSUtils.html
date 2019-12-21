@@ -133,7 +133,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public final class <span class="typeNameLabel">JTSUtils</span>
 extends java.lang.Object</pre>
-<div class="block">Contains JTS Utilities.</div>
+<div class="block">A utility class for the work with <code>org.locationtech.jts</code>.</div>
 </li>
 </ul>
 </div>
@@ -157,7 +157,10 @@ extends java.lang.Object</pre>
 <tr class="altColor">
 <td class="colFirst"><code>static org.locationtech.jts.geom.GeometryFactory</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GEOMETRY_FACTORY">GEOMETRY_FACTORY</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">A static final shared <code>GeometryFactory</code> we use, such that every usage
+ uses the same settings of the geometry factory.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -260,7 +263,7 @@ extends java.lang.Object</pre>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#pointInAngle(com.treasure.hunt.geom.GeometryAngle,org.locationtech.jts.geom.Coordinate)">pointInAngle</a></span>&#8203;(<a href="../geom/GeometryAngle.html" title="class in com.treasure.hunt.geom">GeometryAngle</a>&nbsp;geometryAngle,
             org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</code></th>
 <td class="colLast">
-<div class="block">Test, if a given coordinate lays inside of the viewing angle given by a <a href="../geom/GeometryAngle.html" title="class in com.treasure.hunt.geom"><code>GeometryAngle</code></a>.</div>
+<div class="block">Tests, whether a given coordinate lays inside of the viewing angle given by a <a href="../geom/GeometryAngle.html" title="class in com.treasure.hunt.geom"><code>GeometryAngle</code></a>.</div>
 </td>
 </tr>
 <tr id="i12" class="altColor">
@@ -276,7 +279,7 @@ extends java.lang.Object</pre>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#signsEqual(org.locationtech.jts.math.Vector2D,org.locationtech.jts.math.Vector2D)">signsEqual</a></span>&#8203;(org.locationtech.jts.math.Vector2D&nbsp;v0,
           org.locationtech.jts.math.Vector2D&nbsp;v1)</code></th>
 <td class="colLast">
-<div class="block">Proof, that the x- or y-coordinates of two vectors have the same sign.</div>
+<div class="block">Proofs, that the x- or y-coordinates of two vectors have the same sign.</div>
 </td>
 </tr>
 <tr id="i14" class="altColor">
@@ -317,6 +320,8 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>GEOMETRY_FACTORY</h4>
 <pre>public static final&nbsp;org.locationtech.jts.geom.GeometryFactory GEOMETRY_FACTORY</pre>
+<div class="block">A static final shared <code>GeometryFactory</code> we use, such that every usage
+ uses the same settings of the geometry factory.</div>
 </li>
 </ul>
 </li>
@@ -465,7 +470,7 @@ extends java.lang.Object</pre>
 <h4>signsEqual</h4>
 <pre class="methodSignature">public static&nbsp;boolean&nbsp;signsEqual&#8203;(org.locationtech.jts.math.Vector2D&nbsp;v0,
                                  org.locationtech.jts.math.Vector2D&nbsp;v1)</pre>
-<div class="block">Proof, that the x- or y-coordinates of two vectors have the same sign.</div>
+<div class="block">Proofs, that the x- or y-coordinates of two vectors have the same sign.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>v0</code> - first vector to check</dd>
@@ -515,7 +520,7 @@ extends java.lang.Object</pre>
 <h4>pointInAngle</h4>
 <pre class="methodSignature">public static&nbsp;boolean&nbsp;pointInAngle&#8203;(<a href="../geom/GeometryAngle.html" title="class in com.treasure.hunt.geom">GeometryAngle</a>&nbsp;geometryAngle,
                                    org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</pre>
-<div class="block">Test, if a given coordinate lays inside of the viewing angle given by a <a href="../geom/GeometryAngle.html" title="class in com.treasure.hunt.geom"><code>GeometryAngle</code></a>.</div>
+<div class="block">Tests, whether a given coordinate lays inside of the viewing angle given by a <a href="../geom/GeometryAngle.html" title="class in com.treasure.hunt.geom"><code>GeometryAngle</code></a>.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>geometryAngle</code> - the view <a href="../geom/GeometryAngle.html" title="class in com.treasure.hunt.geom"><code>GeometryAngle</code></a> the method looks upon searching the given point</dd>

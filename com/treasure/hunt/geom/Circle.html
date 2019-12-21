@@ -147,7 +147,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">Circle</span>
 extends org.locationtech.jts.geom.Polygon</pre>
-<div class="block">Adding a Geometry based Circle to the jts Geometry suite.</div>
+<div class="block">Adding a <code>Polygon</code> based Circle to the <code>org.locationtech.jts</code> suite.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><code>Geometry</code>, 
@@ -201,13 +201,17 @@ extends org.locationtech.jts.geom.Polygon</pre>
       double&nbsp;radius,
       int&nbsp;numOfPoints,
       org.locationtech.jts.geom.GeometryFactory&nbsp;geometryFactory)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The constructor</div>
+</td>
 </tr>
 <tr class="rowColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.locationtech.jts.geom.Coordinate,double,org.locationtech.jts.geom.GeometryFactory)">Circle</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate,
       double&nbsp;radius,
       org.locationtech.jts.geom.GeometryFactory&nbsp;geometryFactory)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The constructor</div>
+</td>
 </tr>
 </table>
 </li>
@@ -231,7 +235,9 @@ extends org.locationtech.jts.geom.Polygon</pre>
 <td class="colFirst"><code>static <a href="Circle.html" title="class in com.treasure.hunt.geom">Circle</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#UnitCircle(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.GeometryFactory)">UnitCircle</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate,
           org.locationtech.jts.geom.GeometryFactory&nbsp;geometryFactory)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The constructor for a circle with a radius of 1.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -281,6 +287,14 @@ extends org.locationtech.jts.geom.Polygon</pre>
               double&nbsp;radius,
               int&nbsp;numOfPoints,
               org.locationtech.jts.geom.GeometryFactory&nbsp;geometryFactory)</pre>
+<div class="block">The constructor</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>coordinate</code> - the center point of the circle.</dd>
+<dd><code>radius</code> - the radius of the circle.</dd>
+<dd><code>numOfPoints</code> - the number of points, the circle get after converting to a <code>Polygon</code>.</dd>
+<dd><code>geometryFactory</code> - the <code>GeometryFactory</code>.</dd>
+</dl>
 </li>
 </ul>
 <a id="&lt;init&gt;(org.locationtech.jts.geom.Coordinate,double,org.locationtech.jts.geom.GeometryFactory)">
@@ -292,6 +306,13 @@ extends org.locationtech.jts.geom.Polygon</pre>
 <pre>public&nbsp;Circle&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate,
               double&nbsp;radius,
               org.locationtech.jts.geom.GeometryFactory&nbsp;geometryFactory)</pre>
+<div class="block">The constructor</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>coordinate</code> - the center point of the circle.</dd>
+<dd><code>radius</code> - the radius of the circle.</dd>
+<dd><code>geometryFactory</code> - the <code>GeometryFactory</code>.</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -312,6 +333,12 @@ extends org.locationtech.jts.geom.Polygon</pre>
 <h4>UnitCircle</h4>
 <pre class="methodSignature">public static&nbsp;<a href="Circle.html" title="class in com.treasure.hunt.geom">Circle</a>&nbsp;UnitCircle&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate,
                                 org.locationtech.jts.geom.GeometryFactory&nbsp;geometryFactory)</pre>
+<div class="block">The constructor for a circle with a radius of 1.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>coordinate</code> - the center point of the circle.</dd>
+<dd><code>geometryFactory</code> - the <code>GeometryFactory</code>.</dd>
+</dl>
 </li>
 </ul>
 </li>
