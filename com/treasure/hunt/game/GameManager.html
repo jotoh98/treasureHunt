@@ -207,7 +207,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGeometryItems(java.lang.Boolean)">getGeometryItems</a></span>&#8203;(java.lang.Boolean&nbsp;excludeOverrideItems)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGeometryItems(java.lang.Boolean)">getGeometryItems</a></span>&#8203;(java.lang.Boolean&nbsp;filterItems)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
@@ -454,10 +454,10 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>getGeometryItems</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&gt;&nbsp;getGeometryItems&#8203;(java.lang.Boolean&nbsp;excludeOverrideItems)</pre>
+<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&gt;&nbsp;getGeometryItems&#8203;(java.lang.Boolean&nbsp;filterItems)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>excludeOverrideItems</code> - if true Geometry items that are set to be overridable only the last item is returned</dd>
+<dd><code>filterItems</code> - if true Geometry items that are set to be overridable only the last item is returned and later deleted items are removed</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The whole List of geometryItems of the gameHistory</dd>
 </dl>
