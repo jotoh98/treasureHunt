@@ -14,6 +14,13 @@ import org.locationtech.jts.geom.Point;
  * @author dorianreineccius
  */
 public interface Hider<T extends Hint> {
+    /**
+     * @param searcherStartPosition the {@link com.treasure.hunt.strategy.searcher.Searcher} starting position,
+     *                              he will initialized on.
+     * @param width                 the width of the playing area
+     * @param height                the height of the playing area
+     */
+    void init(Point searcherStartPosition, int width, int height);
 
     /**
      * @param movement the {@link Movement}, the {@link Searcher} did last

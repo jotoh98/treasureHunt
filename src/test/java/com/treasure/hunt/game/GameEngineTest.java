@@ -127,6 +127,11 @@ class GameEngineTest {
             }
 
             @Override
+            public void init(Point searcherStartPosition, int width, int height) {
+
+            }
+
+            @Override
             public Hint move(Movement moves) {
                 return new CircleHint(gf.createPoint(new Coordinate(0, 2)), 2);
             }

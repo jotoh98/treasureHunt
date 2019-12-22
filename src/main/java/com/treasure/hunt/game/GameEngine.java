@@ -145,7 +145,8 @@ public class GameEngine {
      */
     public Move init() {
         searcherPos = JTSUtils.GEOMETRY_FACTORY.createPoint(initialSearcherCoordinate);
-        searcher.init(searcherPos);
+        searcher.init(searcherPos, width, height);
+        hider.init(searcherPos, width, height);
 
         treasurePos = hider.getTreasureLocation();
         if (treasurePos == null) {
