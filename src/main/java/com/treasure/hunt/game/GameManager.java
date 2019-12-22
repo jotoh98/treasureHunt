@@ -75,6 +75,9 @@ public class GameManager {
 
         // Do initial move
         moves.add(gameEngine.init());
+        if (gameEngine.isFinished()) {
+            finished.set(true);
+        }
         viewIndex.set(0);
     }
 
@@ -216,9 +219,7 @@ public class GameManager {
     }
 
     /**
-     * Delegate for game engine finished property
-     *
-     * @return finished property
+     * @return finished property containing {@code true}, if the game is over. {@code false}, otherwise.
      */
     public BooleanProperty getGameFinishedProperty() {
         return finished;
