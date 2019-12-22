@@ -1,5 +1,6 @@
 package com.treasure.hunt.game;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
@@ -45,7 +46,8 @@ public class GameManager {
     /**
      * Contains the "gameHistory".
      */
-    private ObservableList<Move> moves = FXCollections.observableArrayList();
+    @VisibleForTesting
+    ObservableList<Move> moves = FXCollections.observableArrayList();
 
     private GameEngine gameEngine;
 
@@ -180,19 +182,20 @@ public class GameManager {
     }
 
     /**
-     * @param excludeOverrideItems if true Geometry items that are set to be overridable only the last item is returned
+     * @param filterItems if true Geometry items that are set to be overridable only the last item is returned and later deleted items are removed
      * @return The whole List of geometryItems of the gameHistory
      */
-    public List<GeometryItem> getGeometryItems(Boolean excludeOverrideItems) {
+    public List<GeometryItem> getGeometryItems(Boolean filterItems) {
         ArrayList<GeometryItem> geometryItems = moves.subList(0, viewIndex.get() + 1).stream()
                 .flatMap(move -> move.getGeometryItems().stream())
                 .collect(Collectors.toCollection(ArrayList::new));
-        if (!excludeOverrideItems) {
+        if (!filterItems) {
             return geometryItems;
         }
         Map<GeometryType, List<GeometryItem>> itemsByType = geometryItems.stream()
                 .collect(Collectors.groupingBy(GeometryItem::getGeometryType));
-        List<GeometryItem> filterList = itemsByType.keySet()
+
+        return itemsByType.keySet()
                 .stream()
                 .flatMap(type -> {
                     List<GeometryItem> itemsOfType = itemsByType.get(type);
@@ -202,8 +205,11 @@ public class GameManager {
                         return Stream.of(itemsOfType.get(itemsOfType.size() - 1));
                     }
                 })
+                .filter(geometryItem -> moves.stream().noneMatch(move ->
+                        move.getHint() != null && move.getHint().getToBeRemoved().contains(geometryItem) ||
+                                move.getMovement() != null && move.getMovement().getToBeRemoved().contains(geometryItem)
+                ))
                 .collect(Collectors.toList());
-        return filterList;
     }
 
     /**
