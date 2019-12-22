@@ -1,22 +1,29 @@
 package com.treasure.hunt.game;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.ObjectBinding;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Point;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * The GameManager stores every {@link Move}-objects, happened in the game,
@@ -25,18 +32,25 @@ import java.util.stream.Collectors;
  *
  * @author dorianreineccius
  */
+@Slf4j
 public class GameManager {
+    /**
+     * A thread that is invoked by {@link GameManager#beat(ReadOnlyObjectProperty)} and stopped by {@link GameManager#stopBeat()}.
+     * He executes {@link GameManager#move(int)} in a given interval.
+     */
+    private Thread beatThread;
 
+    @Getter
+    private volatile BooleanProperty beatThreadRunning = new SimpleBooleanProperty(false);
     /**
      * Contains the "gameHistory".
      */
-
     private ObservableList<Move> moves = FXCollections.observableArrayList();
 
     private GameEngine gameEngine;
 
-    private IntegerProperty stepSim = new SimpleIntegerProperty(0);
-    private IntegerProperty stepView = new SimpleIntegerProperty(0);
+    @Getter
+    private IntegerProperty viewIndex = new SimpleIntegerProperty(0);
 
     /**
      * @param searcherClass   (Sub-)class of {@link Searcher}
@@ -59,8 +73,7 @@ public class GameManager {
 
         // Do initial move
         moves.add(gameEngine.init(JTSUtils.createPoint(0, 0)));
-        stepView.set(0);
-        stepSim.set(0);
+        viewIndex.set(0);
     }
 
     public void addListener(ListChangeListener<? super Move> listChangeListener) {
@@ -68,27 +81,26 @@ public class GameManager {
     }
 
     public ObjectBinding<Move> lastMove() {
-        return Bindings.createObjectBinding(() -> moves.get(stepView.get()), stepView, moves);
+        return Bindings.createObjectBinding(() -> moves.get(viewIndex.get()), viewIndex, moves);
     }
 
     public ObjectBinding<Point> lastTreasure() {
-        return Bindings.createObjectBinding(() -> moves.get(stepView.get()).getTreasureLocation(), stepView, moves);
+        return Bindings.createObjectBinding(() -> moves.get(viewIndex.get()).getTreasureLocation(), viewIndex, moves);
     }
 
     public ObjectBinding<Point> lastPoint() {
-        return Bindings.createObjectBinding(() -> moves.get(stepView.get()).getMovement().getEndPoint(), stepView, moves);
+        return Bindings.createObjectBinding(() -> moves.get(viewIndex.get()).getMovement().getEndPoint(), viewIndex, moves);
     }
 
     /**
-     * Works only for stepSim <= stepView 
+     * Works only for stepSim &le; stepView 
      */
     public void next() {
-        if (stepView.get() <= stepSim.get()) {
-            if (stepView.get() == stepSim.get()) {
+        if (viewIndex.get() < moves.size()) {
+            if (latestStepViewed()) {
                 moves.add(gameEngine.move());
-                stepSim.set(stepSim.get() + 1);
             }
-            stepView.set(stepView.get() + 1);
+            viewIndex.set(viewIndex.get() + 1);
         }
     }
 
@@ -100,7 +112,7 @@ public class GameManager {
      */
     public void move(int steps) {
         for (int i = 0; i < steps; i++) {
-            if (gameEngine.finished) {
+            if (gameEngine.isFinished()) {
                 break;
             }
             next();
@@ -108,11 +120,11 @@ public class GameManager {
     }
 
     /**
-     * Works only for stepView > 0
+     * Works only for stepView &gt; 0
      */
     public void previous() {
-        if (stepView.get() > 0) {
-            stepView.set(stepView.get() - 1);
+        if (viewIndex.get() > 0) {
+            viewIndex.set(viewIndex.get() - 1);
         }
     }
 
@@ -126,12 +138,72 @@ public class GameManager {
     }
 
     /**
+     * This simulates the whole game, until its finished.
+     *
+     * @param delay time between each move
+     */
+    public void beat(ReadOnlyObjectProperty<Double> delay) {
+        if (beatThreadRunning.get()) {
+            log.warn("There's already a beating thread running");
+            return;
+        }
+
+        beatThreadRunning.set(true);
+        beatThread = new Thread(() -> {
+            log.debug("Start beating thread");
+            while (!stepForwardImpossibleBinding().get() && beatThreadRunning.get()) {
+                CountDownLatch latch = new CountDownLatch(1);
+                Platform.runLater(() -> {
+                    next();
+                    latch.countDown();
+                });
+                try {
+                    latch.await();
+                    Thread.sleep((long) (delay.get() * 1000));
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            log.debug("Terminating beating thread");
+            Platform.runLater(() -> beatThreadRunning.set(false));
+        });
+        beatThread.setDaemon(true);
+        beatThread.start();
+    }
+
+    /**
+     * Stops the Thread from beating.
+     */
+    public void stopBeat() {
+        log.debug("Stopping beating thread");
+        beatThreadRunning.set(false);
+    }
+
+    /**
+     * @param excludeOverrideItems if true Geometry items that are set to be overridable only the last item is returned
      * @return The whole List of geometryItems of the gameHistory
      */
-    public List<GeometryItem> getGeometryItems() {
-        return moves.subList(0, stepView.get() + 1).stream()
+    public List<GeometryItem> getGeometryItems(Boolean excludeOverrideItems) {
+        ArrayList<GeometryItem> geometryItems = moves.subList(0, viewIndex.get() + 1).stream()
                 .flatMap(move -> move.getGeometryItems().stream())
                 .collect(Collectors.toCollection(ArrayList::new));
+        if (!excludeOverrideItems) {
+            return geometryItems;
+        }
+        Map<GeometryType, List<GeometryItem>> itemsByType = geometryItems.stream()
+                .collect(Collectors.groupingBy(GeometryItem::getGeometryType));
+        List<GeometryItem> filterList = itemsByType.keySet()
+                .stream()
+                .flatMap(type -> {
+                    List<GeometryItem> itemsOfType = itemsByType.get(type);
+                    if (!type.isOverride()) {
+                        return itemsOfType.stream();
+                    } else {
+                        return Stream.of(itemsOfType.get(itemsOfType.size() - 1));
+                    }
+                })
+                .collect(Collectors.toList());
+        return filterList;
     }
 
     /**
@@ -142,20 +214,37 @@ public class GameManager {
     }
 
     /**
-     * @return true if the shown step is the most up to date one
+     * Delegate for game engine finished property
+     *
+     * @return finished property
      */
-    public boolean isSimStepLatest() {
-        return stepSim.get() == stepView.get();
+    public BooleanProperty getGameFinishedProperty() {
+        return gameEngine.getFinished();
     }
 
     /**
-     * @return true if the shown step is the first one
+     * @return {@code true}, if the shown step is the most up to date one. {@code false}, otherwise.
      */
-    public boolean isFirstStepShown() {
-        return stepView.isEqualTo(0).getValue();
+    public boolean latestStepViewed() {
+        return moves.size() - 1 == viewIndex.get();
     }
 
-    public void destroy() {
-        //TODO: clean up
+    public BooleanBinding latestStepViewedBinding() {
+        return Bindings.createBooleanBinding(() -> moves.size() - 1 == viewIndex.get(), viewIndex, moves);
+    }
+
+    public BooleanBinding stepForwardImpossibleBinding() {
+        return getGameFinishedProperty().and(latestStepViewedBinding());
+    }
+
+    public BooleanBinding stepBackwardImpossibleBinding() {
+        return viewIndex.isEqualTo(0);
+    }
+
+    /**
+     * @return {@code true}, if the shown step is the first one. {@code false}, otherwise.
+     */
+    public boolean isFirstStepShown() {
+        return stepBackwardImpossibleBinding().getValue();
     }
 }

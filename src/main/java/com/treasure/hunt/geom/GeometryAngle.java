@@ -1,6 +1,7 @@
 package com.treasure.hunt.geom;
 
 import com.treasure.hunt.jts.AdvancedShapeWriter;
+import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
@@ -22,15 +23,46 @@ import java.awt.geom.GeneralPath;
 public class GeometryAngle extends LineString implements Shapeable {
 
     /**
-     * Creates a new <code>Geometry</code> via the specified GeometryFactory.
+     * GeometryAngle constructor via three {@link Coordinate}s.
      *
      * @param factory The GeometryFactory suggested to create the <code>Angle</code>
+     * @param right   the right angles arm end point
+     * @param center  the central point of the angle
+     * @param left    the left angles arm end point
      */
     public GeometryAngle(GeometryFactory factory, Coordinate right, Coordinate center, Coordinate left) {
         super(
                 factory.getCoordinateSequenceFactory()
                         .create(new Coordinate[]{right, center, left}),
                 factory
+        );
+    }
+
+    /**
+     * GeometryAngle with standard geometry factory.
+     *
+     * @param right  the right angles arm end point
+     * @param center the central point of the angle
+     * @param left   the left angles arm end point
+     */
+    public GeometryAngle(Coordinate right, Coordinate center, Coordinate left) {
+        this(JTSUtils.GEOMETRY_FACTORY, right, center, left);
+    }
+
+    /**
+     * GeometryAngle constructor via the central {@link Coordinate}, the start angle and the angles extend.
+     *
+     * @param factory The GeometryFactory suggested to create the <code>Angle</code>
+     * @param center  the central point of the angle
+     * @param start   starting angle relative to x-axis
+     * @param extend  angle extend
+     */
+    public GeometryAngle(GeometryFactory factory, Coordinate center, double start, double extend) {
+        this(
+                factory,
+                Vector2D.create(1, 0).rotate(start).translate(center),
+                center,
+                Vector2D.create(1, 0).rotate(start + extend).translate(center)
         );
     }
 

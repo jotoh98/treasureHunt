@@ -18,7 +18,7 @@ public enum GeometryType {
     // treasure/no-treasure (areas)
     NO_TREASURE(false, "no treasure"),
     POSSIBLE_TREASURE(false, "possible treasure"),
-    HINT_ANGLE(true, "angle hint"),
+    HINT_ANGLE(true, "angle hint", true),
 
     // searcher movements
     SEARCHER_POSITION(true, "searcher position"),
@@ -39,32 +39,19 @@ public enum GeometryType {
 
     @Getter
     private final String displayName;
+    @Getter
     private boolean enabled;
+    @Getter
     private boolean override;
 
-    GeometryType(String displayName, boolean enabled, boolean override) {
+    GeometryType(boolean enabled, String displayName, boolean override) {
         this.displayName = displayName;
         this.enabled = enabled;
         this.override = override;
     }
 
     GeometryType(boolean enabledByDefault, String displayName) {
-        this(displayName, enabledByDefault, false);
+        this(enabledByDefault, displayName, false);
     }
 
-    public boolean isEnabled() {
-        return this.enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public boolean isOverride() {
-        return this.override;
-    }
-
-    public void setOverride(boolean override) {
-        this.override = override;
-    }
 }

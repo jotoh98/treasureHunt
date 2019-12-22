@@ -17,6 +17,7 @@ import java.awt.geom.Point2D;
  * actions. Furthermore, it manages the bounding box representing the visual frame of the canvas inside the
  * mathematical vector space. This boundary is used for certain rendering purposes.
  *
+ * @author jotoh
  * @version 1.0
  */
 @AllArgsConstructor
@@ -123,7 +124,6 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
      *
      * @param width  width of boundary rectangle
      * @param height height of boundary rectangle
-     * @see PointTransformation#setOffset(Vector2D)
      */
     public void setBoundarySize(double width, double height) {
         setBoundarySize(new Vector2D(width, height));

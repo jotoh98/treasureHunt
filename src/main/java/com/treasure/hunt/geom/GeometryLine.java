@@ -8,7 +8,7 @@ public class GeometryLine extends LineSegment {
     /**
      * Infinite lines have a positive infinite length.
      *
-     * @return positive infinite length
+     * @param factory the factory to construct the line with
      */
     @Override
     public double getLength() {

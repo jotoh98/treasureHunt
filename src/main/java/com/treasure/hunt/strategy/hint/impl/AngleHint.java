@@ -12,14 +12,21 @@ import org.locationtech.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author dorianreineccius, jotoh
+ */
 @Getter
 @Slf4j
 public class AngleHint extends Hint {
     GeometryAngle geometryAngle;
 
     public AngleHint(Coordinate right, Coordinate center, Coordinate left) {
-        geometryAngle = new GeometryAngle(JTSUtils.GEOMETRY_FACTORY, right, center, left);
-        log.trace(geometryAngle.toString());
+        this(new GeometryAngle(JTSUtils.GEOMETRY_FACTORY, right, center, left));
+    }
+
+    public AngleHint(GeometryAngle angle) {
+        geometryAngle = angle;
+        log.trace(angle.toString());
     }
 
     public List<GeometryItem<?>> getGeometryItems() {

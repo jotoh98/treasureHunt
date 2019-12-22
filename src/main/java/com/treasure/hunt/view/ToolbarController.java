@@ -12,11 +12,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import lombok.Getter;
 
+/**
+ * @author jotoh
+ */
 public class ToolbarController {
-
     @FXML
     private VBox toolbar;
-
     @Getter
     private ToggleGroup toggleGroup = new ToggleGroup();
 
