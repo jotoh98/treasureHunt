@@ -2,6 +2,7 @@ package com.treasure.hunt.strategy.hider.implementations;
 
 
 import com.treasure.hunt.game.mods.hideandseek.HideAndSeekHider;
+import com.treasure.hunt.geom.Circle;
 import com.treasure.hunt.geom.Ellipse;
 import com.treasure.hunt.geom.GeometryAngle;
 import com.treasure.hunt.strategy.geom.GeometryItem;
