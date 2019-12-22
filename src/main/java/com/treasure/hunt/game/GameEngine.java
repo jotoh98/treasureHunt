@@ -102,7 +102,9 @@ public class GameEngine {
         this.initialSearcherCoordinate = initialSearcherCoordinate;
         this.width = width;
         this.height = height;
-
+        if (outOfMap(initialSearcherCoordinate)) {
+            throw new IllegalArgumentException("initialSearcherCoordinate: " + initialSearcherCoordinate + " lies outside the playing area.");
+        }
     }
 
     /**
@@ -150,7 +152,10 @@ public class GameEngine {
 
         treasurePos = hider.getTreasureLocation();
         if (treasurePos == null) {
-            throw new IllegalArgumentException(hider + " gave a treasurePosition which is null.");
+            throw new IllegalArgumentException("hider: " + hider + " gave a treasure position which is null.");
+        }
+        if (outOfMap(treasurePos.getCoordinate())) {
+            throw new IllegalArgumentException("hider" + hider + " gave a treasure position which lies outside the playing area.");
         }
 
         // Check, whether treasure spawns in range of searcher
@@ -229,10 +234,7 @@ public class GameEngine {
                     " but continues his movement from " + movement.getStartingPoint());
         }
         for (GeometryItem geometryItem : movement.getPoints()) {
-            if (((Point) geometryItem.getObject()).getX() < (float) -width / 2 ||
-                    (float) width / 2 < ((Point) geometryItem.getObject()).getX() ||
-                    ((Point) geometryItem.getObject()).getY() < (float) -height / 2 ||
-                    (float) height / 2 < ((Point) geometryItem.getObject()).getY()) {
+            if (outOfMap(((Point) geometryItem.getObject()).getCoordinate())) {
                 throw new IllegalArgumentException("Searcher left the playing area: " +
                         "(" + ((Point) geometryItem.getObject()).getX() + ", " + ((Point) geometryItem.getObject()).getY() + ") " +
                         "is not in " + "[" + -width / 2 + ", " + width / 2 + "]x[" + -height / 2 + ", " + height / 2 + "]");
@@ -262,5 +264,16 @@ public class GameEngine {
                         "but was " + ((CircleHint) hint).getCenter().distance(treasurePosition));
             }
         }
+    }
+
+    /**
+     * @param coordinate the {@link Coordinate}, we want to test, whether it lies outside the playing area.
+     * @return {@code true}, if the {@code coordinate} lies outside the playing area. {@code false}, otherwise.
+     */
+    public boolean outOfMap(Coordinate coordinate) {
+        return coordinate.x < (float) -width / 2 ||
+                (float) width / 2 < coordinate.x ||
+                coordinate.y < (float) -height / 2 ||
+                (float) height / 2 < coordinate.y;
     }
 }

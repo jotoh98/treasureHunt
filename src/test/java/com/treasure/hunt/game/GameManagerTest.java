@@ -45,9 +45,10 @@ class GameManagerTest {
         public DeletingSearcher() {
         }
 
+
         @Override
-        public void init(Point startPosition) {
-            //nothing
+        public void init(Point searcherStartPosition, int width, int height) {
+
         }
 
         @Override
