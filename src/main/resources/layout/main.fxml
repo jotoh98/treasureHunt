@@ -19,14 +19,7 @@
                         </Label>
                     </children>
                 </HBox>
-                <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
-                    <children>
-                        <Button fx:id="previousButton" disable="true" mnemonicParsing="false"
-                                onAction="#previousButtonClicked" text="Previous"/>
-                        <Button fx:id="nextButton" disable="true" mnemonicParsing="false" onAction="#nextButtonClicked"
-                                text="Next"/>
-                    </children>
-                </HBox>
+                <fx:include source="navigator.fxml" fx:id="stepViewNavigator"/>
             </children>
             <styleClass>
                 <String fx:value="toolbar"/>
