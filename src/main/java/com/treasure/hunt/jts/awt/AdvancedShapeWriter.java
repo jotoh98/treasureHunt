@@ -51,6 +51,13 @@ public class AdvancedShapeWriter extends ShapeWriter {
     }
 
     /**
+     * Wrapper for the boundary's update method.
+     */
+    public void updateBoundary() {
+        boundary.update();
+    }
+
+    /**
      * Wrapper function for {@link ShapeWriter#toShape(Geometry)} to extend functionality for {@link Shapeable} instances.
      *
      * @param object object to transfer to a shape
