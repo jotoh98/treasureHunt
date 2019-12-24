@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="wrapper" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
+      minHeight="-Infinity" minWidth="-Infinity" spacing="5.0" xmlns="http://javafx.com/javafx/11.0.1"
+      fx:controller="com.treasure.hunt.view.widget.ScaleController">
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+   </padding>
+   <Button mnemonicParsing="false" onAction="#scaleOut" text="-"/>
+   <Slider fx:id="slider" max="1000.0" min="1.0" onDragDetected="#onDrag" showTickMarks="true" value="100.0"/>
+   <TextField fx:id="textField" alignment="CENTER_RIGHT" prefWidth="71.0" text="100%" onAction="#onEnter"/>
+   <Button mnemonicParsing="false" onAction="#scaleIn" text="+"/>
+</HBox>
