@@ -31,7 +31,7 @@ public class Line extends Ray {
 
     @Override
     public Shape toShape(AdvancedShapeWriter shapeWriter) {
-        double diameter = shapeWriter.getPointTransformation().diameter();
+        double diameter = shapeWriter.getBoundary().diameter();
 
         Coordinate start = JTSUtils.coordinateInDistance(p0, p1, -diameter);
         Coordinate end = JTSUtils.coordinateInDistance(p0, p1, diameter);

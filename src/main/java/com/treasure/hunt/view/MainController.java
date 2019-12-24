@@ -2,6 +2,8 @@ package com.treasure.hunt.view;
 
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.game.GameManager;
+import com.treasure.hunt.geom.Grid;
+import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.ReflectionUtils;
@@ -299,6 +301,7 @@ public class MainController {
         try {
             gameManager.set(new GameManager(searcherClass, hiderClass, gameEngineClass));
             logLabel.setText("Game initialized");
+            gameManager.get().addUtilityGeometry(new GeometryItem<>(new Grid()));
         } catch (Exception e) {
             log.error("Something important crashed", e);
             logLabel.setText("Could not create game");

@@ -19,6 +19,7 @@ import org.locationtech.jts.geom.Point;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -46,6 +47,8 @@ public class GameManager {
      * Contains the "gameHistory".
      */
     private ObservableList<Move> moves = FXCollections.observableArrayList();
+
+    private ObservableList<GeometryItem<?>> utilityGeometries = FXCollections.observableArrayList();
 
     private GameEngine gameEngine;
 
@@ -184,9 +187,15 @@ public class GameManager {
      * @return The whole List of geometryItems of the gameHistory
      */
     public List<GeometryItem> getGeometryItems(Boolean excludeOverrideItems) {
-        ArrayList<GeometryItem> geometryItems = moves.subList(0, viewIndex.get() + 1).stream()
-                .flatMap(move -> move.getGeometryItems().stream())
-                .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<GeometryItem> geometryItems =
+                Stream.concat(
+                        moves.subList(0, viewIndex.get() + 1).stream()
+                                .flatMap(move -> move.getGeometryItems().stream()),
+                        utilityGeometries.stream()
+                )
+                        .sorted(Comparator.comparingInt(geometryItem -> geometryItem.getGeometryStyle().getZIndex()))
+                        .collect(Collectors.toCollection(ArrayList::new));
+
         if (!excludeOverrideItems) {
             return geometryItems;
         }
@@ -246,5 +255,9 @@ public class GameManager {
      */
     public boolean isFirstStepShown() {
         return stepBackwardImpossibleBinding().getValue();
+    }
+
+    public void addUtilityGeometry(GeometryItem<?> item) {
+        utilityGeometries.add(item);
     }
 }

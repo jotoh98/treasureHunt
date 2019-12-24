@@ -1,6 +1,5 @@
 package com.treasure.hunt.jts;
 
-import com.treasure.hunt.utils.JTSUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -69,91 +68,15 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
      * @return transformed coordinate
      */
     public Coordinate transform(Coordinate src) {
-        return new Coordinate(scale * src.x + offset.getX(), scale * -src.y + offset.getY());
+        return new Coordinate(transformX(src.x), transformY(src.y));
     }
 
-    /**
-     * Method to retrieve the Vector from the upper left boundary point to the lower right boundary point.
-     *
-     * @return vector from upper left to lower right boundary point
-     */
-    private Vector2D getMainDiagonalVector() {
-        return getUpperLeftBoundary().subtract(getLowerRightBoundary());
+    public double transformX(double x) {
+        return scale * x + offset.getX();
     }
 
-    /**
-     * Get the length of the diagonal of the boundary rectangle
-     *
-     * @return length of main diagonal
-     */
-    public double diameter() {
-        return getMainDiagonalVector().length();
-    }
-
-    /**
-     * Retrieves the untransformed position vector of the upper left boundary point
-     *
-     * @return untransformed position vector of upper left boundary point
-     */
-    public Vector2D getUpperLeftBoundary() {
-        Vector2D normalisedOffset = offset.divide(scale);
-        return new Vector2D(-normalisedOffset.getX(), normalisedOffset.getY());
-    }
-
-    /**
-     * Retrieves the untransformed position vector of the lower right boundary point
-     *
-     * @return untransformed position vector of lower right boundary point
-     */
-    public Vector2D getLowerRightBoundary() {
-        return getUpperLeftBoundary().add(boundarySize);
-    }
-
-    /**
-     * Update boundary size according to the width and height of the {@link java.awt.Canvas}.
-     *
-     * @param width  width of the {@link java.awt.Canvas}
-     * @param height height of the {@link java.awt.Canvas}
-     */
-    public void updateCanvasSize(int width, int height) {
-        setBoundarySize(Vector2D.create(width, height).divide(scale));
-    }
-
-    /**
-     * Utility function to set lower right boundary vector according to boundary rectangle diagonal.
-     *
-     * @param width  width of boundary rectangle
-     * @param height height of boundary rectangle
-     */
-    public void setBoundarySize(double width, double height) {
-        setBoundarySize(new Vector2D(width, height));
-    }
-
-    /**
-     * Set the offset based on the boundary representation.
-     *
-     * @param location upper left position vector of the boundary rectangle
-     */
-    private void setBoundaryLocation(Vector2D location) {
-        setOffset(JTSUtils.negateX(location).multiply(scale));
-    }
-
-    /**
-     * Get the boundary rectangle width.
-     *
-     * @return boundary rectangle width
-     */
-    public double getBoundaryWidth() {
-        return Math.abs(boundarySize.getX());
-    }
-
-    /**
-     * Get the boundary rectangle height.
-     *
-     * @return boundary rectangle height
-     */
-    public double getBoundaryHeight() {
-        return Math.abs(boundarySize.getY());
+    public double transformY(double y) {
+        return scale * -y + offset.getY();
     }
 
 }

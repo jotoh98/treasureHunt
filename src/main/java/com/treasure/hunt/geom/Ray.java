@@ -39,7 +39,7 @@ public class Ray extends LineSegment implements Shapeable {
     }
 
     public Shape toShape(AdvancedShapeWriter shapeWriter) {
-        double diameter = shapeWriter.getPointTransformation().diameter();
+        double diameter = shapeWriter.getBoundary().diameter();
         Coordinate end = JTSUtils.coordinateInDistance(p0, p1, diameter);
         return shapeWriter.createLine(p0, end);
     }
