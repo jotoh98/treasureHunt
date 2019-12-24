@@ -4,7 +4,7 @@ import com.treasure.hunt.jts.geom.Circle;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.Hint;
-import com.treasure.hunt.utils.JTSUtils;
+import lombok.Getter;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
@@ -18,6 +18,7 @@ import java.util.List;
  */
 public class CircleHint extends Hint {
 
+    @Getter
     private Circle circle;
 
     public CircleHint(Point center, double radius) {
@@ -25,7 +26,7 @@ public class CircleHint extends Hint {
     }
 
     public CircleHint(Coordinate center, double radius) {
-        this(new Circle(center, radius, JTSUtils.GEOMETRY_FACTORY));
+        this(new Circle(center, radius));
     }
 
     public CircleHint(Circle circle) {
@@ -39,13 +40,5 @@ public class CircleHint extends Hint {
         List<GeometryItem<?>> output = new ArrayList<>();
         output.add(new GeometryItem<>(circle, GeometryType.HINT_CENTER));
         return output;
-    }
-
-    public Point getCenter() {
-        return JTSUtils.createPoint(circle.getCenter().x, circle.getCenter().y);
-    }
-
-    public double getRadius() {
-        return circle.getRadius();
     }
 }

@@ -36,6 +36,6 @@ public class NaiveCircleSearcher implements HideAndSeekSearcher<CircleHint> {
      */
     @Override
     public SearchPath move(CircleHint circleHint) {
-        return new SearchPath(circleHint.getCenter());
+        return new SearchPath(circleHint.getCircle().getCenter());
     }
 }

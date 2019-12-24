@@ -1,6 +1,7 @@
 package com.treasure.hunt.game;
 
 import com.treasure.hunt.analysis.Statistic;
+import com.treasure.hunt.jts.geom.Circle;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
@@ -157,10 +158,12 @@ public class GameEngine {
             }
         }
         if (hint instanceof CircleHint) {
-            if (((CircleHint) hint).getRadius() < ((CircleHint) hint).getCenter().distance(treasurePosition)) {
+            Circle circle = ((CircleHint) hint).getCircle();
+            double distance = circle.getCenter().distance(treasurePosition.getCoordinate());
+            if (circle.getRadius() < distance) {
                 throw new IllegalArgumentException("The CircleHint does not contain the treasure.\n" +
-                        "It says, " + ((CircleHint) hint).getRadius() + " around " + ((CircleHint) hint).getCenter() + ", " +
-                        "but was " + ((CircleHint) hint).getCenter().distance(treasurePosition));
+                        "It says, " + circle.getRadius() + " around " + circle.getCenter() + ", " +
+                        "but was " + distance);
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.treasure.hunt.geom;
 
+import com.treasure.hunt.jts.geom.Circle;
 import lombok.Getter;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.util.GeometricShapeFactory;
@@ -168,7 +169,7 @@ public class Ellipse extends Polygon {
 
     public Circle toCircle(boolean xRadius) {
         double radius = xRadius ? radiusX : radiusY;
-        return new Circle(center, radius, numOfPoints, getFactory());
+        return new Circle(center, radius, numOfPoints);
     }
 
     @Override
