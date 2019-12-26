@@ -232,38 +232,39 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         D = JTSUtils.createPoint(startX - halfDiff, startY - halfDiff);
     }
 
-    private Movement rectangleScan(Point A, Point B, Point C, Point D) {
+    public static Movement rectangleScan(Point A, Point B, Point C, Point D) {
         Movement movements = new Movement();
 
         int k = (int) A.distance(B);
-        Point[] a = new Point[k];
-        Point[] b = new Point[k];
+        Point[] a = new Point[k+1];
+        Point[] b = new Point[k+1];
 
         { //create a_i on line segment AB
             double xDist = B.getX() - A.getX();
             double yDist = B.getY() - A.getY();
             for (int i = 0; i <= k; i++) {
-                a[i] = JTSUtils.createPoint(A.getX() + xDist * ((double) i / k), B.getX() + yDist * ((double) i / k));
+                a[i] = JTSUtils.createPoint(A.getX() + xDist * ((double) i / k), A.getY() + yDist * ((double) i / k));
+                //System.out.println("a[ "+ i + "] = " + a[i]);
             }
         }
         { //create b_i on line segment DC
-            double xDist = D.getX() - C.getX();
-            double yDist = D.getY() - C.getY();
+            double xDist = C.getX() - D.getX();
+            double yDist = C.getY() - D.getY();
             for (int i = 0; i <= k; i++) {
-                b[i] = JTSUtils.createPoint(D.getX() + xDist * ((double) i / k), C.getX() + yDist * ((double) i / k));
+                b[i] = JTSUtils.createPoint(D.getX() + xDist * ((double) i / k), D.getY() + yDist * ((double) i / k));
+                //System.out.println("b[ "+ i + "] = " + b[i]);
             }
         }
-
         if (k % 2 == 1) //code like in paper
         {
-            for (int i = 0; i <= k - 1; k += 2) {
+            for (int i = 0; i <= k - 1; i += 2) {
                 movements.addWayPoint(a[i]);
                 movements.addWayPoint(b[i]);
                 movements.addWayPoint(b[i + 1]);
                 movements.addWayPoint(a[i + 1]);
             }
         } else {
-            for (int i = 0; i <= k - 2; k += 2) {
+            for (int i = 0; i <= k - 2; i += 2) {
                 movements.addWayPoint(a[i]);
                 movements.addWayPoint(b[i]);
                 movements.addWayPoint(b[i + 1]);
