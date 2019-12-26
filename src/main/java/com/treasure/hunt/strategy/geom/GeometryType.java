@@ -33,7 +33,17 @@ public enum GeometryType {
 
     STANDARD(true, ""),
 
-    BOUNDING_CIRCE(false,"bounding circle")
+    BOUNDING_CIRCE(false,"bounding circle"),
+
+    // StrategyFromPaper2
+    WHITE_TILE(true, "white tile"),
+    BLACK_TILE(true, "black tile"),
+    RECTANGLE_SCAN_MOVEMENT(true, "rectangle scan movement"),
+
+    // IntelligentAngleSearcher
+    SEARCH_BOUNDING(true, "Search-Bounding"),
+    SEARCH_RECTANGLE_BOUNDING(true, "Search-Rectangle")
+
     // TODO add more..
     ;
 

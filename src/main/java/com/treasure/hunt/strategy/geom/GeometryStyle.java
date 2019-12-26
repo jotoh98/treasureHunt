@@ -37,6 +37,16 @@ public class GeometryStyle {
                 return new GeometryStyle(true, new Color(0xFFD700));
             case HINT_ANGLE:
                 return new GeometryStyle(true, new Color(0x575757));
+            case WHITE_TILE:
+                return new GeometryStyle(true, new Color(0,255, 0, 100), new Color(0,255, 0, 0));
+            case BLACK_TILE:
+                return new GeometryStyle(true,new Color(255,0, 0, 200), new Color(255,0, 0, 100));
+            case RECTANGLE_SCAN_MOVEMENT:
+                return new GeometryStyle(true, new Color(0x0000FF));
+            case SEARCH_BOUNDING:
+                return new GeometryStyle(true, new Color(0,255, 0, 255));
+            case SEARCH_RECTANGLE_BOUNDING:
+                return new GeometryStyle(true, new Color(255, 0, 0, 150));
         }
         return new GeometryStyle(true, Color.lightGray);
     }
