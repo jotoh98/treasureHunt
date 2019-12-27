@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * I tried here to implement the TreasureHunt2 Algorithm,
- * which for angles beta < 2*PI has traveling time in O(n^(2-epsilon)).
+ * which for angles beta < 2 * PI has traveling time in O(n ^ (2 - epsilon)).
  *
  * This strategy might be useful if the Agent is not allowed to remember hints
  * and only use the current one, else it's a useless strategy.
