@@ -385,11 +385,12 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * in the paper. _doubleApos signals a double apostrophe.
      * At, Bt, Ct and Dt in this implementation equate to A, B, C and D in the paper, since the
      * not by phi transformed variables of the current rectangle R are also stored with A, B, C and D.
-     * The t signals the transformed state of this variables.
+     * The t signals the transformed state of these variables.
      * hintT equates to the hint (L1', x1')
      *
      * @param curHint
-     * @return
+     * @return The move to scan various areas so that A,B,C and D can be updated to a smaller rectangle (or the treasure
+     * is found)
      */
     private Movement lastHintBadSubroutine(HalfPlaneHint curHint, Movement move) {
         Coordinate[] rect = new Coordinate[]{A.getCoordinate(), B.getCoordinate(), C.getCoordinate(), D.getCoordinate()};
@@ -462,7 +463,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             HalfPlaneHint.Direction x2_apos = curHintT.getDirection();
             LineSegment L2_apos = new LineSegment(curHintT.getAnglePointLeft().getCoordinate(),
                     curHintT.getAnglePointRight().getCoordinate());
-            double L2_apos_angle = normalizePositive(L2_apos.angle());
 
             // here begins line 24 of the ReduceRectangle routine from the paper:
             Coordinate[] newRectangle = null;
@@ -547,7 +547,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             return move;
         } catch (Exception ee) {
             printRect(rect, lastBadHint, curHint);
-
             throw ee;
         }
 
@@ -556,7 +555,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     /**
      * Returns true if line is clockwise between between1 (included) and between2 (excluded).
      * Its taken for granted that line between1 and between2 meet in one Point.
-     *
      *
      * @param line
      * @param between1
@@ -572,23 +570,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         if (maxAngleLineBetween1 == 0)
             return true;
         return maxAngleBetween2and1 < maxAngleLineBetween1;
-    }
-
-    /**
-     * Swaps the points in seg when the seg doesn't point in positive x direction.
-     * (So only the direction of the line is manipulated)
-     * If the line points straight downwards or upwards, the points aren't touched.
-     *
-     * @param seg
-     */
-    private void pointRight(LineSegment seg) {
-        if (!doubleEqual(seg.p0.x, seg.p1.x)) {
-            if (seg.p0.x > seg.p1.x) {
-                Coordinate c = seg.p0;
-                seg.p0 = seg.p1;
-                seg.p1 = c;
-            }
-        }
     }
 
     private void assertRectangle(Coordinate[] rect) {
@@ -647,7 +628,24 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * @return
      */
     private Coordinate sigmaPoint(int i, Coordinate r, Coordinate P) {
-        AffineTransformation rot_i = AffineTransformation.rotationInstance(Math.PI * i / 2, r.getX(), r.getY());
+        //AffineTransformation rot_i = AffineTransformation.rotationInstance(Math.PI * i / 2, r.getX(), r.getY());
+        AffineTransformation rot_i;
+        switch (i) {
+            case 0:
+                rot_i = new AffineTransformation(new double[]{1, 0, 0, 0, 1, 0});
+                break;
+            case 1:
+                rot_i = new AffineTransformation(new double[]{0, -1, 0, 1, 0, 0});
+                break;
+            case 2:
+                rot_i = new AffineTransformation(new double[]{-1, 0, 0, 0, -1, 0});
+                break;
+            case 3:
+                rot_i = new AffineTransformation(new double[]{0, 1, 0, -1, 0, 0});
+                break;
+            default:
+                throw new IllegalArgumentException("i should be in [0,3] but equals " + i);
+        }
         Coordinate ret = new Coordinate();
         return rot_i.transform(P, ret);
     }
@@ -774,6 +772,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * @return
      */
     private Coordinate[] phiOtherRectangleInverse(int i, Coordinate[] rect, Coordinate[] toTransform) {
+        //TODO:
         assertRectangle(rect);
         assertRectangle(toTransform);
         return new Coordinate[]{
@@ -855,19 +854,25 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             throw new IllegalArgumentException("rect is malformed. It equals " + rect[0] + rect[1] + rect[2] + rect[3]);
         }
         //if (A.x != C.x || A.y != B.y || B.x != D.x || C.y != D.y) {
-        if (doubleEqual(A.x, D.x) || doubleEqual(A.y, B.y) || doubleEqual(B.x, C.x) || doubleEqual(C.y, D.y)) {
+        if (!doubleEqual(A.x, D.x) || !doubleEqual(A.y, B.y) || !doubleEqual(B.x, C.x) || !doubleEqual(C.y, D.y)) {
             throw new IllegalArgumentException("rect is not parallel to x an y axis:" +
                     "\nrect[0] = " + rect[0] +
                     "\nrect[1] = " + rect[1] +
                     "\nrect[2] = " + rect[2] +
-                    "\nrect[3] = " + rect[3]);
-        }
-        rect[0] = A;
-        rect[1] = B;
-        rect[2] = C;
-        rect[3] = D;
+                    "\nrect[3] = " + rect[3] +
+                    "\nA = " + A +
+                    "\nB = " + B +
+                    "\nC = " + C +
+                    "\nD = " + D);
 
-        return rect;
+        }
+        Coordinate[] rectRes = new Coordinate[4];
+        rectRes[0] = A;
+        rectRes[1] = B;
+        rectRes[2] = C;
+        rectRes[3] = D;
+
+        return rectRes;
     }
 
     public static class TestThisClass {
@@ -877,7 +882,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             this.strategy = strategy;
         }
 
-        private void testRectHint(Coordinate rect[], HalfPlaneHint hint, int basicTrans) {
+        private void testRectHint(Coordinate[] rect, HalfPlaneHint hint, int basicTrans) {
             int testBasicTrans = strategy.getBasicTransformation(rect, hint);
             if (basicTrans != testBasicTrans) {
                 throw new IllegalArgumentException("The basic transformation should equal " + basicTrans +
@@ -889,7 +894,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
 
             Coordinate[] rect = new Coordinate[]{new Coordinate(-4, 4), new Coordinate(4, 4),
                     new Coordinate(4, -4), new Coordinate(-4, -4)};
-            //TODO aktuell noch nich laufend (nullpointer)
             HalfPlaneHint lastBadHint = new HalfPlaneHint(createPoint(0, 0),
                     createPoint(0.7377637010688854, -0.675059050294965));
             HalfPlaneHint curHint = new HalfPlaneHint(createPoint(1.3501181005899303, 1.4755274021377711),
