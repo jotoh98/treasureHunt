@@ -22,7 +22,7 @@ public class Grid implements Shapeable {
     }
 
     public ArrayList<Line2D> getGridLines(PointTransformation transformation) {
-        double scale = transformation.getScale();
+        double scale = transformation.getScaleProperty().get();
 
         ArrayList<Line2D> lineArray = new ArrayList<>();
 

@@ -1,6 +1,10 @@
 package com.treasure.hunt.jts;
 
 import com.treasure.hunt.utils.JTSUtils;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,21 +32,25 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
      * The scale translates the source coordinates multiplicative in {@link PointTransformation#transform(Coordinate)}.
      */
     @Getter
-    double scale = 1.0;
+    DoubleProperty scaleProperty = new SimpleDoubleProperty(1);
     /**
      * The offset translates the source coordinates additive in {@link PointTransformation#transform(Coordinate)}.
      */
     @Getter
-    @Setter
-    Vector2D offset = new Vector2D(400, 400);
+    ObjectProperty<Vector2D> offsetProperty = new SimpleObjectProperty<>(new Vector2D(400, 400));
+
     @Setter
     @Getter
     private Vector2D boundarySize = new Vector2D(0, 0);
 
     public void setScale(double scale) {
         if (scale != 0) {
-            this.scale = scale;
+            scaleProperty.set(scale);
         }
+    }
+
+    public void setOffset(Vector2D offset) {
+        offsetProperty.set(offset);
     }
 
     /**
@@ -68,7 +76,7 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
      * @return transformed coordinate
      */
     public Coordinate transform(Coordinate src) {
-        return new Coordinate(scale * src.x + offset.getX(), scale * -src.y + offset.getY());
+        return new Coordinate(scaleProperty.get() * src.x + offsetProperty.get().getX(), scaleProperty.get() * -src.y + offsetProperty.get().getY());
     }
 
     /**
@@ -95,7 +103,7 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
      * @return untransformed position vector of upper left boundary point
      */
     public Vector2D getUpperLeftBoundary() {
-        Vector2D normalisedOffset = offset.divide(scale);
+        Vector2D normalisedOffset = offsetProperty.get().divide(scaleProperty.get());
         return new Vector2D(-normalisedOffset.getX(), normalisedOffset.getY());
     }
 
@@ -115,7 +123,7 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
      * @param height height of the {@link java.awt.Canvas}
      */
     public void updateCanvasSize(int width, int height) {
-        setBoundarySize(Vector2D.create(width, height).divide(scale));
+        setBoundarySize(Vector2D.create(width, height).divide(scaleProperty.get()));
     }
 
     /**
@@ -134,7 +142,7 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
      * @param location upper left position vector of the boundary rectangle
      */
     private void setBoundaryLocation(Vector2D location) {
-        setOffset(JTSUtils.negateX(location).multiply(scale));
+        setOffset(JTSUtils.negateX(location).multiply(scaleProperty.get()));
     }
 
     /**

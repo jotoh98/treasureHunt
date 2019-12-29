@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
@@ -11,8 +10,6 @@
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
    </padding>
-   <Button mnemonicParsing="false" onAction="#scaleOut" text="-"/>
-   <Slider fx:id="slider" max="1000.0" min="1.0" onDragDetected="#onDrag" showTickMarks="true" value="100.0"/>
+   <Slider fx:id="slider" max="10.0" min="0.00000001" showTickMarks="true" value="1.0"/>
    <TextField fx:id="textField" alignment="CENTER_RIGHT" prefWidth="71.0" text="100%" onAction="#onEnter"/>
-   <Button mnemonicParsing="false" onAction="#scaleIn" text="+"/>
 </HBox>

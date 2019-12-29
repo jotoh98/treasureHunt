@@ -1,7 +1,6 @@
 package com.treasure.hunt.view.widget;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.DoubleBinding;
+import com.treasure.hunt.view.CanvasController;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.control.Slider;
@@ -10,6 +9,7 @@ import javafx.scene.layout.HBox;
 import lombok.Getter;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 
 public class ScaleController {
     final DecimalFormat df = new DecimalFormat("##.##%");
@@ -19,43 +19,32 @@ public class ScaleController {
     @Getter
     private DoubleProperty scale = new SimpleDoubleProperty(1);
 
-    public void initialize() {
-        scale.bind(sliderProperty());
-        textField.textProperty().bind(
-                Bindings.createStringBinding(
-                        () -> df.format(scale.get() * 100),
-                        scale
-                )
-        );
-        slider.valueProperty().bind(scale);
-    }
-
-    private DoubleBinding sliderProperty() {
-        //TODO: logarithmic scale
-        return Bindings.createDoubleBinding(() -> slider.getValue(), slider.valueProperty());
-    }
-
-    public void scaleOut() {
-        scale.set(scale.get() - .1d);
-    }
-
-    public void scaleIn() {
-        scale.set(scale.get() + .1d);
-    }
-
-    public void onDrag() {
-    }
+    private CanvasController canvasController;
 
     public void onEnter() {
-        final String text = textField.getText();
-        double cleanScale = Double.parseDouble(text.replace('%', ' '));
-
-        if (text.contains("%")) {
-            cleanScale /= 100d;
+        double cleanScale = canvasController.getTransformation().getScaleProperty().get();
+        try {
+            cleanScale = (double) df.parse(textField.getText());
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
 
-        scale.set(cleanScale);
+        canvasController.getTransformation().setScale(cleanScale);
         wrapper.requestFocus();
-        textField.setText(df.format(scale.get()));
+        textField.setText(df.format(canvasController.getTransformation().getScaleProperty().get()));
+    }
+
+    public void init(CanvasController canvasController) {
+        this.canvasController = canvasController;
+
+        canvasController
+                .getTransformation()
+                .getScaleProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    textField.setText(df.format(newValue));
+                    slider.setValue((double) newValue);
+                });
+
+        slider.valueProperty().bindBidirectional(canvasController.getTransformation().getScaleProperty());
     }
 }
