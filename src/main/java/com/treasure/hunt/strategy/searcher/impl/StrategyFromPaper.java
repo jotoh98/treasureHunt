@@ -257,7 +257,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                 //System.out.println("b[ "+ i + "] = " + b[i]);
             }
         }
-        if (k % 2 == 1)
+        if (roundedDistance % 2 == 1)
         {
             for (int i = 0; i <= roundedDistance - 1; i += 2) {
                 movements.addWayPoint(a[i]);
