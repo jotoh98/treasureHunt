@@ -14,10 +14,7 @@ import org.locationtech.jts.geom.impl.CoordinateArraySequence;
 class Tile {
     enum Color {black, white};
 
-    /* Corner Positions:
-     * A   B
-     * D   C
-     * */
+    /*Upper left corner of the tile*/
     @Getter
     private Coordinate location;
     @Getter
@@ -25,14 +22,16 @@ class Tile {
     @Getter
     private Color color;
 
-    /*
-        0 1
-        2 3
+    /* The 4 subtiles of the tile, with
+    subtiles[0] being in the upper left position,
+    subtiles[1] being in the upper right position,
+    subtiles[2] being in the lower left position,
+    subtiles[3] being in the lower right position.
+    If the tile is tiled no further, subtiles is null.
      */
     Tile[] subtiles;
 
-    /*location = A = upper left corner*/
-    /*GeometryItems are going to be appended to nextMoves*/
+    
     Tile(Coordinate location, int size, Movement nextMoves){
         this.location = location;
         this.size = size;
@@ -54,7 +53,6 @@ class Tile {
     }
 
 
-    /*GeometryItems are going to be appended to nextMoves*/
     void drawBlack(Movement nextMoves){
         this.color = Color.black;
         if (subtiles != null){
@@ -64,7 +62,7 @@ class Tile {
     }
 
     /* Recursively creating the Tiling
-     * As in the paper, a Tiling is the partition of S with side length x into 4^i tiles, each side length x/(2^i)*/
+     * As in the paper, a Tiling is the partition of a Tile with side length x into 4^i tiles, each side length x/(2^i)*/
     void createTiling(int i, Movement nextMoves){
         if (i == 0)
         {
@@ -81,7 +79,7 @@ class Tile {
         }
 
         if (size == 1){
-            //System.out.println("Maximally Tiled but Algorithm wants MOOOORE TILING!!");
+            //System.out.println("Maximally tiled but Algorithm would want an even finer tiling, which makes no sense.");
             return;
         }
 
@@ -97,15 +95,22 @@ class Tile {
         }
     }
 
+    /*Upper left corner of the tile*/
     public Coordinate getA(){
         return location;
     }
+    
+    /*Upper right corner of the tile*/
     public Coordinate getB(){
         return new Coordinate(location.getX() + size, location.getY());
     }
+    
+    /*lower right corner of the tile*/
     public Coordinate getC(){
         return new Coordinate(location.getX() + size, location.getY() - size);
     }
+    
+    /*lower left corner of the tile*/
     public Coordinate getD(){
         return new Coordinate(location.getX(), location.getY() - size);
     }
