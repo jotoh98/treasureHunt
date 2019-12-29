@@ -235,7 +235,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     public static Movement rectangleScan(Point A, Point B, Point C, Point D) {
         Movement movements = new Movement();
 
-        int k = (int) A.distance(B);
+        int roundedDistance = (int) A.distance(B);
         Point[] a = new Point[k+1];
         Point[] b = new Point[k+1];
 
