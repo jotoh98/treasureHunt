@@ -122,8 +122,16 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
      * @param width  width of the {@link java.awt.Canvas}
      * @param height height of the {@link java.awt.Canvas}
      */
-    public void updateCanvasSize(int width, int height) {
+    public void updateCanvasSize(double width, double height) {
         setBoundarySize(Vector2D.create(width, height).divide(scaleProperty.get()));
+    }
+
+    public void updateCanvasWidth(double width) {
+        setBoundarySize(Vector2D.create(width / scaleProperty.get(), boundarySize.getY()));
+    }
+
+    public void updateCanvasHeight(double height) {
+        setBoundarySize(Vector2D.create(boundarySize.getX(), height / scaleProperty.get()));
     }
 
     /**
@@ -161,6 +169,34 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
      */
     public double getBoundaryHeight() {
         return Math.abs(boundarySize.getY());
+    }
+
+
+    /**
+     * Scales the canvas and keeps a certain point centered.
+     *
+     * @param gamma factor of new scale
+     * @param point scaling source point
+     */
+    public void scaleRelative(double gamma, Vector2D point) {
+        scaleOffset(gamma, point);
+        double newScale = scaleProperty.get() * gamma;
+        if (newScale > 0) {
+            setScale(newScale);
+        }
+    }
+
+    /**
+     * Scale the offset relative keeping a point as scaling source.
+     *
+     * @param gamma factor of new scale
+     * @param point scaling source point
+     */
+    public void scaleOffset(double gamma, Vector2D point) {
+        double newScale = scaleProperty.get() * gamma;
+        Vector2D direction = offsetProperty.get().subtract(point);
+
+        setOffset(point.add(direction.multiply(newScale / scaleProperty.get())));
     }
 
 }

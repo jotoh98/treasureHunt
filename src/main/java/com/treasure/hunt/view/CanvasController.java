@@ -17,6 +17,7 @@ import org.locationtech.jts.math.Vector2D;
  * @author axel12
  */
 public class CanvasController {
+    @Getter
     public Canvas canvas;
     public Pane canvasPane;
     private ObjectProperty<GameManager> gameManager;
@@ -41,9 +42,15 @@ public class CanvasController {
 
     public void makeCanvasResizable() {
 
-        canvas.widthProperty().addListener((observableValue, number, t1) -> drawShapes());
+        canvas.widthProperty().addListener((observable, oldValue, newValue) -> {
+            transformation.updateCanvasWidth((double) newValue);
+            drawShapes();
+        });
 
-        canvas.widthProperty().addListener((observableValue, number, t1) -> drawShapes());
+        canvas.widthProperty().addListener((observable, oldValue, newValue) -> {
+            transformation.updateCanvasHeight((double) newValue);
+            drawShapes();
+        });
 
         canvas.heightProperty().bind(canvasPane.heightProperty());
         canvas.widthProperty().bind(canvasPane.widthProperty());
@@ -91,15 +98,8 @@ public class CanvasController {
             return;
         }
         Vector2D mouse = new Vector2D(scrollEvent.getX(), scrollEvent.getY());
-        Vector2D direction = transformation.getOffsetProperty().get().subtract(mouse);
-
-        double oldScale = transformation.getScaleProperty().get();
-        double newScale = oldScale * Math.exp(scrollEvent.getDeltaY() * 1e-2);
-
-        if (newScale > 0) {
-            transformation.setScale(newScale);
-            transformation.setOffset(mouse.add(direction.multiply(newScale / oldScale)));
-        }
+        final double scaleFactor = Math.exp(scrollEvent.getDeltaY() * 1e-2);
+        transformation.scaleRelative(scaleFactor, mouse);
     }
 
     public void setGameManager(ObjectProperty<GameManager> gameManager) {
