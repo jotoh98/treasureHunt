@@ -17,8 +17,10 @@ class Tile {
     /*Upper left corner of the tile*/
     @Getter
     private Coordinate location;
+    
     @Getter
     private int size;
+    
     @Getter
     private Color color;
 
@@ -27,8 +29,7 @@ class Tile {
     subtiles[1] being in the upper right position,
     subtiles[2] being in the lower left position,
     subtiles[3] being in the lower right position.
-    If the tile is tiled no further, subtiles is null.
-     */
+    If the tile is tiled no further, subtiles is null.*/
     Tile[] subtiles;
 
     
@@ -61,8 +62,9 @@ class Tile {
         drawTile(nextMoves);
     }
 
-    /* Recursively creating the Tiling
-     * As in the paper, a Tiling is the partition of a Tile with side length x into 4^i tiles, each side length x/(2^i)*/
+    /* Recursively creates the Tiling.
+     * As in the paper, a Tiling is the partition of a Tile with
+       side length x into 4 ^ i tiles, each side length x / (2 ^ i)*/
     void createTiling(int i, Movement nextMoves){
         if (i == 0)
         {
@@ -114,6 +116,7 @@ class Tile {
     public Coordinate getD(){
         return new Coordinate(location.getX(), location.getY() - size);
     }
+    
     public Coordinate getCenter(){
         return new Coordinate(location.getX() + size/2., location.getY() - size/2.);
     }
