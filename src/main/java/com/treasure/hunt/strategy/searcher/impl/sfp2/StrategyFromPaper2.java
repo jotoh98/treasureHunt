@@ -57,10 +57,11 @@ public class StrategyFromPaper2 implements Searcher<AngleHint> {
         }
     }
 
+    /*Basically, function from paper.*/
     private void TreasureHunt2(){
-        for (int i = 1; i <= 360; i++){
+        /*for (int i = 1; i <= 360; i++){
             System.out.println("Index( " + i + ") = "+  index(Angle.toRadians(i)));
-        }
+        }*/
 
 
         int IndexNew = 1;
@@ -68,7 +69,7 @@ public class StrategyFromPaper2 implements Searcher<AngleHint> {
         int i = 1;
         while(true){
             do{
-                System.out.println("i: " + i + " IndexNew = "+  IndexNew);
+                //System.out.println("i: " + i + " IndexNew = "+  IndexNew);
 
                 //Clear items for next phase
                 nextMoves.getToBeRemoved().addAll(itemsInPhase);
@@ -81,6 +82,7 @@ public class StrategyFromPaper2 implements Searcher<AngleHint> {
         }
     }
 
+    /*Basically, function from paper.*/
     private int Mosaic(int i , int k) {
         Coordinate O = location.copy();
         int length = (int)Math.pow(2, i);
@@ -88,23 +90,23 @@ public class StrategyFromPaper2 implements Searcher<AngleHint> {
 
         IndexMax = k;
         int maxSteps = calcMaxSteps(i, k);
-        System.out.println("maxSteps: " + maxSteps);
+        //System.out.println("maxSteps: " + maxSteps);
 
         for (int j = 1; j <= maxSteps; j++){
             S.createTiling((j-1)*k, nextMoves);
-            iterateTiling(S, k);
+            iterateTiling(S, k); // inner for-loop from paper
         }
 
         if (IndexMax == k){
             S.createTiling(k*calcMaxSteps(i, k), nextMoves);
-            iterateTiling3(S);
+            iterateTiling3(S); // For-loop from paper
         }
         gotoPoint(O);
         return IndexMax;
     }
 
     private void iterateTiling(Tile t, int k) {
-        if (t.subtiles == null) // then inspecting correct Tile
+        if (t.subtiles == null)
         {
             if (t.getColor() == Tile.Color.white){
                 gotoPoint(t.getCenter()); //Go to the center of t
@@ -141,7 +143,7 @@ public class StrategyFromPaper2 implements Searcher<AngleHint> {
     }
 
     private void iterateTiling2(Tile t) {
-        if (t.subtiles == null) // then inspecting correct Tile
+        if (t.subtiles == null)
         {
             GeometryAngle geometryAngle = new GeometryAngle(currentHint.getGeometryAngle().getLeft().copy(),
                     currentHint.getGeometryAngle().getCenter().copy(),
@@ -158,7 +160,7 @@ public class StrategyFromPaper2 implements Searcher<AngleHint> {
     }
 
     private void iterateTiling3(Tile t) {
-        if (t.subtiles == null) // then inspecting correct Tile
+        if (t.subtiles == null)
         {
             if (t.getColor() == Tile.Color.white){
                 gotoPoint(t.getCenter());
@@ -251,7 +253,7 @@ public class StrategyFromPaper2 implements Searcher<AngleHint> {
 
 
     private static int calcMaxSteps(int i, int k){
-        /*equivalent to formula from paper:
+        /*Equivalent to formula from paper:
         Math.ceil(Math.log(Math.sqrt(Math.pow(2, i))) / (Math.log(Math.pow(4,k))))*/
         //return (int)Math.ceil(0.25*i/(double)k);
 
@@ -259,8 +261,8 @@ public class StrategyFromPaper2 implements Searcher<AngleHint> {
         return (int)Math.ceil(i/(double)k);
     }
 
-    /*The index function which way too big, all values >= 12
-    * => Tilings of size > 4^12 !!!*/
+    /*The index function which is way too big, all values are >= 12
+    * which would mean Tilings of size are greater than 4^12 !!!*/
     private static int index(double alpha){
         //return 4*((int)Math.max(3, Math.ceil(Math.log(2.*Math.PI/alpha)/Math.log(2.)) + 1));
 
