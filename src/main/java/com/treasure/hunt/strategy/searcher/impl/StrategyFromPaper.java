@@ -487,8 +487,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                         Arrays.toString(phiOtherRectangleInverse(basicTrans, rect, new Coordinate[]{f, Bt, Ct, t})));
                 //testing
                 */
-                newRectangle = arrangeRectangle(phiOtherRectangleInverse(basicTrans, rect,
-                        new Coordinate[]{f, Bt, Ct, t}));
+                newRectangle = phiOtherRectangleInverse(basicTrans, rect,
+                        new Coordinate[]{f, Bt, Ct, t});
             }
 
             LineSegment m_apos_k_apos = new LineSegment(m_apos, k_apos);
@@ -497,8 +497,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             ) {
                 System.out.println("--------------------------------------------------zweiter fall"); //testing
                 move = rectangleScanPhiReverse(basicTrans, rect, m_apos, k_apos, k, m, move);
-                newRectangle = arrangeRectangle(phiOtherRectangleInverse(basicTrans, rect,
-                        new Coordinate[]{g, Bt, Ct, h}));
+                newRectangle = phiOtherRectangleInverse(basicTrans, rect,
+                        new Coordinate[]{g, Bt, Ct, h});
             }
             if ((x2_apos == left || x2_apos == down) &&
                     lineBetweenClockwise(L2_apos, m_apos_k_apos, L1_doubleApos)
@@ -510,8 +510,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                 // rectangleScan(phi_reverse(k, (m', k', k, m))
                 move = rectangleScanPhiReverse(basicTrans, rect, m_apos, k_apos, k, m, move);
                 // newRectangle := pkCh
-                newRectangle = arrangeRectangle(phiOtherRectangleInverse(basicTrans, rect,
-                        new Coordinate[]{p, k, Ct, h}));
+                newRectangle = phiOtherRectangleInverse(basicTrans, rect,
+                        new Coordinate[]{p, k, Ct, h});
             }
             LineSegment h_apos_g_apos = new LineSegment(h_apos, g_apos);
             if (x2_apos == left &&
@@ -523,8 +523,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                 move = rectangleScanPhiReverse(basicTrans, rect, s, s_apos, d_apos, d, move);
                 // rectangleScan(phi_reverse(k, (g, g', h', h))
                 // newRectangle := Agpm
-                newRectangle = arrangeRectangle(phiOtherRectangleInverse(basicTrans, rect,
-                        new Coordinate[]{At, g, p, m}));
+                newRectangle = phiOtherRectangleInverse(basicTrans, rect,
+                        new Coordinate[]{At, g, p, m});
             }
 
             LineSegment p_apos_k = new LineSegment(p_apos, k);
@@ -542,16 +542,16 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                 // rectangleScan(phireverse(k, (g, g', h', h))
                 move = rectangleScanPhiReverse(basicTrans, rect, g, g_apos, h_apos, h, move);
                 // newRectangle := ABkm
-                newRectangle = arrangeRectangle(phiOtherRectangleInverse(basicTrans, rect,
-                        new Coordinate[]{At, Bt, k, m}));
+                newRectangle = phiOtherRectangleInverse(basicTrans, rect,
+                        new Coordinate[]{At, Bt, k, m});
             }
             if (x2_apos == right &&
                     lineBetweenClockwise(L2_apos, p_apos_k, L1_doubleApos)
             ) {
                 System.out.println("--------------------------------------------------sechster fall"); //testing
                 // newRectangle := ABjj'
-                newRectangle = arrangeRectangle(phiOtherRectangleInverse(basicTrans, rect,
-                        new Coordinate[]{At, Bt, j, j_apos}));
+                newRectangle = phiOtherRectangleInverse(basicTrans, rect,
+                        new Coordinate[]{At, Bt, j, j_apos});
             }
 
             A = GEOMETRY_FACTORY.createPoint(newRectangle[0]);
@@ -664,7 +664,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Coordinate ret = new Coordinate(P.x - r.x, P.y - r.y);
         rot_i.transform(ret, ret);
         ret.x = ret.x + r.x;
-        ret.y = ret.y + r.y;// FIXME gerade zuletzt verändert, iwas funktioniert aber noch nicht
+        ret.y = ret.y + r.y;
         return ret;
 
     }
@@ -783,26 +783,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     }
 
     /**
-     * Inverts the by rect defined phi , but calculates and returns the inverse points of the points in toTransform.
-     *
-     * @param i           the index of phi
-     * @param rect        the rectangle which defines phi (and therefore also the inverse of phi)
-     * @param toTransform
-     * @return
-     */
-    private Coordinate[] phiOtherRectangleInverse(int i, Coordinate[] rect, Coordinate[] toTransform) {
-        //TODO: build arrangeRectangle in this method
-        assertRectangle(rect);
-        assertRectangle(toTransform);
-        return new Coordinate[]{
-                phiPointInverse(i, rect, toTransform[0]),
-                phiPointInverse(i, rect, toTransform[1]),
-                phiPointInverse(i, rect, toTransform[2]),
-                phiPointInverse(i, rect, toTransform[3])
-        };
-    }
-
-    /**
      * Returns the basic transformation for a rectangle-hint-pair, of which the definition can be found in the paper.
      * (Page 8, below Proposition 3.2)
      *
@@ -829,6 +809,27 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                 + hint.getAnglePointRight().getCoordinate() + hint.getAnglePointLeft().getCoordinate());
         throw new IllegalArgumentException("Somehow there was no basic transformation found for this " +
                 "rectangle and hint. This is impossible.");
+    }
+
+    /**
+     * Inverts the by rect defined phi , but calculates and returns the inverse points of the points in toTransform.
+     *
+     * @param i           the index of phi
+     * @param rect        the rectangle which defines phi (and therefore also the inverse of phi)
+     * @param toTransform
+     * @return
+     */
+    private Coordinate[] phiOtherRectangleInverse(int i, Coordinate[] rect, Coordinate[] toTransform) {
+        //TODO: build arrangeRectangle in this method
+        assertRectangle(rect);
+        assertRectangle(toTransform);
+        Coordinate[] ret = new Coordinate[]{
+                phiPointInverse(i, rect, toTransform[0]),
+                phiPointInverse(i, rect, toTransform[1]),
+                phiPointInverse(i, rect, toTransform[2]),
+                phiPointInverse(i, rect, toTransform[3])
+        };
+        return arrangeRectangle(ret);
     }
 
     /**
@@ -970,8 +971,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                     createPoint(3.291974335987585, -1.3935211550449453));
             curHint = new HalfPlaneHint(createPoint(2.7636811224775273, -3.5662858179937924),
                     createPoint(3.060169917253051, -2.3662835676900604));
-            testRectHint(rect, lastBadHint, 0);
-            testLastHintBadSubroutine(strategy, rect, lastBadHint, curHint);
+            //testRectHint(rect, lastBadHint, 0); //TODO evtl diesen test rauswerfen
+            //testLastHintBadSubroutine(strategy, rect, lastBadHint, curHint);
         }
 
         public void testPhiRectangle() {
