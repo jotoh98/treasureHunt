@@ -42,7 +42,7 @@ public class NaiveAngleSearcher implements Searcher<AngleHint> {
      */
     @Override
     public Movement move(AngleHint angleHint) {
-        Coordinate c1 = JTSUtils.middleOfAngleHint(angleHint.getAnglePointRight(), angleHint.getCenter(), angleHint.getAnglePointLeft());
+        Coordinate c1 = JTSUtils.middleOfAngleHint(angleHint);
         double x = c1.x;
         double y = c1.y;
 
@@ -51,7 +51,7 @@ public class NaiveAngleSearcher implements Searcher<AngleHint> {
         m.addWayPoint(startPosition);
 
         // Add to additionalItems
-        Coordinate[] a2 = {angleHint.getCenter().getCoordinate(), new Coordinate(x, y)};
+        Coordinate[] a2 = {angleHint.getGeometryAngle().getCenter(), new Coordinate(x, y)};
         m.addAdditionalItem(
                 new GeometryItem(new LineString(
                         new CoordinateArraySequence(a2),

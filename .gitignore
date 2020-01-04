@@ -2,6 +2,8 @@
 .classpath
 .project
 .settings/
+out/
+target/
 
 # Intellij
 !.idea/
@@ -14,5 +16,7 @@
 .DS_Store
 
 # Maven
+.gradle/
+build/
 log/
-target/
+!.idea/runConfigurations/*

@@ -1,41 +1,37 @@
 package com.treasure.hunt.strategy.hint.impl;
 
+import com.treasure.hunt.geom.GeometryAngle;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.Hint;
+import com.treasure.hunt.utils.JTSUtils;
 import lombok.Getter;
-import lombok.ToString;
-import org.locationtech.jts.geom.Point;
+import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.geom.Coordinate;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A type of {@link Hint} defining an angle, in which the treasure lies.
- *
- * @author dorianreineccius
+ * @author dorianreineccius, jotoh
  */
-@ToString(of = {"anglePointRight", "center", "anglePointLeft"})
 @Getter
+@Slf4j
 public class AngleHint extends Hint {
-    Point anglePointRight;
-    Point center;
-    Point anglePointLeft;
+    GeometryAngle geometryAngle;
 
-    public AngleHint(Point anglePointRight, Point center, Point anglePointLeft) {
-        this.anglePointRight = anglePointRight;
-        this.center = center;
-        this.anglePointLeft = anglePointLeft;
+    public AngleHint(Coordinate right, Coordinate center, Coordinate left) {
+        this(new GeometryAngle(JTSUtils.GEOMETRY_FACTORY, right, center, left));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public List<GeometryItem> getGeometryItems() {
-        List<GeometryItem> output = new ArrayList<>();
-        output.add(new GeometryItem(center, GeometryType.HINT_CENTER));
-        output.add(new GeometryItem(anglePointLeft, GeometryType.HINT_ANGLE));
-        output.add(new GeometryItem(anglePointRight, GeometryType.HINT_ANGLE));
+    public AngleHint(GeometryAngle angle) {
+        geometryAngle = angle;
+        log.trace(angle.toString());
+    }
+
+    public List<GeometryItem<?>> getGeometryItems() {
+        List<GeometryItem<?>> output = new ArrayList<>();
+        output.add(new GeometryItem<>(geometryAngle, GeometryType.HINT_ANGLE));
         return output;
     }
 }

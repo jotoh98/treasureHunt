@@ -1,0 +1,88 @@
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.8'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url = 'https://artifactory.cronapp.io/public-release/'
+    }
+    maven {
+        url = 'https://jitpack.io'
+    }
+}
+
+
+dependencies {
+
+    compileOnly 'org.projectlombok:lombok:1.18.10'
+    annotationProcessor 'org.projectlombok:lombok:1.18.10'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation group: 'com.google.code.gson', name: 'gson-extras', version: '2.8.5'
+    implementation 'org.jetbrains:annotations:13.0'
+    implementation 'org.locationtech.jts:jts-core:1.16.1'
+    implementation 'ch.qos.logback:logback-core:1.2.3'
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'org.slf4j:slf4j-api:1.7.8'
+    implementation 'org.jfree:fxgraphics2d:1.7'
+    implementation 'org.reflections:reflections:0.9.11'
+    testCompile 'org.mockito:mockito-core:3.0.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
+
+}
+
+test {
+    useJUnitPlatform()
+}
+
+javafx {
+    version = "11"
+    modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.graphics']
+    /**
+     * https://github.com/openjfx/javafx-gradle-plugin
+     * JavaFX modules require native binaries for each platform. The plugin only includes binaries for the platform
+     * running the build. By declaring the dependency configuration compileOnly, the native binaries will not be
+     * included. You will need to provide those separately during deployment for each target platform.
+     */
+    // configuration = 'compileOnly'
+}
+
+mainClassName = 'com.treasure.hunt.JavaFXLauncher'
+
+group = 'com.treasure'
+version = '0.8.2'
+description = 'hunt'
+sourceCompatibility = '11'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.treasure.hunt.JavaFXLauncher'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    // This fixes signature issues by removing all signatures
+    doFirst {
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+}
+
+// This fixes the "line too long" error when running the .bat with windows CLI
+tasks.withType(CreateStartScripts).each { task ->
+    task.doLast {
+        String text = task.windowsScript.text
+        // Replaces the per file classpath (which are all jars in "lib") with a wildcard on lib
+        text = text.replaceFirst(/(set CLASSPATH=%APP_HOME%\\lib\\).*/, { "${it[1]}*" })
+        task.windowsScript.write text
+    }
+}
+

@@ -1,17 +1,21 @@
 package com.treasure.hunt.strategy.geom;
 
+import com.treasure.hunt.jts.AdvancedShapeWriter;
 import lombok.Getter;
 import lombok.NonNull;
-import org.locationtech.jts.geom.Geometry;
+import org.jfree.fx.FXGraphics2D;
+
+import java.awt.*;
 
 /**
  * Classifies a jts geometry item with parameters to distinguish between items for visualization/algorithm usages.
  *
- * @author hassel
+ * @author jotoh, dorianreineccius
  * @see GeometryType for further information about how to classifiy a geometry item.
  */
+
 @Getter
-public class GeometryItem<T extends Geometry> {
+public class GeometryItem<T> {
     @NonNull
     @Getter
     T object;
@@ -31,5 +35,20 @@ public class GeometryItem<T extends Geometry> {
 
     public GeometryItem(T object, GeometryType geometryType) {
         this(object, geometryType, GeometryStyle.getDefaults(geometryType));
+    }
+
+    public void draw(FXGraphics2D graphics2D, AdvancedShapeWriter shapeWriter) {
+        if (!geometryStyle.isVisible()) {
+            return;
+        }
+        Shape shape = shapeWriter.toShape(object);
+        if (geometryStyle.isFilled()) {
+            graphics2D.setColor(geometryStyle.getFillColor());
+            graphics2D.fill(shape);
+        }
+
+        graphics2D.setPaint(geometryStyle.getOutlineColor());
+        graphics2D.setStroke(geometryStyle.getStroke());
+        graphics2D.draw(shape);
     }
 }

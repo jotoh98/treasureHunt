@@ -6,7 +6,9 @@ import lombok.Getter;
 import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This is a movement of the searcher in the plain,
@@ -15,20 +17,24 @@ import java.util.List;
  * @author dorianreineccius
  */
 public class Movement {
-    @Getter
     private List<GeometryItem<Point>> points = new ArrayList<>();
+    protected List<GeometryItem<?>> additionalGeometryItems = new ArrayList<>();
+
+    /**
+     * Earlier added items that are now removed from display
+     */
     @Getter
-    protected List<GeometryItem> additionalGeometryItems = new ArrayList<>();
+    private List<GeometryItem> toBeRemoved = new ArrayList<>();
 
     public Movement() {
     }
 
-    public Movement(Point point) {
-        this.points.add(new GeometryItem<>(point, GeometryType.WAY_POINT));
-    }
-
     public Movement(List<GeometryItem<Point>> points) {
         this.points.addAll(points);
+    }
+
+    public Movement(Point... points) {
+        this.points.addAll(Arrays.stream(points).map(point -> new GeometryItem<>(point, GeometryType.WAY_POINT)).collect(Collectors.toList()));
     }
 
     /**
@@ -64,5 +70,13 @@ public class Movement {
      */
     public void addAdditionalItem(GeometryItem geometryItem) {
         additionalGeometryItems.add(geometryItem);
+    }
+
+    public List<GeometryItem<Point>> getPoints() {
+        return this.points;
+    }
+
+    public List<GeometryItem<?>> getAdditionalGeometryItems() {
+        return this.additionalGeometryItems;
     }
 }
