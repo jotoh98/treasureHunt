@@ -12,8 +12,7 @@ import static org.locationtech.jts.algorithm.Angle.angleBetweenOriented;
  * @author Rank, dorianreineccius
  */
 public class JTSUtils {
-    public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(1000));
-    //public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
+    public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(1000000000));
 
     /**
      * @param x coordinate.
