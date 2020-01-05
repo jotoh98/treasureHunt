@@ -54,13 +54,4 @@ public class Circle extends Polygon {
     public Circle(Coordinate coordinate, double radius, GeometryFactory geometryFactory) {
         this(coordinate, radius, 64, geometryFactory);
     }
-
-    /**
-     * @param coordinate      the center point of the circle.
-     * @param geometryFactory the {@link GeometryFactory}.
-     * @return A {@link Circle} lying in {@code coordinate} with a radius of 1.
-     */
-    public static Circle UnitCircle(Coordinate coordinate, GeometryFactory geometryFactory) {
-        return new Circle(coordinate, 1.0, geometryFactory);
-    }
 }

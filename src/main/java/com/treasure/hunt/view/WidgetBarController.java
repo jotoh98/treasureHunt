@@ -12,6 +12,7 @@ public class WidgetBarController {
 
     public void addWidget(Pane widget) {
         widget.prefWidthProperty().bind(widgetBar.widthProperty());
+        widget.prefHeightProperty().bind(widgetBar.heightProperty());
         widgetBar.getChildren().add(widget);
     }
 }

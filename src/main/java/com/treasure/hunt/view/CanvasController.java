@@ -15,6 +15,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jfree.fx.FXGraphics2D;
 import org.locationtech.jts.geom.Coordinate;
@@ -30,6 +31,7 @@ import java.awt.*;
  * @author axel12, dorianreineccius
  */
 public class CanvasController {
+    @Getter
     /**
      * The maximum distance on canvas between the mouse and a {@link GeometryItem},
      * in which the mouse can select a {@link GeometryItem} on click.
@@ -42,10 +44,12 @@ public class CanvasController {
      */
     private boolean dragged = false;
 
+    @Getter
     public Canvas canvas;
     public Pane canvasPane;
     private ObjectProperty<GameManager> gameManager;
 
+    @Getter
     private PointTransformation transformation = new PointTransformation();
     private AdvancedShapeWriter shapeWriter = new AdvancedShapeWriter(transformation);
 
@@ -57,13 +61,23 @@ public class CanvasController {
     public void initialize() {
         makeCanvasResizable();
         graphics2D = new FXGraphics2D(canvas.getGraphicsContext2D());
+
+        transformation.getScaleProperty().addListener(invalidation -> drawShapes());
+
+        transformation.getOffsetProperty().addListener(invalidation -> drawShapes());
     }
 
     public void makeCanvasResizable() {
 
-        canvas.widthProperty().addListener((observableValue, number, t1) -> drawShapes());
+        canvas.widthProperty().addListener((observable, oldValue, newValue) -> {
+            transformation.updateCanvasWidth((double) newValue);
+            drawShapes();
+        });
 
-        canvas.widthProperty().addListener((observableValue, number, t1) -> drawShapes());
+        canvas.heightProperty().addListener((observable, oldValue, newValue) -> {
+            transformation.updateCanvasHeight((double) newValue);
+            drawShapes();
+        });
 
         canvas.heightProperty().bind(canvasPane.heightProperty());
         canvas.widthProperty().bind(canvasPane.widthProperty());
@@ -111,6 +125,7 @@ public class CanvasController {
         if (gameManager == null) {
             return;
         }
+        offsetBackup = transformation.getOffsetProperty().get();
 
         /*
          * Only execute this (selecting a GeometryItem),
@@ -123,11 +138,11 @@ public class CanvasController {
         dragged = false;
 
         Vector2D mousePositionInGameContext = dragStart.subtract(offsetBackup);
-        mousePositionInGameContext = mousePositionInGameContext.divide(transformation.getScale());
+        mousePositionInGameContext = mousePositionInGameContext.divide(transformation.getScaleProperty().get());
 
         GeometryItem geometryItem = gameManager.get().pickGeometryItem(
                 new Coordinate(mousePositionInGameContext.getX(), -mousePositionInGameContext.getY()),
-                MOUSE_RECOGNIZE_DISTANCE / transformation.getScale());
+                MOUSE_RECOGNIZE_DISTANCE / transformation.getScaleProperty().get());
         if (geometryItem != null) {
             Geometry geometry = geometryItem.getGeometry();
             log.info("recognized: " + geometry); // TODO delete
@@ -183,7 +198,7 @@ public class CanvasController {
         if (gameManager == null) {
             return;
         }
-        offsetBackup = transformation.getOffset();
+        offsetBackup = transformation.getOffsetProperty().get();
         dragStart = Vector2D.create(mouseEvent.getX(), mouseEvent.getY());
     }
 
@@ -203,7 +218,6 @@ public class CanvasController {
 
         Vector2D dragOffset = Vector2D.create(mouseEvent.getX(), mouseEvent.getY()).subtract(dragStart);
         transformation.setOffset(dragOffset.add(offsetBackup));
-        drawShapes();
     }
 
     public void onCanvasZoom(ScrollEvent scrollEvent) {
@@ -211,16 +225,8 @@ public class CanvasController {
             return;
         }
         Vector2D mouse = new Vector2D(scrollEvent.getX(), scrollEvent.getY());
-        Vector2D direction = transformation.getOffset().subtract(mouse);
-
-        double oldScale = transformation.getScale();
-        double newScale = oldScale * Math.exp(scrollEvent.getDeltaY() * 1e-2);
-
-        if (newScale > 0) {
-            transformation.setScale(newScale);
-            transformation.setOffset(mouse.add(direction.multiply(newScale / oldScale)));
-            drawShapes();
-        }
+        final double scaleFactor = Math.exp(scrollEvent.getDeltaY() * 1e-2);
+        transformation.scaleRelative(scaleFactor, mouse);
     }
 
     public void setGameManager(ObjectProperty<GameManager> gameManager) {

@@ -6,10 +6,7 @@ import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.ReflectionUtils;
 import com.treasure.hunt.utils.Requires;
-import com.treasure.hunt.view.widget.BeatWidgetController;
-import com.treasure.hunt.view.widget.PointInspectorController;
-import com.treasure.hunt.view.widget.SaveAndLoadController;
-import com.treasure.hunt.view.widget.Widget;
+import com.treasure.hunt.view.widget.*;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -21,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
@@ -46,9 +44,21 @@ public class MainController {
 
     public VBox rightToolbar;
     public VBox leftToolbar;
+
+    public Pane canvas;
+
     @FXML
     public CanvasController canvasController;
-    public Pane canvas;
+
+    /**
+     * Navigator for the view.
+     * Changes the step view.
+     */
+    public HBox stepViewNavigator;
+
+    @FXML
+    public NavigationController stepViewNavigatorController;
+
     @FXML
     private WidgetBarController leftWidgetBarController;
     @FXML
@@ -63,8 +73,6 @@ public class MainController {
     public ComboBox<Class<? extends GameEngine>> gameEngineList;
     public Button startGameButton;
     public Label logLabel;
-    public Button previousButton;
-    public Button nextButton;
 
     @Getter
     private final ObjectProperty<GameManager> gameManager = new SimpleObjectProperty<>();
@@ -88,12 +96,9 @@ public class MainController {
             if (gameManager.isNull().get()) {
                 return;
             }
-            nextButton.disableProperty().bind(gameManager.get().stepForwardImpossibleBinding());
-            previousButton.disableProperty().bind(gameManager.get().stepBackwardImpossibleBinding());
-            gameManager.get().getGameFinishedProperty().addListener(invalidation -> {
-                logLabel.setText("Game ended");
-            });
+            gameManager.get().getFinishedProperty().addListener(invalidation -> logLabel.setText("Game ended"));
         });
+        gameManager.bindBidirectional(stepViewNavigatorController.getGameManager());
     }
 
     private void bindWidgetBarVisibility() {
@@ -112,9 +117,10 @@ public class MainController {
             savedBar.set(rightWidgetBar);
         }
 
-        final int readPosition = left ? 0 : mainSplitPane.getItems().size() - 1;
 
         toolbarController.getToggleGroup().selectedToggleProperty().addListener((observableValue, oldItem, newItem) -> {
+            final int readPosition = left ? 0 : mainSplitPane.getItems().size() - 1;
+
             if (newItem == null && oldItem != null) {
                 savedBar.set(mainSplitPane.getItems().get(readPosition));
                 mainSplitPane.getItems().remove(readPosition);
@@ -124,7 +130,7 @@ public class MainController {
                     dividers.get(0).setPosition(.2);
                 } else {
                     mainSplitPane.getItems().add(savedBar.get());
-                    dividers.get(readPosition - 1).setPosition(.8);
+                    dividers.get(readPosition).setPosition(.8);
                 }
             }
         });
@@ -139,12 +145,21 @@ public class MainController {
         Widget<PointInspectorController, ?> pointInspectorWidget = new Widget<>("/layout/pointInspector.fxml");
         pointInspectorWidget.getController().init(gameManager);
         insertWidget(true, "Inspector", pointInspectorWidget.getComponent());
+
         Widget<SaveAndLoadController, ?> saveAndLoadWidget = new Widget<>("/layout/saveAndLoad.fxml");
         saveAndLoadWidget.getController().init(gameManager, logLabel);
         insertWidget(true, "Save & Load", saveAndLoadWidget.getComponent());
+
         Widget<BeatWidgetController, ?> beatWidget = new Widget<>("/layout/beatWidget.fxml");
         beatWidget.getController().init(gameManager, logLabel);
         insertWidget(true, "Game controls", beatWidget.getComponent());
+        Widget<StatisticsWidgetController, ?> statisticsWidget = new Widget<>("/layout/statisticsWidget.fxml");
+        statisticsWidget.getController().init(gameManager, logLabel);
+        insertWidget(true, "Statistics", statisticsWidget.getComponent());
+
+        Widget<ScaleController, ?> scaleWidget = new Widget<>("/layout/scaling.fxml");
+        scaleWidget.getController().init(canvasController);
+        insertWidget(false, "Navigator", scaleWidget.getComponent());
     }
 
     private void setListStringConverters() {
@@ -310,13 +325,5 @@ public class MainController {
     public void initGameUI() {
         canvasController.drawShapes();
         addWidgets();
-    }
-
-    public void previousButtonClicked() {
-        gameManager.get().previous();
-    }
-
-    public void nextButtonClicked() {
-        gameManager.get().next();
     }
 }

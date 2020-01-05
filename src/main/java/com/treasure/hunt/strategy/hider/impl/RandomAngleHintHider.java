@@ -18,6 +18,9 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
      * Random picked {@link Point} from [0,100)x[0x100), containing the treasure location.
      */
     private Point treasurePosition = JTSUtils.createPoint(Math.random() * 200 - 100, Math.random() * 200 - 100);
+    private Point treasurePos = JTSUtils.createPoint(Math.random() * 100, Math.random() * 100);
+    private int width;
+    private int height;
 
     /**
      * @return {@link RandomAngleHintHider#treasurePosition}.
@@ -31,6 +34,12 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
      * @param movement the {@link Movement}, the {@link com.treasure.hunt.strategy.searcher.Searcher} did last.
      * @return {@link AngleHint}, which is randomly chosen, but correct.
      */
+    @Override
+    public void init(Point searcherStartPosition, int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
     @Override
     public AngleHint move(Movement movement) {
         Coordinate searcherPos = movement.getEndPoint().getCoordinate();
