@@ -18,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
@@ -43,9 +44,21 @@ public class MainController {
 
     public VBox rightToolbar;
     public VBox leftToolbar;
+
+    public Pane canvas;
+
     @FXML
     public CanvasController canvasController;
-    public Pane canvas;
+
+    /**
+     * Navigator for the view.
+     * Changes the step view.
+     */
+    public HBox stepViewNavigator;
+
+    @FXML
+    public NavigationController stepViewNavigatorController;
+
     @FXML
     private WidgetBarController leftWidgetBarController;
     @FXML
@@ -62,8 +75,6 @@ public class MainController {
     public ComboBox<Class<? extends GameEngine>> gameEngineList;
     public Button startGameButton;
     public Label logLabel;
-    public Button previousButton;
-    public Button nextButton;
 
     @Getter
     private final ObjectProperty<GameManager> gameManager = new SimpleObjectProperty<>();
@@ -88,10 +99,9 @@ public class MainController {
             if (gameManager.isNull().get()) {
                 return;
             }
-            nextButton.disableProperty().bind(gameManager.get().getStepForwardImpossibleBinding());
-            previousButton.disableProperty().bind(gameManager.get().getStepBackwardImpossibleBinding());
             gameManager.get().getFinishedProperty().addListener(invalidation -> logLabel.setText("Game ended"));
         });
+        gameManager.bindBidirectional(stepViewNavigatorController.getGameManager());
     }
 
     private void bindWidgetBarVisibility() {
@@ -318,13 +328,5 @@ public class MainController {
     public void initGameUI() {
         canvasController.drawShapes();
         addWidgets();
-    }
-
-    public void previousButtonClicked() {
-        gameManager.get().previous();
-    }
-
-    public void nextButtonClicked() {
-        gameManager.get().next();
     }
 }

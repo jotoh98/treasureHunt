@@ -9,6 +9,7 @@ import com.treasure.hunt.strategy.searcher.Searcher;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.binding.IntegerBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -62,6 +63,8 @@ public class GameManager {
     private final ObjectBinding<Point> lastTreasureBindings;
     @Getter
     private final ObjectBinding<Point> lastPointBinding;
+    @Getter
+    private IntegerBinding moveSizeBinding = Bindings.size(moves);
 
     /**
      * @param searcherClass   (Sub-)class of {@link Searcher}
