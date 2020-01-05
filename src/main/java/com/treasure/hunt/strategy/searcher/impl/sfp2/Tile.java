@@ -81,7 +81,7 @@ class Tile {
         }
 
         if (size == 1){
-            //System.out.println("Maximally tiled but Algorithm would want an even finer tiling, which makes no sense.");
+            //Maximally tiled but Algorithm would want an even finer tiling, which makes no sense.
             return;
         }
 
