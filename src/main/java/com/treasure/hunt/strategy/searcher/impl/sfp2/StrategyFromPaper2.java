@@ -59,11 +59,6 @@ public class StrategyFromPaper2 implements Searcher<AngleHint> {
 
     /*Basically, function from paper.*/
     private void TreasureHunt2(){
-        /*for (int i = 1; i <= 360; i++){
-            System.out.println("Index( " + i + ") = "+  index(Angle.toRadians(i)));
-        }*/
-
-
         int IndexNew = 1;
         int IndexOld;
         int i = 1;
@@ -90,7 +85,6 @@ public class StrategyFromPaper2 implements Searcher<AngleHint> {
 
         IndexMax = k;
         int maxSteps = calcMaxSteps(i, k);
-        //System.out.println("maxSteps: " + maxSteps);
 
         for (int j = 1; j <= maxSteps; j++){
             S.createTiling((j-1)*k, nextMoves);
