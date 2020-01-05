@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -181,95 +181,60 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addListener(javafx.collections.ListChangeListener)">addListener</a></span>&#8203;(javafx.collections.ListChangeListener&lt;? super <a href="Move.html" title="class in com.treasure.hunt.game">Move</a>&gt;&nbsp;listChangeListener)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beat()">beat</a></span>()</code></th>
 <td class="colLast">
 <div class="block">This simulates the whole game, until its finished.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beat(javafx.beans.property.ReadOnlyObjectProperty)">beat</a></span>&#8203;(javafx.beans.property.ReadOnlyObjectProperty&lt;java.lang.Double&gt;&nbsp;delay)</code></th>
 <td class="colLast">
 <div class="block">This simulates the whole game, until its finished.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>javafx.beans.property.BooleanProperty</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGameFinishedProperty()">getGameFinishedProperty</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i4" class="altColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGeometryItems(java.lang.Boolean)">getGeometryItems</a></span>&#8203;(java.lang.Boolean&nbsp;filterItems)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGeometryItems(java.lang.Boolean)">getGeometryItems</a></span>&#8203;(java.lang.Boolean&nbsp;excludeOverrideItems)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isFirstStepShown()">isFirstStepShown</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>javafx.beans.binding.ObjectBinding&lt;<a href="Move.html" title="class in com.treasure.hunt.game">Move</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lastMove()">lastMove</a></span>()</code></th>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isGameFinished()">isGameFinished</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>javafx.beans.binding.ObjectBinding&lt;org.locationtech.jts.geom.Point&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lastPoint()">lastPoint</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code>javafx.beans.binding.ObjectBinding&lt;org.locationtech.jts.geom.Point&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lastTreasure()">lastTreasure</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i9" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#latestStepViewed()">latestStepViewed</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
-<td class="colFirst"><code>javafx.beans.binding.BooleanBinding</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#latestStepViewedBinding()">latestStepViewedBinding</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i11" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#move(int)">move</a></span>&#8203;(int&nbsp;steps)</code></th>
 <td class="colLast">
 <div class="block">Simulates a fixed number of moves.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#next()">next</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Works only for stepSim &le; stepView </div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#previous()">previous</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Works only for stepView &gt; 0</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
-<td class="colFirst"><code>javafx.beans.binding.BooleanBinding</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stepBackwardImpossibleBinding()">stepBackwardImpossibleBinding</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i15" class="rowColor">
-<td class="colFirst"><code>javafx.beans.binding.BooleanBinding</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stepForwardImpossibleBinding()">stepForwardImpossibleBinding</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i16" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stopBeat()">stopBeat</a></span>()</code></th>
 <td class="colLast">
@@ -336,42 +301,6 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="addListener(javafx.collections.ListChangeListener)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>addListener</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;addListener&#8203;(javafx.collections.ListChangeListener&lt;? super <a href="Move.html" title="class in com.treasure.hunt.game">Move</a>&gt;&nbsp;listChangeListener)</pre>
-</li>
-</ul>
-<a id="lastMove()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>lastMove</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.binding.ObjectBinding&lt;<a href="Move.html" title="class in com.treasure.hunt.game">Move</a>&gt;&nbsp;lastMove()</pre>
-</li>
-</ul>
-<a id="lastTreasure()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>lastTreasure</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.binding.ObjectBinding&lt;org.locationtech.jts.geom.Point&gt;&nbsp;lastTreasure()</pre>
-</li>
-</ul>
-<a id="lastPoint()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>lastPoint</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.binding.ObjectBinding&lt;org.locationtech.jts.geom.Point&gt;&nbsp;lastPoint()</pre>
-</li>
-</ul>
 <a id="next()">
 <!--   -->
 </a>
@@ -417,20 +346,6 @@ extends java.lang.Object</pre>
 <div class="block">This simulates the whole game, until its finished.</div>
 </li>
 </ul>
-<a id="beat(javafx.beans.property.ReadOnlyObjectProperty)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>beat</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;beat&#8203;(javafx.beans.property.ReadOnlyObjectProperty&lt;java.lang.Double&gt;&nbsp;delay)</pre>
-<div class="block">This simulates the whole game, until its finished.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>delay</code> - time between each move</dd>
-</dl>
-</li>
-</ul>
 <a id="stopBeat()">
 <!--   -->
 </a>
@@ -441,31 +356,16 @@ extends java.lang.Object</pre>
 <div class="block">Stops the Thread from beating.</div>
 </li>
 </ul>
-<a id="getGeometryItems(java.lang.Boolean)">
+<a id="isGameFinished()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getGeometryItems</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&gt;&nbsp;getGeometryItems&#8203;(java.lang.Boolean&nbsp;filterItems)</pre>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>filterItems</code> - if true Geometry items that are set to be overridable only the last item is returned and later deleted items are removed</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The whole List of geometryItems of the gameHistory</dd>
-</dl>
-</li>
-</ul>
-<a id="getGameFinishedProperty()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getGameFinishedProperty</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.property.BooleanProperty&nbsp;getGameFinishedProperty()</pre>
+<h4>isGameFinished</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isGameFinished()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>finished property containing <code>true</code>, if the game is over. <code>false</code>, otherwise.</dd>
+<dd>whether the game of the <a href="GameEngine.html" title="class in com.treasure.hunt.game"><code>GameEngine</code></a> is finished or not.</dd>
 </dl>
 </li>
 </ul>
@@ -482,31 +382,33 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="latestStepViewedBinding()">
+<a id="getGeometryItems(java.lang.Boolean)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>latestStepViewedBinding</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.binding.BooleanBinding&nbsp;latestStepViewedBinding()</pre>
+<h4>getGeometryItems</h4>
+<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&gt;&nbsp;getGeometryItems&#8203;(java.lang.Boolean&nbsp;excludeOverrideItems)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>excludeOverrideItems</code> - if true Geometry items that are set to be overridable only the last item is returned and later deleted items are removed</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The whole List of geometryItems of the gameHistory</dd>
+</dl>
 </li>
 </ul>
-<a id="stepForwardImpossibleBinding()">
+<a id="beat(javafx.beans.property.ReadOnlyObjectProperty)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>stepForwardImpossibleBinding</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.binding.BooleanBinding&nbsp;stepForwardImpossibleBinding()</pre>
-</li>
-</ul>
-<a id="stepBackwardImpossibleBinding()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>stepBackwardImpossibleBinding</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.binding.BooleanBinding&nbsp;stepBackwardImpossibleBinding()</pre>
+<h4>beat</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;beat&#8203;(javafx.beans.property.ReadOnlyObjectProperty&lt;java.lang.Double&gt;&nbsp;delay)</pre>
+<div class="block">This simulates the whole game, until its finished.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>delay</code> - time between each move</dd>
+</dl>
 </li>
 </ul>
 <a id="isFirstStepShown()">
