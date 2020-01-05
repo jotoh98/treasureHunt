@@ -8,6 +8,7 @@ import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.strategy.searcher.impl.StrategyFromPaper;
 import com.treasure.hunt.utils.JTSUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
