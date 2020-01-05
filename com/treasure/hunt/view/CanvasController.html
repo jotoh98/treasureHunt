@@ -225,7 +225,10 @@ extends java.lang.Object</pre>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onCanvasDragged(javafx.scene.input.MouseEvent)">onCanvasDragged</a></span>&#8203;(javafx.scene.input.MouseEvent&nbsp;mouseEvent)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">This will be executed, when the mouse is pressed (and not released)
+ and moves over the canvas</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
@@ -351,6 +354,14 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>onCanvasDragged</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;onCanvasDragged&#8203;(javafx.scene.input.MouseEvent&nbsp;mouseEvent)</pre>
+<div class="block">This will be executed, when the mouse is pressed (and not released)
+ and moves over the canvas
+ <p>
+ It will swipe the game to the dragged position.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>mouseEvent</code> - corresponding <code>MouseEvent</code></dd>
+</dl>
 </li>
 </ul>
 <a id="onCanvasZoom(javafx.scene.input.ScrollEvent)">
