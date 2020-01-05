@@ -245,20 +245,20 @@ public class StrategyFromPaper2 implements Searcher<AngleHint> {
 
 
     private static int calcMaxSteps(int i, int k){
-        /*Equivalent to formula from paper:
-        Math.ceil(Math.log(Math.sqrt(Math.pow(2, i))) / (Math.log(Math.pow(4,k))))*/
-        //return (int)Math.ceil(0.25*i/(double)k);
-
-        // Custom modified max Steps Function which works maybe a tiny bit better:
+        /*The formula from the paper is:
+        Math.ceil(Math.log(Math.sqrt(Math.pow(2, i))) / (Math.log(Math.pow(4,k))))
+        which is equivalent to (int)Math.ceil(0.25*i/(double)k),
+        but the custom modified formula works a tiny bit better:*/
         return (int)Math.ceil(i/(double)k);
     }
 
-    /*The index function which is way too big, all values are >= 12
-    * which would mean Tilings of size are greater than 4^12 !!!*/
+    
     private static int index(double alpha){
-        //return 4*((int)Math.max(3, Math.ceil(Math.log(2.*Math.PI/alpha)/Math.log(2.)) + 1));
-
-        // Custom modified index Function which works a tiny bit better:
+        /*The index function
+        4*((int)Math.max(3, Math.ceil(Math.log(2.*Math.PI/alpha)/Math.log(2.)) + 1))
+        which is way too big, all values are >= 12
+        which would mean Tilings of size are greater than 4^12 !!!
+        So here is a custom modified index Function which works a tiny bit better:*/
         return (int) (0.5*Math.ceil(Math.log(2.*Math.PI/alpha)/Math.log(2.)))+1;
     }
 
