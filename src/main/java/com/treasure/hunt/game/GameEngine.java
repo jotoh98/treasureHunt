@@ -1,5 +1,6 @@
 package com.treasure.hunt.game;
 
+import com.treasure.hunt.analysis.Statistic;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
@@ -35,7 +36,8 @@ public class GameEngine {
      */
     @Getter
     protected final int width;
-
+    @Getter
+    private final Statistic statistics = new Statistic();
     protected final Searcher searcher;
     protected final Hider hider;
     protected final Coordinate initialSearcherCoordinate;

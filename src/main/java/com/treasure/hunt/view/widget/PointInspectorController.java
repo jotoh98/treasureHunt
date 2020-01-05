@@ -49,7 +49,7 @@ public class PointInspectorController {
             return;
         }
 
-        ObjectBinding<Point> lastTreasureBinding = gameManager.get().lastPoint();
+        ObjectBinding<Point> lastTreasureBinding = gameManager.get().getLastPointBinding();
 
         bindPoint(lastTreasureBinding);
     }
@@ -59,7 +59,7 @@ public class PointInspectorController {
             return;
         }
 
-        ObjectBinding<Point> lastTreasureBinding = gameManager.get().lastTreasure();
+        ObjectBinding<Point> lastTreasureBinding = gameManager.get().getLastTreasureBindings();
 
         bindPoint(lastTreasureBinding);
     }
