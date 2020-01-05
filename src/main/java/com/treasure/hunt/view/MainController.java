@@ -90,7 +90,7 @@ public class MainController {
             }
             nextButton.disableProperty().bind(gameManager.get().getStepForwardImpossibleBinding());
             previousButton.disableProperty().bind(gameManager.get().getStepBackwardImpossibleBinding());
-            gameManager.get().getGameFinishedProperty().addListener(invalidation -> logLabel.setText("Game ended"));
+            gameManager.get().getFinishedProperty().addListener(invalidation -> logLabel.setText("Game ended"));
         });
     }
 

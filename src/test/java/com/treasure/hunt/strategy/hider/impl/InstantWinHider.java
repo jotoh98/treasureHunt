@@ -20,13 +20,13 @@ public class InstantWinHider implements Hider<Hint> {
      * @return The {@link Point} with treasure location
      */
     @Override
-    public Point getTreasurePos() {
+    public Point getTreasureLocation() {
         return JTSUtils.createPoint(0, 0);
     }
 
     @Override
-    public void setTreasureDistance(double treasureDistance) {
-        //TODO: implement
+    public void init(Point searcherStartPosition, int width, int height) {
+
     }
 
     @Override

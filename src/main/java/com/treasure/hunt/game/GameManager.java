@@ -6,17 +6,16 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
-import com.treasure.hunt.utils.JTSUtils;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
 import java.lang.reflect.InvocationTargetException;
@@ -51,27 +50,51 @@ public class GameManager {
     ObservableList<Move> moves = FXCollections.observableArrayList();
 
     private GameEngine gameEngine;
-
     @Getter
-    private IntegerProperty viewIndex = new SimpleIntegerProperty(0);
-
+    private final BooleanProperty finishedProperty = new SimpleBooleanProperty(false);
+    @Getter
+    private final IntegerProperty viewIndex = new SimpleIntegerProperty(0);
     @Getter
     private final BooleanBinding latestStepViewedBinding;
+    @Getter
+    private final ObjectBinding<Move> lastMoveBinding;
+    @Getter
+    private final ObjectBinding<Point> lastTreasureBindings;
+    @Getter
+    private final ObjectBinding<Point> lastPointBinding;
 
-    public void addListener(ListChangeListener<? super Move> listChangeListener) {
-        moves.addListener(listChangeListener);
-    }
+    /**
+     * @param searcherClass   (Sub-)class of {@link Searcher}
+     * @param hiderClass      (Sub-)class of {@link Hider}
+     * @param gameEngineClass (Sub-)class of {@link GameEngine}
+     * @throws NoSuchMethodException     from {@link Class#getDeclaredConstructor(Class[])}
+     * @throws IllegalAccessException    from {@link java.lang.reflect.Constructor#newInstance(Object...)}
+     * @throws InvocationTargetException from {@link java.lang.reflect.Constructor#newInstance(Object...)}
+     * @throws InstantiationException    from {@link java.lang.reflect.Constructor#newInstance(Object...)}
+     */
+    public GameManager(Class<? extends Searcher> searcherClass, Class<? extends Hider> hiderClass, Class<? extends GameEngine> gameEngineClass)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
 
-    public ObjectBinding<Move> lastMove() {
-        return Bindings.createObjectBinding(() -> moves.get(viewIndex.get()), viewIndex, moves);
-    }
+        Searcher newSearcher = searcherClass.getDeclaredConstructor().newInstance();
+        Hider newHider = hiderClass.getDeclaredConstructor().newInstance();
 
-    public ObjectBinding<Point> lastTreasure() {
-        return Bindings.createObjectBinding(() -> moves.get(viewIndex.get()).getTreasureLocation(), viewIndex, moves);
-    }
+        this.gameEngine = gameEngineClass
+                .getDeclaredConstructor(Searcher.class, Hider.class, Coordinate.class)
+                .newInstance(newSearcher, newHider, new Coordinate(0, 0));
 
-    public ObjectBinding<Point> lastPoint() {
-        return Bindings.createObjectBinding(() -> moves.get(viewIndex.get()).getMovement().getEndPoint(), viewIndex, moves);
+        // Do initial move
+        moves.add(gameEngine.init());
+        if (gameEngine.isFinished()) {
+            finishedProperty.set(true);
+        }
+        viewIndex.set(0);
+        latestStepViewedBinding = Bindings.createBooleanBinding(() -> moves.size() - 1 == viewIndex.get(), viewIndex, moves);
+        stepForwardImpossibleBinding = finishedProperty.and(latestStepViewedBinding);
+        statistics = Bindings.createObjectBinding(() -> gameEngine.getStatistics().calculate(getMovesViewed()), viewIndex);
+        stepBackwardImpossibleBinding = viewIndex.isEqualTo(0);
+        lastMoveBinding = Bindings.createObjectBinding(() -> moves.get(viewIndex.get()), viewIndex, moves);
+        lastTreasureBindings = Bindings.createObjectBinding(() -> moves.get(viewIndex.get()).getTreasureLocation(), viewIndex, moves);
+        lastPointBinding = Bindings.createObjectBinding(() -> moves.get(viewIndex.get()).getMovement().getEndPoint(), viewIndex, moves);
     }
 
     /**
@@ -83,6 +106,9 @@ public class GameManager {
                 moves.add(gameEngine.move());
             }
             viewIndex.set(viewIndex.get() + 1);
+        }
+        if (gameEngine.isFinished()) {
+            finishedProperty.set(true);
         }
     }
 
@@ -143,47 +169,10 @@ public class GameManager {
     }
 
     /**
-     * Delegate for game engine finished property
-     *
-     * @return finished property
-     */
-    public BooleanProperty getGameFinishedProperty() {
-        return gameEngine.getFinished();
-    }
-
-    /**
      * @return {@code true}, if the shown step is the most up to date one. {@code false}, otherwise.
      */
     public boolean latestStepViewed() {
         return moves.size() - 1 == viewIndex.get();
-    }
-
-    /**
-     * @param searcherClass   (Sub-)class of {@link Searcher}
-     * @param hiderClass      (Sub-)class of {@link Hider}
-     * @param gameEngineClass (Sub-)class of {@link GameEngine}
-     * @throws NoSuchMethodException     from {@link Class#getDeclaredConstructor(Class[])}
-     * @throws IllegalAccessException    from {@link java.lang.reflect.Constructor#newInstance(Object...)}
-     * @throws InvocationTargetException from {@link java.lang.reflect.Constructor#newInstance(Object...)}
-     * @throws InstantiationException    from {@link java.lang.reflect.Constructor#newInstance(Object...)}
-     */
-    public GameManager(Class<? extends Searcher> searcherClass, Class<? extends Hider> hiderClass, Class<? extends GameEngine> gameEngineClass)
-            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-
-        Searcher newSearcher = searcherClass.getDeclaredConstructor().newInstance();
-        Hider newHider = hiderClass.getDeclaredConstructor().newInstance();
-
-        this.gameEngine = gameEngineClass
-                .getDeclaredConstructor(Searcher.class, Hider.class)
-                .newInstance(newSearcher, newHider);
-
-        // Do initial move
-        moves.add(gameEngine.init(JTSUtils.createPoint(0, 0)));
-        viewIndex.set(0);
-        latestStepViewedBinding = Bindings.createBooleanBinding(() -> moves.size() - 1 == viewIndex.get(), viewIndex, moves);
-        stepForwardImpossibleBinding = getGameFinishedProperty().and(latestStepViewedBinding);
-        statistics = Bindings.createObjectBinding(() -> gameEngine.getStatistics().calculate(getMovesViewed()), viewIndex);
-        stepBackwardImpossibleBinding = viewIndex.isEqualTo(0);
     }
 
     /**

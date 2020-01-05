@@ -18,7 +18,7 @@ public class NaiveCircleSearcher implements HideAndSeekSearcher<CircleHint> {
      * {@inheritDoc}
      */
     @Override
-    public void init(Point startPosition) {
+    public void init(Point startPosition, int width, int height) {
         position = startPosition;
     }
 
