@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -221,25 +221,46 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#scaleOffset(double,org.locationtech.jts.math.Vector2D)">scaleOffset</a></span>&#8203;(double&nbsp;gamma,
+           org.locationtech.jts.math.Vector2D&nbsp;point)</code></th>
+<td class="colLast">
+<div class="block">Scale the offset relative keeping a point as scaling source.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#scaleRelative(double,org.locationtech.jts.math.Vector2D)">scaleRelative</a></span>&#8203;(double&nbsp;gamma,
+             org.locationtech.jts.math.Vector2D&nbsp;point)</code></th>
+<td class="colLast">
+<div class="block">Scales the canvas and keeps a certain point centered.</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBoundarySize(double,double)">setBoundarySize</a></span>&#8203;(double&nbsp;width,
                double&nbsp;height)</code></th>
 <td class="colLast">
 <div class="block">Utility function to set lower right boundary vector according to boundary rectangle diagonal.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setOffset(org.locationtech.jts.math.Vector2D)">setOffset</a></span>&#8203;(org.locationtech.jts.math.Vector2D&nbsp;offset)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setScale(double)">setScale</a></span>&#8203;(double&nbsp;scale)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#transform(org.locationtech.jts.geom.Coordinate)">transform</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;src)</code></th>
 <td class="colLast">
 <div class="block">Transform method between <code>Coordinate</code>'s.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#transform(org.locationtech.jts.geom.Coordinate,java.awt.geom.Point2D)">transform</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;src,
          java.awt.geom.Point2D&nbsp;dest)</code></th>
@@ -247,13 +268,23 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 <div class="block">Main transform method necessary for extending <code>PointTransformation</code>.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateCanvasSize(int,int)">updateCanvasSize</a></span>&#8203;(int&nbsp;width,
-                int&nbsp;height)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateCanvasHeight(double)">updateCanvasHeight</a></span>&#8203;(double&nbsp;height)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i13" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateCanvasSize(double,double)">updateCanvasSize</a></span>&#8203;(double&nbsp;width,
+                double&nbsp;height)</code></th>
 <td class="colLast">
 <div class="block">Update boundary size according to the width and height of the <code>Canvas</code>.</div>
 </td>
+</tr>
+<tr id="i14" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateCanvasWidth(double)">updateCanvasWidth</a></span>&#8203;(double&nbsp;width)</code></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -305,6 +336,15 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 <li class="blockList">
 <h4>setScale</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setScale&#8203;(double&nbsp;scale)</pre>
+</li>
+</ul>
+<a id="setOffset(org.locationtech.jts.math.Vector2D)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setOffset</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setOffset&#8203;(org.locationtech.jts.math.Vector2D&nbsp;offset)</pre>
 </li>
 </ul>
 <a id="transform(org.locationtech.jts.geom.Coordinate,java.awt.geom.Point2D)">
@@ -383,20 +423,38 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 </dl>
 </li>
 </ul>
-<a id="updateCanvasSize(int,int)">
+<a id="updateCanvasSize(double,double)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>updateCanvasSize</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;updateCanvasSize&#8203;(int&nbsp;width,
-                             int&nbsp;height)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;updateCanvasSize&#8203;(double&nbsp;width,
+                             double&nbsp;height)</pre>
 <div class="block">Update boundary size according to the width and height of the <code>Canvas</code>.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>width</code> - width of the <code>Canvas</code></dd>
 <dd><code>height</code> - height of the <code>Canvas</code></dd>
 </dl>
+</li>
+</ul>
+<a id="updateCanvasWidth(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>updateCanvasWidth</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;updateCanvasWidth&#8203;(double&nbsp;width)</pre>
+</li>
+</ul>
+<a id="updateCanvasHeight(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>updateCanvasHeight</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;updateCanvasHeight&#8203;(double&nbsp;height)</pre>
 </li>
 </ul>
 <a id="setBoundarySize(double,double)">
@@ -432,7 +490,7 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 <a id="getBoundaryHeight()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getBoundaryHeight</h4>
 <pre class="methodSignature">public&nbsp;double&nbsp;getBoundaryHeight()</pre>
@@ -440,6 +498,38 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>boundary rectangle height</dd>
+</dl>
+</li>
+</ul>
+<a id="scaleRelative(double,org.locationtech.jts.math.Vector2D)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>scaleRelative</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;scaleRelative&#8203;(double&nbsp;gamma,
+                          org.locationtech.jts.math.Vector2D&nbsp;point)</pre>
+<div class="block">Scales the canvas and keeps a certain point centered.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>gamma</code> - factor of new scale</dd>
+<dd><code>point</code> - scaling source point</dd>
+</dl>
+</li>
+</ul>
+<a id="scaleOffset(double,org.locationtech.jts.math.Vector2D)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>scaleOffset</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;scaleOffset&#8203;(double&nbsp;gamma,
+                        org.locationtech.jts.math.Vector2D&nbsp;point)</pre>
+<div class="block">Scale the offset relative keeping a point as scaling source.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>gamma</code> - factor of new scale</dd>
+<dd><code>point</code> - scaling source point</dd>
 </dl>
 </li>
 </ul>
