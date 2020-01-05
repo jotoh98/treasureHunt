@@ -37,6 +37,7 @@ import java.util.List;
  *
  * @author Vincent Schönbach
  */
+@Slf4j
 public class StrategyFromPaper2 implements Searcher<AngleHint> {
     private Coordinate location;
     private TreasureHunt2Thread thread;
@@ -112,7 +113,7 @@ public class StrategyFromPaper2 implements Searcher<AngleHint> {
                     try {
                         thread.wait();
                     } catch (InterruptedException e) {
-                        //System.out.println("Error waiting for hint in Mosaic().");
+                        log.error("Error waiting for hint in Mosaic().");
                     }
                 }
                 GeometryAngle geometryAngle = currentHint.getGeometryAngle().copy();
@@ -197,7 +198,7 @@ public class StrategyFromPaper2 implements Searcher<AngleHint> {
                 try {
                     syncObj.wait();
                 } catch (InterruptedException e) {
-                    System.out.println("Error waiting in move().");
+                    log.error("Error waiting in move().");
                 }
             }
         }
@@ -218,7 +219,7 @@ public class StrategyFromPaper2 implements Searcher<AngleHint> {
             try {
                 syncObj.wait();
             } catch (InterruptedException e) {
-                System.out.println("Error waiting in move().");
+                log.error("Error waiting in move().");
             }
         }
 
