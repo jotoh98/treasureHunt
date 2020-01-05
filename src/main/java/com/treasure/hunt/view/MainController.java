@@ -271,7 +271,7 @@ public class MainController {
     private void addRequiredListener(ComboBox comboBox) {
         comboBox.getSelectionModel().selectedItemProperty().addListener((observableValue, aClass, t1) -> {
             if (t1 == null) {
-                //TODO maybe... ...list to fucking button cell
+                //TODO maybe... ...list to f*****g button cell
                 comboBox.getStyleClass().add("required");
             } else {
                 comboBox.getStyleClass().remove("required");
