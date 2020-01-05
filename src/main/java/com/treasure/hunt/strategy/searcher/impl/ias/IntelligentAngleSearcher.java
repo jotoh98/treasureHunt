@@ -1,4 +1,4 @@
-package com.treasure.hunt.strategy.searcher.impl;
+package com.treasure.hunt.strategy.searcher.impl.ias;
 
 import com.treasure.hunt.geom.GeometryAngle;
 import com.treasure.hunt.geom.Line;
@@ -8,6 +8,8 @@ import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
+import lombok.Getter;
+import lombok.Setter;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.geom.impl.CoordinateArraySequence;
 import org.locationtech.jts.math.Vector2D;
@@ -23,56 +25,70 @@ import java.util.List;
  * The square will be shrunken to a polygon of which all the given hints are subtracted.
  * Then, if the Polygon contains less than say 1/4 of the Square, the next phase begins.
  *
- * Currently, the strategy is to simply go to the centroid of the polygon and then get a new hint.
- *
+ * Currently, the default strategy is to simply go to the centroid of the polygon and then get a new hint.
+ * Another strategy can be implemented using the IASMovementStrategy Interface.
  *
  * @author Vincent Schönbach
  */
 public class IntelligentAngleSearcher implements Searcher<AngleHint> {
-    private Coordinate location;
+    private final double FRACTIONOFRECTANGLEFORNEXTPHASE = 1/4.;
 
-    private Movement nextMoves;
-    private AngleHint currentHint;
+    int phase;
+    Coordinate location;
+    Movement nextMoves;
+    List<GeometryAngle> hints = new ArrayList<>();
+    Polygon area; // the area of the rectangle where the treasure could be located
 
-    private List<GeometryAngle> hints = new ArrayList<>();
-
-    private Polygon area;
     private GeometryItem<Geometry> lastAreaDisplayItem;
     private GeometryItem<Geometry> lastRectangleDisplayItem;
-    private int phase;
+
+    private IASMovementStrategy movementStrategy = null;
 
     @Override
-    public void init(Point startPosition) {
+    public final void init(Point startPosition) {
         this.location = startPosition.getCoordinate();
         nextMoves = new Movement(JTSUtils.GEOMETRY_FACTORY.createPoint(location));
-
         phase = 0;
         nextPhase();
+
+        //Comment this out to use the default strategy or add another strategy
+        //movementStrategy = new IASStrategyBorderSearch();
         }
 
     @Override
-    public Movement move() {
+    public final Movement move() {
         gotoPoint(location);
         return nextMoves;
     }
 
     @Override
-    public Movement move(AngleHint angleHint) {
+    public final Movement move(AngleHint angleHint) {
         nextMoves = new Movement(JTSUtils.GEOMETRY_FACTORY.createPoint(location));
-        currentHint = angleHint;
-        hints.add(currentHint.getGeometryAngle().copy());
-        handleHint(currentHint.getGeometryAngle());
+        hints.add(angleHint.getGeometryAngle().copy());
+        handleHint(angleHint.getGeometryAngle());
 
-        if (area.getArea() < getAreaRectangle(phase).getArea()/4
+        if (area.getArea() < getAreaRectangle(phase).getArea()*FRACTIONOFRECTANGLEFORNEXTPHASE
             && !getAreaRectangle(phase).getBoundary().disjoint(area))
         {
             nextPhase();
         }
 
-        gotoPoint(area.getCentroid().getCoordinate());
+        runMovementStrategy();
 
         drawArea();
         return nextMoves;
+    }
+
+
+    private void runMovementStrategy(){
+        if (movementStrategy == null) {
+            gotoPoint(area.convexHull().getCentroid().getCoordinate());
+        }
+        else
+        {
+            movementStrategy.run(this);
+        }
+
     }
 
     private void handleHint(GeometryAngle ang){
@@ -126,9 +142,15 @@ public class IntelligentAngleSearcher implements Searcher<AngleHint> {
         // now adjust area
         if (area.intersects(splittingPolygon))
         {
-            Geometry areaGeo = area.intersection(splittingPolygon);
-            if (areaGeo instanceof Polygon) {
-                area = (Polygon) areaGeo;
+            try {
+                Geometry areaGeo = area.intersection(splittingPolygon);
+
+                if (areaGeo instanceof Polygon) {
+                    area = (Polygon) areaGeo;
+                }
+            }
+            catch (TopologyException e){
+                e.printStackTrace();
             }
         }
     }
@@ -156,7 +178,7 @@ public class IntelligentAngleSearcher implements Searcher<AngleHint> {
         nextMoves.addAdditionalItem(lastAreaDisplayItem);
     }
 
-    private Polygon getAreaRectangle(int i){
+    Polygon getAreaRectangle(int i){
         int length = (int) Math.pow(2, i);
         Coordinate A = new Coordinate(-length/2., length/2.);
         Coordinate B = new Coordinate(length/2., length/2.);
@@ -166,7 +188,7 @@ public class IntelligentAngleSearcher implements Searcher<AngleHint> {
                 JTSUtils.GEOMETRY_FACTORY), null, JTSUtils.GEOMETRY_FACTORY);
     }
 
-    private void gotoPoint(Coordinate c){
+    void gotoPoint(Coordinate c){
         nextMoves.addWayPoint(JTSUtils.GEOMETRY_FACTORY.createPoint(c));
         Coordinate[] coordinates = {location, c};
         nextMoves.addAdditionalItem(new GeometryItem<>(new LineString(new CoordinateArraySequence(coordinates),
