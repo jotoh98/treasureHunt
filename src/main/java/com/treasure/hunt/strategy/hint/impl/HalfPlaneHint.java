@@ -2,8 +2,9 @@ package com.treasure.hunt.strategy.hint.impl;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
-import lombok.Getter;
-import org.locationtech.jts.geom.Point;
+import com.treasure.hunt.strategy.hint.Hint;
+import lombok.Value;
+import org.locationtech.jts.geom.Coordinate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +15,11 @@ import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
  * @author Rank
  */
 
-public class HalfPlaneHint extends AngleHint {
+@Value
+public class HalfPlaneHint extends Hint {
 
-    @Getter
+    Coordinate anglePointLeft;
+    Coordinate anglePointRight;
     private Direction direction;
     // when the line indicated by anglePointLeft and anglePointRight is not horizontal,
     // right and left indicate where the target is (right indicates the target is in positive x-Direction
@@ -25,14 +28,17 @@ public class HalfPlaneHint extends AngleHint {
     // to the line (the up and down enumerators are only used when the line is horizontal)
     // left and down respectively
 
-    public HalfPlaneHint(Point anglePointLeft, Point anglePointRight) {
-        super(anglePointRight, null, anglePointLeft);
+    public HalfPlaneHint(Coordinate anglePointLeft, Coordinate anglePointRight) {
+        Direction dir = null;
+        this.anglePointLeft = anglePointLeft;
+        this.anglePointRight = anglePointRight;
+
         if (anglePointLeft.getY() == anglePointRight.getY()) {
             if (anglePointLeft.getX() < anglePointRight.getX()) {
-                direction = up;
+                dir = up;
             }
             if (anglePointLeft.getX() > anglePointRight.getX()) {
-                direction = down;
+                dir = down;
             }
             if (anglePointLeft.getX() == anglePointRight.getX()) {
                 throw new IllegalArgumentException("anglePointLeft must not equal anglePointRight in the " +
@@ -40,11 +46,12 @@ public class HalfPlaneHint extends AngleHint {
             }
         }
         if (anglePointLeft.getY() < anglePointRight.getY()) {
-            direction = left;
+            dir = left;
         }
         if (anglePointLeft.getY() > anglePointRight.getY()) {
-            direction = right;
+            dir = right;
         }
+        direction = dir;
     }
 
     /**
@@ -55,17 +62,18 @@ public class HalfPlaneHint extends AngleHint {
      * @param pointTwo
      * @param direction
      */
-    public HalfPlaneHint(Point pointOne, Point pointTwo, Direction direction) {
-        super(null, null, null);
+    public HalfPlaneHint(Coordinate pointOne, Coordinate pointTwo, Direction direction) {
+        Coordinate rightCoord = null;
+        Coordinate leftCoord = null;
         switch (direction) {
             case up:
                 if (pointOne.getX() < pointTwo.getX()) {
-                    anglePointLeft = pointOne;
-                    anglePointRight = pointTwo;
+                    leftCoord = pointOne;
+                    rightCoord = pointTwo;
                 }
                 if (pointOne.getX() > pointTwo.getX()) {
-                    anglePointLeft = pointTwo;
-                    anglePointRight = pointOne;
+                    leftCoord = pointTwo;
+                    rightCoord = pointOne;
                 }
                 if (pointOne.getX() == pointTwo.getX()) {
                     throw new IllegalArgumentException("If the direction is up, the x values of pointOne and pointTwo" +
@@ -74,12 +82,12 @@ public class HalfPlaneHint extends AngleHint {
                 break;
             case down:
                 if (pointOne.getX() < pointTwo.getX()) {
-                    anglePointLeft = pointTwo;
-                    anglePointRight = pointOne;
+                    leftCoord = pointTwo;
+                    rightCoord = pointOne;
                 }
                 if (pointOne.getX() > pointTwo.getX()) {
-                    anglePointLeft = pointOne;
-                    anglePointRight = pointTwo;
+                    leftCoord = pointOne;
+                    rightCoord = pointTwo;
                 }
                 if (pointOne.getX() == pointTwo.getX()) {
                     throw new IllegalArgumentException("If the direction is down, the x values of pointOne and pointTwo" +
@@ -88,12 +96,12 @@ public class HalfPlaneHint extends AngleHint {
                 break;
             case left:
                 if (pointOne.getY() < pointTwo.getY()) {
-                    anglePointLeft = pointOne;
-                    anglePointRight = pointTwo;
+                    leftCoord = pointOne;
+                    rightCoord = pointTwo;
                 }
                 if (pointOne.getY() > pointTwo.getY()) {
-                    anglePointLeft = pointTwo;
-                    anglePointRight = pointOne;
+                    leftCoord = pointTwo;
+                    rightCoord = pointOne;
                 }
                 if (pointOne.getY() == pointTwo.getY()) {
                     throw new IllegalArgumentException("If the direction is left, the y values of pointOne and " +
@@ -102,12 +110,12 @@ public class HalfPlaneHint extends AngleHint {
                 break;
             case right:
                 if (pointOne.getY() < pointTwo.getY()) {
-                    anglePointLeft = pointTwo;
-                    anglePointRight = pointOne;
+                    leftCoord = pointTwo;
+                    rightCoord = pointOne;
                 }
                 if (pointOne.getY() > pointTwo.getY()) {
-                    anglePointLeft = pointOne;
-                    anglePointRight = pointTwo;
+                    leftCoord = pointOne;
+                    rightCoord = pointTwo;
                 }
                 if (pointOne.getY() == pointTwo.getY()) {
                     throw new IllegalArgumentException("If the direction is right, the y values of pointOne and " +
@@ -115,21 +123,25 @@ public class HalfPlaneHint extends AngleHint {
                 }
                 break;
         }
+        anglePointRight = rightCoord;
+        anglePointLeft = leftCoord;
         this.direction = direction;
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @return
      */
     @Override
-    public List<GeometryItem> getGeometryItems() {
-        List<GeometryItem> output = new ArrayList<>();
+    public List<GeometryItem<?>> getGeometryItems() {
+        List<GeometryItem<?>> output = new ArrayList<>();
         output.add(new GeometryItem(anglePointLeft, GeometryType.HALF_PLANE_POINT_LEFT));
         output.add(new GeometryItem(anglePointRight, GeometryType.HALF_PLANE_POINT_RIGHT));
         return output;
     }
 
-    public Point getLowerHintPoint() {
+    public Coordinate getLowerHintPoint() {
         if (anglePointLeft.getY() < anglePointRight.getY()) {
             return anglePointLeft;
         } else {
@@ -137,7 +149,7 @@ public class HalfPlaneHint extends AngleHint {
         }
     }
 
-    public Point getUpperHintPoint() {
+    public Coordinate getUpperHintPoint() {
         if (anglePointLeft.getY() < anglePointRight.getY()) {
             return anglePointRight;
         } else {

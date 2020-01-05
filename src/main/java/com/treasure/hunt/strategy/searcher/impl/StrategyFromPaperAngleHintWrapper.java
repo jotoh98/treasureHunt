@@ -37,7 +37,8 @@ public class StrategyFromPaperAngleHintWrapper implements Searcher<AngleHint> {
      */
     @Override
     public Movement move(AngleHint hint) {
-        HalfPlaneHint halfPlaneHint = new HalfPlaneHint(hint.getCenter(), hint.getAnglePointRight());
+        HalfPlaneHint halfPlaneHint = new HalfPlaneHint(hint.getGeometryAngle().getCenter(),
+                hint.getGeometryAngle().getRight());
         return strategyFromPaper.move(halfPlaneHint);
     }
 }

@@ -11,14 +11,12 @@ import org.locationtech.jts.math.Vector2D;
  *
  * @author Rank, dorianreineccius, jotoh, axel12
  */
-public class JTSUtils {
-    public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(1000000000));
 public final class JTSUtils {
     /**
      * A static final shared {@link GeometryFactory} we use, such that every usage
      * uses the same settings of the geometry factory.
      */
-    public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
+    public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(1000000000));
 
     private JTSUtils() {
     }

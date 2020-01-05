@@ -41,10 +41,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         System.out.println(" D= (" + D.getX() + ", " + D.getY() + ")");
         for (int i = 0; i < rect.length; i++)
             System.out.println("rect[" + i + "]= " + rect[i]);
-        System.out.println("lastBadHint p1= " + lastBadHint.getAnglePointLeft().getCoordinate() + "lastHint p2= " +
-                lastBadHint.getAnglePointRight().getCoordinate());
-        System.out.println("curHint p1= " + curHint.getAnglePointLeft().getCoordinate() + "curHint p2= " +
-                curHint.getAnglePointRight().getCoordinate());
+        System.out.println("lastBadHint p1= " + lastBadHint.getAnglePointLeft() + "lastHint p2= " +
+                lastBadHint.getAnglePointRight());
+        System.out.println("curHint p1= " + curHint.getAnglePointLeft() + "curHint p2= " +
+                curHint.getAnglePointRight());
     }
     //test end
 
@@ -113,8 +113,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         LineSegment CD = new LineSegment(C.getCoordinate(), D.getCoordinate());
         LineSegment AD = new LineSegment(A.getCoordinate(), D.getCoordinate());
 
-        LineSegment hintLine = new LineSegment(hint.getAnglePointLeft().getCoordinate(),
-                hint.getAnglePointRight().getCoordinate());
+        LineSegment hintLine = new LineSegment(hint.getAnglePointLeft(),
+                hint.getAnglePointRight());
 
         Point intersection_AD_hint = null;
         Point intersection_BC_hint = null;
@@ -255,8 +255,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     }
 
     private Coordinate twoStepsOrthogonal(HalfPlaneHint hint, Coordinate cur_pos) {
-        Vector2D hintVector = new Vector2D(hint.getAnglePointLeft().getCoordinate(),
-                hint.getAnglePointRight().getCoordinate());
+        Vector2D hintVector = new Vector2D(hint.getAnglePointLeft(),
+                hint.getAnglePointRight());
 
         hintVector = hintVector.divide(hintVector.length() / 2);
         hintVector = hintVector.rotateByQuarterCircle(1);
@@ -412,8 +412,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             LineSegment ADt = new LineSegment(At, Dt);
             LineSegment BCt = new LineSegment(Bt, Ct);
             LineSegment CDt = new LineSegment(Ct, Dt);
-            LineSegment L1_apos = new LineSegment(hintT.getAnglePointLeft().getCoordinate(),
-                    hintT.getAnglePointRight().getCoordinate());
+            LineSegment L1_apos = new LineSegment(hintT.getAnglePointLeft(),
+                    hintT.getAnglePointRight());
             LineSegment L1_doubleApos = new LineSegment(
                     hintT.getAnglePointLeft().getX() + p_to_p_apos_x,
                     hintT.getAnglePointLeft().getY() + p_to_p_apos_y,
@@ -469,8 +469,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             System.out.println("transformedRect " + Arrays.toString(transformedRect)); // testing
 
             HalfPlaneHint.Direction x2_apos = curHintT.getDirection();
-            LineSegment L2_apos = new LineSegment(curHintT.getAnglePointLeft().getCoordinate(),
-                    curHintT.getAnglePointRight().getCoordinate());
+            LineSegment L2_apos = new LineSegment(curHintT.getAnglePointLeft(),
+                    curHintT.getAnglePointRight());
 
             // here begins line 24 of the ReduceRectangle routine from the paper:
             Coordinate[] newRectangle = null;
@@ -607,8 +607,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Coordinate centerCD = CD.midPoint();
         AffineTransformation reflection = AffineTransformation.reflectionInstance(centerAB.getX(), centerAB.getY(),
                 centerCD.getX(), centerCD.getY());
-        Point newAPLeft = (Point) reflection.transform(hint.getAnglePointRight());
-        Point newAPRight = (Point) reflection.transform(hint.getAnglePointLeft());
+        Coordinate newAPLeft = new Coordinate();
+        Coordinate newAPRight = new Coordinate();
+        reflection.transform(hint.getAnglePointRight(), newAPLeft);
+        reflection.transform(hint.getAnglePointLeft(), newAPRight);
         HalfPlaneHint newHint = new HalfPlaneHint(newAPLeft, newAPRight);
         return newHint;
     }
@@ -744,8 +746,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             throw new IllegalArgumentException("i must be in [0,7] but is " + i);
         Coordinate r = centerOfRectangle(rect);
         HalfPlaneHint transformedHint = new HalfPlaneHint(
-                GEOMETRY_FACTORY.createPoint(sigmaPoint(i % 4, r, hint.getAnglePointLeft().getCoordinate())),
-                GEOMETRY_FACTORY.createPoint(sigmaPoint(i % 4, r, hint.getAnglePointRight().getCoordinate()))
+                sigmaPoint(i % 4, r, hint.getAnglePointLeft()),
+                sigmaPoint(i % 4, r, hint.getAnglePointRight())
         );
         if (i < 4)
             return transformedHint;
@@ -794,8 +796,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         for (int i = 0; i <= 7; i++) {
             Coordinate[] testRect = phiRectangle(i, rect);
             HalfPlaneHint testHint = phiHint(i, rect, hint);
-            LineSegment hintLine = new LineSegment(testHint.getAnglePointLeft().getCoordinate(),
-                    testHint.getAnglePointRight().getCoordinate());
+            LineSegment hintLine = new LineSegment(testHint.getAnglePointLeft(),
+                    testHint.getAnglePointRight());
             LineSegment testAD = new LineSegment(testRect[0], testRect[3]);
             Coordinate AD_hint = lineWayIntersection(hintLine, testAD);
             if (testHint.getDirection() == up)
@@ -806,7 +808,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                 return i;
         }
         System.out.println("rect: " + Arrays.toString(rect) + " anglepoints: "
-                + hint.getAnglePointRight().getCoordinate() + hint.getAnglePointLeft().getCoordinate());
+                + hint.getAnglePointRight() + hint.getAnglePointLeft());
         throw new IllegalArgumentException("Somehow there was no basic transformation found for this " +
                 "rectangle and hint. This is impossible.");
     }
@@ -924,10 +926,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
 
             Coordinate[] rect = new Coordinate[]{new Coordinate(-4, 4), new Coordinate(4, 4),
                     new Coordinate(4, -4), new Coordinate(-4, -4)};
-            HalfPlaneHint lastBadHint = new HalfPlaneHint(createPoint(0, 0),
-                    createPoint(0.7377637010688854, -0.675059050294965));
-            HalfPlaneHint curHint = new HalfPlaneHint(createPoint(1.3501181005899303, 1.4755274021377711),
-                    createPoint(2.3366624680024213, 1.3120336373432429));
+            HalfPlaneHint lastBadHint = new HalfPlaneHint(new Coordinate(0, 0),
+                    new Coordinate(0.7377637010688854, -0.675059050294965));
+            HalfPlaneHint curHint = new HalfPlaneHint(new Coordinate(1.3501181005899303, 1.4755274021377711),
+                    new Coordinate(2.3366624680024213, 1.3120336373432429));
             //should be case five
             testRectHint(rect, lastBadHint, 0);
             strategy.A = createPoint(-2, 2);
@@ -937,12 +939,13 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             strategy.lastBadHint = lastBadHint;
             strategy.lastHintBadSubroutine(curHint, new Movement());
 
-            HalfPlaneHint hint = new HalfPlaneHint(createPoint(0, 0),
-                    createPoint(0.6209474701786085, 0.7838521794820666));
+            HalfPlaneHint hint = new HalfPlaneHint(new Coordinate(0, 0),
+                    new Coordinate(0.6209474701786085, 0.7838521794820666));
             testRectHint(rect, hint, 3);
             rect = new Coordinate[]{new Coordinate(-2, 2), new Coordinate(2, 2),
                     new Coordinate(2, -2), new Coordinate(-2, -2)};
-            hint = new HalfPlaneHint(createPoint(0, 0), createPoint(0.7416025214414383, 0.6708395487683333));
+            hint = new HalfPlaneHint(new Coordinate(0, 0),
+                    new Coordinate(0.7416025214414383, 0.6708395487683333));
             testRectHint(rect, hint, 4);
 
             //badCase0
@@ -952,10 +955,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                     new Coordinate(8.0, -3.999532170942503),
                     new Coordinate(-2.159168821737699, -3.999532170942503)
             };
-            lastBadHint = new HalfPlaneHint(createPoint(2.9204156, 2.0002339),
-                    createPoint(3.5662858179937924, 2.7636811224775273));
-            curHint = new HalfPlaneHint(createPoint(1.3935211550449453, 3.291974335987585),
-                    createPoint(2.3662835676900604, 3.060169917253051));
+            lastBadHint = new HalfPlaneHint(new Coordinate(2.9204156, 2.0002339),
+                    new Coordinate(3.5662858179937924, 2.7636811224775273));
+            curHint = new HalfPlaneHint(new Coordinate(1.3935211550449453, 3.291974335987585),
+                    new Coordinate(2.3662835676900604, 3.060169917253051));
             System.out.println("--------------------------------------------------------badCase0");
             testRectHint(rect, lastBadHint, 3);
             testLastHintBadSubroutine(strategy, rect, lastBadHint, curHint);
@@ -967,10 +970,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                     new Coordinate(8.0, -8.0),
                     new Coordinate(-3.999532170942503, -8.0)
             };
-            lastBadHint = new HalfPlaneHint(createPoint(2.9204156, 2.0002339),
-                    createPoint(3.291974335987585, -1.3935211550449453));
-            curHint = new HalfPlaneHint(createPoint(2.7636811224775273, -3.5662858179937924),
-                    createPoint(3.060169917253051, -2.3662835676900604));
+            lastBadHint = new HalfPlaneHint(new Coordinate(2.9204156, 2.0002339),
+                    new Coordinate(3.291974335987585, -1.3935211550449453));
+            curHint = new HalfPlaneHint(new Coordinate(2.7636811224775273, -3.5662858179937924),
+                    new Coordinate(3.060169917253051, -2.3662835676900604));
             //testRectHint(rect, lastBadHint, 0); //TODO evtl diesen test rauswerfen
             //testLastHintBadSubroutine(strategy, rect, lastBadHint, curHint);
         }
@@ -990,17 +993,17 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         public void testPhiHint() {
             Coordinate[] rect = new Coordinate[]{new Coordinate(-4, 4), new Coordinate(4, 4),
                     new Coordinate(4, -4), new Coordinate(-4, -4)};
-            HalfPlaneHint hint = new HalfPlaneHint(createPoint(0, 0),
-                    createPoint(0.6209474701786085, 0.7838521794820666));
+            HalfPlaneHint hint = new HalfPlaneHint(new Coordinate(0, 0),
+                    new Coordinate(0.6209474701786085, 0.7838521794820666));
             HalfPlaneHint testHint = strategy.phiHint(3, rect, hint);
             if (!doubleEqual(testHint.getAnglePointRight().getX(), 0.7838521794820666) ||
                     !doubleEqual(testHint.getAnglePointRight().getY(), -0.6209474701786085)) {
-                throw new IllegalArgumentException("right angle point is " + testHint.getAnglePointRight().getCoordinate() +
+                throw new IllegalArgumentException("right angle point is " + testHint.getAnglePointRight() +
                         " and should equal (0.7838521794820666, -0.6209474701786085)");
             }
             if (!doubleEqual(testHint.getAnglePointLeft().getX(), 0) ||
                     !doubleEqual(testHint.getAnglePointLeft().getY(), 0)) {
-                throw new IllegalArgumentException("left angle point is " + testHint.getAnglePointLeft().getCoordinate() +
+                throw new IllegalArgumentException("left angle point is " + testHint.getAnglePointLeft() +
                         " and should equal (0.0, 0.0)");
             }
         }
