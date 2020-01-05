@@ -64,8 +64,6 @@ public class StrategyFromPaper2 implements Searcher<AngleHint> {
         int i = 1;
         while(true){
             do{
-                //System.out.println("i: " + i + " IndexNew = "+  IndexNew);
-
                 //Clear items for next phase
                 nextMoves.getToBeRemoved().addAll(itemsInPhase);
                 itemsInPhase = new ArrayList<>();
