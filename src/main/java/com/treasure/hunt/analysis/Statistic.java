@@ -55,7 +55,7 @@ public class Statistic {
         return getTraceLength() / method.apply(getOptimumSolution());
     }
 
-    public double getLinearRunningTimeFactor() {
+    public double getSolutionQuotient() {
         return getRunningTimeFactor((Double opt) -> opt);
     }
 
@@ -75,8 +75,29 @@ public class Statistic {
         this.moves = moves;
         List<StatisticObject> statistics = Arrays.asList(
                 new StatisticObject("Trace length",
-                        "If finished: Lenght of searchers path; if unfinished: Length of searchers path plus the direct route from searchers last point to treasure",
+                        "If finished: Length of searchers path; if unfinished: Length of searchers path plus the direct route from searchers last point to treasure",
                         getTraceLength()
+                ),
+                new StatisticObject( "Solution quotient",
+                        "The Quotient of the optimum solution and the trace length",
+                        getSolutionQuotient()
+                ),
+                new StatisticObject( "Hint-requests",
+                        "Number of requested hints",
+                        getHintRequests()
+
+                ),
+                new StatisticObject( "Hint-trace-length-ratio",
+                        "The quotient of hint requests and trace length",
+                        getHintTraceLengthRatio()
+                ),
+                new StatisticObject( "Optimal solution",
+                        "The euclidean distance between treasure and searchers start position.",
+                        getOptimumSolution()
+                ),
+                new StatisticObject( "Optimal solution",
+                        "The euclidean distance between treasure and searchers start position.",
+                        getOptimumSolution()
                 )
         );
         return statistics;
