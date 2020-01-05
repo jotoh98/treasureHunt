@@ -31,7 +31,7 @@ public class Statistic {
                 if (firstElement) {
                     firstElement = false;
                 } else {
-                    stepPoints.add(point.getObject());
+                    stepPoints.add(point.getGeometry());
                 }
             }
         }
@@ -40,7 +40,7 @@ public class Statistic {
     }
 
     public Point getStartPoint() {
-        return moves.get(0).getMovement().getPoints().get(0).getObject();
+        return moves.get(0).getMovement().getPoints().get(0).getGeometry();
     }
 
     public Point getTreasureLocation() {

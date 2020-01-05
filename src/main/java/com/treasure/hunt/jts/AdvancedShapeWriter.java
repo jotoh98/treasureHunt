@@ -44,19 +44,14 @@ public class AdvancedShapeWriter extends ShapeWriter {
     /**
      * Wrapper function for {@link ShapeWriter#toShape(Geometry)} to extend functionality for {@link Shapeable} instances.
      *
-     * @param object object to transfer to a shape
+     * @param geometry object to transfer to a shape
      * @return {@link Shape} representing the object
      */
-    public Shape toShape(Object object) {
-        if (object instanceof Shapeable) {
-            return ((Shapeable) object).toShape(this);
+    public Shape toShape(Geometry geometry) {
+        if (geometry instanceof Shapeable) {
+            return ((Shapeable) geometry).toShape(this);
         }
-        try {
-            return super.toShape((Geometry) object);
-        } catch (IllegalArgumentException e) {
-            log.debug("Could not render object to shape", e);
-        }
-        return null;
+        return super.toShape(geometry);
     }
 
     /**

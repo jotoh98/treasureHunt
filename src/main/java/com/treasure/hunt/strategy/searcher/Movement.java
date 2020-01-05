@@ -44,7 +44,7 @@ public class Movement {
         if (points.size() == 0) {
             throw new IllegalStateException("Movement has size of 0.");
         }
-        return points.get(0).getObject();
+        return points.get(0).getGeometry();
     }
 
     /**
@@ -54,7 +54,7 @@ public class Movement {
         if (points.size() == 0) {
             throw new IllegalStateException("Movement has size of 0.");
         }
-        return points.get(points.size() - 1).getObject();
+        return points.get(points.size() - 1).getGeometry();
     }
 
     /**

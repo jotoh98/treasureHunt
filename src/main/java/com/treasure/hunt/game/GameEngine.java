@@ -119,12 +119,12 @@ public class GameEngine {
 
         // Did the searcher move ?
         if (geometryItemsList.size() == 1) {
-            return geometryItemsList.get(0).getObject().distance(treasurePosition) <= 1;
+            return geometryItemsList.get(0).getGeometry().distance(treasurePosition) <= 1;
         } else {
             Point lastPoint = null;
             Point point;
             for (GeometryItem<Point> geometryItem : geometryItemsList) {
-                point = geometryItem.getObject();
+                point = geometryItem.getGeometry();
                 if (lastPoint == null) {
                     lastPoint = point;
                 } else {
@@ -236,9 +236,9 @@ public class GameEngine {
                     " but continues his movement from " + movement.getStartingPoint());
         }
         for (GeometryItem geometryItem : movement.getPoints()) {
-            if (outOfMap(((Point) geometryItem.getObject()).getCoordinate())) {
+            if (outOfMap(geometryItem.getGeometry().getCoordinate())) {
                 throw new IllegalArgumentException("Searcher left the playing area: " +
-                        "(" + ((Point) geometryItem.getObject()).getX() + ", " + ((Point) geometryItem.getObject()).getY() + ") " +
+                        "(" + ((Point) geometryItem.getGeometry()).getX() + ", " + ((Point) geometryItem.getGeometry()).getY() + ") " +
                         "is not in " + "[" + -width / 2 + ", " + width / 2 + "]x[" + -height / 2 + ", " + height / 2 + "]");
             }
         }
