@@ -245,7 +245,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             double yDist = B.getY() - A.getY();
             for (int i = 0; i <= roundedDistance; i++) {
                 a[i] = JTSUtils.createPoint(A.getX() + xDist * ((double) i / roundedDistance), A.getY() + yDist * ((double) i / roundedDistance));
-                //System.out.println("a[ "+ i + "] = " + a[i]);
             }
         }
         { 
@@ -254,7 +253,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             double yDist = C.getY() - D.getY();
             for (int i = 0; i <= roundedDistance; i++) {
                 b[i] = JTSUtils.createPoint(D.getX() + xDist * ((double) i / roundedDistance), D.getY() + yDist * ((double) i / roundedDistance));
-                //System.out.println("b[ "+ i + "] = " + b[i]);
             }
         }
         if (roundedDistance % 2 == 1)
