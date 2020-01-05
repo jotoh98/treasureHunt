@@ -8,6 +8,8 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
 /**
+ * A type of {@link Hider}, generating randomly chosen {@link AngleHint}'s
+ *
  * @author dorianreineccius
  */
 public class RandomAngleHintHider implements Hider<AngleHint> {

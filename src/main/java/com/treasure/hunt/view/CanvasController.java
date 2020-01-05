@@ -14,7 +14,7 @@ import org.jfree.fx.FXGraphics2D;
 import org.locationtech.jts.math.Vector2D;
 
 /**
- * @author axel12
+ * @author axel12, dorianreineccius
  */
 public class CanvasController {
     @Getter
@@ -85,6 +85,14 @@ public class CanvasController {
         dragStart = Vector2D.create(mouseEvent.getX(), mouseEvent.getY());
     }
 
+    /**
+     * This will be executed, when the mouse is pressed (and not released)
+     * and moves over the canvas
+     * <p>
+     * It will swipe the game to the dragged position.
+     *
+     * @param mouseEvent corresponding {@link MouseEvent}
+     */
     public void onCanvasDragged(MouseEvent mouseEvent) {
         if (gameManager == null) {
             return;
