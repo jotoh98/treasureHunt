@@ -224,6 +224,28 @@ public class GameEngine {
     }
 
     /**
+     * Verifies whether the performed {@link Movement} {@code movement} by the {@link Searcher} followed the rules.
+     *
+     * @param movement                which gets verified
+     * @param initialSearcherPosition initial searcher position
+     * @throws IllegalArgumentException when the {@link Movement} is not valid.
+     */
+    protected void verifyMovement(Movement movement, Point initialSearcherPosition) {
+        if (movement.getStartingPoint().getX() != initialSearcherPosition.getX() ||
+                movement.getStartingPoint().getY() != initialSearcherPosition.getY()) {
+            throw new IllegalArgumentException("Searcher stands last at " + initialSearcherPosition +
+                    " but continues his movement from " + movement.getStartingPoint());
+        }
+        for (GeometryItem geometryItem : movement.getPoints()) {
+            if (outOfMap(geometryItem.getGeometry().getCoordinate())) {
+                throw new IllegalArgumentException("Searcher left the playing area: " +
+                        "(" + ((Point) geometryItem.getGeometry()).getX() + ", " + ((Point) geometryItem.getGeometry()).getY() + ") " +
+                        "is not in " + "[" + -width / 2 + ", " + width / 2 + "]x[" + -height / 2 + ", " + height / 2 + "]");
+            }
+        }
+    }
+
+    /**
      * TODO implement:
      * AngleHints must be of angle [0, 180] !?
      * CircleHints must contain each other !?

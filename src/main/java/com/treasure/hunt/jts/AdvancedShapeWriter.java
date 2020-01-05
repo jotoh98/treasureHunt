@@ -26,7 +26,7 @@ import java.awt.geom.Point2D;
 public class AdvancedShapeWriter extends ShapeWriter {
 
     /**
-     * The {@link PointTransformation} transforming source {@link Coordinate}'s.
+     * The {@link PointTransformation} transforming a source {@link Coordinate}.
      */
     @Getter
     private PointTransformation pointTransformation;
