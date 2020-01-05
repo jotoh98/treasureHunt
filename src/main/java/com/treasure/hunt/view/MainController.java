@@ -88,11 +88,9 @@ public class MainController {
             if (gameManager.isNull().get()) {
                 return;
             }
-            nextButton.disableProperty().bind(gameManager.get().stepForwardImpossibleBinding());
-            previousButton.disableProperty().bind(gameManager.get().stepBackwardImpossibleBinding());
-            gameManager.get().getGameFinishedProperty().addListener(invalidation -> {
-                logLabel.setText("Game ended");
-            });
+            nextButton.disableProperty().bind(gameManager.get().getStepForwardImpossibleBinding());
+            previousButton.disableProperty().bind(gameManager.get().getStepBackwardImpossibleBinding());
+            gameManager.get().getGameFinishedProperty().addListener(invalidation -> logLabel.setText("Game ended"));
         });
     }
 
@@ -112,9 +110,10 @@ public class MainController {
             savedBar.set(rightWidgetBar);
         }
 
-        final int readPosition = left ? 0 : mainSplitPane.getItems().size() - 1;
 
         toolbarController.getToggleGroup().selectedToggleProperty().addListener((observableValue, oldItem, newItem) -> {
+            final int readPosition = left ? 0 : mainSplitPane.getItems().size() - 1;
+
             if (newItem == null && oldItem != null) {
                 savedBar.set(mainSplitPane.getItems().get(readPosition));
                 mainSplitPane.getItems().remove(readPosition);
@@ -124,7 +123,7 @@ public class MainController {
                     dividers.get(0).setPosition(.2);
                 } else {
                     mainSplitPane.getItems().add(savedBar.get());
-                    dividers.get(readPosition - 1).setPosition(.8);
+                    dividers.get(readPosition).setPosition(.8);
                 }
             }
         });
@@ -139,15 +138,21 @@ public class MainController {
         Widget<PointInspectorController, ?> pointInspectorWidget = new Widget<>("/layout/pointInspector.fxml");
         pointInspectorWidget.getController().init(gameManager);
         insertWidget(true, "Inspector", pointInspectorWidget.getComponent());
+
         Widget<SaveAndLoadController, ?> saveAndLoadWidget = new Widget<>("/layout/saveAndLoad.fxml");
         saveAndLoadWidget.getController().init(gameManager, logLabel);
         insertWidget(true, "Save & Load", saveAndLoadWidget.getComponent());
+
         Widget<BeatWidgetController, ?> beatWidget = new Widget<>("/layout/beatWidget.fxml");
         beatWidget.getController().init(gameManager, logLabel);
         insertWidget(true, "Game controls", beatWidget.getComponent());
         Widget<StatisticsWidgetController, ?> statisticsWidget = new Widget<>("/layout/statisticsWidget.fxml");
         statisticsWidget.getController().init(gameManager, logLabel);
         insertWidget(true, "Statistics", statisticsWidget.getComponent());
+
+        Widget<ScaleController, ?> scaleWidget = new Widget<>("/layout/scaling.fxml");
+        scaleWidget.getController().init(canvasController);
+        insertWidget(false, "Navigator", scaleWidget.getComponent());
     }
 
     private void setListStringConverters() {

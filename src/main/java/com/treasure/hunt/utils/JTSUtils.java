@@ -2,15 +2,20 @@ package com.treasure.hunt.utils;
 
 import com.treasure.hunt.geom.GeometryAngle;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
+import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.math.Vector2D;
 
 /**
- * Contains JTS Utilities.
+ * A utility class for the work with {@link org.locationtech.jts}.
  *
  * @author Rank, dorianreineccius, jotoh, axel12
  */
 public final class JTSUtils {
+    /**
+     * A static final shared {@link GeometryFactory} we use, such that every usage
+     * uses the same settings of the geometry factory.
+     */
     public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
     private JTSUtils() {
@@ -112,7 +117,7 @@ public final class JTSUtils {
     }
 
     /**
-     * Proof, that the x- or y-coordinates of two vectors have the same sign.
+     * Proofs, that the x- or y-coordinates of two vectors have the same sign.
      *
      * @param v0 first vector to check
      * @param v1 second vector to check
@@ -145,7 +150,7 @@ public final class JTSUtils {
     }
 
     /**
-     * Test, if a given coordinate lays inside of the viewing angle given by a {@link GeometryAngle}.
+     * Tests, whether a given coordinate lays inside of the viewing angle given by a {@link GeometryAngle}.
      *
      * @param geometryAngle the view {@link GeometryAngle} the method looks upon searching the given point
      * @param coordinate    the {@link Coordinate}, we want to know, whether it lies in the angle
@@ -170,5 +175,15 @@ public final class JTSUtils {
 
     public static Vector2D lineVector(LineSegment lineSegment) {
         return new Vector2D(lineSegment.p0, lineSegment.p1);
+    }
+
+    public static GeometryAngle validRandomAngle(Coordinate searcher, Coordinate treasure, double maxExtend) {
+        if (maxExtend <= 0) {
+            return null;
+        }
+        double givenAngle = Angle.angle(searcher, treasure);
+        double extend = Math.random() * maxExtend;
+        double start = givenAngle - extend * Math.random();
+        return new GeometryAngle(GEOMETRY_FACTORY, searcher, start, extend);
     }
 }

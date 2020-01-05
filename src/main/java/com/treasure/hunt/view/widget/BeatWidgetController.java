@@ -11,6 +11,9 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author dorianreineccius
+ */
 @Slf4j
 public class BeatWidgetController {
 
@@ -34,7 +37,7 @@ public class BeatWidgetController {
 
             playToggle.textProperty().bind(Bindings.createStringBinding(
                     () -> {
-                        boolean impossible = gameManager.get().stepForwardImpossibleBinding().get();
+                        boolean impossible = gameManager.get().getStepForwardImpossibleBinding().get();
                         if (impossible) {
                             return "Game finished";
                         }
@@ -43,11 +46,10 @@ public class BeatWidgetController {
                         return running ? "Stop" : "Start";
                     },
                     gameManager.get().getBeatThreadRunning(),
-                    gameManager.get().stepForwardImpossibleBinding(),
-                    gameManager.get().getViewIndex()
+                    gameManager.get().getStepForwardImpossibleBinding()
             ));
 
-            playToggle.disableProperty().bind(gameManager.get().stepForwardImpossibleBinding());
+            playToggle.disableProperty().bind(gameManager.get().getStepForwardImpossibleBinding());
         };
         gameManager.addListener(listener);
         listener.invalidated(gameManager);

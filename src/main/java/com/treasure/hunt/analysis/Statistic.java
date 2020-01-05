@@ -2,10 +2,11 @@ package com.treasure.hunt.analysis;
 
 import com.treasure.hunt.game.Move;
 import com.treasure.hunt.strategy.geom.GeometryItem;
-import javafx.collections.ObservableList;
 import org.locationtech.jts.geom.Point;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 
 public class Statistic {
@@ -23,12 +24,13 @@ public class Statistic {
     public List<Point> getListPoints() {
         List<Point> stepPoints = new ArrayList<>();
         stepPoints.add(getStartPoint());
-        for (Move move : moves) { boolean firstElement=true;
+        for (Move move : moves) {
+            boolean firstElement = true;
             for (GeometryItem<Point> point : move.getMovement().getPoints()
             ) {
-                if(firstElement){
-                    firstElement=false;
-                }else {
+                if (firstElement) {
+                    firstElement = false;
+                } else {
                     stepPoints.add(point.getObject());
                 }
             }
@@ -62,7 +64,7 @@ public class Statistic {
     }
 
     public double getHintRequests() {
-        return moves.size()-1;
+        return moves.size() - 1;
     }
 
     public double getHintTraceLengthRatio() {
@@ -70,7 +72,7 @@ public class Statistic {
     }
 
     public List<StatisticObject> calculate(List<Move> moves) {
-        this.moves=moves;
+        this.moves = moves;
         List<StatisticObject> statistics = Arrays.asList(
                 new StatisticObject("Trace length",
                         "If finished: Lenght of searchers path; if unfinished: Length of searchers path plus the direct route from searchers last point to treasure",

@@ -14,8 +14,6 @@ import com.treasure.hunt.utils.Requires;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Point;
@@ -29,14 +27,17 @@ import java.util.List;
  * @author dorianreineccius
  */
 @Requires(hider = Hider.class, searcher = Searcher.class)
-@Getter
-@Setter
 public class GameEngine {
-
+    /**
+     * The height of the playing area.
+     */
     public static final int HEIGHT = 200;
+    /**
+     * The width of the playing area.
+     */
     public static final int WIDTH = 200;
     @Getter
-    private final Statistic statistics= new Statistic();
+    private final Statistic statistics = new Statistic();
     protected final Searcher searcher;
     protected final Hider hider;
     /**
@@ -46,7 +47,7 @@ public class GameEngine {
     private BooleanProperty finished = new SimpleBooleanProperty(false);
     protected Hint lastHint;
     protected Movement lastMovement;
-    protected Point searcherPos;
+    protected Point searcherPos = JTSUtils.createPoint(0, 0);
     protected Point treasurePos;
     /**
      * Tells, whether a first move is happened in the game yet, or not.
@@ -54,6 +55,8 @@ public class GameEngine {
     protected boolean firstMove = true;
 
     /**
+     * The constructor.
+     *
      * @param searcher playing the game
      * @param hider    playing the game
      */
@@ -95,12 +98,16 @@ public class GameEngine {
         return false;
     }
 
+    /**
+     * Initialize searcher on initial position {@code (0,0)} and treasure positions.
+     *
+     * @return a {@link Move}, since the initialization must be displayed.
+     */
     public Move init() {
         return init(JTSUtils.createPoint(0, 0));
     }
 
     /**
-     * initialize searcher and hider.
      * initialize searcher and treasure positions.
      *
      * @param p initial searcher position
@@ -110,7 +117,7 @@ public class GameEngine {
         searcherPos = p;
         searcher.init(searcherPos);
 
-        treasurePos = hider.getTreasurePos();
+        treasurePos = hider.getTreasureLocation();
         if (treasurePos == null) {
             throw new IllegalArgumentException(hider + " gave a treasurePosition which is null.");
         }
@@ -131,8 +138,6 @@ public class GameEngine {
      * The searcher begins since we want not force him,
      * to take a initial hint, he eventually do not need,
      * f.e. if he works randomized!
-     * <p>
-     * Updates the searchers position.
      *
      * @return the {@link Move}, happened in this step.
      */
@@ -150,7 +155,7 @@ public class GameEngine {
     }
 
     /**
-     * Lets the {@link GameEngine#hider} make its move.
+     * Let the {@link GameEngine#hider} give its {@link Hint}.
      */
     protected void hiderMove() {
         lastHint = hider.move(lastMovement);
@@ -159,7 +164,7 @@ public class GameEngine {
     }
 
     /**
-     * Lets the {@link GameEngine#searcher} make its move.
+     * Let the {@link GameEngine#searcher} make {@link Movement}.
      */
     protected void searcherMove() {
         if (finished.get()) {
@@ -181,6 +186,8 @@ public class GameEngine {
     }
 
     /**
+     * Verifies whether the performed {@link Movement} {@code movement} by the {@link Searcher} followed the rules.
+     *
      * @param movement                which gets verified
      * @param initialSearcherPosition initial searcher position
      * @throws IllegalArgumentException when the {@link Movement} is not valid.
@@ -205,12 +212,11 @@ public class GameEngine {
 
     /**
      * TODO implement:
-     * AngleHints must be correct
      * AngleHints must be of angle [0, 180] !?
      * CircleHints must contain each other !?
-     * Verifies whether the performed {@link Movement}' by the searcher and {@link Hint}'s from the hider followed the rules.
+     * Verifies whether the {@link Hint} {@code hint} given by the {@link Hider} followed the rules.
      *
-     * @param hint             hint to be verified
+     * @param hint             {@link Hint} to be verified
      * @param treasurePosition treasure position
      */
     protected void verifyHint(Hint hint, Point treasurePosition) {
@@ -229,12 +235,15 @@ public class GameEngine {
     }
 
     /**
-     * Sets {@link GameEngine#finished} to true.
+     * Setter for {@link GameEngine#finished}.
      */
     protected void finish() {
         finished.set(true);
     }
 
+    /**
+     * @return {@code true}, if {@link GameEngine#finished} is true. {@code false}, otherwise.
+     */
     protected boolean isFinished() {
         return finished.get();
     }
