@@ -1,6 +1,7 @@
 package com.treasure.hunt.game;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.treasure.hunt.analysis.StatisticObject;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
@@ -54,29 +55,8 @@ public class GameManager {
     @Getter
     private IntegerProperty viewIndex = new SimpleIntegerProperty(0);
 
-    /**
-     * @param searcherClass   (Sub-)class of {@link Searcher}
-     * @param hiderClass      (Sub-)class of {@link Hider}
-     * @param gameEngineClass (Sub-)class of {@link GameEngine}
-     * @throws NoSuchMethodException     from {@link Class#getDeclaredConstructor(Class[])}
-     * @throws IllegalAccessException    from {@link java.lang.reflect.Constructor#newInstance(Object...)}
-     * @throws InvocationTargetException from {@link java.lang.reflect.Constructor#newInstance(Object...)}
-     * @throws InstantiationException    from {@link java.lang.reflect.Constructor#newInstance(Object...)}
-     */
-    public GameManager(Class<? extends Searcher> searcherClass, Class<? extends Hider> hiderClass, Class<? extends GameEngine> gameEngineClass)
-            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-
-        Searcher newSearcher = searcherClass.getDeclaredConstructor().newInstance();
-        Hider newHider = hiderClass.getDeclaredConstructor().newInstance();
-
-        this.gameEngine = gameEngineClass
-                .getDeclaredConstructor(Searcher.class, Hider.class)
-                .newInstance(newSearcher, newHider);
-
-        // Do initial move
-        moves.add(gameEngine.init(JTSUtils.createPoint(0, 0)));
-        viewIndex.set(0);
-    }
+    @Getter
+    private final BooleanBinding latestStepViewedBinding;
 
     public void addListener(ListChangeListener<? super Move> listChangeListener) {
         moves.addListener(listChangeListener);
@@ -139,39 +119,8 @@ public class GameManager {
         }
     }
 
-    /**
-     * This simulates the whole game, until its finished.
-     *
-     * @param delay time between each move
-     */
-    public void beat(ReadOnlyObjectProperty<Double> delay) {
-        if (beatThreadRunning.get()) {
-            log.warn("There's already a beating thread running");
-            return;
-        }
-
-        beatThreadRunning.set(true);
-        beatThread = new Thread(() -> {
-            log.debug("Start beating thread");
-            while (!stepForwardImpossibleBinding().get() && beatThreadRunning.get()) {
-                CountDownLatch latch = new CountDownLatch(1);
-                Platform.runLater(() -> {
-                    next();
-                    latch.countDown();
-                });
-                try {
-                    latch.await();
-                    Thread.sleep((long) (delay.get() * 1000));
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            log.debug("Terminating beating thread");
-            Platform.runLater(() -> beatThreadRunning.set(false));
-        });
-        beatThread.setDaemon(true);
-        beatThread.start();
-    }
+    @Getter
+    private final BooleanBinding stepForwardImpossibleBinding;
 
     /**
      * Stops the Thread from beating.
@@ -181,36 +130,10 @@ public class GameManager {
         beatThreadRunning.set(false);
     }
 
-    /**
-     * @param filterItems if true Geometry items that are set to be overridable only the last item is returned and later deleted items are removed
-     * @return The whole List of geometryItems of the gameHistory
-     */
-    public List<GeometryItem> getGeometryItems(Boolean filterItems) {
-        ArrayList<GeometryItem> geometryItems = moves.subList(0, viewIndex.get() + 1).stream()
-                .flatMap(move -> move.getGeometryItems().stream())
-                .collect(Collectors.toCollection(ArrayList::new));
-        if (!filterItems) {
-            return geometryItems;
-        }
-        Map<GeometryType, List<GeometryItem>> itemsByType = geometryItems.stream()
-                .collect(Collectors.groupingBy(GeometryItem::getGeometryType));
-
-        return itemsByType.keySet()
-                .stream()
-                .flatMap(type -> {
-                    List<GeometryItem> itemsOfType = itemsByType.get(type);
-                    if (!type.isOverride()) {
-                        return itemsOfType.stream();
-                    } else {
-                        return Stream.of(itemsOfType.get(itemsOfType.size() - 1));
-                    }
-                })
-                .filter(geometryItem -> moves.stream().noneMatch(move ->
-                        move.getHint() != null && move.getHint().getToBeRemoved().contains(geometryItem) ||
-                                move.getMovement() != null && move.getMovement().getToBeRemoved().contains(geometryItem)
-                ))
-                .collect(Collectors.toList());
-    }
+    @Getter
+    private final BooleanBinding stepBackwardImpossibleBinding;
+    @Getter
+    private final ObjectBinding<List<StatisticObject>> statistics;
 
     /**
      * @return whether the game of the {@link GameEngine} is finished or not.
@@ -235,22 +158,110 @@ public class GameManager {
         return moves.size() - 1 == viewIndex.get();
     }
 
-    public BooleanBinding latestStepViewedBinding() {
-        return Bindings.createBooleanBinding(() -> moves.size() - 1 == viewIndex.get(), viewIndex, moves);
+    /**
+     * @param searcherClass   (Sub-)class of {@link Searcher}
+     * @param hiderClass      (Sub-)class of {@link Hider}
+     * @param gameEngineClass (Sub-)class of {@link GameEngine}
+     * @throws NoSuchMethodException     from {@link Class#getDeclaredConstructor(Class[])}
+     * @throws IllegalAccessException    from {@link java.lang.reflect.Constructor#newInstance(Object...)}
+     * @throws InvocationTargetException from {@link java.lang.reflect.Constructor#newInstance(Object...)}
+     * @throws InstantiationException    from {@link java.lang.reflect.Constructor#newInstance(Object...)}
+     */
+    public GameManager(Class<? extends Searcher> searcherClass, Class<? extends Hider> hiderClass, Class<? extends GameEngine> gameEngineClass)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+
+        Searcher newSearcher = searcherClass.getDeclaredConstructor().newInstance();
+        Hider newHider = hiderClass.getDeclaredConstructor().newInstance();
+
+        this.gameEngine = gameEngineClass
+                .getDeclaredConstructor(Searcher.class, Hider.class)
+                .newInstance(newSearcher, newHider);
+
+        // Do initial move
+        moves.add(gameEngine.init(JTSUtils.createPoint(0, 0)));
+        viewIndex.set(0);
+        latestStepViewedBinding = Bindings.createBooleanBinding(() -> moves.size() - 1 == viewIndex.get(), viewIndex, moves);
+        stepForwardImpossibleBinding = getGameFinishedProperty().and(latestStepViewedBinding);
+        statistics = Bindings.createObjectBinding(() -> gameEngine.getStatistics().calculate(getMovesViewed()), viewIndex);
+        stepBackwardImpossibleBinding = viewIndex.isEqualTo(0);
     }
 
-    public BooleanBinding stepForwardImpossibleBinding() {
-        return getGameFinishedProperty().and(latestStepViewedBinding());
+    /**
+     * @param excludeOverrideItems if true Geometry items that are set to be overridable only the last item is returned and later deleted items are removed
+     * @return The whole List of geometryItems of the gameHistory
+     */
+    public List<GeometryItem> getGeometryItems(Boolean excludeOverrideItems) {
+        ArrayList<GeometryItem> geometryItems = getMovesViewed().stream()
+                .flatMap(move -> move.getGeometryItems().stream())
+                .collect(Collectors.toCollection(ArrayList::new));
+        if (!excludeOverrideItems) {
+            return geometryItems;
+        }
+        Map<GeometryType, List<GeometryItem>> itemsByType = geometryItems.stream()
+                .collect(Collectors.groupingBy(GeometryItem::getGeometryType));
+
+        return itemsByType.keySet()
+                .stream()
+                .flatMap(type -> {
+                    List<GeometryItem> itemsOfType = itemsByType.get(type);
+                    if (!type.isOverride()) {
+                        return itemsOfType.stream();
+                    } else {
+                        return Stream.of(itemsOfType.get(itemsOfType.size() - 1));
+                    }
+                })
+                .filter(geometryItem -> moves.stream().noneMatch(move ->
+                        move.getHint() != null && move.getHint().getToBeRemoved().contains(geometryItem) ||
+                                move.getMovement() != null && move.getMovement().getToBeRemoved().contains(geometryItem)
+                ))
+                .collect(Collectors.toList());
     }
 
-    public BooleanBinding stepBackwardImpossibleBinding() {
-        return viewIndex.isEqualTo(0);
+    /**
+     * @return only viewed moves
+     */
+    private List<Move> getMovesViewed() {
+        return moves.subList(0, viewIndex.get() + 1);
+    }
+
+    /**
+     * This simulates the whole game, until its finished.
+     *
+     * @param delay time between each move
+     */
+    public void beat(ReadOnlyObjectProperty<Double> delay) {
+        if (beatThreadRunning.get()) {
+            log.warn("There's already a beating thread running");
+            return;
+        }
+
+        beatThreadRunning.set(true);
+        beatThread = new Thread(() -> {
+            log.debug("Start beating thread");
+            while (!stepForwardImpossibleBinding.get() && beatThreadRunning.get()) {
+                CountDownLatch latch = new CountDownLatch(1);
+                Platform.runLater(() -> {
+                    next();
+                    latch.countDown();
+                });
+                try {
+                    latch.await();
+                    Thread.sleep((long) (delay.get() * 1000));
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            log.debug("Terminating beating thread");
+            Platform.runLater(() -> beatThreadRunning.set(false));
+        });
+        beatThread.setDaemon(true);
+        beatThread.start();
     }
 
     /**
      * @return {@code true}, if the shown step is the first one. {@code false}, otherwise.
      */
     public boolean isFirstStepShown() {
-        return stepBackwardImpossibleBinding().getValue();
+        return stepBackwardImpossibleBinding.getValue();
     }
 }

@@ -88,8 +88,8 @@ public class MainController {
             if (gameManager.isNull().get()) {
                 return;
             }
-            nextButton.disableProperty().bind(gameManager.get().stepForwardImpossibleBinding());
-            previousButton.disableProperty().bind(gameManager.get().stepBackwardImpossibleBinding());
+            nextButton.disableProperty().bind(gameManager.get().getStepForwardImpossibleBinding());
+            previousButton.disableProperty().bind(gameManager.get().getStepBackwardImpossibleBinding());
             gameManager.get().getGameFinishedProperty().addListener(invalidation -> logLabel.setText("Game ended"));
         });
     }
@@ -146,6 +146,9 @@ public class MainController {
         Widget<BeatWidgetController, ?> beatWidget = new Widget<>("/layout/beatWidget.fxml");
         beatWidget.getController().init(gameManager, logLabel);
         insertWidget(true, "Game controls", beatWidget.getComponent());
+        Widget<StatisticsWidgetController, ?> statisticsWidget = new Widget<>("/layout/statisticsWidget.fxml");
+        statisticsWidget.getController().init(gameManager, logLabel);
+        insertWidget(true, "Statistics", statisticsWidget.getComponent());
 
         Widget<ScaleController, ?> scaleWidget = new Widget<>("/layout/scaling.fxml");
         scaleWidget.getController().init(canvasController);

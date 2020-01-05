@@ -13,8 +13,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -56,7 +54,7 @@ class GameEngineTest {
     }
 
     /**
-     * This tests the {@link GameEngine#located(List)} method.
+     * This tests the {@link GameEngine#located} method.
      */
     @Test
     void bruteForceTest1() {
@@ -108,7 +106,7 @@ class GameEngineTest {
     }
 
     /**
-     * {@link GameEngine#located(List)} )} test.
+     * {@link GameEngine#located} )} test.
      * In this test, the searcher moves <b>past</b> the treasure
      * with a minimum distance of 1.
      * searcher starts at (0,0) as usual.

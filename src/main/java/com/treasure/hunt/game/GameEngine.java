@@ -1,5 +1,6 @@
 package com.treasure.hunt.game;
 
+import com.treasure.hunt.analysis.Statistic;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
@@ -35,7 +36,8 @@ public class GameEngine {
      * The width of the playing area.
      */
     public static final int WIDTH = 200;
-
+    @Getter
+    private final Statistic statistics = new Statistic();
     protected final Searcher searcher;
     protected final Hider hider;
     /**
@@ -45,7 +47,7 @@ public class GameEngine {
     private BooleanProperty finished = new SimpleBooleanProperty(false);
     protected Hint lastHint;
     protected Movement lastMovement;
-    protected Point searcherPos;
+    protected Point searcherPos = JTSUtils.createPoint(0, 0);
     protected Point treasurePos;
     /**
      * Tells, whether a first move is happened in the game yet, or not.
