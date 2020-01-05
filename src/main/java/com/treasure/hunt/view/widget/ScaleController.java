@@ -17,7 +17,7 @@ import java.text.ParseException;
 
 @Slf4j
 public class ScaleController {
-    final DecimalFormat df = new DecimalFormat("##.##%");
+    final DecimalFormat percentageFormatter = new DecimalFormat("##.##%");
     public Slider slider;
     public TextField textField;
     public VBox wrapper;
@@ -33,7 +33,7 @@ public class ScaleController {
         double cleanScale;
 
         try {
-            cleanScale = df.parse(textField.getText()).doubleValue();
+            cleanScale = percentageFormatter.parse(textField.getText()).doubleValue();
         } catch (ParseException e) {
             try {
                 cleanScale = Double.parseDouble(textField.getText().replace(",", "."));
@@ -44,7 +44,7 @@ public class ScaleController {
 
         canvasController.getTransformation().setScale(cleanScale);
         wrapper.requestFocus();
-        textField.setText(df.format(canvasController.getTransformation().getScaleProperty().get()));
+        textField.setText(percentageFormatter.format(canvasController.getTransformation().getScaleProperty().get()));
     }
 
     /**
@@ -59,15 +59,14 @@ public class ScaleController {
 
         transformer
                 .getScaleProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    textField.setText(df.format(newValue));
-                    slider.setValue((double) newValue);
-                });
+                .addListener((observable, oldValue, newValue) ->
+                        textField.setText(percentageFormatter.format(newValue)
+                        ));
 
         slider.valueProperty().bindBidirectional(transformer.getScaleProperty());
 
         slider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (!slider.isPressed()) {
+            if (!slider.isPressed() || oldValue.equals(0)) {
                 return;
             }
             final Canvas canvas = canvasController.getCanvas();

@@ -47,7 +47,7 @@ public class CanvasController {
             drawShapes();
         });
 
-        canvas.widthProperty().addListener((observable, oldValue, newValue) -> {
+        canvas.heightProperty().addListener((observable, oldValue, newValue) -> {
             transformation.updateCanvasHeight((double) newValue);
             drawShapes();
         });
