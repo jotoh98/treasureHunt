@@ -19,7 +19,7 @@ public class BruteForceSearcher implements Searcher<Hint> {
     private int x = 0, y = 0;
 
     @Override
-    public void init(Point startPosition) {
+    public void init(Point startPosition, int width, int height) {
         this.x = (int) startPosition.getX();
         this.y = (int) startPosition.getY();
     }

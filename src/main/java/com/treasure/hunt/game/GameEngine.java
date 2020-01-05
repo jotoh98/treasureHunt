@@ -10,8 +10,6 @@ import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.Requires;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import lombok.Getter;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
@@ -30,27 +28,31 @@ public class GameEngine {
     /**
      * The height of the playing area.
      */
-    public static final int HEIGHT = 200;
+    @Getter
+    protected final int height;
     /**
      * The width of the playing area.
      */
-    public static final int WIDTH = 200;
+    @Getter
+    protected final int width;
 
     protected final Searcher searcher;
     protected final Hider hider;
+    protected final Coordinate initialSearcherCoordinate;
+
     /**
      * Tells, whether the game is done or not.
      */
     @Getter
-    private BooleanProperty finished = new SimpleBooleanProperty(false);
-    protected Hint lastHint;
-    protected Movement lastMovement;
-    protected Point searcherPos;
-    protected Point treasurePos;
+    protected boolean finished = false;
     /**
      * Tells, whether a first move is happened in the game yet, or not.
      */
     protected boolean firstMove = true;
+    protected Hint lastHint;
+    protected Movement lastMovement;
+    protected Point searcherPos;
+    protected Point treasurePos;
 
     /**
      * The constructor.
@@ -59,8 +61,50 @@ public class GameEngine {
      * @param hider    playing the game
      */
     public GameEngine(Searcher searcher, Hider hider) {
+        this(searcher, hider, 200, 200);
+    }
+
+    /**
+     * The constructor.
+     *
+     * @param searcher playing the game
+     * @param hider    playing the game
+     * @param width    the width of the playing area
+     * @param height   the height of the playing area
+     */
+    public GameEngine(Searcher searcher, Hider hider, int width, int height) {
+        this(searcher, hider, new Coordinate(0, 0), width, height);
+    }
+
+    /**
+     * The constructor.
+     *
+     * @param searcher                  playing the game
+     * @param hider                     playing the game
+     * @param initialSearcherCoordinate the initial Searcher {@link Coordinate}.
+     */
+    public GameEngine(Searcher searcher, Hider hider, Coordinate initialSearcherCoordinate) {
+        this(searcher, hider, initialSearcherCoordinate, 200, 200);
+    }
+
+    /**
+     * The constructor.
+     *
+     * @param searcher                  playing the game
+     * @param hider                     playing the game
+     * @param initialSearcherCoordinate the initial Searcher {@link Coordinate}.
+     * @param width                     the width of the playing area
+     * @param height                    the height of the playing area
+     */
+    public GameEngine(Searcher searcher, Hider hider, Coordinate initialSearcherCoordinate, int width, int height) {
         this.searcher = searcher;
         this.hider = hider;
+        this.initialSearcherCoordinate = initialSearcherCoordinate;
+        this.width = width;
+        this.height = height;
+        if (outOfMap(initialSearcherCoordinate)) {
+            throw new IllegalArgumentException("initialSearcherCoordinate: " + initialSearcherCoordinate + " lies outside the playing area.");
+        }
     }
 
     /**
@@ -97,32 +141,26 @@ public class GameEngine {
     }
 
     /**
-     * Initialize searcher on initial position {@code (0,0)} and treasure positions.
+     * initialize searcher and treasure positions.
      *
      * @return a {@link Move}, since the initialization must be displayed.
      */
     public Move init() {
-        return init(JTSUtils.createPoint(0, 0));
-    }
-
-    /**
-     * initialize searcher and treasure positions.
-     *
-     * @param p initial searcher position
-     * @return a {@link Move}, since the initialization must be displayed.
-     */
-    public Move init(Point p) {
-        searcherPos = p;
-        searcher.init(searcherPos);
+        searcherPos = JTSUtils.GEOMETRY_FACTORY.createPoint(initialSearcherCoordinate);
+        searcher.init(searcherPos, width, height);
+        hider.init(searcherPos, width, height);
 
         treasurePos = hider.getTreasureLocation();
         if (treasurePos == null) {
-            throw new IllegalArgumentException(hider + " gave a treasurePosition which is null.");
+            throw new IllegalArgumentException("hider: " + hider + " gave a treasure position which is null.");
+        }
+        if (outOfMap(treasurePos.getCoordinate())) {
+            throw new IllegalArgumentException("hider" + hider + " gave a treasure position which lies outside the playing area.");
         }
 
         // Check, whether treasure spawns in range of searcher
         if (located(Collections.singletonList(new GeometryItem<>(searcherPos, GeometryType.WAY_POINT)), treasurePos)) {
-            finish();
+            finished = true;
         }
 
         return new Move(
@@ -140,10 +178,14 @@ public class GameEngine {
      * @return the {@link Move}, happened in this step.
      */
     public Move move() {
+        if (finished) {
+            throw new IllegalStateException("Game is already finished");
+        }
+
         searcherMove();
 
         if (located(lastMovement.getPoints(), treasurePos)) {
-            finish();
+            finished = true;
             return new Move(null, lastMovement, treasurePos);
         } else {
             hiderMove();
@@ -165,11 +207,6 @@ public class GameEngine {
      * Let the {@link GameEngine#searcher} make {@link Movement}.
      */
     protected void searcherMove() {
-        if (finished.get()) {
-            throw new IllegalStateException("Game is already finished");
-        }
-
-        // Searcher moves
         if (firstMove) {
             firstMove = false;
             lastMovement = searcher.move();
@@ -197,13 +234,10 @@ public class GameEngine {
                     " but continues his movement from " + movement.getStartingPoint());
         }
         for (GeometryItem geometryItem : movement.getPoints()) {
-            if (((Point) geometryItem.getObject()).getX() < (float) -WIDTH / 2 ||
-                    (float) WIDTH / 2 < ((Point) geometryItem.getObject()).getX() ||
-                    ((Point) geometryItem.getObject()).getY() < (float) -HEIGHT / 2 ||
-                    (float) HEIGHT / 2 < ((Point) geometryItem.getObject()).getY()) {
+            if (outOfMap(((Point) geometryItem.getObject()).getCoordinate())) {
                 throw new IllegalArgumentException("Searcher left the playing area: " +
                         "(" + ((Point) geometryItem.getObject()).getX() + ", " + ((Point) geometryItem.getObject()).getY() + ") " +
-                        "is not in " + "[" + -WIDTH / 2 + ", " + WIDTH / 2 + "]x[" + -HEIGHT / 2 + ", " + HEIGHT / 2 + "]");
+                        "is not in " + "[" + -width / 2 + ", " + width / 2 + "]x[" + -height / 2 + ", " + height / 2 + "]");
             }
         }
     }
@@ -233,16 +267,13 @@ public class GameEngine {
     }
 
     /**
-     * Setter for {@link GameEngine#finished}.
+     * @param coordinate the {@link Coordinate}, we want to test, whether it lies outside the playing area.
+     * @return {@code true}, if the {@code coordinate} lies outside the playing area. {@code false}, otherwise.
      */
-    protected void finish() {
-        finished.set(true);
-    }
-
-    /**
-     * @return {@code true}, if {@link GameEngine#finished} is true. {@code false}, otherwise.
-     */
-    protected boolean isFinished() {
-        return finished.get();
+    public boolean outOfMap(Coordinate coordinate) {
+        return coordinate.x < (float) -width / 2 ||
+                (float) width / 2 < coordinate.x ||
+                coordinate.y < (float) -height / 2 ||
+                (float) height / 2 < coordinate.y;
     }
 }
