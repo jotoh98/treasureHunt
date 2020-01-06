@@ -685,8 +685,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     private Coordinate[] sigmaRectangle(int i, Coordinate[] rect) {
         assertRectangle(rect);
         Coordinate r = centerOfRectangle(rect);
-        //TODO maybe use manuel matrices instead of rotationInstance
-        AffineTransformation rotHalfPi = AffineTransformation.rotationInstance(Math.PI / 2, r.getX(), r.getY());
+
+        AffineTransformation rotHalfPi = new AffineTransformation(new double[]{0, -1, 0, 1, 0, 0});
+
         if (i == 0 || i == 2) {
             return rect;
         }
@@ -694,10 +695,21 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             //rotate rectangle by pi/2
             Coordinate[] transformed = new Coordinate[]{new Coordinate(), new Coordinate(),
                     new Coordinate(), new Coordinate()};
-            rotHalfPi.transform(rect[1], transformed[0]);
-            rotHalfPi.transform(rect[2], transformed[1]);
-            rotHalfPi.transform(rect[3], transformed[2]);
-            rotHalfPi.transform(rect[0], transformed[3]);
+            for (int j = 0; j <= 3; j++) {
+                transformed[j].x = rect[j].x - r.x;
+                transformed[j].y = rect[j].y - r.y;
+            }
+
+            Coordinate transformed0old = transformed[0].copy();
+            rotHalfPi.transform(transformed[1], transformed[0]);
+            rotHalfPi.transform(transformed[2], transformed[1]);
+            rotHalfPi.transform(transformed[3], transformed[2]);
+            rotHalfPi.transform(transformed0old, transformed[3]);
+
+            for (int j = 0; j <= 3; j++) {
+                transformed[j].x = transformed[j].x + r.x;
+                transformed[j].y = transformed[j].y + r.y;
+            }
             return transformed;
         }
         throw new IllegalArgumentException("i should be in [0,3] but is equal to " + i);
@@ -959,7 +971,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                     new Coordinate(3.5662858179937924, 2.7636811224775273));
             curHint = new HalfPlaneHint(new Coordinate(1.3935211550449453, 3.291974335987585),
                     new Coordinate(2.3662835676900604, 3.060169917253051));
-            System.out.println("--------------------------------------------------------badCase0");
             testRectHint(rect, lastBadHint, 3);
             testLastHintBadSubroutine(strategy, rect, lastBadHint, curHint);
 
