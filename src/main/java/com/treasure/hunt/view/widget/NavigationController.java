@@ -38,7 +38,8 @@ public class NavigationController {
             nextButton.disableProperty().bind(managerInstance.getStepForwardImpossibleBinding());
             previousButton.disableProperty().bind(managerInstance.getStepBackwardImpossibleBinding());
             stepCountField.disableProperty().bind(gameManager.isNull());
-
+            stepCountLabel.setText("of " + (managerInstance.getMoveSizeBinding().get() - 1));
+            stepCountField.setText(Integer.toString(managerInstance.getViewIndex().get()));
             managerInstance.getMoveSizeBinding().addListener(
                     (obs, oldValue, newValue) -> stepCountLabel.setText("of " + (((int) newValue) - 1))
             );

@@ -44,6 +44,9 @@
                         <Button fx:id="startGameButton" disable="true" maxHeight="1.7976931348623157E308"
                                 mnemonicParsing="false" onAction="#onStartButtonClicked" text="Init"
                                 textAlignment="CENTER"/>
+                        <Button maxHeight="1.7976931348623157E308"
+                                mnemonicParsing="false" onAction="#onLoadGame" text="Load"
+                                textAlignment="CENTER"/>
                     </children>
                 </HBox>
 
