@@ -72,7 +72,7 @@ public class Statistic {
     }
 
     public List<StatisticObject> calculate(List<Move> moves) {
-        this.moves = moves;
+        this.moves = new ArrayList<>(moves);
         List<StatisticObject> statistics = Arrays.asList(
                 new StatisticObject("Trace length",
                         "If finished: Length of searchers path; if unfinished: Length of searchers path plus the direct route from searchers last point to treasure",
