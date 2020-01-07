@@ -18,6 +18,9 @@ public final class JTSUtils {
      */
     public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
+    private JTSUtils() {
+    }
+
     /**
      * Factory method to create a point with a shared {@link GeometryFactory}
      *

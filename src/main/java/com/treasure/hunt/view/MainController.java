@@ -67,8 +67,10 @@ public class MainController {
     private WidgetBarController leftWidgetBarController;
     @FXML
     private WidgetBarController rightWidgetBarController;
+
     @FXML
     private ToolbarController rightToolbarController;
+
     @FXML
     private ToolbarController leftToolbarController;
 

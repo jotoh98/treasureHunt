@@ -7,6 +7,7 @@ import javafx.scene.layout.Pane;
  * @author jotoh
  */
 public class WidgetBarController {
+
     @FXML
     private Pane widgetBar;
 
