@@ -56,6 +56,7 @@ public class GameManager implements KryoSerializable {
     ObservableList<Move> moves = FXCollections.observableArrayList();
 
     private GameEngine gameEngine;
+    @Getter
     private BooleanProperty finishedProperty;
     @Getter
     private IntegerProperty viewIndex;
@@ -187,14 +188,6 @@ public class GameManager implements KryoSerializable {
         while (!gameEngine.isFinished()) {
             next();
         }
-    }
-
-    /**
-     * Stops the Thread from beating.
-     */
-    public void stopBeat() {
-        log.debug("Stopping beating thread");
-        beatThreadRunning.set(false);
     }
 
     /**
