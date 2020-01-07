@@ -2,16 +2,20 @@ package com.treasure.hunt.view;
 
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.game.GameManager;
+import com.treasure.hunt.service.FileService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
+import com.treasure.hunt.utils.EventBusUtils;
 import com.treasure.hunt.utils.ReflectionUtils;
 import com.treasure.hunt.utils.Requires;
 import com.treasure.hunt.view.widget.*;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -79,7 +83,6 @@ public class MainController {
     @Getter
     private final ObjectProperty<GameManager> gameManager = new SimpleObjectProperty<>();
 
-
     public void initialize() {
         canvasController.setGameManager(gameManager);
         setListStringConverters();
@@ -89,6 +92,20 @@ public class MainController {
         addToolbarStyleClasses();
         bindWidgetBarVisibility();
         addBindingsToGameManager();
+        listenToGameMangerLoad();
+    }
+
+    private void listenToGameMangerLoad() {
+        EventBusUtils.GAME_MANAGER_LOADED_EVENT.addListener(loadedGameManager -> {
+            Platform.runLater(() -> {
+                try {
+                    initGameManager(loadedGameManager);
+                } catch (Exception e) {
+                    log.error("Error loading GameManger in UI", e);
+                    logLabel.setText("Error loading GameManger in UI from file");
+                }
+            });
+        });
     }
 
     /**
@@ -308,16 +325,19 @@ public class MainController {
         assert searcherClass != null;
         assert hiderClass != null;
         assert gameEngineClass != null;
-
-        boolean initialize = gameManager.isNull().get();
-
         try {
-            gameManager.set(new GameManager(searcherClass, hiderClass, gameEngineClass));
-            logLabel.setText("Game initialized");
+            initGameManager(new GameManager(searcherClass, hiderClass, gameEngineClass));
         } catch (Exception e) {
             log.error("Something important crashed", e);
             logLabel.setText("Could not create game");
         }
+    }
+
+    private void initGameManager(GameManager gameManagerInstance) {
+        boolean initialize = gameManager.isNull().get();
+
+        gameManager.set(gameManagerInstance);
+        logLabel.setText("Game initialized");
 
         if (initialize) {
             gameManager.addListener(change -> canvasController.drawShapes());
@@ -328,5 +348,9 @@ public class MainController {
     public void initGameUI() {
         canvasController.drawShapes();
         addWidgets();
+    }
+
+    public void onLoadGame(ActionEvent actionEvent) {
+        FileService.getInstance().load(logLabel);
     }
 }

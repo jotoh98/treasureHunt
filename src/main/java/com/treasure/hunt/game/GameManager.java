@@ -1,5 +1,9 @@
 package com.treasure.hunt.game;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.KryoSerializable;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.google.common.annotations.VisibleForTesting;
 import com.treasure.hunt.analysis.StatisticObject;
 import com.treasure.hunt.strategy.geom.GeometryItem;
@@ -35,7 +39,7 @@ import java.util.stream.Stream;
  * @author dorianreineccius
  */
 @Slf4j
-public class GameManager {
+public class GameManager implements KryoSerializable {
     /**
      * A thread that is invoked by {@link GameManager#beat(ReadOnlyObjectProperty)} and stopped by {@link GameManager#stopBeat()}.
      * He executes {@link GameManager#move(int)} in a given interval.
@@ -52,19 +56,26 @@ public class GameManager {
 
     private GameEngine gameEngine;
     @Getter
-    private final BooleanProperty finishedProperty = new SimpleBooleanProperty(false);
+    private BooleanProperty finishedProperty;
     @Getter
-    private final IntegerProperty viewIndex = new SimpleIntegerProperty(0);
+    private IntegerProperty viewIndex;
     @Getter
-    private final BooleanBinding latestStepViewedBinding;
+    private BooleanBinding latestStepViewedBinding;
     @Getter
-    private final ObjectBinding<Move> lastMoveBinding;
+    private ObjectBinding<Move> lastMoveBinding;
     @Getter
-    private final ObjectBinding<Point> lastTreasureBindings;
+    private ObjectBinding<Point> lastTreasureBindings;
     @Getter
-    private final ObjectBinding<Point> lastPointBinding;
+    private ObjectBinding<Point> lastPointBinding;
     @Getter
-    private IntegerBinding moveSizeBinding = Bindings.size(moves);
+    private IntegerBinding moveSizeBinding;
+    @Getter
+    private BooleanBinding stepForwardImpossibleBinding;
+    @Getter
+    private BooleanBinding stepBackwardImpossibleBinding;
+    @Getter
+    private ObjectBinding<List<StatisticObject>> statistics;
+
 
     /**
      * @param searcherClass   (Sub-)class of {@link Searcher}
@@ -90,7 +101,16 @@ public class GameManager {
         if (gameEngine.isFinished()) {
             finishedProperty.set(true);
         }
-        viewIndex.set(0);
+        setProperties();
+        setBindings();
+    }
+
+    private void setProperties() {
+        viewIndex = new SimpleIntegerProperty(0);
+        finishedProperty = new SimpleBooleanProperty(false);
+    }
+
+    private void setBindings() {
         latestStepViewedBinding = Bindings.createBooleanBinding(() -> moves.size() - 1 == viewIndex.get(), viewIndex, moves);
         stepForwardImpossibleBinding = finishedProperty.and(latestStepViewedBinding);
         statistics = Bindings.createObjectBinding(() -> gameEngine.getStatistics().calculate(getMovesViewed()), viewIndex);
@@ -98,6 +118,7 @@ public class GameManager {
         lastMoveBinding = Bindings.createObjectBinding(() -> moves.get(viewIndex.get()), viewIndex, moves);
         lastTreasureBindings = Bindings.createObjectBinding(() -> moves.get(viewIndex.get()).getTreasureLocation(), viewIndex, moves);
         lastPointBinding = Bindings.createObjectBinding(() -> moves.get(viewIndex.get()).getMovement().getEndPoint(), viewIndex, moves);
+        moveSizeBinding = Bindings.size(moves);
     }
 
     /**
@@ -148,9 +169,6 @@ public class GameManager {
         }
     }
 
-    @Getter
-    private final BooleanBinding stepForwardImpossibleBinding;
-
     /**
      * Stops the Thread from beating.
      */
@@ -158,11 +176,6 @@ public class GameManager {
         log.debug("Stopping beating thread");
         beatThreadRunning.set(false);
     }
-
-    @Getter
-    private final BooleanBinding stepBackwardImpossibleBinding;
-    @Getter
-    private final ObjectBinding<List<StatisticObject>> statistics;
 
     /**
      * @return whether the game of the {@link GameEngine} is finished or not.
@@ -255,5 +268,24 @@ public class GameManager {
      */
     public boolean isFirstStepShown() {
         return stepBackwardImpossibleBinding.getValue();
+    }
+
+    @Override
+    public void write(Kryo kryo, Output output) {
+        kryo.writeObject(output, gameEngine);
+        output.writeBoolean(beatThreadRunning.get());
+        kryo.writeObject(output, new ArrayList<>(moves));
+        output.writeInt(viewIndex.get());
+        output.writeBoolean(finishedProperty.get());
+    }
+
+    @Override
+    public void read(Kryo kryo, Input input) {
+        gameEngine = kryo.readObject(input, GameEngine.class);
+        beatThreadRunning = new SimpleBooleanProperty(input.readBoolean());
+        moves = FXCollections.observableArrayList(kryo.readObject(input, ArrayList.class));
+        viewIndex = new SimpleIntegerProperty(input.readInt());
+        finishedProperty = new SimpleBooleanProperty(input.readBoolean());
+        setBindings();
     }
 }
