@@ -1,15 +1,18 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.*;
+import org.locationtech.jts.geom.impl.CoordinateArraySequence;
 import org.locationtech.jts.geom.util.AffineTransformation;
 import org.locationtech.jts.math.Vector2D;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static com.treasure.hunt.strategy.geom.GeometryType.CURRENT_PHASE;
 import static com.treasure.hunt.strategy.geom.GeometryType.CURRENT_RECTANGLE;
@@ -83,7 +86,27 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return move;
     }
 
-    private Movement setLocationAndReturn(Movement move) {
+    /**
+     * This function has to be called directly before move() or move(HalfPlaneHint) returns.
+     * It sets the current location accordingly and adds the lines of the way described by move.
+     *
+     * @param move the move to be returned by one of the two move-methods
+     * @return move with lines added to the additionalGeometryItems
+     */
+    private Movement moveReturn(Movement move) {
+        List<GeometryItem<Point>> points = move.getPoints();
+        Point lastPoint = null;
+        for (GeometryItem g : points) {
+            Point p = (Point) g.getObject();
+            if (lastPoint != null) {
+                Coordinate[] line = new Coordinate[]{lastPoint.getCoordinate(), p.getCoordinate()};
+                move.addAdditionalItem(
+                        new GeometryItem(new LineString(new CoordinateArraySequence(line), GEOMETRY_FACTORY),
+                                GeometryType.SEARCHER_MOVEMENT)
+                );
+            }
+            lastPoint = p;
+        }
         lastLocation = move.getEndPoint();
         return move;
     }
@@ -102,11 +125,11 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         double width = B.getX() - A.getX();
         double height = A.getY() - D.getY();
         if (width < 4 || height < 4) {
-            return setLocationAndReturn(addState(incrementPhase(move)));
+            return moveReturn(addState(incrementPhase(move)));
         }
         //now analyse the hint:
         if (lastHintWasBad)
-            return setLocationAndReturn(lastHintBadSubroutine(hint, move));
+            return moveReturn(lastHintBadSubroutine(hint, move));
 
         LineSegment AB = new LineSegment(A.getCoordinate(), B.getCoordinate());
         LineSegment BC = new LineSegment(B.getCoordinate(), C.getCoordinate());
@@ -139,7 +162,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             B = horizontalSplit[1];
             C = horizontalSplit[2];
             D = horizontalSplit[3];
-            return setLocationAndReturn(addState(moveToCenterOfRectangle(A, B, C, D, move)));
+            return moveReturn(addState(moveToCenterOfRectangle(A, B, C, D, move)));
         }
         Point[] verticalSplit = splitRectangleVertically(A, B, C, D, hint, intersection_AB_hint,
                 intersection_CD_hint);
@@ -148,9 +171,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             B = verticalSplit[1];
             C = verticalSplit[2];
             D = verticalSplit[3];
-            return setLocationAndReturn(addState(moveToCenterOfRectangle(A, B, C, D, move)));
+            return moveReturn(addState(moveToCenterOfRectangle(A, B, C, D, move)));
         }
-        return setLocationAndReturn(addState(badHintSubroutine(hint, move)));
+        return moveReturn(addState(badHintSubroutine(hint, move)));
     }
 
     private Point[] splitRectangleHorizontally(Point A, Point B, Point C, Point D, HalfPlaneHint hint,
@@ -782,7 +805,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         if (i < 4) {
             return sigmaPointReverse(i, r, P);
         }
-        return sigmaPointReverse(i - 3, r, rhoPoint(rect, P));
+        return sigmaPointReverse(i - 4, r, rhoPoint(rect, P));
     }
 
     private Movement rectangleScanPhiReverse(int basicTrans, Coordinate[] phiRect,
