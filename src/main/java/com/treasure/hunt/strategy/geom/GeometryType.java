@@ -37,13 +37,13 @@ public enum GeometryType {
     WAY_POINT(true, "no treasure"),
 
     // StrategyFromPaper
-    CURRENT_PHASE(false, "current phase"),
-    CURRENT_RECTANGLE(true, "current rectangle"),
-    RECTANGLE_SCAN(false, "rectangleScan"),
+    CURRENT_PHASE(false, "current phase", true),
+    CURRENT_RECTANGLE(true, "current rectangle", true),
+    RECTANGLE_SCAN(false, "rectangleScan", true),
 
     STANDARD(true, ""),
 
-    BOUNDING_CIRCE(false,"bounding circle")
+    BOUNDING_CIRCE(false, "bounding circle")
     // TODO add more..
     ;
 

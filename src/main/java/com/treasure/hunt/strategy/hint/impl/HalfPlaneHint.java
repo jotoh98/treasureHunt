@@ -1,5 +1,6 @@
 package com.treasure.hunt.strategy.hint.impl;
 
+import com.treasure.hunt.geom.GeometryAngle;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.Hint;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
+import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
 
 /**
  * @author Rank
@@ -136,8 +138,11 @@ public class HalfPlaneHint extends Hint {
     @Override
     public List<GeometryItem<?>> getGeometryItems() {
         List<GeometryItem<?>> output = new ArrayList<>();
-        output.add(new GeometryItem(anglePointLeft, GeometryType.HALF_PLANE_POINT_LEFT));
-        output.add(new GeometryItem(anglePointRight, GeometryType.HALF_PLANE_POINT_RIGHT));
+
+        //TODO add visualization
+        // idee: wie in den bildern vom paper visualisieren
+        output.add(new GeometryItem(GEOMETRY_FACTORY.createPoint(anglePointLeft), GeometryType.HALF_PLANE_POINT_LEFT));
+        output.add(new GeometryItem(GEOMETRY_FACTORY.createPoint(anglePointRight), GeometryType.HALF_PLANE_POINT_RIGHT));
         return output;
     }
 

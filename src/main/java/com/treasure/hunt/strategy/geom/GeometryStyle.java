@@ -37,6 +37,8 @@ public class GeometryStyle {
                 return new GeometryStyle(true, new Color(0xFFD700));
             case HINT_ANGLE:
                 return new GeometryStyle(true, new Color(0x575757));
+            case CURRENT_PHASE:
+                return new GeometryStyle(true, new Color(0x25571D));
         }
         return new GeometryStyle(true, Color.lightGray);
     }
