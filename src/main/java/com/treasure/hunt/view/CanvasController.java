@@ -1,5 +1,6 @@
 package com.treasure.hunt.view;
 
+import com.google.common.eventbus.Subscribe;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.geom.CircleHighlighter;
 import com.treasure.hunt.geom.RectangleVariableHighlighter;
@@ -8,6 +9,7 @@ import com.treasure.hunt.jts.PointTransformation;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryStyle;
 import com.treasure.hunt.strategy.geom.GeometryType;
+import com.treasure.hunt.utils.EventBusUtils;
 import com.treasure.hunt.utils.JTSUtils;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -65,7 +67,22 @@ public class CanvasController {
         transformation.getScaleProperty().addListener(invalidation -> drawShapes());
 
         transformation.getOffsetProperty().addListener(invalidation -> drawShapes());
+
+        EventBusUtils.EVENT_BUS.register(this);
     }
+
+    /**
+     * Receives an {@link GeometryItem} via {@code Guava event},
+     * and handles it.
+     *
+     * @param event the {@code Guava event} containing the {@link GeometryItem}.
+     */
+    @Subscribe
+    public void stringEvent(GeometryItem event) {
+        System.out.println("Event received!");
+        System.out.println("@axel no front");
+    }
+
 
     public void makeCanvasResizable() {
 
@@ -144,6 +161,9 @@ public class CanvasController {
                 new Coordinate(mousePositionInGameContext.getX(), -mousePositionInGameContext.getY()),
                 MOUSE_RECOGNIZE_DISTANCE / transformation.getScaleProperty().get());
         if (geometryItem != null) {
+
+            EventBusUtils.EVENT_BUS.post(geometryItem);
+
             Geometry geometry = geometryItem.getGeometry();
             log.info("recognized: " + geometry); // TODO delete
             this.selected = geometryItem;
