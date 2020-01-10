@@ -18,6 +18,8 @@ public enum GeometryType {
     // HalfPlaneHint
     HALF_PLANE_POINT_LEFT(false, "left half-plane-point"),
     HALF_PLANE_POINT_RIGHT(false, "right half-plane-point"),
+    HALF_PLANE(true, "the treasure is not here", true),
+    HALF_PLANE_LINE(true, "half plane line", true),
 
 
     // treasure/no-treasure (areas)

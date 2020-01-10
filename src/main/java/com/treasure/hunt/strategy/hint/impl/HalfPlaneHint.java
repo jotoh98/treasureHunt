@@ -1,27 +1,34 @@
 package com.treasure.hunt.strategy.hint.impl;
 
-import com.treasure.hunt.geom.GeometryAngle;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.Hint;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.math.Vector2D;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
-import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
 
 /**
  * @author Rank
  */
 
-@Value
+@AllArgsConstructor
 public class HalfPlaneHint extends Hint {
-
-    Coordinate anglePointLeft;
-    Coordinate anglePointRight;
+    static final double visual_extent = 1000;
+    @Getter
+    Coordinate leftPoint;
+    @Getter
+    Coordinate rightPoint;
+    private Polygon halfPlanePoly = null;
+    private LineString halfPlaneLine = null;
+    @Getter
     private Direction direction;
     // when the line indicated by anglePointLeft and anglePointRight is not horizontal,
     // right and left indicate where the target is (right indicates the target is in positive x-Direction
@@ -30,27 +37,27 @@ public class HalfPlaneHint extends Hint {
     // to the line (the up and down enumerators are only used when the line is horizontal)
     // left and down respectively
 
-    public HalfPlaneHint(Coordinate anglePointLeft, Coordinate anglePointRight) {
+    public HalfPlaneHint(Coordinate leftPoint, Coordinate rightPoint) {
         Direction dir = null;
-        this.anglePointLeft = anglePointLeft;
-        this.anglePointRight = anglePointRight;
+        this.leftPoint = leftPoint;
+        this.rightPoint = rightPoint;
 
-        if (anglePointLeft.getY() == anglePointRight.getY()) {
-            if (anglePointLeft.getX() < anglePointRight.getX()) {
+        if (leftPoint.getY() == rightPoint.getY()) {
+            if (leftPoint.getX() < rightPoint.getX()) {
                 dir = up;
             }
-            if (anglePointLeft.getX() > anglePointRight.getX()) {
+            if (leftPoint.getX() > rightPoint.getX()) {
                 dir = down;
             }
-            if (anglePointLeft.getX() == anglePointRight.getX()) {
+            if (leftPoint.getX() == rightPoint.getX()) {
                 throw new IllegalArgumentException("anglePointLeft must not equal anglePointRight in the " +
                         "construction of a new HalfPlaneHint");
             }
         }
-        if (anglePointLeft.getY() < anglePointRight.getY()) {
+        if (leftPoint.getY() < rightPoint.getY()) {
             dir = left;
         }
-        if (anglePointLeft.getY() > anglePointRight.getY()) {
+        if (leftPoint.getY() > rightPoint.getY()) {
             dir = right;
         }
         direction = dir;
@@ -125,8 +132,8 @@ public class HalfPlaneHint extends Hint {
                 }
                 break;
         }
-        anglePointRight = rightCoord;
-        anglePointLeft = leftCoord;
+        rightPoint = rightCoord;
+        leftPoint = leftCoord;
         this.direction = direction;
     }
 
@@ -138,38 +145,90 @@ public class HalfPlaneHint extends Hint {
     @Override
     public List<GeometryItem<?>> getGeometryItems() {
         List<GeometryItem<?>> output = new ArrayList<>();
+        if (halfPlanePoly == null) {
+            //TODO nachfragen ob andere bessere idee haben
 
-        //TODO add visualization
-        // idee: wie in den bildern vom paper visualisieren
-        output.add(new GeometryItem(GEOMETRY_FACTORY.createPoint(anglePointLeft), GeometryType.HALF_PLANE_POINT_LEFT));
-        output.add(new GeometryItem(GEOMETRY_FACTORY.createPoint(anglePointRight), GeometryType.HALF_PLANE_POINT_RIGHT));
+            Vector2D l_to_r = new Vector2D(leftPoint, rightPoint);
+            Vector2D r_to_l = new Vector2D(rightPoint, leftPoint);
+
+            l_to_r = l_to_r.multiply(visual_extent / l_to_r.length());
+            r_to_l = r_to_l.multiply(visual_extent / r_to_l.length());
+            //test
+            System.out.println("extended lines:");
+            System.out.println(l_to_r);
+            System.out.println(r_to_l);
+            //end test
+
+            Coordinate extendedL = new Coordinate(
+                    rightPoint.x + r_to_l.getX(),
+                    rightPoint.y + r_to_l.getY()
+            );
+            Coordinate extendedR = new Coordinate(
+                    leftPoint.x + l_to_r.getX(),
+                    leftPoint.y + l_to_r.getY()
+            );
+            Vector2D extended_l_to_r = new Vector2D(extendedL, extendedR);
+            Vector2D extended_r_to_l = new Vector2D(extendedR, extendedL);
+
+            //Coordinate polygon
+            Coordinate firstPointPoly = null, secondPointPoly = null; // third and forth are left and right
+            switch (direction) {
+                case up:
+                    firstPointPoly = new Coordinate(extendedR.x, extendedR.y - visual_extent);
+                    secondPointPoly = new Coordinate(extendedL.x, extendedL.y - visual_extent);
+                    break;
+                case down:
+                    firstPointPoly = new Coordinate(extendedR.x, extendedR.y + visual_extent);
+                    secondPointPoly = new Coordinate(extendedL.x, extendedL.y + visual_extent);
+                    break;
+                case left:
+                case right:
+                    extended_r_to_l = extended_r_to_l.rotateByQuarterCircle(1);
+                    firstPointPoly = new Coordinate(extendedR.x + extended_r_to_l.getX(),
+                            extendedR.y + extended_r_to_l.getY());
+                    extended_l_to_r = extended_l_to_r.rotateByQuarterCircle(3);
+                    secondPointPoly = new Coordinate(extendedL.x + extended_l_to_r.getX(),
+                            extendedL.y + extended_l_to_r.getY());
+            }
+
+            Coordinate[] polyShell = new Coordinate[]{firstPointPoly, secondPointPoly,
+                    extendedL, extendedR, firstPointPoly};
+            Coordinate[] line = new Coordinate[]{extendedL, extendedR};
+        }
+
+        //output.add(new GeometryItem(GEOMETRY_FACTORY.createPoint(leftPoint), GeometryType.HALF_PLANE_POINT_LEFT));
+        //output.add(new GeometryItem(GEOMETRY_FACTORY.createPoint(rightPoint), GeometryType.HALF_PLANE_POINT_RIGHT));
+
+        //output.add(new GeometryItem(halfPlanePoly, GeometryType.HALF_PLANE));
+        output.add(new GeometryItem(halfPlaneLine, GeometryType.HALF_PLANE_LINE));
+
         return output;
     }
 
     public Coordinate getLowerHintPoint() {
-        if (anglePointLeft.getY() < anglePointRight.getY()) {
-            return anglePointLeft;
+        if (leftPoint.getY() < rightPoint.getY()) {
+            return leftPoint;
         } else {
-            return anglePointRight;
+            return rightPoint;
         }
     }
 
     public Coordinate getUpperHintPoint() {
-        if (anglePointLeft.getY() < anglePointRight.getY()) {
-            return anglePointRight;
+        if (leftPoint.getY() < rightPoint.getY()) {
+            return rightPoint;
         } else {
-            return anglePointLeft;
+            return leftPoint;
         }
     }
 
     public boolean pointsUpwards() {
-        return (getDirection() == Direction.left && getLowerHintPoint().getX() < getUpperHintPoint().getX()) ||
-                (getDirection() == Direction.right && getLowerHintPoint().getX() > getUpperHintPoint().getX());
+        return (getDirection() == left && getLowerHintPoint().getX() < getUpperHintPoint().getX()) ||
+                (getDirection() == right && getLowerHintPoint().getX() > getUpperHintPoint().getX());
     }
 
     public boolean pointsDownwards() {
-        return (getDirection() == Direction.left && getLowerHintPoint().getX() > getUpperHintPoint().getX()) ||
-                (getDirection() == Direction.right && getLowerHintPoint().getX() < getUpperHintPoint().getX());
+        return (getDirection() == left && getLowerHintPoint().getX() > getUpperHintPoint().getX()) ||
+                (getDirection() == right && getLowerHintPoint().getX() < getUpperHintPoint().getX());
     }
 
     public enum Direction {

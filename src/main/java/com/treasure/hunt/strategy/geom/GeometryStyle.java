@@ -39,6 +39,10 @@ public class GeometryStyle {
                 return new GeometryStyle(true, new Color(0x575757));
             case CURRENT_PHASE:
                 return new GeometryStyle(true, new Color(0x25571D));
+            case HALF_PLANE:
+                return new GeometryStyle(true, new Color(0x505050), new Color(0x505050));
+            case HALF_PLANE_LINE:
+                return new GeometryStyle(true, new Color(0x000000));
         }
         return new GeometryStyle(true, Color.lightGray);
     }
