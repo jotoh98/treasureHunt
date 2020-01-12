@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
+import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
 
 /**
  * @author Rank
@@ -145,7 +146,7 @@ public class HalfPlaneHint extends Hint {
     @Override
     public List<GeometryItem<?>> getGeometryItems() {
         List<GeometryItem<?>> output = new ArrayList<>();
-        if (halfPlanePoly == null) {
+        if (halfPlaneLine == null) {
             //TODO nachfragen ob andere bessere idee haben
 
             Vector2D l_to_r = new Vector2D(leftPoint, rightPoint);
@@ -194,6 +195,7 @@ public class HalfPlaneHint extends Hint {
             Coordinate[] polyShell = new Coordinate[]{firstPointPoly, secondPointPoly,
                     extendedL, extendedR, firstPointPoly};
             Coordinate[] line = new Coordinate[]{extendedL, extendedR};
+            halfPlaneLine = GEOMETRY_FACTORY.createLineString(line);
         }
 
         //output.add(new GeometryItem(GEOMETRY_FACTORY.createPoint(leftPoint), GeometryType.HALF_PLANE_POINT_LEFT));

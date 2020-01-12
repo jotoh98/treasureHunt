@@ -30,11 +30,11 @@ public class GameEngine {
     /**
      * The height of the playing area.
      */
-    public static final int HEIGHT = 200;
+    public static final int HEIGHT = 2000000;
     /**
      * The width of the playing area.
      */
-    public static final int WIDTH = 200;
+    public static final int WIDTH = 2000000;
 
     protected final Searcher searcher;
     protected final Hider hider;
