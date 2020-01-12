@@ -5,8 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import java.lang.String?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" id="root" maxHeight="-Infinity" maxWidth="-Infinity"
-            minHeight="-Infinity"
-            minWidth="-Infinity" prefHeight="600.0" prefWidth="1080.0"
+            minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1080.0"
             xmlns="http://javafx.com/javafx/11.0.1" fx:controller="com.treasure.hunt.view.MainController">
     <bottom>
         <HBox BorderPane.alignment="CENTER">
@@ -20,14 +19,7 @@
                         </Label>
                     </children>
                 </HBox>
-                <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
-                    <children>
-                        <Button fx:id="previousButton" disable="true" mnemonicParsing="false"
-                                onAction="#previousButtonClicked" text="Previous"/>
-                        <Button fx:id="nextButton" disable="true" mnemonicParsing="false"
-                                onAction="#nextButtonClicked" text="Next"/>
-                    </children>
-                </HBox>
+                <fx:include source="navigator.fxml" fx:id="stepViewNavigator"/>
             </children>
             <styleClass>
                 <String fx:value="toolbar"/>
@@ -52,6 +44,9 @@
                         <Button fx:id="startGameButton" disable="true" maxHeight="1.7976931348623157E308"
                                 mnemonicParsing="false" onAction="#onStartButtonClicked" text="Init"
                                 textAlignment="CENTER"/>
+                        <Button maxHeight="1.7976931348623157E308"
+                                mnemonicParsing="false" onAction="#onLoadGame" text="Load"
+                                textAlignment="CENTER"/>
                     </children>
                 </HBox>
 
@@ -65,16 +60,18 @@
     <center>
         <SplitPane id="main-splitpane" fx:id="mainSplitPane" dividerPositions="0.2, 0.8" BorderPane.alignment="CENTER">
             <items>
-                <fx:include source="widgetBar.fxml" fx:id="leftWidgetBar" styleClass="widget-pane"/>
-                <fx:include source="canvas.fxml" fx:id="canvas"/>
-                <fx:include source="widgetBar.fxml" fx:id="rightWidgetBar" styleClass="widget-pane"/>
+                <fx:include fx:id="leftWidgetBar" maxHeight="1.7976931348623157E308" source="widgetBar.fxml"
+                            styleClass="widget-pane"/>
+                <fx:include fx:id="canvas" source="canvas.fxml"/>
+                <fx:include fx:id="rightWidgetBar" maxHeight="1.7976931348623157E308" source="widgetBar.fxml"
+                            styleClass="widget-pane"/>
             </items>
         </SplitPane>
     </center>
     <right>
-        <fx:include source="toolbar.fxml" fx:id="rightToolbar"/>
+        <fx:include fx:id="rightToolbar" source="toolbar.fxml"/>
     </right>
     <left>
-        <fx:include source="toolbar.fxml" fx:id="leftToolbar"/>
+        <fx:include fx:id="leftToolbar" source="toolbar.fxml"/>
     </left>
 </BorderPane>

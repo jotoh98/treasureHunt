@@ -25,6 +25,11 @@ public class InstantWinHider implements Hider<Hint> {
     }
 
     @Override
+    public void init(Point searcherStartPosition, int width, int height) {
+
+    }
+
+    @Override
     public Hint move(Movement movement) {
         throw new IllegalStateException("This may not be called since the Searcher has already won.");
         //return null;

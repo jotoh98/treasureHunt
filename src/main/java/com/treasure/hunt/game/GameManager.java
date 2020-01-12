@@ -1,21 +1,26 @@
 package com.treasure.hunt.game;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.KryoSerializable;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.google.common.annotations.VisibleForTesting;
+import com.treasure.hunt.analysis.StatisticObject;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
-import com.treasure.hunt.utils.JTSUtils;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.binding.IntegerBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
 import java.lang.reflect.InvocationTargetException;
@@ -34,7 +39,7 @@ import java.util.stream.Stream;
  * @author dorianreineccius
  */
 @Slf4j
-public class GameManager {
+public class GameManager implements KryoSerializable {
     /**
      * A thread that is invoked by {@link GameManager#beat(ReadOnlyObjectProperty)} and stopped by {@link GameManager#stopBeat()}.
      * He executes {@link GameManager#move(int)} in a given interval.
@@ -50,9 +55,27 @@ public class GameManager {
     ObservableList<Move> moves = FXCollections.observableArrayList();
 
     private GameEngine gameEngine;
-
     @Getter
-    private IntegerProperty viewIndex = new SimpleIntegerProperty(0);
+    private BooleanProperty finishedProperty;
+    @Getter
+    private IntegerProperty viewIndex;
+    @Getter
+    private BooleanBinding latestStepViewedBinding;
+    @Getter
+    private ObjectBinding<Move> lastMoveBinding;
+    @Getter
+    private ObjectBinding<Point> lastTreasureBindings;
+    @Getter
+    private ObjectBinding<Point> lastPointBinding;
+    @Getter
+    private IntegerBinding moveSizeBinding;
+    @Getter
+    private BooleanBinding stepForwardImpossibleBinding;
+    @Getter
+    private BooleanBinding stepBackwardImpossibleBinding;
+    @Getter
+    private ObjectBinding<List<StatisticObject>> statistics;
+
 
     /**
      * @param searcherClass   (Sub-)class of {@link Searcher}
@@ -70,28 +93,32 @@ public class GameManager {
         Hider newHider = hiderClass.getDeclaredConstructor().newInstance();
 
         this.gameEngine = gameEngineClass
-                .getDeclaredConstructor(Searcher.class, Hider.class)
-                .newInstance(newSearcher, newHider);
+                .getDeclaredConstructor(Searcher.class, Hider.class, Coordinate.class)
+                .newInstance(newSearcher, newHider, new Coordinate(0, 0));
 
         // Do initial move
-        moves.add(gameEngine.init(JTSUtils.createPoint(0, 0)));
-        viewIndex.set(0);
+        moves.add(gameEngine.init());
+        if (gameEngine.isFinished()) {
+            finishedProperty.set(true);
+        }
+        setProperties();
+        setBindings();
     }
 
-    public void addListener(ListChangeListener<? super Move> listChangeListener) {
-        moves.addListener(listChangeListener);
+    private void setProperties() {
+        viewIndex = new SimpleIntegerProperty(0);
+        finishedProperty = new SimpleBooleanProperty(false);
     }
 
-    public ObjectBinding<Move> lastMove() {
-        return Bindings.createObjectBinding(() -> moves.get(viewIndex.get()), viewIndex, moves);
-    }
-
-    public ObjectBinding<Point> lastTreasure() {
-        return Bindings.createObjectBinding(() -> moves.get(viewIndex.get()).getTreasureLocation(), viewIndex, moves);
-    }
-
-    public ObjectBinding<Point> lastPoint() {
-        return Bindings.createObjectBinding(() -> moves.get(viewIndex.get()).getMovement().getEndPoint(), viewIndex, moves);
+    private void setBindings() {
+        latestStepViewedBinding = Bindings.createBooleanBinding(() -> moves.size() - 1 == viewIndex.get(), viewIndex, moves);
+        stepForwardImpossibleBinding = finishedProperty.and(latestStepViewedBinding);
+        statistics = Bindings.createObjectBinding(() -> gameEngine.getStatistics().calculate(getMovesViewed()), viewIndex);
+        stepBackwardImpossibleBinding = viewIndex.isEqualTo(0);
+        lastMoveBinding = Bindings.createObjectBinding(() -> moves.get(viewIndex.get()), viewIndex, moves);
+        lastTreasureBindings = Bindings.createObjectBinding(() -> moves.get(viewIndex.get()).getTreasureLocation(), viewIndex, moves);
+        lastPointBinding = Bindings.createObjectBinding(() -> moves.get(viewIndex.get()).getMovement().getEndPoint(), viewIndex, moves);
+        moveSizeBinding = Bindings.size(moves);
     }
 
     /**
@@ -103,6 +130,9 @@ public class GameManager {
                 moves.add(gameEngine.move());
             }
             viewIndex.set(viewIndex.get() + 1);
+        }
+        if (gameEngine.isFinished()) {
+            finishedProperty.set(true);
         }
     }
 
@@ -140,40 +170,6 @@ public class GameManager {
     }
 
     /**
-     * This simulates the whole game, until its finished.
-     *
-     * @param delay time between each move
-     */
-    public void beat(ReadOnlyObjectProperty<Double> delay) {
-        if (beatThreadRunning.get()) {
-            log.warn("There's already a beating thread running");
-            return;
-        }
-
-        beatThreadRunning.set(true);
-        beatThread = new Thread(() -> {
-            log.debug("Start beating thread");
-            while (!stepForwardImpossibleBinding().get() && beatThreadRunning.get()) {
-                CountDownLatch latch = new CountDownLatch(1);
-                Platform.runLater(() -> {
-                    next();
-                    latch.countDown();
-                });
-                try {
-                    latch.await();
-                    Thread.sleep((long) (delay.get() * 1000));
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            log.debug("Terminating beating thread");
-            Platform.runLater(() -> beatThreadRunning.set(false));
-        });
-        beatThread.setDaemon(true);
-        beatThread.start();
-    }
-
-    /**
      * Stops the Thread from beating.
      */
     public void stopBeat() {
@@ -182,14 +178,28 @@ public class GameManager {
     }
 
     /**
-     * @param filterItems if true Geometry items that are set to be overridable only the last item is returned and later deleted items are removed
+     * @return whether the game of the {@link GameEngine} is finished or not.
+     */
+    public boolean isGameFinished() {
+        return gameEngine.isFinished();
+    }
+
+    /**
+     * @return {@code true}, if the shown step is the most up to date one. {@code false}, otherwise.
+     */
+    public boolean latestStepViewed() {
+        return moves.size() - 1 == viewIndex.get();
+    }
+
+    /**
+     * @param excludeOverrideItems if true Geometry items that are set to be overridable only the last item is returned and later deleted items are removed
      * @return The whole List of geometryItems of the gameHistory
      */
-    public List<GeometryItem> getGeometryItems(Boolean filterItems) {
-        ArrayList<GeometryItem> geometryItems = moves.subList(0, viewIndex.get() + 1).stream()
+    public List<GeometryItem> getGeometryItems(Boolean excludeOverrideItems) {
+        ArrayList<GeometryItem> geometryItems = getMovesViewed().stream()
                 .flatMap(move -> move.getGeometryItems().stream())
                 .collect(Collectors.toCollection(ArrayList::new));
-        if (!filterItems) {
+        if (!excludeOverrideItems) {
             return geometryItems;
         }
         Map<GeometryType, List<GeometryItem>> itemsByType = geometryItems.stream()
@@ -213,44 +223,69 @@ public class GameManager {
     }
 
     /**
-     * @return whether the game of the {@link GameEngine} is finished or not.
+     * @return only viewed moves
      */
-    public boolean isGameFinished() {
-        return gameEngine.isFinished();
+    private List<Move> getMovesViewed() {
+        return moves.subList(0, viewIndex.get() + 1);
     }
 
     /**
-     * Delegate for game engine finished property
+     * This simulates the whole game, until its finished.
      *
-     * @return finished property
+     * @param delay time between each move
      */
-    public BooleanProperty getGameFinishedProperty() {
-        return gameEngine.getFinished();
-    }
+    public void beat(ReadOnlyObjectProperty<Double> delay) {
+        if (beatThreadRunning.get()) {
+            log.warn("There's already a beating thread running");
+            return;
+        }
 
-    /**
-     * @return {@code true}, if the shown step is the most up to date one. {@code false}, otherwise.
-     */
-    public boolean latestStepViewed() {
-        return moves.size() - 1 == viewIndex.get();
-    }
-
-    public BooleanBinding latestStepViewedBinding() {
-        return Bindings.createBooleanBinding(() -> moves.size() - 1 == viewIndex.get(), viewIndex, moves);
-    }
-
-    public BooleanBinding stepForwardImpossibleBinding() {
-        return getGameFinishedProperty().and(latestStepViewedBinding());
-    }
-
-    public BooleanBinding stepBackwardImpossibleBinding() {
-        return viewIndex.isEqualTo(0);
+        beatThreadRunning.set(true);
+        beatThread = new Thread(() -> {
+            log.debug("Start beating thread");
+            while (!stepForwardImpossibleBinding.get() && beatThreadRunning.get()) {
+                CountDownLatch latch = new CountDownLatch(1);
+                Platform.runLater(() -> {
+                    next();
+                    latch.countDown();
+                });
+                try {
+                    latch.await();
+                    Thread.sleep((long) (delay.get() * 1000));
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            log.debug("Terminating beating thread");
+            Platform.runLater(() -> beatThreadRunning.set(false));
+        });
+        beatThread.setDaemon(true);
+        beatThread.start();
     }
 
     /**
      * @return {@code true}, if the shown step is the first one. {@code false}, otherwise.
      */
     public boolean isFirstStepShown() {
-        return stepBackwardImpossibleBinding().getValue();
+        return stepBackwardImpossibleBinding.getValue();
+    }
+
+    @Override
+    public void write(Kryo kryo, Output output) {
+        kryo.writeObject(output, gameEngine);
+        output.writeBoolean(beatThreadRunning.get());
+        kryo.writeObject(output, new ArrayList<>(moves));
+        output.writeInt(viewIndex.get());
+        output.writeBoolean(finishedProperty.get());
+    }
+
+    @Override
+    public void read(Kryo kryo, Input input) {
+        gameEngine = kryo.readObject(input, GameEngine.class);
+        beatThreadRunning = new SimpleBooleanProperty(input.readBoolean());
+        moves = FXCollections.observableArrayList(kryo.readObject(input, ArrayList.class));
+        viewIndex = new SimpleIntegerProperty(input.readInt());
+        finishedProperty = new SimpleBooleanProperty(input.readBoolean());
+        setBindings();
     }
 }

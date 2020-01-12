@@ -11,12 +11,9 @@ public class WidgetBarController {
     @FXML
     private Pane widgetBar;
 
-    public void initialize() {
-        System.out.println("hi");
-    }
-
     public void addWidget(Pane widget) {
         widget.prefWidthProperty().bind(widgetBar.widthProperty());
+        widget.prefHeightProperty().bind(widgetBar.heightProperty());
         widgetBar.getChildren().add(widget);
     }
 }

@@ -9,6 +9,9 @@ import java.awt.*;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
+/**
+ * @author jotoh
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 public class Grid implements Shapeable {
@@ -22,7 +25,7 @@ public class Grid implements Shapeable {
     }
 
     public ArrayList<Line2D> getGridLines(PointTransformation transformation) {
-        double scale = transformation.getScale();
+        double scale = transformation.getScaleProperty().get();
 
         ArrayList<Line2D> lineArray = new ArrayList<>();
 

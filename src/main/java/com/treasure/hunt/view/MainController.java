@@ -2,25 +2,27 @@ package com.treasure.hunt.view;
 
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.game.GameManager;
+import com.treasure.hunt.service.FileService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
+import com.treasure.hunt.utils.EventBusUtils;
 import com.treasure.hunt.utils.ReflectionUtils;
 import com.treasure.hunt.utils.Requires;
-import com.treasure.hunt.view.widget.BeatWidgetController;
-import com.treasure.hunt.view.widget.PointInspectorController;
-import com.treasure.hunt.view.widget.SaveAndLoadController;
-import com.treasure.hunt.view.widget.Widget;
+import com.treasure.hunt.view.widget.*;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
@@ -46,9 +48,21 @@ public class MainController {
 
     public VBox rightToolbar;
     public VBox leftToolbar;
+
+    public Pane canvas;
+
     @FXML
     public CanvasController canvasController;
-    public Pane canvas;
+
+    /**
+     * Navigator for the view.
+     * Changes the step view.
+     */
+    public HBox stepViewNavigator;
+
+    @FXML
+    public NavigationController stepViewNavigatorController;
+
     @FXML
     private WidgetBarController leftWidgetBarController;
     @FXML
@@ -65,12 +79,9 @@ public class MainController {
     public ComboBox<Class<? extends GameEngine>> gameEngineList;
     public Button startGameButton;
     public Label logLabel;
-    public Button previousButton;
-    public Button nextButton;
 
     @Getter
     private final ObjectProperty<GameManager> gameManager = new SimpleObjectProperty<>();
-
 
     public void initialize() {
         canvasController.setGameManager(gameManager);
@@ -81,6 +92,20 @@ public class MainController {
         addToolbarStyleClasses();
         bindWidgetBarVisibility();
         addBindingsToGameManager();
+        listenToGameMangerLoad();
+    }
+
+    private void listenToGameMangerLoad() {
+        EventBusUtils.GAME_MANAGER_LOADED_EVENT.addListener(loadedGameManager -> {
+            Platform.runLater(() -> {
+                try {
+                    initGameManager(loadedGameManager);
+                } catch (Exception e) {
+                    log.error("Error loading GameManger in UI", e);
+                    logLabel.setText("Error loading GameManger in UI from file");
+                }
+            });
+        });
     }
 
     /**
@@ -91,12 +116,9 @@ public class MainController {
             if (gameManager.isNull().get()) {
                 return;
             }
-            nextButton.disableProperty().bind(gameManager.get().stepForwardImpossibleBinding());
-            previousButton.disableProperty().bind(gameManager.get().stepBackwardImpossibleBinding());
-            gameManager.get().getGameFinishedProperty().addListener(invalidation -> {
-                logLabel.setText("Game ended");
-            });
+            gameManager.get().getFinishedProperty().addListener(invalidation -> logLabel.setText("Game ended"));
         });
+        gameManager.bindBidirectional(stepViewNavigatorController.getGameManager());
     }
 
     private void bindWidgetBarVisibility() {
@@ -115,9 +137,10 @@ public class MainController {
             savedBar.set(rightWidgetBar);
         }
 
-        final int readPosition = left ? 0 : mainSplitPane.getItems().size() - 1;
 
         toolbarController.getToggleGroup().selectedToggleProperty().addListener((observableValue, oldItem, newItem) -> {
+            final int readPosition = left ? 0 : mainSplitPane.getItems().size() - 1;
+
             if (newItem == null && oldItem != null) {
                 savedBar.set(mainSplitPane.getItems().get(readPosition));
                 mainSplitPane.getItems().remove(readPosition);
@@ -127,7 +150,7 @@ public class MainController {
                     dividers.get(0).setPosition(.2);
                 } else {
                     mainSplitPane.getItems().add(savedBar.get());
-                    dividers.get(readPosition - 1).setPosition(.8);
+                    dividers.get(readPosition).setPosition(.8);
                 }
             }
         });
@@ -142,12 +165,21 @@ public class MainController {
         Widget<PointInspectorController, ?> pointInspectorWidget = new Widget<>("/layout/pointInspector.fxml");
         pointInspectorWidget.getController().init(gameManager);
         insertWidget(true, "Inspector", pointInspectorWidget.getComponent());
+
         Widget<SaveAndLoadController, ?> saveAndLoadWidget = new Widget<>("/layout/saveAndLoad.fxml");
         saveAndLoadWidget.getController().init(gameManager, logLabel);
         insertWidget(true, "Save & Load", saveAndLoadWidget.getComponent());
+
         Widget<BeatWidgetController, ?> beatWidget = new Widget<>("/layout/beatWidget.fxml");
         beatWidget.getController().init(gameManager, logLabel);
         insertWidget(true, "Game controls", beatWidget.getComponent());
+        Widget<StatisticsWidgetController, ?> statisticsWidget = new Widget<>("/layout/statisticsWidget.fxml");
+        statisticsWidget.getController().init(gameManager, logLabel);
+        insertWidget(true, "Statistics", statisticsWidget.getComponent());
+
+        Widget<ScaleController, ?> scaleWidget = new Widget<>("/layout/scaling.fxml");
+        scaleWidget.getController().init(canvasController);
+        insertWidget(false, "Navigator", scaleWidget.getComponent());
     }
 
     private void setListStringConverters() {
@@ -256,7 +288,7 @@ public class MainController {
     private void addRequiredListener(ComboBox comboBox) {
         comboBox.getSelectionModel().selectedItemProperty().addListener((observableValue, aClass, t1) -> {
             if (t1 == null) {
-                //TODO maybe... ...list to fucking button cell
+                //TODO maybe... ...list to f*****g button cell
                 comboBox.getStyleClass().add("required");
             } else {
                 comboBox.getStyleClass().remove("required");
@@ -293,16 +325,19 @@ public class MainController {
         assert searcherClass != null;
         assert hiderClass != null;
         assert gameEngineClass != null;
-
-        boolean initialize = gameManager.isNull().get();
-
         try {
-            gameManager.set(new GameManager(searcherClass, hiderClass, gameEngineClass));
-            logLabel.setText("Game initialized");
+            initGameManager(new GameManager(searcherClass, hiderClass, gameEngineClass));
         } catch (Exception e) {
             log.error("Something important crashed", e);
             logLabel.setText("Could not create game");
         }
+    }
+
+    private void initGameManager(GameManager gameManagerInstance) {
+        boolean initialize = gameManager.isNull().get();
+
+        gameManager.set(gameManagerInstance);
+        logLabel.setText("Game initialized");
 
         if (initialize) {
             gameManager.addListener(change -> canvasController.drawShapes());
@@ -315,11 +350,7 @@ public class MainController {
         addWidgets();
     }
 
-    public void previousButtonClicked() {
-        gameManager.get().previous();
-    }
-
-    public void nextButtonClicked() {
-        gameManager.get().next();
+    public void onLoadGame(ActionEvent actionEvent) {
+        FileService.getInstance().load(logLabel);
     }
 }

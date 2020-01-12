@@ -7,13 +7,10 @@ import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.hint.impl.CircleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.impl.*;
-import com.treasure.hunt.utils.JTSUtils;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,15 +45,15 @@ class GameEngineTest {
      */
     @Test
     void moveOnTreasure() {
-        GameEngine gameEngine = new GameEngine(new NaiveCircleSearcher(), new RevealingHider());
-        gameEngine.init(JTSUtils.createPoint(0, 0));
+        GameEngine gameEngine = new GameEngine(new NaiveCircleSearcher(), new RevealingHider(), new Coordinate(0, 0));
+        gameEngine.init();
         simulateSteps(gameEngine, 2);
         assertTrue(gameEngine.isFinished());
         assertSame(gameEngine.treasurePos, gameEngine.searcherPos);
     }
 
     /**
-     * This tests the {@link GameEngine#located(List)} method.
+     * This tests the {@link GameEngine#located(List, Point)} method.
      */
     @Test
     void bruteForceTest1() {
@@ -108,7 +105,7 @@ class GameEngineTest {
     }
 
     /**
-     * {@link GameEngine#located(List)} )} test.
+     * {@link GameEngine#located(List, Point)} )} test.
      * In this test, the searcher moves <b>past</b> the treasure
      * with a minimum distance of 1.
      * searcher starts at (0,0) as usual.
@@ -125,6 +122,11 @@ class GameEngineTest {
             @Override
             public Point getTreasureLocation() {
                 return treasurePos;
+            }
+
+            @Override
+            public void init(Point searcherStartPosition, int width, int height) {
+
             }
 
             @Override
