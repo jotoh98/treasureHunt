@@ -12,13 +12,13 @@ import java.util.Arrays;
 
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.right;
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.up;
-import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.rectangleUtils.assertRectangle;
-import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.rectangleUtils.centerOfRectangle;
+import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.assertRectangle;
+import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.centerOfRectangle;
 import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
 
-import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.rectangleUtils.*;
+import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.*;
 
-public class routinesFromPaper {
+public class RoutinesFromPaper {
     static Movement rectangleScan(Point A, Point B, Point C, Point D, Movement move) {
         return rectangleScan(A.getCoordinate(), B.getCoordinate(), C.getCoordinate(), D.getCoordinate(), move);
     }

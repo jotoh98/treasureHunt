@@ -8,20 +8,17 @@ import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.geom.impl.CoordinateArraySequence;
-import org.locationtech.jts.geom.util.AffineTransformation;
-import org.locationtech.jts.math.Vector2D;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static com.treasure.hunt.strategy.geom.GeometryType.CURRENT_PHASE;
 import static com.treasure.hunt.strategy.geom.GeometryType.CURRENT_RECTANGLE;
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
-import static com.treasure.hunt.utils.JTSUtils.*;
-import static org.locationtech.jts.algorithm.Angle.normalizePositive;
-
-import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.rectangleUtils.*;
-import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.routinesFromPaper.*;
+import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.*;
+import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.BadHintSubroutine.lastHintBadSubroutine;
+import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.rectangleScan;
+import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
+import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
 
 /**
  * This implements the strategy from the paper:
@@ -39,20 +36,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     boolean lastHintWasBad = false;
     Point lastLocation;
 
-    //just for testing
-    private void printRect(Coordinate[] rect, HalfPlaneHint lastBadHint, HalfPlaneHint curHint) {
-        System.out.println("A= (" + A.getX() + ", " + A.getY() + ")");
-        System.out.println(" B= (" + B.getX() + ", " + B.getY() + ")");
-        System.out.println(" C= (" + C.getX() + ", " + C.getY() + ")");
-        System.out.println(" D= (" + D.getX() + ", " + D.getY() + ")");
-        for (int i = 0; i < rect.length; i++)
-            System.out.println("rect[" + i + "]= " + rect[i]);
-        System.out.println("lastBadHint p1= " + lastBadHint.getLeftPoint() + "lastHint p2= " +
-                lastBadHint.getRightPoint());
-        System.out.println("curHint p1= " + curHint.getLeftPoint() + "curHint p2= " +
-                curHint.getRightPoint());
-    }
-    //test end
 
     /**
      * {@inheritDoc}
@@ -62,6 +45,77 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         lastLocation = startPosition;
         phase = 1;
         setRectToPhase();
+    }
+
+    @Override
+    public Movement move() {
+        Movement move = new Movement();
+        move.addWayPoint(lastLocation);
+        return addState(incrementPhase(move));
+    }
+
+    @Override
+    public Movement move(HalfPlaneHint hint) {
+        Movement move = new Movement();
+        move.addWayPoint(lastLocation);
+        double width = B.getX() - A.getX();
+        double height = A.getY() - D.getY();
+        if (width < 4 || height < 4) {
+            return moveReturn(addState(incrementPhase(move)));
+        }
+        //now analyse the hint:
+        if (lastHintWasBad)
+            return moveReturn(lastHintBadSubroutine(this, hint, lastBadHint, move));
+
+        LineSegment AB = new LineSegment(A.getCoordinate(), B.getCoordinate());
+        LineSegment BC = new LineSegment(B.getCoordinate(), C.getCoordinate());
+        LineSegment CD = new LineSegment(C.getCoordinate(), D.getCoordinate());
+        LineSegment AD = new LineSegment(A.getCoordinate(), D.getCoordinate());
+
+        LineSegment hintLine = new LineSegment(hint.getLeftPoint(),
+                hint.getRightPoint());
+
+        Point intersection_AD_hint = null;
+        Point intersection_BC_hint = null;
+        Point intersection_AB_hint = null;
+        Point intersection_CD_hint = null;
+        if (lineWayIntersection(hintLine, AD) != null)
+            intersection_AD_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, AD));
+
+        if (lineWayIntersection(hintLine, BC) != null)
+            intersection_BC_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, BC));
+
+        if (lineWayIntersection(hintLine, AB) != null)
+            intersection_AB_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, AB));
+
+        if (lineWayIntersection(hintLine, CD) != null)
+            intersection_CD_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, CD));
+
+        Point[] horizontalSplit = splitRectangleHorizontally(A, B, C, D, hint, intersection_AD_hint,
+                intersection_BC_hint);
+        if (horizontalSplit != null) {
+            A = horizontalSplit[0];
+            B = horizontalSplit[1];
+            C = horizontalSplit[2];
+            D = horizontalSplit[3];
+            return moveReturn(addState(moveToCenterOfRectangle(A, B, C, D, move)));
+        }
+        Point[] verticalSplit = splitRectangleVertically(A, B, C, D, hint, intersection_AB_hint,
+                intersection_CD_hint);
+        if (verticalSplit != null) {
+            A = verticalSplit[0];
+            B = verticalSplit[1];
+            C = verticalSplit[2];
+            D = verticalSplit[3];
+            return moveReturn(addState(moveToCenterOfRectangle(A, B, C, D, move)));
+        }
+        // when none of this cases takes place, the hint is bad. This gets handled here:
+        Point destination = GEOMETRY_FACTORY.createPoint(twoStepsOrthogonal(hint, centerOfRectangle(A, B, C, D)));
+        move.addWayPoint(destination);
+        lastHintWasBad = true;
+        lastBadHint = hint;
+        return moveReturn(move);
+
     }
 
     private Movement addState(Movement move) {
@@ -114,70 +168,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return move;
     }
 
-    @Override
-    public Movement move() {
-        Movement move = new Movement();
-        move.addWayPoint(lastLocation);
-        return addState(incrementPhase(move));
-    }
-
-    @Override
-    public Movement move(HalfPlaneHint hint) {
-        Movement move = new Movement();
-        move.addWayPoint(lastLocation);
-        double width = B.getX() - A.getX();
-        double height = A.getY() - D.getY();
-        if (width < 4 || height < 4) {
-            return moveReturn(addState(incrementPhase(move)));
-        }
-        //now analyse the hint:
-        if (lastHintWasBad)
-            return moveReturn(lastHintBadSubroutine(hint, move));
-
-        LineSegment AB = new LineSegment(A.getCoordinate(), B.getCoordinate());
-        LineSegment BC = new LineSegment(B.getCoordinate(), C.getCoordinate());
-        LineSegment CD = new LineSegment(C.getCoordinate(), D.getCoordinate());
-        LineSegment AD = new LineSegment(A.getCoordinate(), D.getCoordinate());
-
-        LineSegment hintLine = new LineSegment(hint.getLeftPoint(),
-                hint.getRightPoint());
-
-        Point intersection_AD_hint = null;
-        Point intersection_BC_hint = null;
-        Point intersection_AB_hint = null;
-        Point intersection_CD_hint = null;
-        if (lineWayIntersection(hintLine, AD) != null)
-            intersection_AD_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, AD));
-
-        if (lineWayIntersection(hintLine, BC) != null)
-            intersection_BC_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, BC));
-
-        if (lineWayIntersection(hintLine, AB) != null)
-            intersection_AB_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, AB));
-
-        if (lineWayIntersection(hintLine, CD) != null)
-            intersection_CD_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, CD));
-
-        Point[] horizontalSplit = splitRectangleHorizontally(A, B, C, D, hint, intersection_AD_hint,
-                intersection_BC_hint);
-        if (horizontalSplit != null) {
-            A = horizontalSplit[0];
-            B = horizontalSplit[1];
-            C = horizontalSplit[2];
-            D = horizontalSplit[3];
-            return moveReturn(addState(moveToCenterOfRectangle(A, B, C, D, move)));
-        }
-        Point[] verticalSplit = splitRectangleVertically(A, B, C, D, hint, intersection_AB_hint,
-                intersection_CD_hint);
-        if (verticalSplit != null) {
-            A = verticalSplit[0];
-            B = verticalSplit[1];
-            C = verticalSplit[2];
-            D = verticalSplit[3];
-            return moveReturn(addState(moveToCenterOfRectangle(A, B, C, D, move)));
-        }
-        return moveReturn(addState(badHintSubroutine(hint, move)));
-    }
 
     private Point[] splitRectangleHorizontally(Point A, Point B, Point C, Point D, HalfPlaneHint hint,
                                                Point intersection_AD_hint, Point intersection_BC_hint) {
@@ -266,29 +256,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return null;
     }
 
-    private Movement badHintSubroutine(HalfPlaneHint hint, Movement move) {
-        //return moveToCenterOfRectangle(A, B, C, D); //testing
-
-        Point direction = GEOMETRY_FACTORY.createPoint(twoStepsOrthogonal(hint, centerOfRectangle(A, B, C, D)));
-        move.addWayPoint(direction);
-        lastHintWasBad = true;
-        lastBadHint = hint;
-        return move;
-    }
-
-    private Coordinate twoStepsOrthogonal(HalfPlaneHint hint, Point P) {
-        return twoStepsOrthogonal(hint, P.getCoordinate());
-    }
-
-    private Coordinate twoStepsOrthogonal(HalfPlaneHint hint, Coordinate cur_pos) {
-        Vector2D hintVector = new Vector2D(hint.getLeftPoint(),
-                hint.getRightPoint());
-
-        hintVector = hintVector.divide(hintVector.length() / 2);
-        hintVector = hintVector.rotateByQuarterCircle(1);
-        return new Coordinate(cur_pos.getX() + hintVector.getX(), cur_pos.getY() + hintVector.getY());
-    }
-
     private Movement incrementPhase(Movement move) {
         phase++;
         Point oldA = A;
@@ -323,330 +290,4 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         C = GEOMETRY_FACTORY.createPoint(rect[2]);
         D = GEOMETRY_FACTORY.createPoint(rect[3]);
     }
-
-    /**
-     * If the last hint was bad, this function can be called and lastBadHint has to be set accordingly.
-     * The function equals the "else"-part of the first if-condition in Algorithm 3 (Function ReduceRectangle(R))
-     * in the paper.
-     * Variable names are equivalent to the paper, but since a', d', etc. is not a valid variable name in Java,
-     * _apos is used in such cases (apos for apostrophe), e.g. a_apos in this implementation equates to a'
-     * in the paper. _doubleApos signals a double apostrophe.
-     * At, Bt, Ct and Dt in this implementation equate to A, B, C and D in the paper, since the
-     * not by phi transformed variables of the current rectangle R are also stored with A, B, C and D.
-     * The t signals the transformed state of these variables.
-     * hintT equates to the hint (L1', x1')
-     *
-     * @param curHint
-     * @return The move to scan various areas so that A,B,C and D can be updated to a smaller rectangle (or the treasure
-     * is found)
-     */
-    private Movement lastHintBadSubroutine(HalfPlaneHint curHint, Movement move) {
-        Coordinate[] rect = new Coordinate[]{A.getCoordinate(), B.getCoordinate(), C.getCoordinate(), D.getCoordinate()};
-        try {
-            int basicTrans = getBasicTransformation(rect, lastBadHint); // basic transformation
-            Coordinate[] transformedRect = phiRectangle(basicTrans, rect);
-            Coordinate At = transformedRect[0];
-            Coordinate Bt = transformedRect[1];
-            Coordinate Ct = transformedRect[2];
-            Coordinate Dt = transformedRect[3];
-            HalfPlaneHint hintT = phiHint(basicTrans, rect, lastBadHint);
-
-            Coordinate p = centerOfRectangle(transformedRect);
-            Coordinate p_apos = twoStepsOrthogonal(hintT, p);
-            double p_to_p_apos_x = p_apos.getX() - p.getX(); // the x coordinate of the vector from p to p_apos
-            double p_to_p_apos_y = p_apos.getY() - p.getY(); // the y coordinate of the vector from p to p_apos
-
-            LineSegment ABt = new LineSegment(At, Bt);
-            LineSegment ADt = new LineSegment(At, Dt);
-            LineSegment BCt = new LineSegment(Bt, Ct);
-            LineSegment CDt = new LineSegment(Ct, Dt);
-            LineSegment L1_apos = new LineSegment(hintT.getLeftPoint(),
-                    hintT.getRightPoint());
-            LineSegment L1_doubleApos = new LineSegment(
-                    hintT.getLeftPoint().getX() + p_to_p_apos_x,
-                    hintT.getLeftPoint().getY() + p_to_p_apos_y,
-                    hintT.getRightPoint().getX() + p_to_p_apos_x,
-                    hintT.getRightPoint().getY() + p_to_p_apos_y
-            );
-
-            Coordinate a = lineWayIntersection(L1_apos, ADt);
-            Coordinate d = lineWayIntersection(L1_apos, BCt);
-            Coordinate e = null;
-            if (d != null)
-                e = new Coordinate(Dt.getX(), d.getY());
-            Coordinate d_apos = null;
-            if (d != null)
-                d_apos = twoStepsOrthogonal(lastBadHint, d);
-
-            System.out.println("L1_doubleApos = " + L1_doubleApos); //testing
-            System.out.println("ABt = " + ABt); //testing
-            Coordinate f = lineWayIntersection(L1_doubleApos, ABt);
-            System.out.println("f = " + f); //testing
-            Coordinate j = lineWayIntersection(L1_doubleApos, BCt);
-
-            Coordinate j_apos = null;
-            if (j != null)
-                j_apos = new Coordinate(Dt.getX(), j.getY());
-            Coordinate t = null;
-            //if (f != null)
-            t = new Coordinate(f.getX(), Dt.getY());
-
-            Coordinate m = new Coordinate(At.getX(), p.getY());
-            Coordinate m_apos = new Coordinate(At.getX(), p_apos.getY());
-            Coordinate k = new Coordinate(Bt.getX(), p.getY());
-            Coordinate k_apos = new Coordinate(Bt.getX(), p_apos.getY());
-
-            Coordinate g = new Coordinate(p.getX(), At.getY());
-            Coordinate g_apos = new Coordinate(p_apos.getX(), At.getY());
-            Coordinate h = new Coordinate(p.getX(), Dt.getY());
-            Coordinate h_apos = new Coordinate(p_apos.getX(), Dt.getY());
-
-            Coordinate s, s_apos;
-
-            LineSegment A_s_apos = new LineSegment(At.getX(), At.getY(),
-                    At.getX() + p_to_p_apos_x, At.getY() + p_to_p_apos_y);
-            // the line from A to s gets constructed by using the line from p to p' (p_apos)
-            s = new Coordinate(L1_apos.lineIntersection(A_s_apos));
-            s_apos = new Coordinate(L1_doubleApos.lineIntersection(A_s_apos));
-
-            HalfPlaneHint curHintT = phiHint(basicTrans, rect, curHint);
-
-            //testing:
-            System.out.println("curHintTransformed (" + curHintT.getLeftPoint() + ", " + curHintT.getRightPoint() + ")");
-            System.out.println("transformedHint (" + hintT.getLeftPoint() + ", " + hintT.getRightPoint() + ")");
-            System.out.println("transformedRect " + Arrays.toString(transformedRect)); // testing
-
-            HalfPlaneHint.Direction x2_apos = curHintT.getDirection();
-            LineSegment L2_apos = new LineSegment(curHintT.getLeftPoint(),
-                    curHintT.getRightPoint());
-
-            // here begins line 24 of the ReduceRectangle routine from the paper:
-            Coordinate[] newRectangle = null;
-
-            LineSegment pp_apos = new LineSegment(p, p_apos);
-            if (x2_apos == right &&
-                    lineBetweenClockwise(L2_apos, L1_doubleApos, pp_apos)
-            ) {
-                System.out.println("--------------------------------------------------erster fall"); //testing
-                /*
-                System.out.println("f, Bt, Ct, t = \n" +
-                        f + '\n' + Bt + "\n" + Ct + "\n" + t + "\n"); // testing
-                System.out.println("phiOtherRectangleInverse(basicTrans, rect, (f, Bt, Ct, t) = \n" +
-                        Arrays.toString(phiOtherRectangleInverse(basicTrans, rect, new Coordinate[]{f, Bt, Ct, t})));
-                //testing
-                */
-                newRectangle = phiOtherRectangleInverse(basicTrans, rect,
-                        new Coordinate[]{f, Bt, Ct, t});
-            }
-
-            LineSegment m_apos_k_apos = new LineSegment(m_apos, k_apos);
-            if (x2_apos == right &&
-                    lineBetweenClockwise(L2_apos, pp_apos, m_apos_k_apos)
-            ) {
-                System.out.println("--------------------------------------------------zweiter fall"); //testing
-                move = rectangleScanPhiReverse(basicTrans, rect, m_apos, k_apos, k, m, move);
-                newRectangle = phiOtherRectangleInverse(basicTrans, rect,
-                        new Coordinate[]{g, Bt, Ct, h});
-            }
-            if ((x2_apos == left || x2_apos == down) &&
-                    lineBetweenClockwise(L2_apos, m_apos_k_apos, L1_doubleApos)
-            ) {
-                System.out.println("--------------------------------------------------dritter fall"); //testing
-
-                // rectangleScan(phi_reverse(k, (s, s', d', d))
-                move = rectangleScanPhiReverse(basicTrans, rect, s, s_apos, d_apos, d, move);
-                // rectangleScan(phi_reverse(k, (m', k', k, m))
-                move = rectangleScanPhiReverse(basicTrans, rect, m_apos, k_apos, k, m, move);
-                // newRectangle := pkCh
-                newRectangle = phiOtherRectangleInverse(basicTrans, rect,
-                        new Coordinate[]{p, k, Ct, h});
-            }
-            LineSegment h_apos_g_apos = new LineSegment(h_apos, g_apos);
-            if (x2_apos == left &&
-                    lineBetweenClockwise(L2_apos, L1_doubleApos, h_apos_g_apos)
-            ) {
-                System.out.println("--------------------------------------------------vierter fall"); //testing
-
-                // rectangleScan(phi_reverse(k, (s, s', d', d))
-                move = rectangleScanPhiReverse(basicTrans, rect, s, s_apos, d_apos, d, move);
-                // rectangleScan(phi_reverse(k, (g, g', h', h))
-                // newRectangle := Agpm
-                newRectangle = phiOtherRectangleInverse(basicTrans, rect,
-                        new Coordinate[]{At, g, p, m});
-            }
-
-            LineSegment p_apos_k = new LineSegment(p_apos, k);
-
-            if ((x2_apos == left &&
-                    lineBetweenClockwise(L2_apos, h_apos_g_apos, pp_apos)) ||
-                    (x2_apos == left &&
-                            lineBetweenClockwise(L2_apos, pp_apos, m_apos_k_apos)) ||
-                    ((x2_apos == up || x2_apos == right) &&
-                            lineBetweenClockwise(L2_apos, m_apos_k_apos, p_apos_k)
-                    )
-            ) {
-                System.out.println("--------------------------------------------------fuenfter fall"); //testing
-
-                // rectangleScan(phireverse(k, (g, g', h', h))
-                move = rectangleScanPhiReverse(basicTrans, rect, g, g_apos, h_apos, h, move);
-                // newRectangle := ABkm
-                newRectangle = phiOtherRectangleInverse(basicTrans, rect,
-                        new Coordinate[]{At, Bt, k, m});
-            }
-            if (x2_apos == right &&
-                    lineBetweenClockwise(L2_apos, p_apos_k, L1_doubleApos)
-            ) {
-                System.out.println("--------------------------------------------------sechster fall"); //testing
-                // newRectangle := ABjj'
-                newRectangle = phiOtherRectangleInverse(basicTrans, rect,
-                        new Coordinate[]{At, Bt, j, j_apos});
-            }
-
-            A = GEOMETRY_FACTORY.createPoint(newRectangle[0]);
-            B = GEOMETRY_FACTORY.createPoint(newRectangle[1]);
-            C = GEOMETRY_FACTORY.createPoint(newRectangle[2]);
-            D = GEOMETRY_FACTORY.createPoint(newRectangle[3]);
-            lastHintWasBad = false;
-            return moveToCenterOfRectangle(A, B, C, D, move);
-        } catch (Exception ee) {
-            printRect(rect, lastBadHint, curHint);
-            throw ee;
-        }
-
-    }
-
-    /**
-     * Returns true if line is clockwise between between1 (included) and between2 (excluded).
-     * Its taken for granted that line between1 and between2 meet in one Point.
-     *
-     * @param line
-     * @param between1
-     * @param between2
-     * @return if line is clockwise between between1 (included) and between2 (excluded)
-     */
-    private boolean lineBetweenClockwise(LineSegment line, LineSegment between1, LineSegment between2) {
-        LineSegment lineReverse = new LineSegment(line.p1, line.p0);
-        LineSegment between2reverse = new LineSegment(between2.p1, between2.p0);
-        double angleBetween1 = between1.angle();
-        double maxAngleLineBetween1 = Math.max(normalizePositive(line.angle() - angleBetween1), normalizePositive(lineReverse.angle() - angleBetween1));
-        double maxAngleBetween2and1 = Math.max(normalizePositive(between2.angle() - angleBetween1), normalizePositive(between2reverse.angle() - angleBetween1));
-        if (maxAngleLineBetween1 == 0)
-            return true;
-        return maxAngleBetween2and1 < maxAngleLineBetween1;
-    }
-
-
-
-
-    public static class TestThisClass {
-        StrategyFromPaper strategy;
-
-        public TestThisClass(StrategyFromPaper strategy) {
-            this.strategy = strategy;
-        }
-
-        private void testRectHint(Coordinate[] rect, HalfPlaneHint hint, int basicTrans) {
-            int testBasicTrans = getBasicTransformation(rect, hint);
-            if (basicTrans != testBasicTrans) {
-                throw new IllegalArgumentException("The basic transformation should equal " + basicTrans +
-                        " but equals " + testBasicTrans);
-            }
-        }
-
-        private void testLastHintBadSubroutine(StrategyFromPaper strategy, Coordinate[] rect, HalfPlaneHint lastBadHint,
-                                               HalfPlaneHint curHint) {
-            strategy.A = GEOMETRY_FACTORY.createPoint(rect[0]);
-            strategy.B = GEOMETRY_FACTORY.createPoint(rect[1]);
-            strategy.C = GEOMETRY_FACTORY.createPoint(rect[2]);
-            strategy.D = GEOMETRY_FACTORY.createPoint(rect[3]);
-            strategy.lastBadHint = lastBadHint;
-            strategy.lastHintBadSubroutine(curHint, new Movement());
-        }
-
-        public void testBadCases() {
-
-            Coordinate[] rect = new Coordinate[]{new Coordinate(-4, 4), new Coordinate(4, 4),
-                    new Coordinate(4, -4), new Coordinate(-4, -4)};
-            HalfPlaneHint lastBadHint = new HalfPlaneHint(new Coordinate(0, 0),
-                    new Coordinate(0.7377637010688854, -0.675059050294965));
-            HalfPlaneHint curHint = new HalfPlaneHint(new Coordinate(1.3501181005899303, 1.4755274021377711),
-                    new Coordinate(2.3366624680024213, 1.3120336373432429));
-            //should be case five
-            testRectHint(rect, lastBadHint, 0);
-            strategy.A = createPoint(-2, 2);
-            strategy.B = createPoint(2, 2);
-            strategy.C = createPoint(2, -2);
-            strategy.D = createPoint(-2, -2);
-            strategy.lastBadHint = lastBadHint;
-            strategy.lastHintBadSubroutine(curHint, new Movement());
-
-            HalfPlaneHint hint = new HalfPlaneHint(new Coordinate(0, 0),
-                    new Coordinate(0.6209474701786085, 0.7838521794820666));
-            testRectHint(rect, hint, 3);
-            rect = new Coordinate[]{new Coordinate(-2, 2), new Coordinate(2, 2),
-                    new Coordinate(2, -2), new Coordinate(-2, -2)};
-            hint = new HalfPlaneHint(new Coordinate(0, 0),
-                    new Coordinate(0.7416025214414383, 0.6708395487683333));
-            testRectHint(rect, hint, 4);
-
-            //badCase0
-            rect = new Coordinate[]{
-                    new Coordinate(-2.159168821737699, 8.0),
-                    new Coordinate(8.0, 8.0),
-                    new Coordinate(8.0, -3.999532170942503),
-                    new Coordinate(-2.159168821737699, -3.999532170942503)
-            };
-            lastBadHint = new HalfPlaneHint(new Coordinate(2.9204156, 2.0002339),
-                    new Coordinate(3.5662858179937924, 2.7636811224775273));
-            curHint = new HalfPlaneHint(new Coordinate(1.3935211550449453, 3.291974335987585),
-                    new Coordinate(2.3662835676900604, 3.060169917253051));
-            testRectHint(rect, lastBadHint, 3);
-            testLastHintBadSubroutine(strategy, rect, lastBadHint, curHint);
-
-            //badCase0 transformed so that basicTrans is 0
-            rect = new Coordinate[]{
-                    new Coordinate(-3.999532170942503, 2.3662835676900604),
-                    new Coordinate(8.0, 2.3662835676900604),
-                    new Coordinate(8.0, -8.0),
-                    new Coordinate(-3.999532170942503, -8.0)
-            };
-            lastBadHint = new HalfPlaneHint(new Coordinate(2.9204156, 2.0002339),
-                    new Coordinate(3.291974335987585, -1.3935211550449453));
-            curHint = new HalfPlaneHint(new Coordinate(2.7636811224775273, -3.5662858179937924),
-                    new Coordinate(3.060169917253051, -2.3662835676900604));
-            //testRectHint(rect, lastBadHint, 0); //TODO evtl diesen test rauswerfen
-            //testLastHintBadSubroutine(strategy, rect, lastBadHint, curHint);
-        }
-
-        public void testPhiRectangle() {
-            Coordinate[] rect = new Coordinate[]{new Coordinate(-4, 4), new Coordinate(4, 4),
-                    new Coordinate(4, -4), new Coordinate(-4, -4)};
-            Coordinate[] testRect = phiRectangle(3, rect);
-            if (!doubleEqual(testRect[0].x, -4) || !doubleEqual(testRect[0].y, 4) ||
-                    !doubleEqual(testRect[1].x, 4) || !doubleEqual(testRect[1].y, 4) ||
-                    !doubleEqual(testRect[2].x, 4) || !doubleEqual(testRect[2].y, -4) ||
-                    !doubleEqual(testRect[3].x, -4) || !doubleEqual(testRect[3].y, -4)) {
-                throw new IllegalArgumentException(Arrays.toString(testRect));
-            }
-        }
-
-        public void testPhiHint() {
-            Coordinate[] rect = new Coordinate[]{new Coordinate(-4, 4), new Coordinate(4, 4),
-                    new Coordinate(4, -4), new Coordinate(-4, -4)};
-            HalfPlaneHint hint = new HalfPlaneHint(new Coordinate(0, 0),
-                    new Coordinate(0.6209474701786085, 0.7838521794820666));
-            HalfPlaneHint testHint = phiHint(3, rect, hint);
-            if (!doubleEqual(testHint.getRightPoint().getX(), 0.7838521794820666) ||
-                    !doubleEqual(testHint.getRightPoint().getY(), -0.6209474701786085)) {
-                throw new IllegalArgumentException("right angle point is " + testHint.getRightPoint() +
-                        " and should equal (0.7838521794820666, -0.6209474701786085)");
-            }
-            if (!doubleEqual(testHint.getLeftPoint().getX(), 0) ||
-                    !doubleEqual(testHint.getLeftPoint().getY(), 0)) {
-                throw new IllegalArgumentException("left angle point is " + testHint.getLeftPoint() +
-                        " and should equal (0.0, 0.0)");
-            }
-        }
-    }
 }
-

@@ -1,15 +1,17 @@
 package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 
+import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.math.Vector2D;
 
 import static com.treasure.hunt.utils.JTSUtils.doubleEqual;
 
-public class rectangleUtils {
+public class GeometricUtils {
 
     static void assertRectangle(Coordinate[] rect) {
         if (rect.length != 4)
@@ -92,5 +94,16 @@ public class rectangleUtils {
 
         return rectRes;
     }
+    static Coordinate twoStepsOrthogonal(HalfPlaneHint hint, Point P) {
+        return twoStepsOrthogonal(hint, P.getCoordinate());
+    }
 
+    static Coordinate twoStepsOrthogonal(HalfPlaneHint hint, Coordinate cur_pos) {
+        Vector2D hintVector = new Vector2D(hint.getLeftPoint(),
+                hint.getRightPoint());
+
+        hintVector = hintVector.divide(hintVector.length() / 2);
+        hintVector = hintVector.rotateByQuarterCircle(1);
+        return new Coordinate(cur_pos.getX() + hintVector.getX(), cur_pos.getY() + hintVector.getY());
+    }
 }
