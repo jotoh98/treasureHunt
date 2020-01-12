@@ -11,6 +11,9 @@ import org.locationtech.jts.math.Vector2D;
 
 import static com.treasure.hunt.utils.JTSUtils.doubleEqual;
 
+/**
+ * @author bsen
+ */
 public class GeometricUtils {
 
     static void assertRectangle(Coordinate[] rect) {

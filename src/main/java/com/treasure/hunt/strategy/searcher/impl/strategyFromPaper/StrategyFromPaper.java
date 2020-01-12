@@ -14,8 +14,8 @@ import java.util.List;
 import static com.treasure.hunt.strategy.geom.GeometryType.CURRENT_PHASE;
 import static com.treasure.hunt.strategy.geom.GeometryType.CURRENT_RECTANGLE;
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
-import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.*;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.BadHintSubroutine.lastHintBadSubroutine;
+import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.*;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.rectangleScan;
 import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
 import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
@@ -24,18 +24,19 @@ import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
  * This implements the strategy from the paper:
  * {@literal Treasure Hunt in the Plane with Angular Hints}
  *
- * @author Rank
+ * @author bsen
  */
 
 public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     int phase; //equals j in the paper. In phase i, the algorithm checks a rectangle with a side length of 2^i
-    Point start,
-            A, B, C, D;
+    Point start, // the initial position of the player
+            A, B, C, D; // The points current rectangle where the treasure is to be searched.
+                        // The points are used like the points A,B,C and D in the paper, so please look there for
+                        // more information.
 
     HalfPlaneHint lastBadHint; //only used when last hint was bad
     boolean lastHintWasBad = false;
     Point lastLocation;
-
 
     /**
      * {@inheritDoc}
@@ -118,6 +119,12 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
 
     }
 
+    /**
+     * This method is used to visualize the current phases rectangle and ABCD.
+     * Adds their values to move
+     * @param move
+     * @return the input with the rectangles of the current phase and ABCD added
+     */
     private Movement addState(Movement move) {
         // add current rectangle which the strategy is working on
         Coordinate[] cur_coords = new Coordinate[5];
@@ -168,7 +175,21 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return move;
     }
 
-
+    /**
+     * If the hint-line goes through AD and BC and the hint is good (i.e. the hint divides one side of the rectangle in
+     * two parts such that the smaller one is bigger or equal to 1), the biggest axis parallel rectangle which
+     * lies in ABCD and where the treasure could be located due to the information gained by the hint, is returned.
+     * Otherwise the return value is null.
+     *
+     * @param A
+     * @param B
+     * @param C
+     * @param D
+     * @param hint
+     * @param intersection_AD_hint
+     * @param intersection_BC_hint
+     * @return
+     */
     private Point[] splitRectangleHorizontally(Point A, Point B, Point C, Point D, HalfPlaneHint hint,
                                                Point intersection_AD_hint, Point intersection_BC_hint) {
         if (intersection_AD_hint == null || intersection_BC_hint == null) {
@@ -218,6 +239,21 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return null;
     }
 
+    /**
+     * If the hint-line goes through AB and CD and the hint is good (i.e. the hint divides one side of the rectangle in
+     * two parts such that the smaller one is bigger or equal to 1), the biggest axis parallel rectangle which
+     * lies in ABCD and where the treasure could be located due to the information gained by the hint, is returned.
+     * Otherwise the return value is null.
+     *
+     * @param A
+     * @param B
+     * @param C
+     * @param D
+     * @param hint
+     * @param intersection_AB_hint
+     * @param intersection_CD_hint
+     * @return
+     */
     private Point[] splitRectangleVertically(Point A, Point B, Point C, Point D, HalfPlaneHint hint,
                                              Point intersection_AB_hint, Point intersection_CD_hint) {
         // checks if the hint is good (i.e. if the hint divides one side of the rectangles in into two parts such that
@@ -256,6 +292,12 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return null;
     }
 
+    /**
+     * Increments the phase-field and updates ABCD accordingly.
+     * Goes to the center of the new rectangle ABCD.
+     * @param move
+     * @return the parameter move with the center of the new ABCD added
+     */
     private Movement incrementPhase(Movement move) {
         phase++;
         Point oldA = A;
@@ -268,8 +310,12 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return move;
     }
 
-    // returns the rectangle of the current phase, just by using the current phase index (j in the paper, "phase" in
-    // the implementation)
+    /**
+     * Returnes the rectangle of the current phase, by using the current phase index (equates to j in the paper or
+     * the phase-field in this implementation)
+     *
+     * @return
+     */
     private Coordinate[] phaseRectangle() {
         double halfDiff = Math.pow(2, phase - 1);
         double startX = start.getX();
@@ -282,7 +328,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return rect;
     }
 
-    // Sets the rectangle ABCD to the rectangle of the current phase.
+    /**
+     * Sets the rectangle ABCD to the rectangle of the current phase (determined by phaseRectangle())
+     */
     private void setRectToPhase() {
         Coordinate[] rect = phaseRectangle();
         A = GEOMETRY_FACTORY.createPoint(rect[0]);

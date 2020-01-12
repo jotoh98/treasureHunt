@@ -15,6 +15,9 @@ import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
 import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
 import static org.locationtech.jts.algorithm.Angle.normalizePositive;
 
+/**
+ * @author bsen
+ */
 public class BadHintSubroutine {
 
 

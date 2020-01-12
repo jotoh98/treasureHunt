@@ -17,7 +17,7 @@ import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
 import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
 
 /**
- * @author Rank
+ * @author bsen
  */
 
 @AllArgsConstructor

@@ -10,6 +10,9 @@ import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.BadHint
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.*;
 import static com.treasure.hunt.utils.JTSUtils.*;
 
+/**
+ * @author bsen
+ */
 public class Test {
     StrategyFromPaper strategy;
 

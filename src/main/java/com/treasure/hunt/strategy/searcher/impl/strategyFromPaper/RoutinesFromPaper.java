@@ -18,6 +18,9 @@ import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
 
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.*;
 
+/**
+ * @author bsen
+ */
 public class RoutinesFromPaper {
     static Movement rectangleScan(Point A, Point B, Point C, Point D, Movement move) {
         return rectangleScan(A.getCoordinate(), B.getCoordinate(), C.getCoordinate(), D.getCoordinate(), move);
