@@ -26,6 +26,7 @@ class GameManagerTest {
         GameManager instance;
         try {
             instance = new GameManager(DeletingSearcher.class, RandomAngleHintHider.class, GameEngine.class);
+            instance.init();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

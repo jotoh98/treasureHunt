@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-      xmlns="http://javafx.com/javafx/11.0.1" fx:controller="com.treasure.hunt.view.widget.StatisticsWidgetController">
+      xmlns="http://javafx.com/javafx/11" fx:controller="com.treasure.hunt.view.widget.StatisticsWidgetController">
     <children>
         <TableView fx:id="statisticsTable" maxHeight="1.7976931348623157E308" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
             <columns>

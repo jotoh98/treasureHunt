@@ -6,7 +6,7 @@
 <?import java.lang.String?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" id="root" maxHeight="-Infinity" maxWidth="-Infinity"
             minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1080.0"
-            xmlns="http://javafx.com/javafx/11.0.1" fx:controller="com.treasure.hunt.view.MainController">
+            xmlns="http://javafx.com/javafx/11" fx:controller="com.treasure.hunt.view.MainController">
     <bottom>
         <HBox BorderPane.alignment="CENTER">
             <children>
