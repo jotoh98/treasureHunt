@@ -1,6 +1,7 @@
 package com.treasure.hunt.game;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.KryoCopyable;
 import com.esotericsoftware.kryo.KryoSerializable;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -10,6 +11,7 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
+import com.treasure.hunt.utils.AsyncUtils;
 import com.treasure.hunt.utils.JTSUtils;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -20,15 +22,19 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
+import sun.reflect.ReflectionFactory;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -41,12 +47,8 @@ import java.util.stream.Stream;
  * @author dorianreineccius
  */
 @Slf4j
-public class GameManager implements KryoSerializable {
-    /**
-     * A thread that is invoked by {@link GameManager#beat(ReadOnlyObjectProperty)} and stopped by {@link GameManager#stopBeat()}.
-     * He executes {@link GameManager#move(int)} in a given interval.
-     */
-    private Thread beatThread;
+public class GameManager implements KryoSerializable, KryoCopyable<GameManager> {
+
     @Getter
     private volatile BooleanProperty beatThreadRunning = new SimpleBooleanProperty(false);
     /**
@@ -96,13 +98,16 @@ public class GameManager implements KryoSerializable {
                 .getDeclaredConstructor(Searcher.class, Hider.class, Coordinate.class)
                 .newInstance(newSearcher, newHider, new Coordinate(0, 0));
 
+        setProperties();
+        setBindings();
+    }
+
+    public void init() {
         // Do initial move
         moves.add(gameEngine.init());
         if (gameEngine.isFinished()) {
             finishedProperty.set(true);
         }
-        setProperties();
-        setBindings();
     }
 
     private void setProperties() {
@@ -163,10 +168,8 @@ public class GameManager implements KryoSerializable {
     /**
      * This simulates the whole game, until its finished.
      */
-    public void beat() {
-        while (!gameEngine.isFinished()) {
-            next();
-        }
+    public CompletableFuture<Void> beat() {
+        return beat(new SimpleObjectProperty<>(0d));
     }
 
     /**
@@ -234,15 +237,17 @@ public class GameManager implements KryoSerializable {
      *
      * @param delay time between each move
      */
-    public void beat(ReadOnlyObjectProperty<Double> delay) {
+    public CompletableFuture<Void> beat(ReadOnlyObjectProperty<Double> delay) {
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
         if (beatThreadRunning.get()) {
             log.warn("There's already a beating thread running");
-            return;
+            completableFuture.completeExceptionally(new IllegalStateException("There's already a beating thread running"));
+            return completableFuture;
         }
 
         beatThreadRunning.set(true);
-        beatThread = new Thread(() -> {
-            log.debug("Start beating thread");
+        AsyncUtils.EXECUTOR_SERVICE.submit(() -> {
+            log.trace("Start beating thread");
             while (!stepForwardImpossibleBinding.get() && beatThreadRunning.get()) {
                 CountDownLatch latch = new CountDownLatch(1);
                 Platform.runLater(() -> {
@@ -253,14 +258,16 @@ public class GameManager implements KryoSerializable {
                     latch.await();
                     Thread.sleep((long) (delay.get() * 1000));
                 } catch (InterruptedException e) {
+                    completableFuture.completeExceptionally(e);
                     throw new RuntimeException(e);
                 }
             }
-            log.debug("Terminating beating thread");
+            log.trace("Terminating beating thread");
             Platform.runLater(() -> beatThreadRunning.set(false));
+            completableFuture.complete(null);
         });
-        beatThread.setDaemon(true);
-        beatThread.start();
+
+        return completableFuture;
     }
 
     @Override
@@ -283,6 +290,37 @@ public class GameManager implements KryoSerializable {
         viewIndex = new SimpleIntegerProperty(input.readInt());
         finishedProperty = new SimpleBooleanProperty(input.readBoolean());
         setBindings();
+    }
+
+    public Class<? extends Searcher> getSearcherClass() {
+        return gameEngine.getSearcher().getClass();
+    }
+
+    public Class<? extends Hider> getHiderClass() {
+        return gameEngine.getHider().getClass();
+    }
+
+    public Class<? extends GameEngine> getGameEngineClass() {
+        return gameEngine.getClass();
+    }
+
+    @SneakyThrows
+    @Override
+    public GameManager copy(Kryo kryo) {
+        ReflectionFactory rf =
+                ReflectionFactory.getReflectionFactory();
+        Constructor objDef = Object.class.getDeclaredConstructor();
+        Constructor intConstr = rf.newConstructorForSerialization(
+                getClass(), objDef
+        );
+        GameManager gameManager = (GameManager) intConstr.newInstance();
+        gameManager.gameEngine = kryo.copy(gameEngine);
+        gameManager.beatThreadRunning = new SimpleBooleanProperty(beatThreadRunning.get());
+        gameManager.moves = FXCollections.observableArrayList(moves);
+        gameManager.viewIndex = new SimpleIntegerProperty(viewIndex.get());
+        gameManager.finishedProperty = new SimpleBooleanProperty(finishedProperty.get());
+        gameManager.setBindings();
+        return gameManager;
     }
 
     /**

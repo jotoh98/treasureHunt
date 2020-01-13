@@ -3,4 +3,4 @@
 
 <?import javafx.scene.layout.Pane?>
 <Pane xmlns:fx="http://javafx.com/fxml/1" fx:id="widgetBar" maxHeight="1.7976931348623157E308"
-      xmlns="http://javafx.com/javafx/11.0.1" fx:controller="com.treasure.hunt.view.WidgetBarController"/>
+      xmlns="http://javafx.com/javafx/11" fx:controller="com.treasure.hunt.view.WidgetBarController"/>

@@ -3,25 +3,25 @@ package com.treasure.hunt.io;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.treasure.hunt.analysis.StatisticsWithId;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.utils.EventBusUtils;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 /**
  * @author axel1200
@@ -52,45 +52,76 @@ public class FileService {
 
     public void writeGameDataToFile(GameManager gameManager, Path filePath) throws IOException {
         Output output = new Output(new FileOutputStream(filePath.toFile()));
-        kryo.writeObject(output, new GameManagerWithVersion(GameManager.class.getPackage().getImplementationVersion(), gameManager));
+        kryo.writeObject(output, new DataWithVersion(GameManager.class.getPackage().getImplementationVersion(), gameManager));
         output.close();
     }
 
-    public GameManagerWithVersion readGameDataFromFile(Path filePath) throws IOException {
-        Input input = new Input(new FileInputStream(filePath.toFile()));
-        GameManagerWithVersion gameManagerWithVersion = kryo.readObject(input, GameManagerWithVersion.class);
-        input.close();
-        return gameManagerWithVersion;
+    public void writeGameDataToOutputStream(GameManager gameManager, OutputStream outputStream) throws IOException {
+        Output output = new Output(outputStream);
+        kryo.writeObject(output, new DataWithVersion(GameManager.class.getPackage().getImplementationVersion(), gameManager));
+        output.flush();
     }
 
-    public void load(Label logLabel) {
+    public void writeStatisticsWithId(List<StatisticsWithId> statisticsWithIds, OutputStream outputStream) throws IOException {
+        Output output = new Output(outputStream);
+        kryo.writeObject(output, new DataWithVersion(StatisticsWithId.class.getPackage().getImplementationVersion(), statisticsWithIds));
+        output.flush();
+    }
+
+    public void readGameManagerFromPathAndLoad(Path filePath) throws IOException {
+        readDataFromFile(filePath
+                , dataWithVersion -> EventBusUtils.GAME_MANAGER_LOADED_EVENT.trigger((GameManager) dataWithVersion.getObject()));
+    }
+
+    public void readGameManagerFromStreamAndLoad(InputStream inputStream) throws IOException {
+        readDataFromStream(inputStream
+                , dataWithVersion -> EventBusUtils.GAME_MANAGER_LOADED_EVENT.trigger((GameManager) dataWithVersion.getObject()));
+    }
+
+    public void readDataFromFile(Path filePath, Consumer<DataWithVersion> finishedCallBack) throws IOException {
+        readDataFromStream(new FileInputStream(filePath.toFile()), finishedCallBack);
+    }
+
+    @SneakyThrows
+    public void readDataFromStream(InputStream inputStream, Consumer<DataWithVersion> finishedCallBack) {
+        Input input = new Input(inputStream);
+        DataWithVersion dataWithVersion = kryo.readObject(input, DataWithVersion.class);
+        input.close();
+        if (correctVersion(dataWithVersion)) {
+            Platform.runLater(() -> {
+                if (askUserWhetherToLoadWrongVersion(dataWithVersion.getVersion())) {
+                    finishedCallBack.accept(dataWithVersion);
+                }
+            });
+            return;
+        }
+        finishedCallBack.accept(dataWithVersion);
+    }
+
+    public void loadGameManager() {
         File selectedFile = fileChooser.showOpenDialog(new Stage());
         if (selectedFile == null) {
             return;
         }
         CompletableFuture.runAsync(() -> {
             try {
-                GameManagerWithVersion gameManagerWithVersion = readGameDataFromFile(selectedFile.toPath());
-                boolean divergentVersion = gameManagerWithVersion.getVersion() != null && !gameManagerWithVersion.getVersion().equals(GameManager.class.getPackage().getImplementationVersion());
-                boolean loadingDevelopmentVersion = gameManagerWithVersion.getVersion() == null && GameManager.class.getPackage().getImplementationVersion() != null;
-                if (divergentVersion || loadingDevelopmentVersion) {
-                    Platform.runLater(() -> {
-                        if (askUserWhetherToLoadWrongVersion(gameManagerWithVersion.getVersion())) {
-                            EventBusUtils.GAME_MANAGER_LOADED_EVENT.trigger(gameManagerWithVersion.getGameManager());
-                        }
-                    });
-                    return;
-                }
-                EventBusUtils.GAME_MANAGER_LOADED_EVENT.trigger(gameManagerWithVersion.getGameManager());
+                readGameManagerFromPathAndLoad(selectedFile.toPath());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }).thenRun(() -> Platform.runLater(() -> logLabel.setText("Game state loaded from file")))
+        }).thenRun(() -> Platform.runLater(() -> EventBusUtils.LOG_LABEL_EVENT.trigger("Game state loaded from file")))
                 .exceptionally(throwable -> {
                     log.error("Loading game data failed", throwable);
-                    Platform.runLater(() -> logLabel.setText(String.format("Loading failed: %s", throwable.getMessage())));
+                    Platform.runLater(() -> EventBusUtils.LOG_LABEL_EVENT.trigger(String.format("Loading failed: %s", throwable.getMessage())));
                     return null;
                 });
+    }
+
+    private boolean correctVersion(DataWithVersion dataWithVersion) {
+        boolean divergentVersion = dataWithVersion.getVersion() != null && !dataWithVersion.getVersion().equals(GameManager.class.getPackage().getImplementationVersion());
+        boolean loadingDevelopmentVersion = dataWithVersion.getVersion() == null && GameManager.class.getPackage().getImplementationVersion() != null;
+
+        return divergentVersion || loadingDevelopmentVersion;
     }
 
     private boolean askUserWhetherToLoadWrongVersion(String oldVersion) {
@@ -111,9 +142,9 @@ public class FileService {
         }
     }
 
-    public void save(Label logLabel, GameManager gameManager) {
+    public void saveGameManager(GameManager gameManager) {
         if (gameManager == null) {
-            logLabel.setText("No game manager to save");
+            EventBusUtils.LOG_LABEL_EVENT.trigger("No game manager to save");
             return;
         }
         File selectedFile = fileChooser.showSaveDialog(new Stage());
@@ -126,18 +157,18 @@ public class FileService {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }).thenRun(() -> Platform.runLater(() -> logLabel.setText("Game state written to file")))
+        }).thenRun(() -> Platform.runLater(() -> EventBusUtils.LOG_LABEL_EVENT.trigger("Game state written to file")))
                 .exceptionally(throwable -> {
                     log.error("Saving game data failed", throwable);
-                    Platform.runLater(() -> logLabel.setText(String.format("Saving failed: %s", throwable.getMessage())));
+                    Platform.runLater(() -> EventBusUtils.LOG_LABEL_EVENT.trigger(String.format("Saving failed: %s", throwable.getMessage())));
                     return null;
                 });
     }
 
     @Value
-    public static class GameManagerWithVersion {
+    public static class DataWithVersion<E> {
         String version;
-        GameManager gameManager;
+        E object;
     }
 
 
