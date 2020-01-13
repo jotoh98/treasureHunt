@@ -3,6 +3,9 @@ package com.treasure.hunt.geom;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 
+/**
+ * @author jotoh
+ */
 public class GeometryLine extends LineSegment {
 
     /**

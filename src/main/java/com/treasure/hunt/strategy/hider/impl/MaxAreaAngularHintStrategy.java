@@ -351,6 +351,11 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
     }
 
     @Override
+    public void init(Point searcherStartPosition, int width, int height) {
+
+    }
+
+    @Override
     public AngleHint move(Movement movement) {
         currentPlayersPosition = movement.getEndPoint();
         adaptBoundingCircle();

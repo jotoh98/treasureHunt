@@ -11,17 +11,20 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
+import lombok.Getter;
 import org.jfree.fx.FXGraphics2D;
 import org.locationtech.jts.math.Vector2D;
 
 /**
- * @author axel12
+ * @author axel12, dorianreineccius
  */
 public class CanvasController {
+    @Getter
     public Canvas canvas;
     public Pane canvasPane;
     private ObjectProperty<GameManager> gameManager = new SimpleObjectProperty<>();
 
+    @Getter
     private PointTransformation transformation = new PointTransformation();
     private AdvancedShapeWriter shapeWriter = new AdvancedShapeWriter(transformation);
 
@@ -33,17 +36,30 @@ public class CanvasController {
     public void initialize() {
         makeCanvasResizable();
         graphics2D = new FXGraphics2D(canvas.getGraphicsContext2D());
+
+        transformation.getScaleProperty().addListener(invalidation -> drawShapes());
+
+        transformation.getOffsetProperty().addListener(invalidation -> drawShapes());
         shapeWriter.setBoundary(new CanvasBoundary(canvas, transformation));
     }
 
     public void makeCanvasResizable() {
-        canvas.widthProperty().addListener((observableValue, number, t1) -> drawShapes());
-        canvas.widthProperty().addListener((observableValue, number, t1) -> drawShapes());
+
+        canvas.widthProperty().addListener((observable, oldValue, newValue) -> {
+            transformation.updateCanvasWidth((double) newValue);
+            drawShapes();
+        });
+
+        canvas.heightProperty().addListener((observable, oldValue, newValue) -> {
+            transformation.updateCanvasHeight((double) newValue);
+            drawShapes();
+        });
+
         canvas.heightProperty().bind(canvasPane.heightProperty());
         canvas.widthProperty().bind(canvasPane.widthProperty());
     }
 
-    void drawShapes() {
+    public void drawShapes() {
         Platform.runLater(() -> {
             if (gameManager.isNull().get()) {
                 return;
@@ -66,17 +82,24 @@ public class CanvasController {
         if (gameManager.isNull().get()) {
             return;
         }
-        offsetBackup = transformation.getOffset();
+        offsetBackup = transformation.getOffsetProperty().get();
         dragStart = Vector2D.create(mouseEvent.getX(), mouseEvent.getY());
     }
 
+    /**
+     * This will be executed, when the mouse is pressed (and not released)
+     * and moves over the canvas
+     * <p>
+     * It will swipe the game to the dragged position.
+     *
+     * @param mouseEvent corresponding {@link MouseEvent}
+     */
     public void onCanvasDragged(MouseEvent mouseEvent) {
         if (gameManager.isNull().get()) {
             return;
         }
         Vector2D dragOffset = Vector2D.create(mouseEvent.getX(), mouseEvent.getY()).subtract(dragStart);
         transformation.setOffset(dragOffset.add(offsetBackup));
-        drawShapes();
     }
 
     public void onCanvasZoom(ScrollEvent scrollEvent) {
@@ -84,16 +107,8 @@ public class CanvasController {
             return;
         }
         Vector2D mouse = new Vector2D(scrollEvent.getX(), scrollEvent.getY());
-        Vector2D direction = transformation.getOffset().subtract(mouse);
-
-        double oldScale = transformation.getScale();
-        double newScale = oldScale * Math.exp(scrollEvent.getDeltaY() * 1e-2);
-
-        if (newScale > 0) {
-            transformation.setScale(newScale);
-            transformation.setOffset(mouse.add(direction.multiply(newScale / oldScale)));
-            drawShapes();
-        }
+        final double scaleFactor = Math.exp(scrollEvent.getDeltaY() * 1e-2);
+        transformation.scaleRelative(scaleFactor, mouse);
     }
 
     public void setGameManager(ObjectProperty<GameManager> gameManager) {

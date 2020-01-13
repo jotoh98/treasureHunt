@@ -2,10 +2,13 @@ package com.treasure.hunt.strategy.searcher;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
+import lombok.Getter;
 import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This is a movement of the searcher in the plain,
@@ -17,15 +20,21 @@ public class Movement {
     private List<GeometryItem<Point>> points = new ArrayList<>();
     protected List<GeometryItem<?>> additionalGeometryItems = new ArrayList<>();
 
-    public Movement() {
-    }
+    /**
+     * Earlier added items that are now removed from display
+     */
+    @Getter
+    private List<GeometryItem> toBeRemoved = new ArrayList<>();
 
-    public Movement(Point point) {
-        this.points.add(new GeometryItem<>(point, GeometryType.WAY_POINT));
+    public Movement() {
     }
 
     public Movement(List<GeometryItem<Point>> points) {
         this.points.addAll(points);
+    }
+
+    public Movement(Point... points) {
+        this.points.addAll(Arrays.stream(points).map(point -> new GeometryItem<>(point, GeometryType.WAY_POINT)).collect(Collectors.toList()));
     }
 
     /**

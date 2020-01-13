@@ -15,6 +15,9 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.text.DecimalFormat;
 
+/**
+ * @author jotoh
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Slf4j

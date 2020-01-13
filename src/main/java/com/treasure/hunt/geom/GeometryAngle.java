@@ -19,6 +19,8 @@ import java.awt.geom.GeneralPath;
  *     <li>the left point.</li>
  * </ul>
  * These points are named after their counter-clockwise occurrence.
+ *
+ * @author jotoh
  */
 public class GeometryAngle extends LineString implements Shapeable {
 

@@ -18,15 +18,16 @@ import java.awt.geom.Point2D;
 /**
  * Enhances the jts {@link ShapeWriter} with handling the render process for {@link Shapeable} instances.
  * In general, it shares a {@link PointTransformation} object to translate the {@link Shapeable}'s
- * Geometry into translated and scaled awt {@link Shape}s.
+ * Geometry into translated and scaled awt {@link Shape}'s.
  *
+ * @author jotoh
  * @version 1.0
  */
 @Slf4j
 public class AdvancedShapeWriter extends ShapeWriter {
 
     /**
-     * The {@link PointTransformation} transforming source {@link Coordinate}s.
+     * The {@link PointTransformation} transforming a source {@link Coordinate}.
      */
     @Getter
     private PointTransformation pointTransformation;
@@ -85,7 +86,7 @@ public class AdvancedShapeWriter extends ShapeWriter {
     }
 
     /**
-     * Utility function to construct a already transformed {@link Line2D}.
+     * Utility function to construct an already transformed {@link Line2D}.
      *
      * @param from start {@link Coordinate}
      * @param to   end {@link Coordinate}
@@ -101,7 +102,7 @@ public class AdvancedShapeWriter extends ShapeWriter {
     }
 
     /**
-     * Utility function to construct a already transformed {@link Line2D} with non-scalable length.
+     * Utility function to construct an already transformed {@link Line2D} with non-scalable length.
      *
      * @param fixed    start {@link Coordinate}
      * @param floating direction {@link Coordinate}
@@ -116,7 +117,7 @@ public class AdvancedShapeWriter extends ShapeWriter {
     }
 
     /**
-     * Utility function to construct a already transformed {@link Arc2D} with non-scalable width and height.
+     * Utility function to construct an already transformed {@link Arc2D} with non-scalable width and height.
      *
      * @param center    center {@link Coordinate} the arc is positioned around
      * @param dimension width and height of the arc

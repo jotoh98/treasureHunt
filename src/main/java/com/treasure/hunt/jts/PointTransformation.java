@@ -1,5 +1,6 @@
 package com.treasure.hunt.jts;
 
+import com.treasure.hunt.utils.JTSUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,13 +28,12 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
      * The scale translates the source coordinates multiplicative in {@link PointTransformation#transform(Coordinate)}.
      */
     @Getter
-    double scale = 1.0;
+    DoubleProperty scaleProperty = new SimpleDoubleProperty(1);
     /**
      * The offset translates the source coordinates additive in {@link PointTransformation#transform(Coordinate)}.
      */
     @Getter
-    @Setter
-    Vector2D offset = new Vector2D(400, 400);
+    ObjectProperty<Vector2D> offsetProperty = new SimpleObjectProperty<>(new Vector2D(400, 400));
 
     @Setter
     @Getter
@@ -41,8 +41,12 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
 
     public void setScale(double scale) {
         if (scale != 0) {
-            this.scale = scale;
+            scaleProperty.set(scale);
         }
+    }
+
+    public void setOffset(Vector2D offset) {
+        offsetProperty.set(offset);
     }
 
     /**
@@ -68,15 +72,121 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
      * @return transformed coordinate
      */
     public Coordinate transform(Coordinate src) {
-        return new Coordinate(transformX(src.x), transformY(src.y));
+        return new Coordinate(scaleProperty.get() * src.x + offsetProperty.get().getX(), scaleProperty.get() * -src.y + offsetProperty.get().getY());
+    }
+
+    /**
+     * Method to retrieve the Vector from the upper left boundary point to the lower right boundary point.
+     *
+     * @return vector from upper left to lower right boundary point
+     */
+    private Vector2D getMainDiagonalVector() {
+        return getUpperLeftBoundary().subtract(getLowerRightBoundary());
+    }
+
+    /**
+     * Get the length of the diagonal of the boundary rectangle
+     *
+     * @return length of main diagonal
+     */
+    public double diameter() {
+        return getMainDiagonalVector().length();
+    }
+
+    /**
+     * Retrieves the untransformed position vector of the upper left boundary point
+     *
+     * @return untransformed position vector of upper left boundary point
+     */
+    public Vector2D getUpperLeftBoundary() {
+        Vector2D normalisedOffset = offsetProperty.get().divide(scaleProperty.get());
+        return new Vector2D(-normalisedOffset.getX(), normalisedOffset.getY());
+    }
+
+    /**
+     * Retrieves the untransformed position vector of the lower right boundary point
+     *
+     * @return untransformed position vector of lower right boundary point
+     */
+    public Vector2D getLowerRightBoundary() {
+        return getUpperLeftBoundary().add(boundarySize);
+    }
+
+    /**
+     * Update boundary size according to the width and height of the {@link java.awt.Canvas}.
+     *
+     * @param width  width of the {@link java.awt.Canvas}
+     * @param height height of the {@link java.awt.Canvas}
+     */
+    public void updateCanvasSize(double width, double height) {
+        setBoundarySize(Vector2D.create(width, height).divide(scaleProperty.get()));
+    }
+
+    public void updateCanvasWidth(double width) {
+        setBoundarySize(Vector2D.create(width / scaleProperty.get(), boundarySize.getY()));
+    }
+
+    public void updateCanvasHeight(double height) {
+        setBoundarySize(Vector2D.create(boundarySize.getX(), height / scaleProperty.get()));
     }
 
     public double transformX(double x) {
         return scale * x + offset.getX();
     }
 
-    public double transformY(double y) {
-        return scale * -y + offset.getY();
+    /**
+     * Set the offset based on the boundary representation.
+     *
+     * @param location upper left position vector of the boundary rectangle
+     */
+    private void setBoundaryLocation(Vector2D location) {
+        setOffset(JTSUtils.negateX(location).multiply(scale));
+    }
+
+    /**
+     * Get the boundary rectangle width.
+     *
+     * @return boundary rectangle width
+     */
+    public double getBoundaryWidth() {
+        return Math.abs(boundarySize.getX());
+    }
+
+    /**
+     * Get the boundary rectangle height.
+     *
+     * @return boundary rectangle height
+     */
+    public double getBoundaryHeight() {
+        return Math.abs(boundarySize.getY());
+    }
+
+
+    /**
+     * Scales the canvas and keeps a certain point centered.
+     *
+     * @param gamma factor of new scale
+     * @param point scaling source point
+     */
+    public void scaleRelative(double gamma, Vector2D point) {
+        scaleOffset(gamma, point);
+        double newScale = scaleProperty.get() * gamma;
+        if (newScale > 0) {
+            setScale(newScale);
+        }
+    }
+
+    /**
+     * Scale the offset relative keeping a point as scaling source.
+     *
+     * @param gamma factor of new scale
+     * @param point scaling source point
+     */
+    public void scaleOffset(double gamma, Vector2D point) {
+        double newScale = scaleProperty.get() * gamma;
+        Vector2D direction = offsetProperty.get().subtract(point);
+
+        setOffset(point.add(direction.multiply(newScale / scaleProperty.get())));
     }
 
 }
