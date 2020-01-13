@@ -10,6 +10,7 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
+import com.treasure.hunt.utils.JTSUtils;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -21,6 +22,7 @@ import javafx.collections.ObservableList;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
 
 import java.lang.reflect.InvocationTargetException;
@@ -45,7 +47,6 @@ public class GameManager implements KryoSerializable {
      * He executes {@link GameManager#move(int)} in a given interval.
      */
     private Thread beatThread;
-
     @Getter
     private volatile BooleanProperty beatThreadRunning = new SimpleBooleanProperty(false);
     /**
@@ -75,7 +76,6 @@ public class GameManager implements KryoSerializable {
     private BooleanBinding stepBackwardImpossibleBinding;
     @Getter
     private ObjectBinding<List<StatisticObject>> statistics;
-
 
     /**
      * @param searcherClass   (Sub-)class of {@link Searcher}
@@ -178,7 +178,7 @@ public class GameManager implements KryoSerializable {
     }
 
     /**
-     * @return whether the game of the {@link GameEngine} is finished or not.
+     * Works only for stepSim &le; stepView 
      */
     public boolean isGameFinished() {
         return gameEngine.isFinished();
@@ -263,13 +263,6 @@ public class GameManager implements KryoSerializable {
         beatThread.start();
     }
 
-    /**
-     * @return {@code true}, if the shown step is the first one. {@code false}, otherwise.
-     */
-    public boolean isFirstStepShown() {
-        return stepBackwardImpossibleBinding.getValue();
-    }
-
     @Override
     public void write(Kryo kryo, Output output) {
         kryo.writeObject(output, gameEngine);
@@ -290,5 +283,31 @@ public class GameManager implements KryoSerializable {
         viewIndex = new SimpleIntegerProperty(input.readInt());
         finishedProperty = new SimpleBooleanProperty(input.readBoolean());
         setBindings();
+    }
+
+    /**
+     * @param coordinate the point on the canvas, we want to get the closest {@link GeometryType} to.
+     * @param distance   the maximum distance to a potential {@link GeometryItem}.
+     * @return a sorted list, containing the nearest {@link GeometryItem}'s to {@code coordinate}, with a maximum distance of {@code distance}.
+     */
+    public List<GeometryItem> pickGeometryItem(Coordinate coordinate, double distance) {
+        List<GeometryItem> geometryItems = getGeometryItems(true);
+        if (geometryItems.size() < 1) {
+            return new ArrayList<>();
+        }
+
+        Point mouse = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinate);
+
+        geometryItems = geometryItems.stream()
+                .filter(geometryItem ->
+                        mouse.distance((Geometry) geometryItem.getObject()) <= distance
+                )
+                .sorted((geometryItem, secondGeometryItem) ->
+                        (int) (mouse.distance((Geometry) geometryItem.getObject()) -
+                                mouse.distance((Geometry) secondGeometryItem.getObject()))
+                )
+                .collect(Collectors.toList());
+
+        return geometryItems;
     }
 }

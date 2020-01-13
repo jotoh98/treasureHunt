@@ -8,6 +8,7 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
+import com.treasure.hunt.utils.JTSUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
     private Point startingPoint;
     private Point currentPlayersPosition;
     private List<AngleHint> givenHints;
-    private GeometryFactory gf;
+    private GeometryFactory gf = JTSUtils.GEOMETRY_FACTORY;
     private double walkedPathLength;
 
     @Getter
@@ -64,7 +65,6 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
 
     public MaxAreaAngularHintStrategy() {
         log.info("MaxAreaAngularHintStrategy init");
-        gf = new GeometryFactory(); //TODO swap out with externally defined default factory for project
         givenHints = new ArrayList<>();
         startingPoint = gf.createPoint(new Coordinate(0, 0));
         currentPlayersPosition = startingPoint;

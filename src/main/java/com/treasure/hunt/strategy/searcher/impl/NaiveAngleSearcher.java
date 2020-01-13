@@ -43,20 +43,18 @@ public class NaiveAngleSearcher implements Searcher<AngleHint> {
     @Override
     public Movement move(AngleHint angleHint) {
         Coordinate c1 = JTSUtils.middleOfAngleHint(angleHint);
-        double x = c1.x;
-        double y = c1.y;
 
-        Movement m = new Movement(startPosition);
-        startPosition = JTSUtils.createPoint(x, y);
-        m.addWayPoint(startPosition);
+        Movement movement = new Movement(startPosition);
+        startPosition = JTSUtils.GEOMETRY_FACTORY.createPoint(c1);
+        movement.addWayPoint(startPosition);
 
         // Add to additionalItems
-        Coordinate[] a2 = {angleHint.getGeometryAngle().getCenter(), new Coordinate(x, y)};
-        m.addAdditionalItem(
+        Coordinate[] a2 = {angleHint.getGeometryAngle().getCenter(), c1};
+        movement.addAdditionalItem(
                 new GeometryItem(new LineString(
                         new CoordinateArraySequence(a2),
                         JTSUtils.GEOMETRY_FACTORY
                 ), GeometryType.SEARCHER_MOVEMENT));
-        return m;
+        return movement;
     }
 }

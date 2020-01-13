@@ -50,12 +50,7 @@ public class AdvancedShapeWriter extends ShapeWriter {
         if (object instanceof Shapeable) {
             return ((Shapeable) object).toShape(this);
         }
-        try {
-            return super.toShape((Geometry) object);
-        } catch (IllegalArgumentException e) {
-            log.debug("Could not render object to shape", e);
-        }
-        return null;
+        return super.toShape((Geometry) object);
     }
 
     /**

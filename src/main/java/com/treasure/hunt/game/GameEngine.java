@@ -12,6 +12,7 @@ import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.Requires;
 import lombok.Getter;
+import lombok.Setter;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Point;
@@ -35,6 +36,7 @@ public class GameEngine {
      * Tells, whether the game is done or not.
      */
     @Getter
+    @Setter
     protected boolean finished = false;
     /**
      * Tells, whether a first move is happened in the game yet, or not.
@@ -113,12 +115,12 @@ public class GameEngine {
 
         treasurePos = hider.getTreasureLocation();
         if (treasurePos == null) {
-            throw new IllegalArgumentException("hider: " + hider + " gave a treasure position which is null.");
+            throw new IllegalArgumentException(hider + " gave a treasurePosition which is null.");
         }
 
         // Check, whether treasure spawns in range of searcher
         if (located(Collections.singletonList(new GeometryItem<>(searcherPos, GeometryType.WAY_POINT)), treasurePos)) {
-            finished = true;
+            setFinished(true);
         }
 
         return new Move(
@@ -143,7 +145,7 @@ public class GameEngine {
         searcherMove();
 
         if (located(lastMovement.getPoints(), treasurePos)) {
-            finished = true;
+            setFinished(true);
             return new Move(null, lastMovement, treasurePos);
         } else {
             hiderMove();

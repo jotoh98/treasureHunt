@@ -10,7 +10,8 @@
                 id="gameCanvas"
                 fx:id="canvas"
                 onMouseDragged="#onCanvasDragged"
-                onMousePressed="#onCanvasClicked"
+                onMousePressed="#onCanvasPressed"
+                onMouseClicked="#onCanvasClicked"
                 onScroll="#onCanvasZoom"
         />
     </children>

@@ -92,10 +92,10 @@ public class MainController {
         addToolbarStyleClasses();
         bindWidgetBarVisibility();
         addBindingsToGameManager();
-        listenToGameMangerLoad();
+        subscribeToGameMangerLoad();
     }
 
-    private void listenToGameMangerLoad() {
+    private void subscribeToGameMangerLoad() {
         EventBusUtils.GAME_MANAGER_LOADED_EVENT.addListener(loadedGameManager -> {
             Platform.runLater(() -> {
                 try {
