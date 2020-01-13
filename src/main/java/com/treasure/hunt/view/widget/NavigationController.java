@@ -11,7 +11,6 @@ import javafx.scene.control.TextField;
 import lombok.Getter;
 
 public class NavigationController {
-
     @Getter
     private ObjectProperty<GameManager> gameManager = new SimpleObjectProperty<>();
 

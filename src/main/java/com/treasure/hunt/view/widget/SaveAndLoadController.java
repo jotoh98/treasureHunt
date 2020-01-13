@@ -1,7 +1,7 @@
 package com.treasure.hunt.view.widget;
 
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.service.FileService;
+import com.treasure.hunt.io.FileService;
 import javafx.beans.property.ObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Label;

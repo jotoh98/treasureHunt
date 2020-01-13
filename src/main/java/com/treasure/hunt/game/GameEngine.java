@@ -31,7 +31,6 @@ public class GameEngine {
     protected final Searcher searcher;
     protected final Hider hider;
     protected final Coordinate initialSearcherCoordinate;
-
     /**
      * Tells, whether the game is done or not.
      */

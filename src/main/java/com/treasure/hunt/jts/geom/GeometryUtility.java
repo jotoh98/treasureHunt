@@ -1,5 +1,6 @@
-package com.treasure.hunt.geom;
+package com.treasure.hunt.jts.geom;
 
+import com.treasure.hunt.jts.awt.Shapeable;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.math.Vector2D;
 

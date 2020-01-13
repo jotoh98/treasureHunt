@@ -1,6 +1,6 @@
 package com.treasure.hunt.strategy.geom;
 
-import com.treasure.hunt.jts.AdvancedShapeWriter;
+import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
 import lombok.Getter;
 import lombok.NonNull;
 import org.jfree.fx.FXGraphics2D;
@@ -18,19 +18,16 @@ import java.awt.*;
 public class GeometryItem<T> {
     @NonNull
     @Getter
-    T object;
-    GeometryType geometryType;
-    GeometryStyle geometryStyle;
+    private T object;
+    @NonNull
+    private GeometryType geometryType;
+    private GeometryStyle geometryStyle;
 
     public GeometryItem(T object, GeometryType geometryType, GeometryStyle geometryStyle) {
         assert (object != null);
         this.object = object;
         this.geometryType = geometryType;
         this.geometryStyle = geometryStyle;
-    }
-
-    public GeometryItem(T object) {
-        this(object, GeometryType.STANDARD, GeometryStyle.getDefaults(GeometryType.STANDARD));
     }
 
     public GeometryItem(T object, GeometryType geometryType) {
