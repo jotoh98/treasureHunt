@@ -27,7 +27,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     /**
      * {@inheritDoc}
      */
-    public void init(Point startPosition, int width, int height) {
+    public void init(Point startPosition) {
         start = startPosition;
         location = (Point) startPosition.copy();
         phase = 1;

@@ -26,16 +26,6 @@ import java.util.List;
  */
 @Requires(hider = Hider.class, searcher = Searcher.class)
 public class GameEngine {
-    /**
-     * The height of the playing area.
-     */
-    @Getter
-    protected final int height;
-    /**
-     * The width of the playing area.
-     */
-    @Getter
-    protected final int width;
     @Getter
     private final Statistic statistics = new Statistic();
     protected final Searcher searcher;
@@ -63,19 +53,7 @@ public class GameEngine {
      * @param hider    playing the game
      */
     public GameEngine(Searcher searcher, Hider hider) {
-        this(searcher, hider, 200, 200);
-    }
-
-    /**
-     * The constructor.
-     *
-     * @param searcher playing the game
-     * @param hider    playing the game
-     * @param width    the width of the playing area
-     * @param height   the height of the playing area
-     */
-    public GameEngine(Searcher searcher, Hider hider, int width, int height) {
-        this(searcher, hider, new Coordinate(0, 0), width, height);
+        this(searcher, hider, new Coordinate(0, 0));
     }
 
     /**
@@ -86,27 +64,9 @@ public class GameEngine {
      * @param initialSearcherCoordinate the initial Searcher {@link Coordinate}.
      */
     public GameEngine(Searcher searcher, Hider hider, Coordinate initialSearcherCoordinate) {
-        this(searcher, hider, initialSearcherCoordinate, 200, 200);
-    }
-
-    /**
-     * The constructor.
-     *
-     * @param searcher                  playing the game
-     * @param hider                     playing the game
-     * @param initialSearcherCoordinate the initial Searcher {@link Coordinate}.
-     * @param width                     the width of the playing area
-     * @param height                    the height of the playing area
-     */
-    public GameEngine(Searcher searcher, Hider hider, Coordinate initialSearcherCoordinate, int width, int height) {
         this.searcher = searcher;
         this.hider = hider;
         this.initialSearcherCoordinate = initialSearcherCoordinate;
-        this.width = width;
-        this.height = height;
-        if (outOfMap(initialSearcherCoordinate)) {
-            throw new IllegalArgumentException("initialSearcherCoordinate: " + initialSearcherCoordinate + " lies outside the playing area.");
-        }
     }
 
     /**
@@ -149,15 +109,12 @@ public class GameEngine {
      */
     public Move init() {
         searcherPos = JTSUtils.GEOMETRY_FACTORY.createPoint(initialSearcherCoordinate);
-        searcher.init(searcherPos, width, height);
-        hider.init(searcherPos, width, height);
+        searcher.init(searcherPos);
+        hider.init(searcherPos);
 
         treasurePos = hider.getTreasureLocation();
         if (treasurePos == null) {
             throw new IllegalArgumentException("hider: " + hider + " gave a treasure position which is null.");
-        }
-        if (outOfMap(treasurePos.getCoordinate())) {
-            throw new IllegalArgumentException("hider" + hider + " gave a treasure position which lies outside the playing area.");
         }
 
         // Check, whether treasure spawns in range of searcher
@@ -235,13 +192,6 @@ public class GameEngine {
             throw new IllegalArgumentException("Searcher stands last at " + initialSearcherPosition +
                     " but continues his movement from " + movement.getStartingPoint());
         }
-        for (GeometryItem geometryItem : movement.getPoints()) {
-            if (outOfMap(((Point) geometryItem.getObject()).getCoordinate())) {
-                throw new IllegalArgumentException("Searcher left the playing area: " +
-                        "(" + ((Point) geometryItem.getObject()).getX() + ", " + ((Point) geometryItem.getObject()).getY() + ") " +
-                        "is not in " + "[" + -width / 2 + ", " + width / 2 + "]x[" + -height / 2 + ", " + height / 2 + "]");
-            }
-        }
     }
 
     /**
@@ -266,16 +216,5 @@ public class GameEngine {
                         "but was " + ((CircleHint) hint).getCenter().distance(treasurePosition));
             }
         }
-    }
-
-    /**
-     * @param coordinate the {@link Coordinate}, we want to test, whether it lies outside the playing area.
-     * @return {@code true}, if the {@code coordinate} lies outside the playing area. {@code false}, otherwise.
-     */
-    public boolean outOfMap(Coordinate coordinate) {
-        return coordinate.x < (float) -width / 2 ||
-                (float) width / 2 < coordinate.x ||
-                coordinate.y < (float) -height / 2 ||
-                (float) height / 2 < coordinate.y;
     }
 }
