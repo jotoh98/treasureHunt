@@ -5,7 +5,7 @@
 <VBox
         xmlns:fx="http://javafx.com/fxml/1"
         fx:id="toolbar"
-        xmlns="http://javafx.com/javafx/11.0.1"
+        xmlns="http://javafx.com/javafx/11"
         fx:controller="com.treasure.hunt.view.ToolbarController"
         styleClass="toolbar"
 />

@@ -17,7 +17,9 @@ repositories {
 dependencies {
 
     compileOnly 'org.projectlombok:lombok:1.18.10'
+    testCompileOnly 'org.projectlombok:lombok:1.18.10'
     annotationProcessor 'org.projectlombok:lombok:1.18.10'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.10'
     implementation 'org.jetbrains:annotations:13.0'
     implementation 'org.locationtech.jts:jts-core:1.16.1'
     implementation 'ch.qos.logback:logback-core:1.2.3'
@@ -28,6 +30,7 @@ dependencies {
     implementation 'com.esotericsoftware:kryo:4.0.2'
     implementation 'com.github.Fylipp:easy-events:v1.1.0'
     testCompile 'org.mockito:mockito-core:3.0.0'
+    testCompile group: 'org.testfx', name: 'testfx-junit', version: '4.0.8-alpha'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
 
