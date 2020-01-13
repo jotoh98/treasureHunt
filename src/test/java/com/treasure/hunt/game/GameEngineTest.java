@@ -12,6 +12,8 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -125,7 +127,7 @@ class GameEngineTest {
             }
 
             @Override
-            public void init(Point searcherStartPosition, int width, int height) {
+            public void init(Point searcherStartPosition) {
 
             }
 

@@ -16,7 +16,7 @@ public class MoveOverTreasure1Searcher implements Searcher<CircleHint> {
     private Point startPosition;
 
     @Override
-    public void init(Point startPosition, int width, int height) {
+    public void init(Point startPosition) {
         this.startPosition = startPosition;
     }
 

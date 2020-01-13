@@ -47,7 +47,7 @@ class GameManagerTest {
 
 
         @Override
-        public void init(Point searcherStartPosition, int width, int height) {
+        public void init(Point searcherStartPosition) {
 
         }
 
