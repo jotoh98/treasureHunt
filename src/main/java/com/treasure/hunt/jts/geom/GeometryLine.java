@@ -1,4 +1,4 @@
-package com.treasure.hunt.geom;
+package com.treasure.hunt.jts.geom;
 
 import org.locationtech.jts.geom.*;
 

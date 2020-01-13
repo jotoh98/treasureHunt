@@ -1,6 +1,6 @@
 package com.treasure.hunt.utils;
 
-import com.treasure.hunt.geom.GeometryAngle;
+import com.treasure.hunt.jts.geom.GeometryAngle;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.*;

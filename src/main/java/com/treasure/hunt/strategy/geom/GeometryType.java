@@ -16,24 +16,18 @@ public enum GeometryType {
     TRUE_HINT(false, "True Hint"),
 
     // treasure/no-treasure (areas)
+    TREASURE(true, "no treasure"),
     NO_TREASURE(false, "no treasure"),
     POSSIBLE_TREASURE(false, "possible treasure"),
     HINT_ANGLE(true, "angle hint", true),
 
     // searcher movements
-    SEARCHER_POSITION(true, "searcher position"),
+    WAY_POINT(true, "no treasure"),
     SEARCHER_MOVEMENT(true, "searcher movement"),
 
-    // treasure location
-    TREASURE(true, "no treasure"),
+    BOUNDING_CIRCE(false, "bounding circle"),
 
-    // Obstacle add-on
-    OBSTACLE(false, "no treasure"),
-    WAY_POINT(true, "no treasure"),
-
-    STANDARD(true, ""),
-
-    BOUNDING_CIRCE(false,"bounding circle")
+    STANDARD(true, "")
     // TODO add more..
     ;
 

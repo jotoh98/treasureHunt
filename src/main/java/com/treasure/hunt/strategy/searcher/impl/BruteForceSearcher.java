@@ -1,6 +1,7 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
@@ -57,7 +58,7 @@ public class BruteForceSearcher implements Searcher<Hint> {
                                             movement.getPoints().get(i + 1).getObject().getY()
                                     )
                             )
-                    ));
+                            , GeometryType.SEARCHER_MOVEMENT));
         }
         return movement;
     }

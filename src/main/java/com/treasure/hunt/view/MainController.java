@@ -2,7 +2,7 @@ package com.treasure.hunt.view;
 
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.service.FileService;
+import com.treasure.hunt.io.FileService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.EventBusUtils;
@@ -136,7 +136,6 @@ public class MainController {
         if (!left) {
             savedBar.set(rightWidgetBar);
         }
-
 
         toolbarController.getToggleGroup().selectedToggleProperty().addListener((observableValue, oldItem, newItem) -> {
             final int readPosition = left ? 0 : mainSplitPane.getItems().size() - 1;

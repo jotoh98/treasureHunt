@@ -1,4 +1,4 @@
-package com.treasure.hunt.service;
+package com.treasure.hunt.io;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -28,7 +28,6 @@ import java.util.concurrent.CompletableFuture;
  */
 @Slf4j
 public class FileService {
-
     private static FileService instance;
     private final Kryo kryo;
     private final FileChooser fileChooser;

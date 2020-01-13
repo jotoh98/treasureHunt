@@ -9,9 +9,11 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.*;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author axel1200, Daniel
+ */
 @Slf4j
 public class StatisticsWidgetController {
-
     public TableView<StatisticObject> statisticsTable;
     public TableColumn<StatisticObject, StatisticObject> nameColumn;
     public TableColumn<StatisticObject, String> valueColumn;
@@ -51,7 +53,7 @@ public class StatisticsWidgetController {
                                     @Override
                                     protected void updateItem(StatisticObject item, boolean empty) {
                                         super.updateItem(item, empty);
-                                        if(empty || item==null){
+                                        if (empty || item == null) {
                                             setText(null);
                                             setTooltip(null);
                                             return;

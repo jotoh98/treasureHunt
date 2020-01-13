@@ -1,8 +1,8 @@
 package com.treasure.hunt.view;
 
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.jts.AdvancedShapeWriter;
-import com.treasure.hunt.jts.PointTransformation;
+import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
+import com.treasure.hunt.jts.awt.PointTransformation;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.canvas.Canvas;

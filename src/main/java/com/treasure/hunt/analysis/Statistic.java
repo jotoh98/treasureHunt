@@ -9,6 +9,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ * @author Trostorff, Daniel
+ */
 public class Statistic {
     private List<Move> moves;
 

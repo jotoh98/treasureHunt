@@ -279,6 +279,9 @@ public class GameManager implements KryoSerializable {
         output.writeBoolean(finishedProperty.get());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void read(Kryo kryo, Input input) {
         gameEngine = kryo.readObject(input, GameEngine.class);
