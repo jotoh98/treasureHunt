@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":9,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
+var data = {"i0":10,"i1":10,"i2":9,"i3":10,"i4":10,"i5":10,"i6":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -173,53 +173,39 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>protected int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#height">height</a></span></code></th>
-<td class="colLast">
-<div class="block">The height of the playing area.</div>
-</td>
-</tr>
-<tr class="rowColor">
 <td class="colFirst"><code>protected <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider">Hider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hider">hider</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected org.locationtech.jts.geom.Coordinate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#initialSearcherCoordinate">initialSearcherCoordinate</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lastHint">lastHint</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected <a href="../strategy/searcher/Movement.html" title="class in com.treasure.hunt.strategy.searcher">Movement</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lastMovement">lastMovement</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher">Searcher</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#searcher">searcher</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected org.locationtech.jts.geom.Point</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#searcherPos">searcherPos</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected org.locationtech.jts.geom.Point</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#treasurePos">treasurePos</a></span></code></th>
 <td class="colLast">&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>protected int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#width">width</a></span></code></th>
-<td class="colLast">
-<div class="block">The width of the playing area.</div>
-</td>
 </tr>
 </table>
 </li>
@@ -246,28 +232,9 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr class="rowColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(com.treasure.hunt.strategy.searcher.Searcher,com.treasure.hunt.strategy.hider.Hider,int,int)">GameEngine</a></span>&#8203;(<a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher">Searcher</a>&nbsp;searcher,
-          <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider">Hider</a>&nbsp;hider,
-          int&nbsp;width,
-          int&nbsp;height)</code></th>
-<td class="colLast">
-<div class="block">The constructor.</div>
-</td>
-</tr>
-<tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(com.treasure.hunt.strategy.searcher.Searcher,com.treasure.hunt.strategy.hider.Hider,org.locationtech.jts.geom.Coordinate)">GameEngine</a></span>&#8203;(<a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher">Searcher</a>&nbsp;searcher,
           <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider">Hider</a>&nbsp;hider,
           org.locationtech.jts.geom.Coordinate&nbsp;initialSearcherCoordinate)</code></th>
-<td class="colLast">
-<div class="block">The constructor.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(com.treasure.hunt.strategy.searcher.Searcher,com.treasure.hunt.strategy.hider.Hider,org.locationtech.jts.geom.Coordinate,int,int)">GameEngine</a></span>&#8203;(<a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher">Searcher</a>&nbsp;searcher,
-          <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider">Hider</a>&nbsp;hider,
-          org.locationtech.jts.geom.Coordinate&nbsp;initialSearcherCoordinate,
-          int&nbsp;width,
-          int&nbsp;height)</code></th>
 <td class="colLast">
 <div class="block">The constructor.</div>
 </td>
@@ -318,18 +285,13 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#outOfMap(org.locationtech.jts.geom.Coordinate)">outOfMap</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i5" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#searcherMove()">searcherMove</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Let the <a href="#searcher"><code>searcher</code></a> make <a href="../strategy/searcher/Movement.html" title="class in com.treasure.hunt.strategy.searcher"><code>Movement</code></a>.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#verifyHint(com.treasure.hunt.strategy.hint.Hint,org.locationtech.jts.geom.Point)">verifyHint</a></span>&#8203;(<a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;hint,
           org.locationtech.jts.geom.Point&nbsp;treasurePosition)</code></th>
@@ -340,7 +302,7 @@ extends java.lang.Object</pre>
  Verifies whether the <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a> <code>hint</code> given by the <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> followed the rules.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#verifyMovement(com.treasure.hunt.strategy.searcher.Movement,org.locationtech.jts.geom.Point)">verifyMovement</a></span>&#8203;(<a href="../strategy/searcher/Movement.html" title="class in com.treasure.hunt.strategy.searcher">Movement</a>&nbsp;movement,
               org.locationtech.jts.geom.Point&nbsp;initialSearcherPosition)</code></th>
@@ -372,26 +334,6 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Field Detail</h3>
-<a id="height">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>height</h4>
-<pre>protected final&nbsp;int height</pre>
-<div class="block">The height of the playing area.</div>
-</li>
-</ul>
-<a id="width">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>width</h4>
-<pre>protected final&nbsp;int width</pre>
-<div class="block">The width of the playing area.</div>
-</li>
-</ul>
 <a id="searcher">
 <!--   -->
 </a>
@@ -501,30 +443,10 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="&lt;init&gt;(com.treasure.hunt.strategy.searcher.Searcher,com.treasure.hunt.strategy.hider.Hider,int,int)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>GameEngine</h4>
-<pre>public&nbsp;GameEngine&#8203;(<a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher">Searcher</a>&nbsp;searcher,
-                  <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider">Hider</a>&nbsp;hider,
-                  int&nbsp;width,
-                  int&nbsp;height)</pre>
-<div class="block">The constructor.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>searcher</code> - playing the game</dd>
-<dd><code>hider</code> - playing the game</dd>
-<dd><code>width</code> - the width of the playing area</dd>
-<dd><code>height</code> - the height of the playing area</dd>
-</dl>
-</li>
-</ul>
 <a id="&lt;init&gt;(com.treasure.hunt.strategy.searcher.Searcher,com.treasure.hunt.strategy.hider.Hider,org.locationtech.jts.geom.Coordinate)">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>GameEngine</h4>
 <pre>public&nbsp;GameEngine&#8203;(<a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher">Searcher</a>&nbsp;searcher,
@@ -536,28 +458,6 @@ extends java.lang.Object</pre>
 <dd><code>searcher</code> - playing the game</dd>
 <dd><code>hider</code> - playing the game</dd>
 <dd><code>initialSearcherCoordinate</code> - the initial Searcher <code>Coordinate</code>.</dd>
-</dl>
-</li>
-</ul>
-<a id="&lt;init&gt;(com.treasure.hunt.strategy.searcher.Searcher,com.treasure.hunt.strategy.hider.Hider,org.locationtech.jts.geom.Coordinate,int,int)">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>GameEngine</h4>
-<pre>public&nbsp;GameEngine&#8203;(<a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher">Searcher</a>&nbsp;searcher,
-                  <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider">Hider</a>&nbsp;hider,
-                  org.locationtech.jts.geom.Coordinate&nbsp;initialSearcherCoordinate,
-                  int&nbsp;width,
-                  int&nbsp;height)</pre>
-<div class="block">The constructor.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>searcher</code> - playing the game</dd>
-<dd><code>hider</code> - playing the game</dd>
-<dd><code>initialSearcherCoordinate</code> - the initial Searcher <code>Coordinate</code>.</dd>
-<dd><code>width</code> - the width of the playing area</dd>
-<dd><code>height</code> - the height of the playing area</dd>
 </dl>
 </li>
 </ul>
@@ -660,7 +560,7 @@ extends java.lang.Object</pre>
 <a id="verifyHint(com.treasure.hunt.strategy.hint.Hint,org.locationtech.jts.geom.Point)">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>verifyHint</h4>
 <pre class="methodSignature">protected&nbsp;void&nbsp;verifyHint&#8203;(<a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;hint,
@@ -673,21 +573,6 @@ extends java.lang.Object</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>hint</code> - <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a> to be verified</dd>
 <dd><code>treasurePosition</code> - treasure position</dd>
-</dl>
-</li>
-</ul>
-<a id="outOfMap(org.locationtech.jts.geom.Coordinate)">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>outOfMap</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;outOfMap&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</pre>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>coordinate</code> - the <code>Coordinate</code>, we want to test, whether it lies outside the playing area.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd><code>true</code>, if the <code>coordinate</code> lies outside the playing area. <code>false</code>, otherwise.</dd>
 </dl>
 </li>
 </ul>
