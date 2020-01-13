@@ -40,8 +40,11 @@ public class GeometryStyle {
                 return new GeometryStyle(true, new Color(0xFFD700));
             case HINT_ANGLE:
                 return new GeometryStyle(true, new Color(0x575757));
+            case HIGHLIGHTER:
+                return new GeometryStyle(true, Color.GREEN);
+            default:
+                return new GeometryStyle(true, Color.lightGray);
         }
-        return new GeometryStyle(true, Color.lightGray);
     }
 
     public Stroke getStroke() {

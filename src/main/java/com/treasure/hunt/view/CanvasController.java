@@ -6,7 +6,6 @@ import com.treasure.hunt.jts.awt.PointTransformation;
 import com.treasure.hunt.jts.geom.CircleHighlighter;
 import com.treasure.hunt.jts.geom.RectangleVariableHighlighter;
 import com.treasure.hunt.strategy.geom.GeometryItem;
-import com.treasure.hunt.strategy.geom.GeometryStyle;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.utils.EventBusUtils;
 import com.treasure.hunt.utils.JTSUtils;
@@ -25,7 +24,6 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.math.Vector2D;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,39 +79,23 @@ public class CanvasController {
         EventBusUtils.SELECTED_GEOMETRY_ITEMS_EVENT.addListener(geometryItem -> {
             Platform.runLater(() -> {
                 log.trace("received: " + geometryItem);
-                if (geometryItem.getObject() instanceof Point) {
-                    this.highlighter = new GeometryItem(
-                            new CircleHighlighter(((Geometry) geometryItem.getObject()).getCoordinate(),
-                                    CanvasController.MOUSE_RECOGNIZE_DISTANCE, 64, JTSUtils.GEOMETRY_FACTORY),
-                            GeometryType.STANDARD,
-                            new GeometryStyle(true, Color.GREEN)
-                    );
+                Geometry geometry = (Geometry) geometryItem.getObject();
+                if (geometry instanceof Point) {
+                    this.highlighter = new GeometryItem(new CircleHighlighter(geometry.getCoordinate(),
+                            CanvasController.MOUSE_RECOGNIZE_DISTANCE, 64, JTSUtils.GEOMETRY_FACTORY), GeometryType.HIGHLIGHTER);
                 } else if (geometryItem.getObject() instanceof LineString) {
-                    double minX = ((Geometry) geometryItem.getObject()).getCoordinates()[0].x;
-                    double maxY = ((Geometry) geometryItem.getObject()).getCoordinates()[0].y;
-                    double maxX = ((Geometry) geometryItem.getObject()).getCoordinates()[0].x;
-                    double minY = ((Geometry) geometryItem.getObject()).getCoordinates()[0].y;
-                    for (Coordinate coordinate : ((Geometry) geometryItem.getObject()).getCoordinates()) {
-                        if (coordinate.x < minX) {
-                            minX = coordinate.x;
-                        }
-                        if (coordinate.x > maxX) {
-                            maxX = coordinate.x;
-                        }
-                        if (coordinate.y < minY) {
-                            minY = coordinate.y;
-                        }
-                        if (coordinate.y > minY) {
-                            maxY = coordinate.y;
-                        }
+                    double minX = geometry.getCoordinates()[0].x;
+                    double maxX = minX;
+                    double minY = geometry.getCoordinates()[0].y;
+                    double maxY = minY;
+                    for (Coordinate coordinate : geometry.getCoordinates()) {
+                        minX = Math.min(minX, coordinate.x);
+                        maxX = Math.max(maxX, coordinate.x);
+                        minY = Math.min(minY, coordinate.x);
+                        maxY = Math.max(maxY, coordinate.x);
                     }
-                    this.highlighter = new GeometryItem(
-                            new RectangleVariableHighlighter(
-                                    new Coordinate(minX, maxY),
-                                    maxX - minX, maxY - minY,
-                                    JTSUtils.GEOMETRY_FACTORY),
-                            GeometryType.STANDARD,
-                            new GeometryStyle(true, Color.YELLOW));
+                    this.highlighter = new GeometryItem(new RectangleVariableHighlighter(
+                            new Coordinate(minX, maxY), maxX - minX, maxY - minY, JTSUtils.GEOMETRY_FACTORY), GeometryType.HIGHLIGHTER);
                 }
                 drawShapes();
             });
@@ -190,27 +172,21 @@ public class CanvasController {
 
         if (lastMouseClick == null) {
             lastMouseClick = new Coordinate(mousePositionInGameContext.getX(), mousePositionInGameContext.getY());
+        }
+        if (lastMouseClick.getX() != mousePositionInGameContext.getX() ||
+                lastMouseClick.getY() != mousePositionInGameContext.getY()) {
 
+            geometryItemsListIndex = 0;
             geometryItemsList = gameManager.get().pickGeometryItem(
                     new Coordinate(mousePositionInGameContext.getX(), -mousePositionInGameContext.getY()),
                     MOUSE_RECOGNIZE_DISTANCE / transformation.getScaleProperty().get());
 
-            EventBusUtils.SELECTED_GEOMETRY_ITEMS_EVENT.trigger(geometryItemsList.get(0));
-            geometryItemsListIndex = 0;
+            lastMouseClick = new Coordinate(mousePositionInGameContext.getX(), mousePositionInGameContext.getY());
         } else {
-            if (lastMouseClick.getX() == mousePositionInGameContext.getX() &&
-                    lastMouseClick.getY() == mousePositionInGameContext.getY()) {
-                geometryItemsListIndex = (geometryItemsListIndex + 1) % geometryItemsList.size();
-                EventBusUtils.SELECTED_GEOMETRY_ITEMS_EVENT.trigger(geometryItemsList.get(geometryItemsListIndex));
-                log.trace("received: " + geometryItemsListIndex + "/" + geometryItemsList.size());
-            } else {
-                geometryItemsList = gameManager.get().pickGeometryItem(
-                        new Coordinate(mousePositionInGameContext.getX(), -mousePositionInGameContext.getY()),
-                        MOUSE_RECOGNIZE_DISTANCE / transformation.getScaleProperty().get());
-                EventBusUtils.SELECTED_GEOMETRY_ITEMS_EVENT.trigger(geometryItemsList.get(0));
-                lastMouseClick = new Coordinate(mousePositionInGameContext.getX(), mousePositionInGameContext.getY());
-            }
+            geometryItemsListIndex = (geometryItemsListIndex + 1) % geometryItemsList.size();
         }
+        log.info("received: " + geometryItemsListIndex + "/" + geometryItemsList.size());
+        EventBusUtils.SELECTED_GEOMETRY_ITEMS_EVENT.trigger(geometryItemsList.get(geometryItemsListIndex));
     }
 
     /**

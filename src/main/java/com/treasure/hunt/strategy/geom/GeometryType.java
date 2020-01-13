@@ -10,22 +10,21 @@ import lombok.Getter;
  */
 public enum GeometryType {
     // hints
-    FALSE_HINT(false, "False Hint"),
+    HINT_ANGLE(true, "angle hint", true),
     HINT_CENTER(false, "hint-center"),
-    HINT_RADIUS(false, "hint-center"),
-    TRUE_HINT(false, "True Hint"),
 
     // treasure/no-treasure (areas)
     TREASURE(true, "no treasure"),
     NO_TREASURE(false, "no treasure"),
     POSSIBLE_TREASURE(false, "possible treasure"),
-    HINT_ANGLE(true, "angle hint", true),
 
     // searcher movements
     WAY_POINT(true, "no treasure"),
     SEARCHER_MOVEMENT(true, "searcher movement"),
 
     BOUNDING_CIRCE(false, "bounding circle"),
+
+    HIGHLIGHTER(true, "highlighter"),
 
     STANDARD(true, "")
     // TODO add more..
