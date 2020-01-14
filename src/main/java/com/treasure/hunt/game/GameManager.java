@@ -255,7 +255,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
-     * {@code executeNextOnJavaFxThread} defaults to {@link true}.
+     * {@code executeNextOnJavaFxThread} defaults to {@code true}.
      *
      * @see GameManager#beat(ReadOnlyObjectProperty, Boolean)
      */

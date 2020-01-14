@@ -4,7 +4,7 @@ import picocli.CommandLine;
 
 @CommandLine.Command(
         name = "treasure",
-        description = "This command can be used to access the treasure CLI.",
+        description = "this command can be used to access the treasure CLI.",
         subcommands = {
                 TreasureHuntListCommand.class,
                 TreasureHuntRunSeriesCommand.class
