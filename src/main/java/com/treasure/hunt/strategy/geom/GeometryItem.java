@@ -1,6 +1,7 @@
 package com.treasure.hunt.strategy.geom;
 
 import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import org.jfree.fx.FXGraphics2D;
@@ -14,6 +15,7 @@ import java.awt.*;
  * @see GeometryType for further information about how to classifiy a geometry item.
  */
 @Getter
+@EqualsAndHashCode(of = {"object", "geometryType"})
 public class GeometryItem<T> {
     @NonNull
     @Getter

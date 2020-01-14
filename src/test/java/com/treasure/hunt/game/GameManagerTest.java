@@ -26,6 +26,7 @@ class GameManagerTest {
         GameManager instance;
         try {
             instance = new GameManager(DeletingSearcher.class, RandomAngleHintHider.class, GameEngine.class);
+            instance.init();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -62,7 +63,7 @@ class GameManagerTest {
         public Movement move(AngleHint hint) {
             Movement movement = new Movement(lastMove, lastMove);
             if (toBeRemovedLater != null) {
-                movement.getToBeRemoved().add(toBeRemovedLater);
+                movement.getGeometryItemsToBeRemoved().add(toBeRemovedLater);
                 return movement;
             }
             toBeRemovedLater = new GeometryItem<>(new Circle(new Coordinate(0, 0), 20, 20, JTSUtils.GEOMETRY_FACTORY), GeometryType.STANDARD);

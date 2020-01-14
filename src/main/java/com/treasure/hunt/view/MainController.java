@@ -93,19 +93,29 @@ public class MainController {
         bindWidgetBarVisibility();
         addBindingsToGameManager();
         listenToGameMangerLoad();
+        listenToLogLabelEvent();
+        addGameIndependentWidgets();
+    }
+
+    private void addGameIndependentWidgets() {
+        Widget<SaveAndLoadController, ?> saveAndLoadWidget = new Widget<>("/layout/saveAndLoad.fxml");
+        saveAndLoadWidget.getController().init(gameManager, searcherList, hiderList, gameEngineList);
+        insertWidget(true, "Save & Load", saveAndLoadWidget.getComponent(), true);
+    }
+
+    private void listenToLogLabelEvent() {
+        EventBusUtils.LOG_LABEL_EVENT.addListener(logLabelMessage -> Platform.runLater(() -> EventBusUtils.LOG_LABEL_EVENT.trigger(logLabelMessage)));
     }
 
     private void listenToGameMangerLoad() {
-        EventBusUtils.GAME_MANAGER_LOADED_EVENT.addListener(loadedGameManager -> {
-            Platform.runLater(() -> {
-                try {
-                    initGameManager(loadedGameManager);
-                } catch (Exception e) {
-                    log.error("Error loading GameManger in UI", e);
-                    logLabel.setText("Error loading GameManger in UI from file");
-                }
-            });
-        });
+        EventBusUtils.GAME_MANAGER_LOADED_EVENT.addListener(loadedGameManager -> Platform.runLater(() -> {
+            try {
+                initGameManager(loadedGameManager);
+            } catch (Exception e) {
+                log.error("Error loading GameManger in UI", e);
+                EventBusUtils.LOG_LABEL_EVENT.trigger("Error loading GameManger in UI from file");
+            }
+        }));
     }
 
     /**
@@ -116,7 +126,7 @@ public class MainController {
             if (gameManager.isNull().get()) {
                 return;
             }
-            gameManager.get().getFinishedProperty().addListener(invalidation -> logLabel.setText("Game ended"));
+            gameManager.get().getFinishedProperty().addListener(invalidation -> EventBusUtils.LOG_LABEL_EVENT.trigger("Game ended"));
         });
         gameManager.bindBidirectional(stepViewNavigatorController.getGameManager());
     }
@@ -165,16 +175,17 @@ public class MainController {
         pointInspectorWidget.getController().init(gameManager);
         insertWidget(true, "Inspector", pointInspectorWidget.getComponent());
 
-        Widget<SaveAndLoadController, ?> saveAndLoadWidget = new Widget<>("/layout/saveAndLoad.fxml");
-        saveAndLoadWidget.getController().init(gameManager, logLabel);
-        insertWidget(true, "Save & Load", saveAndLoadWidget.getComponent());
-
         Widget<BeatWidgetController, ?> beatWidget = new Widget<>("/layout/beatWidget.fxml");
-        beatWidget.getController().init(gameManager, logLabel);
+        beatWidget.getController().init(gameManager);
         insertWidget(true, "Game controls", beatWidget.getComponent());
+
         Widget<StatisticsWidgetController, ?> statisticsWidget = new Widget<>("/layout/statisticsWidget.fxml");
-        statisticsWidget.getController().init(gameManager, logLabel);
+        statisticsWidget.getController().init(gameManager);
         insertWidget(true, "Statistics", statisticsWidget.getComponent());
+
+        Widget<StatusMessageWidgetController, ?> statusWidget = new Widget<>("/layout/statusMessageWidget.fxml");
+        statusWidget.getController().init(gameManager);
+        insertWidget(false, "Status", statusWidget.getComponent());
 
         Widget<ScaleController, ?> scaleWidget = new Widget<>("/layout/scaling.fxml");
         scaleWidget.getController().init(canvasController);
@@ -328,15 +339,16 @@ public class MainController {
             initGameManager(new GameManager(searcherClass, hiderClass, gameEngineClass));
         } catch (Exception e) {
             log.error("Something important crashed", e);
-            logLabel.setText("Could not create game");
+            EventBusUtils.LOG_LABEL_EVENT.trigger("Could not create game");
         }
     }
 
     private void initGameManager(GameManager gameManagerInstance) {
+        gameManagerInstance.init();
         boolean initialize = gameManager.isNull().get();
 
         gameManager.set(gameManagerInstance);
-        logLabel.setText("Game initialized");
+        EventBusUtils.LOG_LABEL_EVENT.trigger("Game initialized");
 
         if (initialize) {
             gameManager.addListener(change -> canvasController.drawShapes());
@@ -350,6 +362,6 @@ public class MainController {
     }
 
     public void onLoadGame(ActionEvent actionEvent) {
-        FileService.getInstance().load(logLabel);
+        FileService.getInstance().loadGameManager();
     }
 }

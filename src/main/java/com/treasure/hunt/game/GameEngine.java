@@ -28,8 +28,11 @@ import java.util.List;
 public class GameEngine {
     @Getter
     private final Statistic statistics = new Statistic();
+    @Getter
     protected final Searcher searcher;
+    @Getter
     protected final Hider hider;
+
     protected final Coordinate initialSearcherCoordinate;
     /**
      * Tells, whether the game is done or not.
