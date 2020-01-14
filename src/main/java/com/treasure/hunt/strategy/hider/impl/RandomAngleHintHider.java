@@ -1,11 +1,16 @@
 package com.treasure.hunt.strategy.hider.impl;
 
+import com.treasure.hunt.jts.geom.GeometryAngle;
+import com.treasure.hunt.strategy.geom.StatusMessageItem;
+import com.treasure.hunt.strategy.geom.StatusMessageType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
+
+import static org.locationtech.jts.algorithm.Angle.interiorAngle;
 
 /**
  * A type of {@link Hider}, generating randomly chosen {@link AngleHint}'s
@@ -32,8 +37,14 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
     public AngleHint move(Movement movement) {
         Coordinate searcherPos = movement.getEndPoint().getCoordinate();
 
-        return new AngleHint(
-                JTSUtils.validRandomAngle(searcherPos, treasurePosition.getCoordinate(), 2 * Math.PI)
+        GeometryAngle angle = JTSUtils.validRandomAngle(searcherPos, treasurePosition.getCoordinate(), 2 * Math.PI);
+        double angleDegree = interiorAngle(angle.getRight(), angle.getCenter(), angle.getLeft());
+
+        AngleHint angleHint = new AngleHint(
+                angle
         );
+        angleHint.getStatusMessageItemsToBeAdded().
+                add(new StatusMessageItem(StatusMessageType.ANGLE_HINT_DEGREE, String.valueOf(angleDegree)));
+        return angleHint;
     }
 }

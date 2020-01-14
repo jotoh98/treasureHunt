@@ -9,6 +9,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.treasure.hunt.analysis.StatisticObject;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
+import com.treasure.hunt.strategy.geom.StatusMessageItem;
+import com.treasure.hunt.strategy.geom.StatusMessageType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.AsyncUtils;
@@ -23,6 +25,7 @@ import javafx.collections.ObservableList;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 import sun.reflect.ReflectionFactory;
@@ -76,6 +79,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     private BooleanBinding stepBackwardImpossibleBinding;
     @Getter
     private ObjectBinding<List<StatisticObject>> statistics;
+    @Getter
+    private ObjectBinding<List<StatusMessageItem>> statusMessageItemsBinding;
 
 
     /**
@@ -123,6 +128,31 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         lastTreasureBindings = Bindings.createObjectBinding(() -> moves.get(viewIndex.get()).getTreasureLocation(), viewIndex, moves);
         lastPointBinding = Bindings.createObjectBinding(() -> moves.get(viewIndex.get()).getMovement().getEndPoint(), viewIndex, moves);
         moveSizeBinding = Bindings.size(moves);
+        statusMessageItemsBinding = Bindings.createObjectBinding(this::getStatusMessageItems, moves);
+    }
+
+    @NotNull
+    private List<StatusMessageItem> getStatusMessageItems() {
+        Map<StatusMessageType, List<StatusMessageItem>> statusByType = moves.stream()
+                .flatMap(move -> Stream.of(move.getHint(), move.getMovement()))
+                .flatMap(hintAndMovement -> hintAndMovement == null ? Stream.empty() : hintAndMovement.getStatusMessageItemsToBeAdded().stream())
+                .collect(Collectors.groupingBy(StatusMessageItem::getStatusMessageType));
+
+        return statusByType.keySet()
+                .stream()
+                .flatMap(type -> {
+                    List<StatusMessageItem> itemsOfType = statusByType.get(type);
+                    if (!type.isOverride()) {
+                        return itemsOfType.stream();
+                    } else {
+                        return Stream.of(itemsOfType.get(itemsOfType.size() - 1));
+                    }
+                })
+                .filter(statusMessageItem -> moves.stream().noneMatch(move ->
+                        move.getHint() != null && move.getHint().getStatusMessageItemsToBeRemoved().contains(statusMessageItem) ||
+                                move.getMovement() != null && move.getMovement().getStatusMessageItemsToBeRemoved().contains(statusMessageItem)
+                ))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -218,8 +248,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
                     }
                 })
                 .filter(geometryItem -> moves.stream().noneMatch(move ->
-                        move.getHint() != null && move.getHint().getToBeRemoved().contains(geometryItem) ||
-                                move.getMovement() != null && move.getMovement().getToBeRemoved().contains(geometryItem)
+                        move.getHint() != null && move.getHint().getGeometryItemsToBeRemoved().contains(geometryItem) ||
+                                move.getMovement() != null && move.getMovement().getGeometryItemsToBeRemoved().contains(geometryItem)
                 ))
                 .collect(Collectors.toList());
     }

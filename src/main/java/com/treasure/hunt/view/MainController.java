@@ -178,9 +178,14 @@ public class MainController {
         Widget<BeatWidgetController, ?> beatWidget = new Widget<>("/layout/beatWidget.fxml");
         beatWidget.getController().init(gameManager);
         insertWidget(true, "Game controls", beatWidget.getComponent());
+
         Widget<StatisticsWidgetController, ?> statisticsWidget = new Widget<>("/layout/statisticsWidget.fxml");
         statisticsWidget.getController().init(gameManager);
         insertWidget(true, "Statistics", statisticsWidget.getComponent());
+
+        Widget<StatusMessageWidgetController, ?> statusWidget = new Widget<>("/layout/statusMessageWidget.fxml");
+        statusWidget.getController().init(gameManager);
+        insertWidget(false, "Status", statusWidget.getComponent());
 
         Widget<ScaleController, ?> scaleWidget = new Widget<>("/layout/scaling.fxml");
         scaleWidget.getController().init(canvasController);
