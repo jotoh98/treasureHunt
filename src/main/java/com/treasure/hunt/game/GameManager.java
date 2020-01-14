@@ -211,13 +211,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
-     * Works only for stepSim &le; stepView 
-     */
-    public boolean isGameFinished() {
-        return gameEngine.isFinished();
-    }
-
-    /**
      * @return {@code true}, if the shown step is the most up to date one. {@code false}, otherwise.
      */
     public boolean latestStepViewed() {
@@ -300,6 +293,9 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         return completableFuture;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void write(Kryo kryo, Output output) {
         kryo.writeObject(output, gameEngine);

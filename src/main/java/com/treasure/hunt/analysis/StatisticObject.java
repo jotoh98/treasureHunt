@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Value;
 
 /**
+ * This defines a component, we want to analyze in our simulation.
+ *
  * @author Trostorff, Daniel
  */
 @Value

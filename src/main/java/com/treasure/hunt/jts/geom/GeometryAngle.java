@@ -24,7 +24,6 @@ import java.awt.geom.GeneralPath;
  * @author jotoh
  */
 public class GeometryAngle extends LineString implements Shapeable {
-
     /**
      * GeometryAngle constructor via three {@link Coordinate}s.
      *
@@ -34,11 +33,7 @@ public class GeometryAngle extends LineString implements Shapeable {
      * @param left    the left angles arm end point
      */
     public GeometryAngle(GeometryFactory factory, Coordinate right, Coordinate center, Coordinate left) {
-        super(
-                factory.getCoordinateSequenceFactory()
-                        .create(new Coordinate[]{center, left, right}),
-                factory
-        );
+        super(factory.getCoordinateSequenceFactory().create(new Coordinate[]{center, left, right}), factory);
     }
 
     /**
@@ -98,7 +93,6 @@ public class GeometryAngle extends LineString implements Shapeable {
         setCoordinate(2, right);
     }
 
-
     public Vector2D rightVector() {
         return new Vector2D(getCenter(), getRight());
     }
@@ -123,6 +117,9 @@ public class GeometryAngle extends LineString implements Shapeable {
         return extend;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Shape toShape(AdvancedShapeWriter shapeWriter) {
         GeneralPath generalPath = new GeneralPath();
@@ -135,6 +132,9 @@ public class GeometryAngle extends LineString implements Shapeable {
         return generalPath;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getGeometryType() {
         return "Angle";
@@ -147,6 +147,9 @@ public class GeometryAngle extends LineString implements Shapeable {
         return testExtend >= 0 && testExtend <= extend();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public GeometryAngle copy() {
         return new GeometryAngle(factory, getRight().copy(), getCenter().copy(), getLeft().copy());

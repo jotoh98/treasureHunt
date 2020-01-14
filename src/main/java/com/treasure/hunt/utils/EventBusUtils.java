@@ -7,6 +7,8 @@ import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 
 /**
+ * This class provides the event buses.
+ *
  * @author Trostorff
  */
 public class EventBusUtils {
