@@ -5,6 +5,7 @@
     DARKER_BACKGROUND: #2f2f2f;
     DARK_BACKGROUND: #1c1c1c;
     REQUIRED_RED: red;
+    ACCENT: #04ff16;
 }
 
 #root,
@@ -285,4 +286,12 @@
 .widget-pane {
     -fx-background-color: LIGHTER_BACKGROUND;
     -fx-border-color: transparent;
+}
+
+.progress-indicator .percentage {
+    -fx-fill: ACCENT;
+}
+
+.progress-indicator {
+    -fx-progress-color: ACCENT;
 }

@@ -94,6 +94,13 @@ public class MainController {
         addBindingsToGameManager();
         listenToGameMangerLoad();
         listenToLogLabelEvent();
+        addGameIndependentWidgets();
+    }
+
+    private void addGameIndependentWidgets() {
+        Widget<SaveAndLoadController, ?> saveAndLoadWidget = new Widget<>("/layout/saveAndLoad.fxml");
+        saveAndLoadWidget.getController().init(gameManager, searcherList, hiderList, gameEngineList);
+        insertWidget(true, "Save & Load", saveAndLoadWidget.getComponent(), true);
     }
 
     private void listenToLogLabelEvent() {
@@ -168,16 +175,17 @@ public class MainController {
         pointInspectorWidget.getController().init(gameManager);
         insertWidget(true, "Inspector", pointInspectorWidget.getComponent());
 
-        Widget<SaveAndLoadController, ?> saveAndLoadWidget = new Widget<>("/layout/saveAndLoad.fxml");
-        saveAndLoadWidget.getController().init(gameManager);
-        insertWidget(true, "Save & Load", saveAndLoadWidget.getComponent());
-
         Widget<BeatWidgetController, ?> beatWidget = new Widget<>("/layout/beatWidget.fxml");
         beatWidget.getController().init(gameManager);
         insertWidget(true, "Game controls", beatWidget.getComponent());
+
         Widget<StatisticsWidgetController, ?> statisticsWidget = new Widget<>("/layout/statisticsWidget.fxml");
         statisticsWidget.getController().init(gameManager);
         insertWidget(true, "Statistics", statisticsWidget.getComponent());
+
+        Widget<StatusMessageWidgetController, ?> statusWidget = new Widget<>("/layout/statusMessageWidget.fxml");
+        statusWidget.getController().init(gameManager);
+        insertWidget(false, "Status", statusWidget.getComponent());
 
         Widget<ScaleController, ?> scaleWidget = new Widget<>("/layout/scaling.fxml");
         scaleWidget.getController().init(canvasController);
