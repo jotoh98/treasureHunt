@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.TextFlow?>
+<TextFlow xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11"
+          fx:controller="com.treasure.hunt.view.widget.StatusMessageWidgetTextFlowController">
+   <children>
+      <Label fx:id="nameLabel" text="Label" underline="true"/>
+      <Label text=":"/>
+      <Label fx:id="messageLabel" text="Label" wrapText="true">
+         <padding>
+            <Insets left="5.0"/>
+         </padding>
+      </Label>
+   </children>
+</TextFlow>
