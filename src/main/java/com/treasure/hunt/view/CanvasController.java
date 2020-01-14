@@ -182,7 +182,14 @@ public class CanvasController {
                     MOUSE_RECOGNIZE_DISTANCE / transformation.getScaleProperty().get());
 
             lastMouseClick = new Coordinate(mousePositionInGameContext.getX(), mousePositionInGameContext.getY());
+
+            if (geometryItemsList.size() < 1) {
+                return;
+            }
         } else {
+            if (geometryItemsList.size() < 1) {
+                return;
+            }
             geometryItemsListIndex = (geometryItemsListIndex + 1) % geometryItemsList.size();
         }
         log.info("received: " + geometryItemsListIndex + "/" + geometryItemsList.size());
