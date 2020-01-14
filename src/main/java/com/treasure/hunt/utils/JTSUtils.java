@@ -1,10 +1,14 @@
 package com.treasure.hunt.utils;
 
-import com.treasure.hunt.geom.GeometryAngle;
+import com.treasure.hunt.jts.awt.CanvasBoundary;
+import com.treasure.hunt.jts.geom.GeometryAngle;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.math.Vector2D;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A utility class for the work with {@link org.locationtech.jts}.
@@ -41,23 +45,27 @@ public final class JTSUtils {
     /**
      * Tests whether and infinite line intersects with a line segment
      *
-     * @param infiniteLine infinite line
-     * @param lineSegment  line between two points
+     * @param infinite infinite line
+     * @param segment  line between two points
      * @return intersection of infinite line and line segment
      */
-    // TODO is this necessary?
-    public static Point lineLineSegmentIntersection(LineSegment infiniteLine, LineSegment lineSegment) {
-        Point intersection = GEOMETRY_FACTORY.createPoint(infiniteLine.lineIntersection(lineSegment));
-        Point lineSegmentPointA = GEOMETRY_FACTORY.createPoint(lineSegment.p0);
-        Point lineSegmentPointB = GEOMETRY_FACTORY.createPoint(lineSegment.p1);
-        LineString lineSegString = createLineString(
-                lineSegmentPointA,
-                lineSegmentPointB
-        );
-        if (lineSegString.contains(intersection)) {
+    public static Coordinate infiniteSegmentIntersection(LineSegment infinite, LineSegment segment) {
+        final Coordinate intersection = infinite.lineIntersection(segment);
+        if (intersection != null && inSegment(segment, intersection)) {
             return intersection;
         }
         return null;
+    }
+
+    /**
+     * Checks if a coordinate lays in line segment.
+     *
+     * @param segment    line segment
+     * @param coordinate coordinate to check
+     * @return
+     */
+    public static boolean inSegment(LineSegment segment, Coordinate coordinate) {
+        return segment.distance(coordinate) < 1e-8;
     }
 
     /**
@@ -185,5 +193,23 @@ public final class JTSUtils {
         double extend = Math.random() * maxExtend;
         double start = givenAngle - extend * Math.random();
         return new GeometryAngle(GEOMETRY_FACTORY, searcher, start, extend);
+    }
+
+    /**
+     * Get the intersections between the infinite line and the visual boundary.
+     *
+     * @param boundary boundary supplying the border {@link LineSegment}s
+     * @param infinite infinite line
+     * @return the intersections between the infinite line extension and the boundary {@link LineSegment}s
+     */
+    public static List<Coordinate> getBoundaryIntersections(CanvasBoundary boundary, LineSegment infinite) {
+        final ArrayList<Coordinate> intersections = new ArrayList<>();
+        boundary.toLineSegments().forEach(boundarySegment -> {
+            final Coordinate intersection = infinite.intersection(boundarySegment);
+            if (intersection != null) {
+                intersections.add(intersection);
+            }
+        });
+        return intersections;
     }
 }

@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.awt.*;
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * @author jotoh
@@ -13,6 +15,18 @@ import java.awt.*;
 @NoArgsConstructor
 @Data
 public class GeometryStyle {
+
+    public static EnumMap<GeometryType, GeometryStyle> defaultsMap = new EnumMap<>(GeometryType.class);
+
+    static {
+        defaultsMap.putAll(Map.of(
+                GeometryType.WAY_POINT, new GeometryStyle(true, new Color(0xFFFFFF)),
+                GeometryType.TREASURE, new GeometryStyle(true, new Color(0xFFD700)),
+                GeometryType.HINT_ANGLE, new GeometryStyle(true, new Color(0x575757)),
+                GeometryType.GRID, new GeometryStyle(true, false, new Color(0x555555), null, -1),
+                GeometryType.HALFPLANE, new GeometryStyle(true, true, new Color(0xcccccc), new Color(0x0fffffff, true), 0)
+        ));
+    }
 
     private boolean visible;
 
@@ -33,13 +47,9 @@ public class GeometryStyle {
     }
 
     public static GeometryStyle getDefaults(GeometryType type) {
-        switch (type) {
-            case WAY_POINT:
-                return new GeometryStyle(true, new Color(0xFFFFFF));
-            case TREASURE:
-                return new GeometryStyle(true, new Color(0xFFD700));
-            case HINT_ANGLE:
-                return new GeometryStyle(true, new Color(0x575757));
+
+        if (defaultsMap.containsKey(type)) {
+            return defaultsMap.get(type).clone();
         }
         return new GeometryStyle(true, Color.lightGray);
     }
@@ -48,4 +58,11 @@ public class GeometryStyle {
         return new BasicStroke(1);
     }
 
+    public static void registerDefault(GeometryType type, GeometryStyle style) {
+        defaultsMap.put(type, style);
+    }
+
+    protected GeometryStyle clone() {
+        return new GeometryStyle(visible, filled, outlineColor, fillColor, zIndex);
+    }
 }

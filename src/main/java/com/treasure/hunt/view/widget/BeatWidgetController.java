@@ -6,7 +6,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,6 @@ public class BeatWidgetController {
     public Spinner<Double> timeBetweenMovesSpinner;
     public Button playToggle;
     private ObjectProperty<GameManager> gameManager;
-    private Label logLabel;
 
     public void initialize() {
         SpinnerValueFactory<Double> valueFactory =
@@ -55,9 +53,8 @@ public class BeatWidgetController {
         listener.invalidated(gameManager);
     }
 
-    public void init(ObjectProperty<GameManager> gameManager, Label logLabel) {
+    public void init(ObjectProperty<GameManager> gameManager) {
         this.gameManager = gameManager;
-        this.logLabel = logLabel;
         bindPlayToggleButton();
     }
 

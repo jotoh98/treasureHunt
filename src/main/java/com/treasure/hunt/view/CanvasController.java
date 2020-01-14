@@ -1,9 +1,9 @@
 package com.treasure.hunt.view;
 
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.jts.AdvancedShapeWriter;
-import com.treasure.hunt.jts.CanvasBoundary;
-import com.treasure.hunt.jts.PointTransformation;
+import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
+import com.treasure.hunt.jts.awt.CanvasBoundary;
+import com.treasure.hunt.jts.awt.PointTransformation;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -13,6 +13,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
 import org.jfree.fx.FXGraphics2D;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.math.Vector2D;
 
 /**
@@ -44,17 +45,8 @@ public class CanvasController {
     }
 
     public void makeCanvasResizable() {
-
-        canvas.widthProperty().addListener((observable, oldValue, newValue) -> {
-            transformation.updateCanvasWidth((double) newValue);
-            drawShapes();
-        });
-
-        canvas.heightProperty().addListener((observable, oldValue, newValue) -> {
-            transformation.updateCanvasHeight((double) newValue);
-            drawShapes();
-        });
-
+        canvas.widthProperty().addListener((observable, oldValue, newValue) -> drawShapes());
+        canvas.heightProperty().addListener((observable, oldValue, newValue) -> drawShapes());
         canvas.heightProperty().bind(canvasPane.heightProperty());
         canvas.widthProperty().bind(canvasPane.widthProperty());
     }
@@ -64,7 +56,6 @@ public class CanvasController {
             if (gameManager.isNull().get()) {
                 return;
             }
-            shapeWriter.updateBoundary();
             deleteShapes();
             gameManager.get().getGeometryItems(true)
                     .forEach(geometryItem -> geometryItem.draw(graphics2D, shapeWriter));
@@ -121,5 +112,13 @@ public class CanvasController {
                     .addListener(observable1 -> drawShapes());
 
         });
+    }
+
+    public Coordinate upperLeftBoundary() {
+        return transformation.revert(0, 0);
+    }
+
+    public Coordinate lowerRightBoundary() {
+        return transformation.revert(canvas.getWidth(), canvas.getHeight());
     }
 }

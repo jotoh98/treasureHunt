@@ -1,6 +1,6 @@
-package com.treasure.hunt.jts;
+package com.treasure.hunt.jts.awt;
 
-import com.treasure.hunt.geom.Shapeable;
+import com.treasure.hunt.jts.geom.Shapeable;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,13 +48,6 @@ public class AdvancedShapeWriter extends ShapeWriter {
     public AdvancedShapeWriter(PointTransformation pointTransformation) {
         super(pointTransformation);
         this.pointTransformation = pointTransformation;
-    }
-
-    /**
-     * Wrapper for the boundary's update method.
-     */
-    public void updateBoundary() {
-        boundary.update();
     }
 
     /**

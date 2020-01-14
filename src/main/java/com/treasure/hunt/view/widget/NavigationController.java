@@ -11,7 +11,6 @@ import javafx.scene.control.TextField;
 import lombok.Getter;
 
 public class NavigationController {
-
     @Getter
     private ObjectProperty<GameManager> gameManager = new SimpleObjectProperty<>();
 
@@ -38,7 +37,8 @@ public class NavigationController {
             nextButton.disableProperty().bind(managerInstance.getStepForwardImpossibleBinding());
             previousButton.disableProperty().bind(managerInstance.getStepBackwardImpossibleBinding());
             stepCountField.disableProperty().bind(gameManager.isNull());
-
+            stepCountLabel.setText("of " + (managerInstance.getMoveSizeBinding().get() - 1));
+            stepCountField.setText(Integer.toString(managerInstance.getViewIndex().get()));
             managerInstance.getMoveSizeBinding().addListener(
                     (obs, oldValue, newValue) -> stepCountLabel.setText("of " + (((int) newValue) - 1))
             );

@@ -3,4 +3,4 @@
  *
  * @author jotoh
  */
-package com.treasure.hunt.jts;
+package com.treasure.hunt.jts.awt;

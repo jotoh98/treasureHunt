@@ -2,9 +2,8 @@ package com.treasure.hunt.strategy.hider.impl;
 
 
 import com.treasure.hunt.game.mods.hideandseek.HideAndSeekHider;
-import com.treasure.hunt.geom.Circle;
-import com.treasure.hunt.geom.Ellipse;
-import com.treasure.hunt.geom.GeometryAngle;
+import com.treasure.hunt.jts.geom.Circle;
+import com.treasure.hunt.jts.geom.GeometryAngle;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
@@ -43,7 +42,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
 
     @Getter
     private GeometryItem<Geometry> possibleArea;
-    private GeometryItem<Ellipse> boundingCircle;
+    private GeometryItem<Circle> boundingCircle;
     private GeometryItem<Polygon> checkedArea; //the area which has been visited by the player
 
     //Algorithm Parameters
@@ -71,7 +70,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         currentPlayersPosition = startingPoint;
         Coordinate py = startingPoint.getCoordinate();
 
-        Ellipse c = new Ellipse(startingPoint.getCoordinate(), boundingCircleSize, gf);
+        Circle c = new Circle(startingPoint.getCoordinate(), boundingCircleSize, gf);
 
         boundingCircle = new GeometryItem<>(c, GeometryType.BOUNDING_CIRCE);
         possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{c}, gf), GeometryType.POSSIBLE_TREASURE);
@@ -351,7 +350,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
     }
 
     @Override
-    public void init(Point searcherStartPosition, int width, int height) {
+    public void init(Point searcherStartPosition) {
 
     }
 

@@ -5,49 +5,53 @@
 <?import javafx.scene.layout.*?>
 <?import java.lang.String?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" id="root" maxHeight="-Infinity" maxWidth="-Infinity"
-            minHeight="-Infinity"
-            minWidth="-Infinity" prefHeight="600.0" prefWidth="1080.0"
+            minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1080.0"
             xmlns="http://javafx.com/javafx/11" fx:controller="com.treasure.hunt.view.MainController">
     <bottom>
         <HBox BorderPane.alignment="CENTER">
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="5.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label id="logLabel" fx:id="logLabel" text="Info">
+                            <HBox.margin>
+                                <Insets left="10.0"/>
+                            </HBox.margin>
+                        </Label>
+                    </children>
+                </HBox>
+                <fx:include source="navigator.fxml" fx:id="stepViewNavigator"/>
+            </children>
             <styleClass>
                 <String fx:value="toolbar"/>
                 <String fx:value="bottom"/>
             </styleClass>
-            <HBox alignment="CENTER_LEFT" spacing="5.0" HBox.hgrow="ALWAYS">
-                <Label id="logLabel" fx:id="logLabel" text="Info">
-                    <HBox.margin>
-                        <Insets left="10.0"/>
-                    </HBox.margin>
-                </Label>
-            </HBox>
-            <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
-                <Button fx:id="previousButton" disable="true" mnemonicParsing="false"
-                        onAction="#previousButtonClicked" text="Previous"/>
-                <Button fx:id="nextButton" disable="true" mnemonicParsing="false"
-                        onAction="#nextButtonClicked" text="Next"/>
-            </HBox>
         </HBox>
     </bottom>
     <top>
         <HBox BorderPane.alignment="CENTER">
+            <children>
+                <HBox alignment="CENTER_LEFT" maxWidth="60000.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label text="TreasureHunt"/>
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER_RIGHT" maxWidth="60000.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <ComboBox fx:id="searcherList" maxWidth="250.0" minWidth="150.0" promptText="Select searcher"/>
+                        <ComboBox fx:id="hiderList" maxWidth="250.0" minWidth="150.0" promptText="Select hider"/>
+                        <ComboBox fx:id="gameEngineList" maxWidth="250.0" minWidth="150.0"
+                                  promptText="Select game manager"/>
+                        <Button fx:id="startGameButton" disable="true" maxHeight="1.7976931348623157E308"
+                                mnemonicParsing="false" onAction="#onStartButtonClicked" text="Init"
+                                textAlignment="CENTER"/>
+                    </children>
+                </HBox>
+
+            </children>
             <styleClass>
                 <String fx:value="toolbar"/>
                 <String fx:value="top"/>
             </styleClass>
-            <HBox alignment="CENTER_LEFT" maxWidth="60000.0" spacing="5.0" HBox.hgrow="ALWAYS">
-                <Label text="TreasureHunt"/>
-            </HBox>
-            <HBox alignment="CENTER_RIGHT" maxWidth="60000.0" spacing="5.0" HBox.hgrow="ALWAYS">
-                <ComboBox fx:id="searcherList" maxWidth="250.0" minWidth="150.0" promptText="Select searcher"/>
-                <ComboBox fx:id="hiderList" maxWidth="250.0" minWidth="150.0" promptText="Select hider"/>
-                <ComboBox fx:id="gameEngineList" maxWidth="250.0" minWidth="150.0"
-                          promptText="Select game manager"/>
-                <Button fx:id="startGameButton" disable="true" maxHeight="1.7976931348623157E308"
-                        mnemonicParsing="false" onAction="#onStartButtonClicked" text="Init"
-                        textAlignment="CENTER"/>
-            </HBox>
-
         </HBox>
     </top>
     <center>

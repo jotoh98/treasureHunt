@@ -33,7 +33,10 @@ public enum GeometryType {
 
     STANDARD(true, ""),
 
-    BOUNDING_CIRCE(false,"bounding circle")
+    BOUNDING_CIRCE(false, "bounding circle"),
+
+    GRID(true, "Grid", false),
+    HALFPLANE(true, "HalfPlane", true)
     // TODO add more..
     ;
 

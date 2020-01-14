@@ -9,6 +9,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ * @author Trostorff, Daniel
+ */
 public class Statistic {
     private List<Move> moves;
 
@@ -72,35 +75,20 @@ public class Statistic {
     }
 
     public List<StatisticObject> calculate(List<Move> moves) {
-        this.moves = moves;
-        List<StatisticObject> statistics = Arrays.asList(
-                new StatisticObject("Trace length",
-                        "If finished: Length of searchers path; if unfinished: Length of searchers path plus the direct route from searchers last point to treasure",
-                        getTraceLength()
+        this.moves = new ArrayList<>(moves);
+        return new ArrayList<>(Arrays.asList(
+                new StatisticObject(StatisticObject.StatisticInfo.TRACE_LENGTH, getTraceLength()
                 ),
-                new StatisticObject( "Solution quotient",
-                        "The Quotient of the optimum solution and the trace length",
-                        getSolutionQuotient()
+                new StatisticObject(StatisticObject.StatisticInfo.SOLUTION_QUOTIENT, getSolutionQuotient()
                 ),
-                new StatisticObject( "Hint-requests",
-                        "Number of requested hints",
-                        getHintRequests()
+                new StatisticObject(StatisticObject.StatisticInfo.HINT_REQUEST, getHintRequests()
 
                 ),
-                new StatisticObject( "Hint-trace-length-ratio",
-                        "The quotient of hint requests and trace length",
-                        getHintTraceLengthRatio()
+                new StatisticObject(StatisticObject.StatisticInfo.HINT_TRACE_LENGTH_RATION, getHintTraceLengthRatio()
                 ),
-                new StatisticObject( "Optimal solution",
-                        "The euclidean distance between treasure and searchers start position.",
-                        getOptimumSolution()
-                ),
-                new StatisticObject( "Optimal solution",
-                        "The euclidean distance between treasure and searchers start position.",
-                        getOptimumSolution()
+                new StatisticObject(StatisticObject.StatisticInfo.OPTIMAL_SOLUTION, getOptimumSolution()
                 )
-        );
-        return statistics;
+        ));
     }
 }
 

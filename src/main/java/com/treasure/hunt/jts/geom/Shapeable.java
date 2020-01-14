@@ -1,6 +1,6 @@
-package com.treasure.hunt.geom;
+package com.treasure.hunt.jts.geom;
 
-import com.treasure.hunt.jts.AdvancedShapeWriter;
+import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
 
 import java.awt.*;
 

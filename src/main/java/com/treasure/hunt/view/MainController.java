@@ -2,18 +2,24 @@ package com.treasure.hunt.view;
 
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.geom.Grid;
+import com.treasure.hunt.io.FileService;
+import com.treasure.hunt.jts.geom.Grid;
+import com.treasure.hunt.jts.geom.HalfPlane;
 import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
+import com.treasure.hunt.utils.EventBusUtils;
 import com.treasure.hunt.utils.ReflectionUtils;
 import com.treasure.hunt.utils.Requires;
 import com.treasure.hunt.view.widget.*;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -26,6 +32,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.geom.Coordinate;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Modifier;
@@ -81,7 +88,6 @@ public class MainController {
     @Getter
     private final ObjectProperty<GameManager> gameManager = new SimpleObjectProperty<>();
 
-
     public void initialize() {
         canvasController.setGameManager(gameManager);
         setListStringConverters();
@@ -91,6 +97,30 @@ public class MainController {
         addToolbarStyleClasses();
         bindWidgetBarVisibility();
         addBindingsToGameManager();
+        listenToGameMangerLoad();
+        listenToLogLabelEvent();
+        addGameIndependentWidgets();
+    }
+
+    private void addGameIndependentWidgets() {
+        Widget<SaveAndLoadController, ?> saveAndLoadWidget = new Widget<>("/layout/saveAndLoad.fxml");
+        saveAndLoadWidget.getController().init(gameManager, searcherList, hiderList, gameEngineList);
+        insertWidget(true, "Save & Load", saveAndLoadWidget.getComponent(), true);
+    }
+
+    private void listenToLogLabelEvent() {
+        EventBusUtils.LOG_LABEL_EVENT.addListener(logLabelMessage -> Platform.runLater(() -> EventBusUtils.LOG_LABEL_EVENT.trigger(logLabelMessage)));
+    }
+
+    private void listenToGameMangerLoad() {
+        EventBusUtils.GAME_MANAGER_LOADED_EVENT.addListener(loadedGameManager -> Platform.runLater(() -> {
+            try {
+                initGameManager(loadedGameManager);
+            } catch (Exception e) {
+                log.error("Error loading GameManger in UI", e);
+                EventBusUtils.LOG_LABEL_EVENT.trigger("Error loading GameManger in UI from file");
+            }
+        }));
     }
 
     /**
@@ -101,7 +131,7 @@ public class MainController {
             if (gameManager.isNull().get()) {
                 return;
             }
-            gameManager.get().getFinishedProperty().addListener(invalidation -> logLabel.setText("Game ended"));
+            gameManager.get().getFinishedProperty().addListener(invalidation -> EventBusUtils.LOG_LABEL_EVENT.trigger("Game ended"));
         });
         gameManager.bindBidirectional(stepViewNavigatorController.getGameManager());
     }
@@ -121,7 +151,6 @@ public class MainController {
         if (!left) {
             savedBar.set(rightWidgetBar);
         }
-
 
         toolbarController.getToggleGroup().selectedToggleProperty().addListener((observableValue, oldItem, newItem) -> {
             final int readPosition = left ? 0 : mainSplitPane.getItems().size() - 1;
@@ -151,16 +180,17 @@ public class MainController {
         pointInspectorWidget.getController().init(gameManager);
         insertWidget(true, "Inspector", pointInspectorWidget.getComponent());
 
-        Widget<SaveAndLoadController, ?> saveAndLoadWidget = new Widget<>("/layout/saveAndLoad.fxml");
-        saveAndLoadWidget.getController().init(gameManager, logLabel);
-        insertWidget(true, "Save & Load", saveAndLoadWidget.getComponent());
-
         Widget<BeatWidgetController, ?> beatWidget = new Widget<>("/layout/beatWidget.fxml");
-        beatWidget.getController().init(gameManager, logLabel);
+        beatWidget.getController().init(gameManager);
         insertWidget(true, "Game controls", beatWidget.getComponent());
+
         Widget<StatisticsWidgetController, ?> statisticsWidget = new Widget<>("/layout/statisticsWidget.fxml");
-        statisticsWidget.getController().init(gameManager, logLabel);
+        statisticsWidget.getController().init(gameManager);
         insertWidget(true, "Statistics", statisticsWidget.getComponent());
+
+        Widget<StatusMessageWidgetController, ?> statusWidget = new Widget<>("/layout/statusMessageWidget.fxml");
+        statusWidget.getController().init(gameManager);
+        insertWidget(false, "Status", statusWidget.getComponent());
 
         Widget<ScaleController, ?> scaleWidget = new Widget<>("/layout/scaling.fxml");
         scaleWidget.getController().init(canvasController);
@@ -310,17 +340,39 @@ public class MainController {
         assert searcherClass != null;
         assert hiderClass != null;
         assert gameEngineClass != null;
-
-        boolean initialize = gameManager.isNull().get();
-
         try {
-            gameManager.set(new GameManager(searcherClass, hiderClass, gameEngineClass));
-            logLabel.setText("Game initialized");
-            gameManager.get().addUtilityGeometry(new GeometryItem<>(new Grid()));
+            initGameManager(new GameManager(searcherClass, hiderClass, gameEngineClass));
         } catch (Exception e) {
             log.error("Something important crashed", e);
-            logLabel.setText("Could not create game");
+            EventBusUtils.LOG_LABEL_EVENT.trigger("Could not create game");
         }
+    }
+
+    private void initGameManager(GameManager gameManagerInstance) {
+        gameManagerInstance.init();
+        boolean initialize = gameManager.isNull().get();
+
+        gameManager.set(gameManagerInstance);
+        EventBusUtils.LOG_LABEL_EVENT.trigger("Game initialized");
+        gameManager.get().addUtilityGeometry(
+                new GeometryItem<>(new Grid(), GeometryType.GRID)
+        );
+
+        /*gameManager.get().addUtilityGeometry(
+                new GeometryItem<>(new Line(new Coordinate(0, 0), new Coordinate(1, 1)))
+        );
+
+        gameManager.get().addUtilityGeometry(
+                new GeometryItem<>(new Ray(new Coordinate(10, 5), new Coordinate(7, 6)))
+        );*/
+
+        final HalfPlane halfPlane = new HalfPlane(new Coordinate(0, 0), new Coordinate(1, 1));
+        gameManager.get().addUtilityGeometry(
+                new GeometryItem<>(
+                        halfPlane,
+                        GeometryType.HALFPLANE
+                )
+        );
 
         if (initialize) {
             gameManager.addListener(change -> canvasController.drawShapes());
@@ -331,5 +383,9 @@ public class MainController {
     public void initGameUI() {
         canvasController.drawShapes();
         addWidgets();
+    }
+
+    public void onLoadGame(ActionEvent actionEvent) {
+        FileService.getInstance().loadGameManager();
     }
 }
