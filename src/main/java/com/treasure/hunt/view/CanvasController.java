@@ -64,7 +64,7 @@ public class CanvasController {
             if (gameManager.isNotNull().get()) {
                 deleteShapes();
                 gameManager.get().getGeometryItems(true).forEach(geometryItem ->
-                        geometryItem.draw(graphics2D, shapeWriter)
+                        geometryItem.draw(graphics2D, shapeWriter, canvas.getGraphicsContext2D())
                 );
             }
         });

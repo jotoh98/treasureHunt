@@ -2,7 +2,7 @@ package com.treasure.hunt.cli;
 
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.service.SeriesService;
+import com.treasure.hunt.service.io.SeriesService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import me.tongfei.progressbar.ProgressBar;

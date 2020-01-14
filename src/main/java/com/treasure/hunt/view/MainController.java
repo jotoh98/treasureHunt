@@ -2,7 +2,7 @@ package com.treasure.hunt.view;
 
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.io.FileService;
+import com.treasure.hunt.service.io.FileService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.EventBusUtils;

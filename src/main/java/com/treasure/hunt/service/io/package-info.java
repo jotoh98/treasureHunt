@@ -3,4 +3,4 @@
  *
  * @author axel1200
  */
-package com.treasure.hunt.io;
+package com.treasure.hunt.service.io;
