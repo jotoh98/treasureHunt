@@ -27,45 +27,73 @@ public abstract class GeometryUtility extends Geometry implements Shapeable {
         this.coordinates = coordinates;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getGeometryType() {
         return "GeometryUtility";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isSimple() {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getNumPoints() {
         return coordinates.length;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getDimension() {
         return 2;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getBoundaryDimension() {
         return getDimension();
     }
 
+    /**
+     * @param n the index of the {@link Coordinate}, we want from the coordinate array, stored in {@code this}.
+     * @return the {@code n}-th {@link Coordinate}, stored in {@code this}.
+     */
     public Coordinate getCoordinate(int n) {
         return coordinates[n];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Coordinate getCoordinate() {
         return getCoordinate(0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Coordinate[] getCoordinates() {
         return coordinates;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isEmpty() {
         return !Arrays.stream(coordinates).anyMatch(a ->
@@ -73,6 +101,9 @@ public abstract class GeometryUtility extends Geometry implements Shapeable {
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equalsExact(Geometry other, double tolerance) {
         return Arrays.stream(coordinates).allMatch(a ->
@@ -80,6 +111,9 @@ public abstract class GeometryUtility extends Geometry implements Shapeable {
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void apply(CoordinateFilter filter) {
         for (Coordinate coordinate : coordinates) {
@@ -87,22 +121,33 @@ public abstract class GeometryUtility extends Geometry implements Shapeable {
         }
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void apply(CoordinateSequenceFilter filter) {
         //TODO: necessary
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void apply(GeometryFilter filter) {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void apply(GeometryComponentFilter filter) {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Envelope computeEnvelopeInternal() {
         double xMax = Double.NEGATIVE_INFINITY;
@@ -130,6 +175,9 @@ public abstract class GeometryUtility extends Geometry implements Shapeable {
         return new Envelope(xMax, xMin, yMax, yMin);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected int compareToSameClass(Object o) {
         GeometryUtility other = (GeometryUtility) o;
@@ -158,6 +206,9 @@ public abstract class GeometryUtility extends Geometry implements Shapeable {
         return comp.compare(coordinates, other.coordinates);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void normalize() {
         if (coordinates.length < 1) {

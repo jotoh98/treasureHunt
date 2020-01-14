@@ -117,6 +117,9 @@ public class GeometryAngle extends LineString implements Shapeable {
         return extend;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Shape toShape(AdvancedShapeWriter shapeWriter) {
         GeneralPath generalPath = new GeneralPath();
@@ -129,6 +132,9 @@ public class GeometryAngle extends LineString implements Shapeable {
         return generalPath;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getGeometryType() {
         return "Angle";
@@ -141,6 +147,9 @@ public class GeometryAngle extends LineString implements Shapeable {
         return testExtend >= 0 && testExtend <= extend();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public GeometryAngle copy() {
         return new GeometryAngle(factory, getRight().copy(), getCenter().copy(), getLeft().copy());

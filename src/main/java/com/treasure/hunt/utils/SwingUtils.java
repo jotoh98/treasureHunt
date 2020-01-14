@@ -34,8 +34,4 @@ public class SwingUtils {
             }
         }
     }
-
-    public static void infoPopUp(String message, String title) {
-        JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
-    }
 }
