@@ -3,6 +3,8 @@ package com.treasure.hunt.strategy.searcher;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.geom.HintAndMovement;
+import com.treasure.hunt.utils.JTSUtils;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
@@ -25,6 +27,14 @@ public class Movement extends HintAndMovement {
     private List<GeometryItem<Point>> points = new ArrayList<>();
 
     public Movement() {
+    }
+
+    public Movement(Coordinate... coordinates) {
+        this(
+                Arrays.stream(coordinates)
+                        .map(JTSUtils.GEOMETRY_FACTORY::createPoint)
+                        .toArray(Point[]::new)
+        );
     }
 
     public Movement(Point... points) {

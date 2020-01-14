@@ -46,7 +46,10 @@ public class Ray extends LineSegment implements Shapeable {
      * @param coordinate coordinate to check
      * @return whether point lays in ray or not
      */
-    boolean interSectionInRay(Coordinate coordinate) {
+    public boolean inRay(Coordinate coordinate) {
+        if (!inLine(coordinate)) {
+            return false;
+        }
         Vector2D rayVector = new Vector2D(p0, p1);
         Vector2D testVector = new Vector2D(p0, coordinate);
         return JTSUtils.signsEqual(rayVector, testVector);
@@ -62,7 +65,23 @@ public class Ray extends LineSegment implements Shapeable {
     public Coordinate intersection(LineSegment line) {
         Coordinate intersection = lineIntersection(line);
 
-        if (intersection != null && interSectionInRay(intersection) && JTSUtils.inSegment(line, intersection)) {
+        if (intersection != null && inRay(intersection) && JTSUtils.inSegment(line, intersection)) {
+            return intersection;
+        }
+
+        return null;
+    }
+
+    /**
+     * Intersect ray with {@link Ray}
+     *
+     * @param ray ray to intersect ray with
+     * @return intersection between two ray, if there is none: null
+     */
+    public Coordinate intersection(Ray ray) {
+        final Coordinate intersection = lineIntersection(ray);
+
+        if (intersection != null && inRay(intersection) && ray.inRay(intersection)) {
             return intersection;
         }
 
@@ -78,11 +97,15 @@ public class Ray extends LineSegment implements Shapeable {
     public Coordinate intersection(Line line) {
         Coordinate intersection = lineIntersection(line);
 
-        if (intersection != null && interSectionInRay(intersection)) {
+        if (intersection != null && inRay(intersection)) {
             return intersection;
         }
 
         return null;
+    }
+
+    public boolean intersects(LineSegment line) {
+        return intersection(line) != null;
     }
 
     /**
@@ -112,5 +135,9 @@ public class Ray extends LineSegment implements Shapeable {
         }
 
         return shapeWriter.createLine(intersections.get(0), intersections.get(1));
+    }
+
+    public boolean inLine(Coordinate c) {
+        return JTSUtils.inLine(this, c);
     }
 }

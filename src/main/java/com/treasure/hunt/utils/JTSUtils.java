@@ -4,6 +4,7 @@ import com.treasure.hunt.jts.awt.CanvasBoundary;
 import com.treasure.hunt.jts.geom.GeometryAngle;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import org.locationtech.jts.algorithm.Angle;
+import org.locationtech.jts.algorithm.ConvexHull;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.math.Vector2D;
 
@@ -62,10 +63,21 @@ public final class JTSUtils {
      *
      * @param segment    line segment
      * @param coordinate coordinate to check
-     * @return
+     * @return whether or not the coordinate lays inside of the segment
      */
     public static boolean inSegment(LineSegment segment, Coordinate coordinate) {
         return segment.distance(coordinate) < 1e-8;
+    }
+
+    /**
+     * Checks if a coordinate lays in the infinite line.
+     *
+     * @param line       infinite line segment
+     * @param coordinate coordinate to check
+     * @return whether or not the coordinate lays in the infinite line
+     */
+    public static boolean inLine(LineSegment line, Coordinate coordinate) {
+        return line.distancePerpendicular(coordinate) < 1e-8;
     }
 
     /**
@@ -211,5 +223,28 @@ public final class JTSUtils {
             }
         });
         return intersections;
+    }
+
+    /**
+     * Check, if a vector is the null vector.
+     *
+     * @param v the vector to test
+     * @return whether all of the vectors components are 0 or not
+     */
+    public static boolean isNullVector(Vector2D v) {
+        return v.getX() == 0 && v.getY() == 0;
+    }
+
+    /**
+     * Get the {@link ConvexHull} for a list of {@link Coordinate}s.
+     *
+     * @param coordinates the list of coordinates
+     * @return the convex hull for the list of coordinates
+     */
+    public static ConvexHull getConvexHull(List<Coordinate> coordinates) {
+        return new ConvexHull(
+                coordinates.toArray(new Coordinate[0]),
+                JTSUtils.GEOMETRY_FACTORY
+        );
     }
 }

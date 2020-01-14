@@ -2,9 +2,7 @@ package com.treasure.hunt.jts.geom;
 
 import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
 import com.treasure.hunt.utils.JTSUtils;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.*;
 import org.locationtech.jts.math.Vector2D;
 
 import java.awt.*;
@@ -159,7 +157,7 @@ public class GeometryAngle extends LineString implements Shapeable {
      *
      * @return angle between x-axis and left arm
      */
-    private double leftAngle() {
+    public double leftAngle() {
         return org.locationtech.jts.algorithm.Angle.angle(getCenter(), getLeft());
     }
 
@@ -219,6 +217,49 @@ public class GeometryAngle extends LineString implements Shapeable {
         testAngle.setRight(coordinate);
         double testExtend = testAngle.extend();
         return testExtend >= 0 && testExtend <= extend();
+    }
+
+    /**
+     * Ask, whether a geometry lays in part in the view of the angle.
+     *
+     * @param g the tested geometry
+     * @return whether the geometry partly lays in the view
+     */
+    public boolean inView(Geometry g) {
+        for (Coordinate c : g.getCoordinates()) {
+            if (inView(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean inView(Ray ray) {
+        return leftRay().intersection(ray) != null || rightRay().intersection(ray) != null;
+    }
+
+    public boolean inView(LineSegment lineSegment) {
+        return inView(lineSegment) ||
+                leftRay().intersection(lineSegment) != null ||
+                rightRay().intersection(lineSegment) != null;
+    }
+
+    /**
+     * Get the left angle arm in a {@link Ray} representation.
+     *
+     * @return ray representation of the left angle arm
+     */
+    public Ray leftRay() {
+        return new Ray(getCenter(), getLeft());
+    }
+
+    /**
+     * Get the right angle arm in a {@link Ray} representation.
+     *
+     * @return ray representation of the right angle arm
+     */
+    public Ray rightRay() {
+        return new Ray(getCenter(), getRight());
     }
 
     /**
