@@ -13,6 +13,10 @@ import org.locationtech.jts.util.GeometricShapeFactory;
  * @see org.locationtech.jts.geom.Geometry
  */
 public class Circle extends Polygon {
+
+    protected Coordinate coordinate;
+    protected double radius;
+
     /**
      * The constructor
      *
@@ -29,6 +33,8 @@ public class Circle extends Polygon {
         geometricShapeFactory.setSize(radius * 2);
         Polygon circle = geometricShapeFactory.createCircle();
         this.shell = (LinearRing) circle.getExteriorRing();
+        this.coordinate = coordinate;
+        this.radius = radius;
     }
 
     /**

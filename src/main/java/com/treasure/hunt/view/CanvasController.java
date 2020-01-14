@@ -184,10 +184,12 @@ public class CanvasController {
             lastMouseClick = new Coordinate(mousePositionInGameContext.getX(), mousePositionInGameContext.getY());
 
             if (geometryItemsList.size() < 1) {
+                highlighter = null;
                 return;
             }
         } else {
             if (geometryItemsList.size() < 1) {
+                highlighter = null;
                 return;
             }
             geometryItemsListIndex = (geometryItemsListIndex + 1) % geometryItemsList.size();
