@@ -29,7 +29,6 @@ import java.util.function.Consumer;
 @Slf4j
 public class FileService {
     private static FileService instance;
-    private final Kryo kryo;
     private final FileChooser fileChooser;
 
     private FileService() {
@@ -37,10 +36,13 @@ public class FileService {
         fileChooser.setInitialFileName("saved.hunt");
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("hunt instance files (*.hunt)", "*.hunt");
         fileChooser.getExtensionFilters().add(extFilter);
+    }
 
-        kryo = new Kryo();
+    private Kryo newKryo() {
+        Kryo kryo = new Kryo();
         kryo.setRegistrationRequired(false);
         kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
+        return kryo;
     }
 
     public static FileService getInstance() {
@@ -52,19 +54,19 @@ public class FileService {
 
     public void writeGameDataToFile(GameManager gameManager, Path filePath) throws IOException {
         Output output = new Output(new FileOutputStream(filePath.toFile()));
-        kryo.writeObject(output, new DataWithVersion(GameManager.class.getPackage().getImplementationVersion(), gameManager));
+        newKryo().writeObject(output, new DataWithVersion(GameManager.class.getPackage().getImplementationVersion(), gameManager));
         output.close();
     }
 
     public void writeGameDataToOutputStream(GameManager gameManager, OutputStream outputStream) throws IOException {
         Output output = new Output(outputStream);
-        kryo.writeObject(output, new DataWithVersion(GameManager.class.getPackage().getImplementationVersion(), gameManager));
+        newKryo().writeObject(output, new DataWithVersion(GameManager.class.getPackage().getImplementationVersion(), gameManager));
         output.flush();
     }
 
     public void writeStatisticsWithId(List<StatisticsWithId> statisticsWithIds, OutputStream outputStream) throws IOException {
         Output output = new Output(outputStream);
-        kryo.writeObject(output, new DataWithVersion(StatisticsWithId.class.getPackage().getImplementationVersion(), statisticsWithIds));
+        newKryo().writeObject(output, new DataWithVersion(StatisticsWithId.class.getPackage().getImplementationVersion(), statisticsWithIds));
         output.flush();
     }
 
@@ -85,7 +87,7 @@ public class FileService {
     @SneakyThrows
     public void readDataFromStream(InputStream inputStream, Consumer<DataWithVersion> finishedCallBack) {
         Input input = new Input(inputStream);
-        DataWithVersion dataWithVersion = kryo.readObject(input, DataWithVersion.class);
+        DataWithVersion dataWithVersion = newKryo().readObject(input, DataWithVersion.class);
         input.close();
         if (correctVersion(dataWithVersion)) {
             Platform.runLater(() -> {

@@ -28,12 +28,9 @@ import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.reflections.Reflections;
 
-import java.lang.reflect.Modifier;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 /**
  * @author jotoh
@@ -236,20 +233,15 @@ public class MainController {
     }
 
     private void fillLists() {
-        Reflections searcherReflections = new Reflections("com.treasure.hunt.strategy.searcher.impl");
-        Reflections hiderReflections = new Reflections("com.treasure.hunt.strategy.hider.impl");
-        Reflections reflections = new Reflections("com.treasure.hunt.game");
 
-        Set<Class<? extends Searcher>> allSearchers = searcherReflections.getSubTypesOf(Searcher.class);
-        allSearchers = allSearchers.stream().filter(aClass -> !Modifier.isAbstract(aClass.getModifiers())).collect(Collectors.toSet());
+        Set<Class<? extends Searcher>> allSearchers = ReflectionUtils.getAllSearchers();
+        Set<Class<? extends Hider>> allHiders = ReflectionUtils.getAllHiders();
+        Set<Class<? extends GameEngine>> allGameEngines = ReflectionUtils.getAllGameEngines();
 
         ObservableList<Class<? extends Searcher>> observableSearchers = FXCollections.observableArrayList(allSearchers);
         FilteredList<Class<? extends Searcher>> filteredSearchers = new FilteredList<>(observableSearchers);
 
         searcherList.setItems(filteredSearchers);
-
-        Set<Class<? extends Hider>> allHiders = hiderReflections.getSubTypesOf(Hider.class);
-        allHiders = allHiders.stream().filter(aClass -> !Modifier.isAbstract(aClass.getModifiers())).collect(Collectors.toSet());
 
         ObservableList<Class<? extends Hider>> observableHiders = FXCollections.observableArrayList(allHiders);
         FilteredList<Class<? extends Hider>> filteredHiders = new FilteredList<>(observableHiders);
@@ -268,9 +260,6 @@ public class MainController {
                 })
         );
 
-        Set<Class<? extends GameEngine>> allGameEngines = reflections.getSubTypesOf(GameEngine.class);
-        allGameEngines = allGameEngines.stream().filter(aClass -> !Modifier.isAbstract(aClass.getModifiers())).collect(Collectors.toSet());
-        allGameEngines.add(GameEngine.class);
         ObservableList<Class<? extends GameEngine>> observableGameEngines = FXCollections.observableArrayList(allGameEngines);
         FilteredList<Class<? extends GameEngine>> filteredGameEngines = new FilteredList<>(observableGameEngines);
 

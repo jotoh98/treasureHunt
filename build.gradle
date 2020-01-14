@@ -29,6 +29,8 @@ dependencies {
     implementation 'org.reflections:reflections:0.9.11'
     implementation 'com.esotericsoftware:kryo:4.0.2'
     implementation 'com.github.Fylipp:easy-events:v1.1.0'
+    implementation 'info.picocli:picocli:4.1.4'
+    implementation 'me.tongfei:progressbar:0.8.0'
     testCompile 'org.mockito:mockito-core:3.0.0'
     testCompile group: 'org.testfx', name: 'testfx-junit', version: '4.0.8-alpha'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
