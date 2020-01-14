@@ -154,6 +154,16 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>javafx.scene.control.ComboBox&lt;java.lang.Class&lt;? extends <a href="../../game/GameEngine.html" title="class in com.treasure.hunt.game">GameEngine</a>&gt;&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#gameEngineList">gameEngineList</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>javafx.scene.control.ComboBox&lt;java.lang.Class&lt;? extends <a href="../../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider">Hider</a>&gt;&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hiderList">hiderList</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>javafx.scene.control.ProgressIndicator</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#progressIndicator">progressIndicator</a></span></code></th>
 <td class="colLast">&nbsp;</td>
@@ -161,6 +171,21 @@ extends java.lang.Object</pre>
 <tr class="rowColor">
 <td class="colFirst"><code>javafx.scene.control.Spinner&lt;java.lang.Integer&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#roundSpinner">roundSpinner</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>javafx.scene.control.Button</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#runMultipleButton">runMultipleButton</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>javafx.scene.control.Button</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#saveButton">saveButton</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>javafx.scene.control.ComboBox&lt;java.lang.Class&lt;? extends <a href="../../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher">Searcher</a>&gt;&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#searcherList">searcherList</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -204,7 +229,10 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#init(javafx.beans.property.ObjectProperty)">init</a></span>&#8203;(javafx.beans.property.ObjectProperty&lt;<a href="../../game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a>&gt;&nbsp;gameManager)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#init(javafx.beans.property.ObjectProperty,javafx.scene.control.ComboBox,javafx.scene.control.ComboBox,javafx.scene.control.ComboBox)">init</a></span>&#8203;(javafx.beans.property.ObjectProperty&lt;<a href="../../game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a>&gt;&nbsp;gameManager,
+    javafx.scene.control.ComboBox&lt;java.lang.Class&lt;? extends <a href="../../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher">Searcher</a>&gt;&gt;&nbsp;searcherList,
+    javafx.scene.control.ComboBox&lt;java.lang.Class&lt;? extends <a href="../../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider">Hider</a>&gt;&gt;&nbsp;hiderList,
+    javafx.scene.control.ComboBox&lt;java.lang.Class&lt;? extends <a href="../../game/GameEngine.html" title="class in com.treasure.hunt.game">GameEngine</a>&gt;&gt;&nbsp;gameEngineList)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
@@ -256,6 +284,33 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Field Detail</h3>
+<a id="searcherList">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>searcherList</h4>
+<pre>public&nbsp;javafx.scene.control.ComboBox&lt;java.lang.Class&lt;? extends <a href="../../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher">Searcher</a>&gt;&gt; searcherList</pre>
+</li>
+</ul>
+<a id="hiderList">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>hiderList</h4>
+<pre>public&nbsp;javafx.scene.control.ComboBox&lt;java.lang.Class&lt;? extends <a href="../../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider">Hider</a>&gt;&gt; hiderList</pre>
+</li>
+</ul>
+<a id="gameEngineList">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>gameEngineList</h4>
+<pre>public&nbsp;javafx.scene.control.ComboBox&lt;java.lang.Class&lt;? extends <a href="../../game/GameEngine.html" title="class in com.treasure.hunt.game">GameEngine</a>&gt;&gt; gameEngineList</pre>
+</li>
+</ul>
 <a id="roundSpinner">
 <!--   -->
 </a>
@@ -268,10 +323,28 @@ extends java.lang.Object</pre>
 <a id="progressIndicator">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>progressIndicator</h4>
 <pre>public&nbsp;javafx.scene.control.ProgressIndicator progressIndicator</pre>
+</li>
+</ul>
+<a id="saveButton">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>saveButton</h4>
+<pre>public&nbsp;javafx.scene.control.Button saveButton</pre>
+</li>
+</ul>
+<a id="runMultipleButton">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>runMultipleButton</h4>
+<pre>public&nbsp;javafx.scene.control.Button runMultipleButton</pre>
 </li>
 </ul>
 </li>
@@ -312,13 +385,16 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public&nbsp;void&nbsp;initialize()</pre>
 </li>
 </ul>
-<a id="init(javafx.beans.property.ObjectProperty)">
+<a id="init(javafx.beans.property.ObjectProperty,javafx.scene.control.ComboBox,javafx.scene.control.ComboBox,javafx.scene.control.ComboBox)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>init</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;init&#8203;(javafx.beans.property.ObjectProperty&lt;<a href="../../game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a>&gt;&nbsp;gameManager)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;init&#8203;(javafx.beans.property.ObjectProperty&lt;<a href="../../game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a>&gt;&nbsp;gameManager,
+                 javafx.scene.control.ComboBox&lt;java.lang.Class&lt;? extends <a href="../../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher">Searcher</a>&gt;&gt;&nbsp;searcherList,
+                 javafx.scene.control.ComboBox&lt;java.lang.Class&lt;? extends <a href="../../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider">Hider</a>&gt;&gt;&nbsp;hiderList,
+                 javafx.scene.control.ComboBox&lt;java.lang.Class&lt;? extends <a href="../../game/GameEngine.html" title="class in com.treasure.hunt.game">GameEngine</a>&gt;&gt;&nbsp;gameEngineList)</pre>
 </li>
 </ul>
 <a id="save(javafx.event.ActionEvent)">
