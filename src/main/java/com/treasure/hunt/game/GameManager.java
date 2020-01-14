@@ -370,6 +370,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
                 .filter(geometryItem ->
                         mouse.distance((Geometry) geometryItem.getObject()) <= distance
                 )
+                .filter(geometryItem -> geometryItem.getGeometryStyle().isVisible())
                 .sorted((geometryItem, secondGeometryItem) ->
                         (int) (mouse.distance((Geometry) geometryItem.getObject()) -
                                 mouse.distance((Geometry) secondGeometryItem.getObject()))
