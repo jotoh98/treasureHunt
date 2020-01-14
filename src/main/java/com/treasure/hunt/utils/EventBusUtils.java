@@ -6,6 +6,8 @@ import com.treasure.hunt.analysis.StatisticsWithIdsAndPath;
 import com.treasure.hunt.game.GameManager;
 
 /**
+ * This class provides the event buses.
+ *
  * @author Trostorff
  */
 public class EventBusUtils {

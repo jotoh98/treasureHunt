@@ -210,13 +210,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
-     * @return whether the game of the {@link GameEngine} is finished or not.
-     */
-    public boolean isGameFinished() {
-        return gameEngine.isFinished();
-    }
-
-    /**
      * @return {@code true}, if the shown step is the most up to date one. {@code false}, otherwise.
      */
     public boolean latestStepViewed() {
@@ -300,12 +293,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
-     * @return {@code true}, if the shown step is the first one. {@code false}, otherwise.
+     * {@inheritDoc}
      */
-    public boolean isFirstStepShown() {
-        return stepBackwardImpossibleBinding.getValue();
-    }
-
     @Override
     public void write(Kryo kryo, Output output) {
         kryo.writeObject(output, gameEngine);

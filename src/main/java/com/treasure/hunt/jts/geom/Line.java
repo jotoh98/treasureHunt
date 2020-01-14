@@ -19,6 +19,9 @@ public class Line extends Ray {
         this(new Coordinate(x1, y1), new Coordinate(x2, y2));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Coordinate intersection(LineSegment line) {
         return super.lineIntersection(line);
@@ -32,6 +35,9 @@ public class Line extends Ray {
         return !rightOfPivot(coordinate);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Shape toShape(AdvancedShapeWriter shapeWriter) {
         double diameter = shapeWriter.getPointTransformation().diameter();
