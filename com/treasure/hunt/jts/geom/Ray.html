@@ -190,7 +190,9 @@ implements <a href="../awt/Shapeable.html" title="interface in com.treasure.hunt
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate)">Ray</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;p0,
    org.locationtech.jts.geom.Coordinate&nbsp;p1)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The constructor.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -213,12 +215,10 @@ implements <a href="../awt/Shapeable.html" title="interface in com.treasure.hunt
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLength()">getLength</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#intersection(org.locationtech.jts.geom.LineSegment)">intersection</a></span>&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;line)</code></th>
-<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>java.awt.Shape</code></td>
@@ -264,6 +264,12 @@ implements <a href="../awt/Shapeable.html" title="interface in com.treasure.hunt
 <h4>Ray</h4>
 <pre>public&nbsp;Ray&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;p0,
            org.locationtech.jts.geom.Coordinate&nbsp;p1)</pre>
+<div class="block">The constructor.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>p0</code> - the first <code>Coordinate</code> of this ray.</dd>
+<dd><code>p1</code> - the second <code>Coordinate</code> of this ray.</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -312,6 +318,10 @@ implements <a href="../awt/Shapeable.html" title="interface in com.treasure.hunt
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../awt/Shapeable.html#toShape(com.treasure.hunt.jts.awt.AdvancedShapeWriter)">toShape</a></code>&nbsp;in interface&nbsp;<code><a href="../awt/Shapeable.html" title="interface in com.treasure.hunt.jts.awt">Shapeable</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>shapeWriter</code> - the <code>ShapeWriter</code> we use, to convert <code>this</code> into a <code>Shape</code>.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A shape, <code>this</code> is converted into.</dd>
 </dl>
 </li>
 </ul>

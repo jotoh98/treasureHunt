@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -230,57 +230,46 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isFirstStepShown()">isFirstStepShown</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isGameFinished()">isGameFinished</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i10" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#latestStepViewed()">latestStepViewed</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#move(int)">move</a></span>&#8203;(int&nbsp;steps)</code></th>
 <td class="colLast">
 <div class="block">Simulates a fixed number of moves.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#next()">next</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Works only for stepSim &le; stepView </div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#previous()">previous</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Works only for stepView &gt; 0</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#read(com.esotericsoftware.kryo.Kryo,com.esotericsoftware.kryo.io.Input)">read</a></span>&#8203;(com.esotericsoftware.kryo.Kryo&nbsp;kryo,
     com.esotericsoftware.kryo.io.Input&nbsp;input)</code></th>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stopBeat()">stopBeat</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Stops the Thread from beating.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#write(com.esotericsoftware.kryo.Kryo,com.esotericsoftware.kryo.io.Output)">write</a></span>&#8203;(com.esotericsoftware.kryo.Kryo&nbsp;kryo,
      com.esotericsoftware.kryo.io.Output&nbsp;output)</code></th>
-<td class="colLast">&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -406,19 +395,6 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <div class="block">Stops the Thread from beating.</div>
 </li>
 </ul>
-<a id="isGameFinished()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>isGameFinished</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;isGameFinished()</pre>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>whether the game of the <a href="GameEngine.html" title="class in com.treasure.hunt.game"><code>GameEngine</code></a> is finished or not.</dd>
-</dl>
-</li>
-</ul>
 <a id="latestStepViewed()">
 <!--   -->
 </a>
@@ -458,19 +434,6 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>delay</code> - time between each move</dd>
-</dl>
-</li>
-</ul>
-<a id="isFirstStepShown()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>isFirstStepShown</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;isFirstStepShown()</pre>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd><code>true</code>, if the shown step is the first one. <code>false</code>, otherwise.</dd>
 </dl>
 </li>
 </ul>

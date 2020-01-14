@@ -160,13 +160,17 @@ extends java.lang.Object</pre>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(T,com.treasure.hunt.strategy.geom.GeometryType)">GeometryItem</a></span>&#8203;(<a href="GeometryItem.html" title="type parameter in GeometryItem">T</a>&nbsp;object,
             <a href="GeometryType.html" title="enum in com.treasure.hunt.strategy.geom">GeometryType</a>&nbsp;geometryType)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The constructor, using default <a href="GeometryStyle.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryStyle</code></a>.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(T,com.treasure.hunt.strategy.geom.GeometryType,com.treasure.hunt.strategy.geom.GeometryStyle)">GeometryItem</a></span>&#8203;(<a href="GeometryItem.html" title="type parameter in GeometryItem">T</a>&nbsp;object,
             <a href="GeometryType.html" title="enum in com.treasure.hunt.strategy.geom">GeometryType</a>&nbsp;geometryType,
             <a href="GeometryStyle.html" title="class in com.treasure.hunt.strategy.geom">GeometryStyle</a>&nbsp;geometryStyle)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The constructor.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -190,7 +194,10 @@ extends java.lang.Object</pre>
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#draw(org.jfree.fx.FXGraphics2D,com.treasure.hunt.jts.awt.AdvancedShapeWriter)">draw</a></span>&#8203;(org.jfree.fx.FXGraphics2D&nbsp;graphics2D,
     <a href="../../jts/awt/AdvancedShapeWriter.html" title="class in com.treasure.hunt.jts.awt">AdvancedShapeWriter</a>&nbsp;shapeWriter)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">This lets <code>this</code> convert to a <code>Shape</code> via the given <code>shapeWriter</code>
+ and draws itself on the given <code>graphics2D</code>.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -227,6 +234,13 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;GeometryItem&#8203;(<a href="GeometryItem.html" title="type parameter in GeometryItem">T</a>&nbsp;object,
                     <a href="GeometryType.html" title="enum in com.treasure.hunt.strategy.geom">GeometryType</a>&nbsp;geometryType,
                     <a href="GeometryStyle.html" title="class in com.treasure.hunt.strategy.geom">GeometryStyle</a>&nbsp;geometryStyle)</pre>
+<div class="block">The constructor.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>object</code> - the <code>Geometry</code> or <a href="../../jts/awt/Shapeable.html" title="interface in com.treasure.hunt.jts.awt"><code>Shapeable</code></a>.</dd>
+<dd><code>geometryType</code> - the <a href="GeometryType.html" title="enum in com.treasure.hunt.strategy.geom"><code>GeometryType</code></a>, defining its role.</dd>
+<dd><code>geometryStyle</code> - the <a href="GeometryStyle.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryStyle</code></a>, defining its looking.</dd>
+</dl>
 </li>
 </ul>
 <a id="&lt;init&gt;(java.lang.Object,com.treasure.hunt.strategy.geom.GeometryType)">
@@ -239,6 +253,12 @@ extends java.lang.Object</pre>
 <h4>GeometryItem</h4>
 <pre>public&nbsp;GeometryItem&#8203;(<a href="GeometryItem.html" title="type parameter in GeometryItem">T</a>&nbsp;object,
                     <a href="GeometryType.html" title="enum in com.treasure.hunt.strategy.geom">GeometryType</a>&nbsp;geometryType)</pre>
+<div class="block">The constructor, using default <a href="GeometryStyle.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryStyle</code></a>.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>object</code> - the <code>Geometry</code> or <a href="../../jts/awt/Shapeable.html" title="interface in com.treasure.hunt.jts.awt"><code>Shapeable</code></a>.</dd>
+<dd><code>geometryType</code> - the <a href="GeometryType.html" title="enum in com.treasure.hunt.strategy.geom"><code>GeometryType</code></a>, defining its role.</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -259,6 +279,13 @@ extends java.lang.Object</pre>
 <h4>draw</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;draw&#8203;(org.jfree.fx.FXGraphics2D&nbsp;graphics2D,
                  <a href="../../jts/awt/AdvancedShapeWriter.html" title="class in com.treasure.hunt.jts.awt">AdvancedShapeWriter</a>&nbsp;shapeWriter)</pre>
+<div class="block">This lets <code>this</code> convert to a <code>Shape</code> via the given <code>shapeWriter</code>
+ and draws itself on the given <code>graphics2D</code>.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>graphics2D</code> - where we want to draw <code>this</code> on.</dd>
+<dd><code>shapeWriter</code> - converting <code>this</code> into a <code>Shape</code>.</dd>
+</dl>
 </li>
 </ul>
 </li>

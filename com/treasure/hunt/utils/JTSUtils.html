@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9};
+var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -191,58 +191,45 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static org.locationtech.jts.geom.LineString</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createLineString(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">createLineString</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;A,
-                org.locationtech.jts.geom.Point&nbsp;B)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createLineString(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">createLineString</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;a,
+                org.locationtech.jts.geom.Point&nbsp;b)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>static org.locationtech.jts.geom.Point</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createPoint(double,double)">createPoint</a></span>&#8203;(double&nbsp;x,
            double&nbsp;y)</code></th>
-<td class="colLast">
-<div class="block">Factory method to create a point with a shared <code>GeometryFactory</code></div>
-</td>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>static org.locationtech.jts.geom.Point</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lineLineSegmentIntersection(org.locationtech.jts.geom.LineSegment,org.locationtech.jts.geom.LineSegment)">lineLineSegmentIntersection</a></span>&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;infiniteLine,
                            org.locationtech.jts.geom.LineSegment&nbsp;lineSegment)</code></th>
-<td class="colLast">
-<div class="block">Tests whether and infinite line intersects with a line segment</div>
-</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>static org.locationtech.jts.math.Vector2D</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lineVector(org.locationtech.jts.geom.LineSegment)">lineVector</a></span>&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;lineSegment)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static org.locationtech.jts.geom.Coordinate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#middleOfAngleHint(com.treasure.hunt.strategy.hint.impl.AngleHint)">middleOfAngleHint</a></span>&#8203;(<a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&nbsp;angleHint)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static org.locationtech.jts.geom.Coordinate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#middleOfAngleHint(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate)">middleOfAngleHint</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;right,
                  org.locationtech.jts.geom.Coordinate&nbsp;center,
                  org.locationtech.jts.geom.Coordinate&nbsp;left)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>static org.locationtech.jts.math.Vector2D</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#negateX(org.locationtech.jts.math.Vector2D)">negateX</a></span>&#8203;(org.locationtech.jts.math.Vector2D&nbsp;vector)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>static org.locationtech.jts.math.Vector2D</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#negateX(org.locationtech.jts.math.Vector2D)">negateX</a></span>&#8203;(org.locationtech.jts.math.Vector2D&nbsp;v)</code></th>
-<td class="colLast">
-<div class="block">Get a new <code>Vector2D</code> with negated x-Coordinate of a <code>Vector2D</code>.</div>
-</td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#negateY(org.locationtech.jts.math.Vector2D)">negateY</a></span>&#8203;(org.locationtech.jts.math.Vector2D&nbsp;vector)</code></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i8" class="altColor">
-<td class="colFirst"><code>static org.locationtech.jts.math.Vector2D</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#negateY(org.locationtech.jts.math.Vector2D)">negateY</a></span>&#8203;(org.locationtech.jts.math.Vector2D&nbsp;v)</code></th>
-<td class="colLast">
-<div class="block">Get a new <code>Vector2D</code> with negated y-Coordinate of a <code>Vector2D</code>.</div>
-</td>
-</tr>
-<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static org.locationtech.jts.geom.Coordinate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#normalizedCoordinate(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate)">normalizedCoordinate</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;fixed,
                     org.locationtech.jts.geom.Coordinate&nbsp;floating)</code></th>
@@ -250,39 +237,36 @@ extends java.lang.Object</pre>
 <div class="block">Get the coordinate 1 length-unit away from fixed <code>Coordinate</code> in vector (fixed to floating) direction.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static org.locationtech.jts.math.Vector2D</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#normalizedVector(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate)">normalizedVector</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;from,
                 org.locationtech.jts.geom.Coordinate&nbsp;to)</code></th>
-<td class="colLast">
-<div class="block">Utility to get a normalized <code>Vector2D</code> given by two <code>Coordinate</code>s.</div>
-</td>
+<td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#pointInAngle(com.treasure.hunt.jts.geom.GeometryAngle,org.locationtech.jts.geom.Coordinate)">pointInAngle</a></span>&#8203;(<a href="../jts/geom/GeometryAngle.html" title="class in com.treasure.hunt.jts.geom">GeometryAngle</a>&nbsp;geometryAngle,
             org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</code></th>
-<td class="colLast">
-<div class="block">Tests, whether a given coordinate lays inside of the viewing angle given by a <a href="../jts/geom/GeometryAngle.html" title="class in com.treasure.hunt.jts.geom"><code>GeometryAngle</code></a>.</div>
-</td>
+<td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#pointInAngle(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate)">pointInAngle</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;right,
             org.locationtech.jts.geom.Coordinate&nbsp;center,
             org.locationtech.jts.geom.Coordinate&nbsp;left,
             org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Tests, whether a given <code>Coordinate</code> lies inside the given angle,
+ which is defined by <code>right</code>, <code>center</code> and <code>left</code>.</div>
+</td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#signsEqual(org.locationtech.jts.math.Vector2D,org.locationtech.jts.math.Vector2D)">signsEqual</a></span>&#8203;(org.locationtech.jts.math.Vector2D&nbsp;v0,
           org.locationtech.jts.math.Vector2D&nbsp;v1)</code></th>
-<td class="colLast">
-<div class="block">Proofs, that the x- or y-coordinates of two vectors have the same sign.</div>
-</td>
+<td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>static <a href="../jts/geom/GeometryAngle.html" title="class in com.treasure.hunt.jts.geom">GeometryAngle</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#validRandomAngle(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,double)">validRandomAngle</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;searcher,
                 org.locationtech.jts.geom.Coordinate&nbsp;treasure,
@@ -342,13 +326,12 @@ extends java.lang.Object</pre>
 <h4>createPoint</h4>
 <pre class="methodSignature">public static&nbsp;org.locationtech.jts.geom.Point&nbsp;createPoint&#8203;(double&nbsp;x,
                                                           double&nbsp;y)</pre>
-<div class="block">Factory method to create a point with a shared <code>GeometryFactory</code></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>x</code> - x-coordinate</dd>
 <dd><code>y</code> - y-coordinate</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd><code>Point</code> for given <code>Double</code> coordinates</dd>
+<dd><code>Point</code> lying on <code>(x,y)</code>.</dd>
 </dl>
 </li>
 </ul>
@@ -358,8 +341,15 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>createLineString</h4>
-<pre class="methodSignature">public static&nbsp;org.locationtech.jts.geom.LineString&nbsp;createLineString&#8203;(org.locationtech.jts.geom.Point&nbsp;A,
-                                                                    org.locationtech.jts.geom.Point&nbsp;B)</pre>
+<pre class="methodSignature">public static&nbsp;org.locationtech.jts.geom.LineString&nbsp;createLineString&#8203;(org.locationtech.jts.geom.Point&nbsp;a,
+                                                                    org.locationtech.jts.geom.Point&nbsp;b)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>a</code> - the begin of the <code>LineString</code>.</dd>
+<dd><code>b</code> - the end of the <code>LineString</code>.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A <code>LineString</code> containing only <code>a</code> and <code>b</code>.</dd>
+</dl>
 </li>
 </ul>
 <a id="lineLineSegmentIntersection(org.locationtech.jts.geom.LineSegment,org.locationtech.jts.geom.LineSegment)">
@@ -370,13 +360,12 @@ extends java.lang.Object</pre>
 <h4>lineLineSegmentIntersection</h4>
 <pre class="methodSignature">public static&nbsp;org.locationtech.jts.geom.Point&nbsp;lineLineSegmentIntersection&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;infiniteLine,
                                                                           org.locationtech.jts.geom.LineSegment&nbsp;lineSegment)</pre>
-<div class="block">Tests whether and infinite line intersects with a line segment</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>infiniteLine</code> - infinite line</dd>
-<dd><code>lineSegment</code> - line between two points</dd>
+<dd><code>infiniteLine</code> - <code>LineSegment</code>, representing an infinite line</dd>
+<dd><code>lineSegment</code> - <code>LineSegment</code>, a line between two points</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>intersection of infinite line and line segment</dd>
+<dd>intersection of infinite line and line segment. May be <code>null</code>.</dd>
 </dl>
 </li>
 </ul>
@@ -391,7 +380,7 @@ extends java.lang.Object</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>angleHint</code> - where we want the middle point to go, from.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd><code>Point</code> going through the middle of the <a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a></dd>
+<dd><code>Coordinate</code> going through the middle of the <a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a></dd>
 </dl>
 </li>
 </ul>
@@ -404,6 +393,14 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public static&nbsp;org.locationtech.jts.geom.Coordinate&nbsp;middleOfAngleHint&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;right,
                                                                      org.locationtech.jts.geom.Coordinate&nbsp;center,
                                                                      org.locationtech.jts.geom.Coordinate&nbsp;left)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>right</code> - opening line of the angle</dd>
+<dd><code>center</code> - of the angle</dd>
+<dd><code>left</code> - closing line of the angle</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>Coordinate</code> going through the middle of the angle</dd>
+</dl>
 </li>
 </ul>
 <a id="normalizedVector(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate)">
@@ -414,13 +411,12 @@ extends java.lang.Object</pre>
 <h4>normalizedVector</h4>
 <pre class="methodSignature">public static&nbsp;org.locationtech.jts.math.Vector2D&nbsp;normalizedVector&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;from,
                                                                   org.locationtech.jts.geom.Coordinate&nbsp;to)</pre>
-<div class="block">Utility to get a normalized <code>Vector2D</code> given by two <code>Coordinate</code>s.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>from</code> - vector start</dd>
 <dd><code>to</code> - vector end</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>normalized vector</dd>
+<dd>normalized <code>Vector2D</code> given by two <code>Coordinate</code>s <code>from</code> and <code>to</code>.</dd>
 </dl>
 </li>
 </ul>
@@ -440,7 +436,7 @@ extends java.lang.Object</pre>
 <dd><code>floating</code> - coordinate to provide direction vector</dd>
 <dd><code>scale</code> - length between fixed and asked coordinate</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>coordinate a given length-unit away from fixed <code>Coordinate</code> in vector direction</dd>
+<dd>the <code>Coordinate</code> a given length-unit away from fixed <code>Coordinate</code> in vector direction</dd>
 </dl>
 </li>
 </ul>
@@ -470,13 +466,13 @@ extends java.lang.Object</pre>
 <h4>signsEqual</h4>
 <pre class="methodSignature">public static&nbsp;boolean&nbsp;signsEqual&#8203;(org.locationtech.jts.math.Vector2D&nbsp;v0,
                                  org.locationtech.jts.math.Vector2D&nbsp;v1)</pre>
-<div class="block">Proofs, that the x- or y-coordinates of two vectors have the same sign.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>v0</code> - first vector to check</dd>
 <dd><code>v1</code> - second vector to check</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>whether both vectors have coordinate-wise the same sign</dd>
+<dd><code>true</code>, if both vectors <code>v0</code> and <code>v1</code> have coordinate-wise the same sign.
+ <code>false</code>, otherwise.</dd>
 </dl>
 </li>
 </ul>
@@ -486,13 +482,12 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>negateX</h4>
-<pre class="methodSignature">public static&nbsp;org.locationtech.jts.math.Vector2D&nbsp;negateX&#8203;(org.locationtech.jts.math.Vector2D&nbsp;v)</pre>
-<div class="block">Get a new <code>Vector2D</code> with negated x-Coordinate of a <code>Vector2D</code>.</div>
+<pre class="methodSignature">public static&nbsp;org.locationtech.jts.math.Vector2D&nbsp;negateX&#8203;(org.locationtech.jts.math.Vector2D&nbsp;vector)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>v</code> - vector to transform</dd>
+<dd><code>vector</code> - vector to transform</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>vector with negated x-coordinate</dd>
+<dd>new <code>Vector2D</code> with negated x-Coordinate of a <code>vector</code>.</dd>
 </dl>
 </li>
 </ul>
@@ -502,13 +497,12 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>negateY</h4>
-<pre class="methodSignature">public static&nbsp;org.locationtech.jts.math.Vector2D&nbsp;negateY&#8203;(org.locationtech.jts.math.Vector2D&nbsp;v)</pre>
-<div class="block">Get a new <code>Vector2D</code> with negated y-Coordinate of a <code>Vector2D</code>.</div>
+<pre class="methodSignature">public static&nbsp;org.locationtech.jts.math.Vector2D&nbsp;negateY&#8203;(org.locationtech.jts.math.Vector2D&nbsp;vector)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>v</code> - vector to transform</dd>
+<dd><code>vector</code> - vector to transform</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>vector with negated y-coordinate</dd>
+<dd>new <code>Vector2D</code> with negated y-Coordinate of a <code>vector</code>.</dd>
 </dl>
 </li>
 </ul>
@@ -520,13 +514,12 @@ extends java.lang.Object</pre>
 <h4>pointInAngle</h4>
 <pre class="methodSignature">public static&nbsp;boolean&nbsp;pointInAngle&#8203;(<a href="../jts/geom/GeometryAngle.html" title="class in com.treasure.hunt.jts.geom">GeometryAngle</a>&nbsp;geometryAngle,
                                    org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</pre>
-<div class="block">Tests, whether a given coordinate lays inside of the viewing angle given by a <a href="../jts/geom/GeometryAngle.html" title="class in com.treasure.hunt.jts.geom"><code>GeometryAngle</code></a>.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>geometryAngle</code> - the view <a href="../jts/geom/GeometryAngle.html" title="class in com.treasure.hunt.jts.geom"><code>GeometryAngle</code></a> the method looks upon searching the given point</dd>
-<dd><code>coordinate</code> - the <code>Coordinate</code>, we want to know, whether it lies in the angle</dd>
+<dd><code>coordinate</code> - the <code>Coordinate</code>, we want to know, whether it lies in the <code>geometryAngle</code>.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>true, if <code>point</code> lies inside the given angle. false, otherwise</dd>
+<dd><code>true</code>, if <code>coordinate</code> lies inside the given <code>geometryAngle</code>. <code>false</code>, otherwise.</dd>
 </dl>
 </li>
 </ul>
@@ -540,15 +533,17 @@ extends java.lang.Object</pre>
                                    org.locationtech.jts.geom.Coordinate&nbsp;center,
                                    org.locationtech.jts.geom.Coordinate&nbsp;left,
                                    org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</pre>
-</li>
-</ul>
-<a id="lineVector(org.locationtech.jts.geom.LineSegment)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>lineVector</h4>
-<pre class="methodSignature">public static&nbsp;org.locationtech.jts.math.Vector2D&nbsp;lineVector&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;lineSegment)</pre>
+<div class="block">Tests, whether a given <code>Coordinate</code> lies inside the given angle,
+ which is defined by <code>right</code>, <code>center</code> and <code>left</code>.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>right</code> - counter-clockwise, opening line of the angle.</dd>
+<dd><code>center</code> - center of the angle.</dd>
+<dd><code>left</code> - counter-clockwise, closing line of the angle.</dd>
+<dd><code>coordinate</code> - the <code>Coordinate</code>, we want to know, whether it lies in the given angle.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code>, if <code>coordinate</code> lies in the given angle. <code>false</code>, otherwise.</dd>
+</dl>
 </li>
 </ul>
 <a id="validRandomAngle(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,double)">
@@ -560,6 +555,14 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public static&nbsp;<a href="../jts/geom/GeometryAngle.html" title="class in com.treasure.hunt.jts.geom">GeometryAngle</a>&nbsp;validRandomAngle&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;searcher,
                                              org.locationtech.jts.geom.Coordinate&nbsp;treasure,
                                              double&nbsp;maxExtend)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>searcher</code> - the position of the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a>.</dd>
+<dd><code>treasure</code> - the position of the treasure.</dd>
+<dd><code>maxExtend</code> - number of <code>[0, 2 * Math.PI)</code> defining, how wide the angle is opened.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a valid <a href="../jts/geom/GeometryAngle.html" title="class in com.treasure.hunt.jts.geom"><code>GeometryAngle</code></a>, randomly generated.</dd>
+</dl>
 </li>
 </ul>
 </li>
