@@ -91,8 +91,8 @@ public class CanvasController {
                     for (Coordinate coordinate : geometry.getCoordinates()) {
                         minX = Math.min(minX, coordinate.x);
                         maxX = Math.max(maxX, coordinate.x);
-                        minY = Math.min(minY, coordinate.x);
-                        maxY = Math.max(maxY, coordinate.x);
+                        minY = Math.min(minY, coordinate.y);
+                        maxY = Math.max(maxY, coordinate.y);
                     }
                     this.highlighter = new GeometryItem(new RectangleVariableHighlighter(
                             new Coordinate(minX, maxY), maxX - minX, maxY - minY, JTSUtils.GEOMETRY_FACTORY), GeometryType.HIGHLIGHTER);
