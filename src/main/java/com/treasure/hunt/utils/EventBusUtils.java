@@ -5,6 +5,8 @@ import com.pploder.events.SimpleEvent;
 import com.treasure.hunt.game.GameManager;
 
 /**
+ * This class provides the event buses.
+ *
  * @author Trostorff
  */
 public class EventBusUtils {

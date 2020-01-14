@@ -14,11 +14,6 @@ import org.locationtech.jts.util.GeometricShapeFactory;
  */
 public class Circle extends Polygon {
     /**
-     * The radius of the circle.
-     */
-    double radius;
-
-    /**
      * The constructor
      *
      * @param coordinate      the center point of the circle.

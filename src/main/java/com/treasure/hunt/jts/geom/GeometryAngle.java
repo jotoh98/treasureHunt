@@ -24,7 +24,6 @@ import java.awt.geom.GeneralPath;
  * @author jotoh
  */
 public class GeometryAngle extends LineString implements Shapeable {
-
     /**
      * GeometryAngle constructor via three {@link Coordinate}s.
      *
@@ -34,11 +33,7 @@ public class GeometryAngle extends LineString implements Shapeable {
      * @param left    the left angles arm end point
      */
     public GeometryAngle(GeometryFactory factory, Coordinate right, Coordinate center, Coordinate left) {
-        super(
-                factory.getCoordinateSequenceFactory()
-                        .create(new Coordinate[]{center, left, right}),
-                factory
-        );
+        super(factory.getCoordinateSequenceFactory().create(new Coordinate[]{center, left, right}), factory);
     }
 
     /**
@@ -97,7 +92,6 @@ public class GeometryAngle extends LineString implements Shapeable {
     public void setRight(Coordinate right) {
         setCoordinate(2, right);
     }
-
 
     public Vector2D rightVector() {
         return new Vector2D(getCenter(), getRight());
