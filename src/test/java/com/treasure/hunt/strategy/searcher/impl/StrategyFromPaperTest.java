@@ -4,6 +4,7 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StrategyFromPaper;
+import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.Tester;
 import com.treasure.hunt.utils.JTSUtils;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -104,7 +105,7 @@ public class StrategyFromPaperTest {
 
     @Test
     void testStrategyFromPaperInternMethods() {
-        StrategyFromPaper.TestThisClass tester = new StrategyFromPaper.TestThisClass(strat);
+        Tester tester = new Tester(strat);
         tester.testBadCases();
         tester.testPhiHint();
         tester.testPhiRectangle();
