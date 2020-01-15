@@ -39,9 +39,11 @@ public class BadHintSubroutine {
      */
     static Movement lastHintBadSubroutine(StrategyFromPaper strategy, HalfPlaneHint curHint, HalfPlaneHint lastBadHint,
                                           Movement move) {
-        Coordinate[] rect = new Coordinate[]{strategy.A.getCoordinate(), strategy.B.getCoordinate(), strategy.C.getCoordinate(), strategy.D.getCoordinate()};
+        Coordinate[] rect = new Coordinate[]{strategy.A.getCoordinate(), strategy.B.getCoordinate(),
+                strategy.C.getCoordinate(), strategy.D.getCoordinate()};
         try {
             int basicTrans = getBasicTransformation(rect, lastBadHint); // basic transformation
+
             Coordinate[] transformedRect = phiRectangle(basicTrans, rect);
             Coordinate At = transformedRect[0];
             Coordinate Bt = transformedRect[1];
@@ -122,6 +124,11 @@ public class BadHintSubroutine {
             Coordinate[] newRectangle = null;
 
             LineSegment pp_apos = new LineSegment(p, p_apos);
+            LineSegment m_apos_k_apos = new LineSegment(m_apos, k_apos);
+            LineSegment h_apos_g_apos = new LineSegment(h_apos, g_apos);
+            LineSegment p_apos_k = new LineSegment(p_apos, k);
+
+
             if (x2_apos == right &&
                     lineBetweenClockwise(L2_apos, L1_doubleApos, pp_apos)
             ) {
@@ -135,9 +142,7 @@ public class BadHintSubroutine {
                 */
                 newRectangle = phiOtherRectangleInverse(basicTrans, rect,
                         new Coordinate[]{f, Bt, Ct, t});
-            }
-
-            LineSegment m_apos_k_apos = new LineSegment(m_apos, k_apos);
+            } //else
             if (x2_apos == right &&
                     lineBetweenClockwise(L2_apos, pp_apos, m_apos_k_apos)
             ) {
@@ -145,7 +150,7 @@ public class BadHintSubroutine {
                 move = rectangleScanPhiReverse(basicTrans, rect, m_apos, k_apos, k, m, move);
                 newRectangle = phiOtherRectangleInverse(basicTrans, rect,
                         new Coordinate[]{g, Bt, Ct, h});
-            }
+            } //else
             if ((x2_apos == left || x2_apos == down) &&
                     lineBetweenClockwise(L2_apos, m_apos_k_apos, L1_doubleApos)
             ) {
@@ -158,8 +163,7 @@ public class BadHintSubroutine {
                 // newRectangle := pkCh
                 newRectangle = phiOtherRectangleInverse(basicTrans, rect,
                         new Coordinate[]{p, k, Ct, h});
-            }
-            LineSegment h_apos_g_apos = new LineSegment(h_apos, g_apos);
+            } //else
             if (x2_apos == left &&
                     lineBetweenClockwise(L2_apos, L1_doubleApos, h_apos_g_apos)
             ) {
@@ -171,10 +175,7 @@ public class BadHintSubroutine {
                 // newRectangle := Agpm
                 newRectangle = phiOtherRectangleInverse(basicTrans, rect,
                         new Coordinate[]{At, g, p, m});
-            }
-
-            LineSegment p_apos_k = new LineSegment(p_apos, k);
-
+            } //else
             if ((x2_apos == left &&
                     lineBetweenClockwise(L2_apos, h_apos_g_apos, pp_apos)) ||
                     (x2_apos == left &&
@@ -190,7 +191,7 @@ public class BadHintSubroutine {
                 // newRectangle := ABkm
                 newRectangle = phiOtherRectangleInverse(basicTrans, rect,
                         new Coordinate[]{At, Bt, k, m});
-            }
+            } //else
             if (x2_apos == right &&
                     lineBetweenClockwise(L2_apos, p_apos_k, L1_doubleApos)
             ) {

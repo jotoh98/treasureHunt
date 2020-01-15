@@ -12,11 +12,8 @@ import java.util.Arrays;
 
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.right;
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.up;
-import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.assertRectangle;
-import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.centerOfRectangle;
-import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
-
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.*;
+import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
 
 /**
  * @author bsen
@@ -72,6 +69,7 @@ public class RoutinesFromPaper {
         //move.addWayPoint(a); // go to a
         return move;
     }
+
     /**
      * Returns the result of rho, defined by rectangle rect, applied on hint.
      *
@@ -126,6 +124,7 @@ public class RoutinesFromPaper {
      */
     static Coordinate sigmaPoint(int i, Coordinate r, Coordinate P) {
         //AffineTransformation rot_i = AffineTransformation.rotationInstance(Math.PI * i / 2, r.getX(), r.getY());
+        //Coordinate ret = P.copy();
         AffineTransformation rot_i;
         switch (i) {
             case 0:
@@ -152,7 +151,9 @@ public class RoutinesFromPaper {
     }
 
     static Coordinate sigmaPointReverse(int i, Coordinate r, Coordinate P) {
-        return sigmaPoint(3 - i, r, P);
+        if (i < 0 || i > 3)
+            throw new IllegalArgumentException("i should be in [0,3] but is equal to " + i);
+        return sigmaPoint((4 - i) % 4, r, P);
     }
 
     /**
@@ -164,13 +165,13 @@ public class RoutinesFromPaper {
      */
     static Coordinate[] sigmaRectangle(int i, Coordinate[] rect) {
         assertRectangle(rect);
-        Coordinate r = centerOfRectangle(rect);
-
-        AffineTransformation rotHalfPi = new AffineTransformation(new double[]{0, -1, 0, 1, 0, 0});
 
         if (i == 0 || i == 2) {
             return rect;
         }
+
+        Coordinate r = centerOfRectangle(rect);
+        AffineTransformation rotHalfPi = new AffineTransformation(new double[]{0, -1, 0, 1, 0, 0});
         if (i == 1 || i == 3) {
             //rotate rectangle by pi/2
             Coordinate[] transformed = new Coordinate[]{new Coordinate(), new Coordinate(),
@@ -221,7 +222,7 @@ public class RoutinesFromPaper {
         Coordinate r = centerOfRectangle(rect);
         if (i < 4)
             return sigmaPoint(i, r, P);
-        return sigmaPoint(i, r, rhoPoint(rect, P));
+        return rhoPoint(rect, sigmaPoint(i, r, P));
     }
 
     /**
@@ -258,6 +259,7 @@ public class RoutinesFromPaper {
         assertRectangle(rect);
         if (i < 0 || i > 7)
             throw new IllegalArgumentException("i must be in [0,7] but is " + i);
+
         Coordinate r = centerOfRectangle(rect);
         if (i < 4) {
             return sigmaPointReverse(i, r, P);
@@ -266,7 +268,7 @@ public class RoutinesFromPaper {
     }
 
     static Movement rectangleScanPhiReverse(int basicTrans, Coordinate[] phiRect,
-                                             Coordinate A, Coordinate B, Coordinate C, Coordinate D, Movement move) {
+                                            Coordinate A, Coordinate B, Coordinate C, Coordinate D, Movement move) {
         return rectangleScan(
                 phiPointInverse(basicTrans, phiRect, A),
                 phiPointInverse(basicTrans, phiRect, B),
@@ -314,7 +316,6 @@ public class RoutinesFromPaper {
      * @return
      */
     static Coordinate[] phiOtherRectangleInverse(int i, Coordinate[] rect, Coordinate[] toTransform) {
-        //TODO: build arrangeRectangle in this method
         assertRectangle(rect);
         assertRectangle(toTransform);
         Coordinate[] ret = new Coordinate[]{
