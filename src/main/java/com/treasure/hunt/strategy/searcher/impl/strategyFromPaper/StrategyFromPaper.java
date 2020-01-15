@@ -7,8 +7,9 @@ import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.*;
-import org.locationtech.jts.geom.impl.CoordinateArraySequence;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.treasure.hunt.strategy.geom.GeometryType.CURRENT_PHASE;
@@ -17,8 +18,7 @@ import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.BadHintSubroutine.lastHintBadSubroutine;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.*;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.rectangleScan;
-import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
-import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
+import static com.treasure.hunt.utils.JTSUtils.*;
 
 /**
  * This implements the strategy from the paper:
@@ -31,12 +31,14 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     int phase; //equals j in the paper. In phase i, the algorithm checks a rectangle with a side length of 2^i
     Point start, // the initial position of the player
             A, B, C, D; // The points current rectangle where the treasure is to be searched.
-                        // The points are used like the points A,B,C and D in the paper, so please look there for
-                        // more information.
+    // The points are used like the points A,B,C and D in the paper, so please look there for
+    // more information.
 
     HalfPlaneHint lastBadHint; //only used when last hint was bad
     boolean lastHintWasBad = false;
     Point lastLocation;
+
+    List<LineString> lastMove = null; // the lines of the move which was last calculated.
 
     /**
      * {@inheritDoc}
@@ -48,25 +50,34 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         setRectToPhase();
     }
 
+    public void init(Point startPosition, int w, int h) {
+        init(startPosition);
+    }
+
     @Override
     public Movement move() {
         Movement move = new Movement();
         move.addWayPoint(lastLocation);
-        return addState(incrementPhase(move));
+        setRectToPhase();
+        return moveReturn(addState(incrementPhase(move)));
     }
 
     @Override
     public Movement move(HalfPlaneHint hint) {
         Movement move = new Movement();
+
         move.addWayPoint(lastLocation);
         double width = B.getX() - A.getX();
         double height = A.getY() - D.getY();
         if (width < 4 || height < 4) {
+            System.out.println("---------------width or height < 4 therefore rectangle gets scanned");
             return moveReturn(addState(incrementPhase(move)));
         }
         //now analyse the hint:
-        if (lastHintWasBad)
-            return moveReturn(lastHintBadSubroutine(this, hint, lastBadHint, move));
+        if (lastHintWasBad) {
+            System.out.println("--------------last case was bad");
+            return moveReturn(addState(lastHintBadSubroutine(this, hint, lastBadHint, move)));
+        }
 
         LineSegment AB = new LineSegment(A.getCoordinate(), B.getCoordinate());
         LineSegment BC = new LineSegment(B.getCoordinate(), C.getCoordinate());
@@ -99,6 +110,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             B = horizontalSplit[1];
             C = horizontalSplit[2];
             D = horizontalSplit[3];
+            System.out.println("------------good case");
             return moveReturn(addState(moveToCenterOfRectangle(A, B, C, D, move)));
         }
         Point[] verticalSplit = splitRectangleVertically(A, B, C, D, hint, intersection_AB_hint,
@@ -108,6 +120,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             B = verticalSplit[1];
             C = verticalSplit[2];
             D = verticalSplit[3];
+            System.out.println("------------good case");
             return moveReturn(addState(moveToCenterOfRectangle(A, B, C, D, move)));
         }
         // when none of this cases takes place, the hint is bad. This gets handled here:
@@ -115,13 +128,14 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         move.addWayPoint(destination);
         lastHintWasBad = true;
         lastBadHint = hint;
-        return moveReturn(move);
-
+        System.out.println("--------------bad case");
+        return moveReturn(addState(move));
     }
 
     /**
      * This method is used to visualize the current phases rectangle and ABCD.
      * Adds their values to move
+     *
      * @param move
      * @return the input with the rectangles of the current phase and ABCD added
      */
@@ -147,6 +161,43 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Polygon rect_phase = GEOMETRY_FACTORY.createPolygon(phasePolygon);
         GeometryItem<Polygon> phase = new GeometryItem<Polygon>(rect_phase, CURRENT_PHASE);
         move.addAdditionalItem(phase);
+
+        // assert if the current rectangle ABCD lies in the rectangle of the current phase
+        Coordinate[] rect = phaseRectangle();
+        if (
+                !doubleEqual(A.getX(), rect[0].getX()) && A.getX() < rect[0].getX() ||
+                        !doubleEqual(A.getX(), rect[1].getX()) && A.getX() > rect[1].getX() ||
+                        !doubleEqual(A.getY(), rect[0].getY()) && A.getY() > rect[0].getY() ||
+                        !doubleEqual(A.getY(), rect[2].getY()) && A.getY() < rect[2].getY() ||
+
+
+                        !doubleEqual(B.getX(), rect[0].getX()) && B.getX() < rect[0].getX() ||
+                        !doubleEqual(B.getX(), rect[1].getX()) && B.getX() > rect[1].getX() ||
+                        !doubleEqual(B.getY(), rect[0].getY()) && B.getY() > rect[0].getY() ||
+                        !doubleEqual(B.getY(), rect[2].getY()) && B.getY() < rect[2].getY() ||
+
+                        !doubleEqual(C.getX(), rect[0].getX()) && C.getX() < rect[0].getX() ||
+                        !doubleEqual(C.getX(), rect[1].getX()) && C.getX() > rect[1].getX() ||
+                        !doubleEqual(C.getY(), rect[0].getY()) && C.getY() > rect[0].getY() ||
+                        !doubleEqual(C.getY(), rect[2].getY()) && C.getY() < rect[2].getY() ||
+
+                        !doubleEqual(D.getX(), rect[0].getX()) && D.getX() < rect[0].getX() ||
+                        !doubleEqual(D.getX(), rect[1].getX()) && D.getX() > rect[1].getX() ||
+                        !doubleEqual(D.getY(), rect[0].getY()) && D.getY() > rect[0].getY() ||
+                        !doubleEqual(D.getY(), rect[2].getY()) && D.getY() < rect[2].getY()
+        ) {
+            throw new AssertionError(
+                    //System.out.println(
+                    "phaseRect:\n" +
+                            rect[0].toString() + "\n" +
+                            rect[1].toString() + "\n" +
+                            rect[2].toString() + "\n" +
+                            rect[3].toString() + "\n" +
+                            "ABCD:\n"
+                            + Arrays.toString(A.getCoordinates()) + "\n" + Arrays.toString(B.getCoordinates()) + "\n"
+                            + Arrays.toString(C.getCoordinates()) + "\n" + Arrays.toString(D.getCoordinates())
+            );
+        }
         return move;
     }
 
@@ -158,15 +209,54 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * @return move with lines added to the additionalGeometryItems
      */
     private Movement moveReturn(Movement move) {
+        if (lastMove != null) {
+            for (LineString g : lastMove) {
+                move.addAdditionalItem(
+                        new GeometryItem(g, GeometryType.SEARCHER_MOVEMENT)
+                );
+            }
+        }
+        lastMove = new ArrayList<>();
+
         List<GeometryItem<Point>> points = move.getPoints();
         Point lastPoint = null;
         for (GeometryItem g : points) {
             Point p = (Point) g.getObject();
             if (lastPoint != null) {
-                Coordinate[] line = new Coordinate[]{lastPoint.getCoordinate(), p.getCoordinate()};
+                LineString line = GEOMETRY_FACTORY.createLineString(
+                        new Coordinate[]{lastPoint.getCoordinate(), p.getCoordinate()});
                 move.addAdditionalItem(
-                        new GeometryItem(new LineString(new CoordinateArraySequence(line), GEOMETRY_FACTORY),
-                                GeometryType.SEARCHER_MOVEMENT)
+                        new GeometryItem(line, GeometryType.SEARCHER_LAST_MOVE)
+                );
+                lastMove.add(line);
+            }
+            lastPoint = p;
+        }
+        lastLocation = move.getEndPoint();
+
+        //test
+        for (GeometryItem g : move.getPoints()) {
+            System.out.println(((Point) g.getObject()).getCoordinate());
+        }
+        for (GeometryItem g : move.getAdditionalGeometryItems()) {
+            System.out.println(g.getGeometryType());
+            System.out.println((Geometry) (g.getObject()));
+        }
+        // end test
+
+        return move;
+    }
+
+    private Movement moveReturnOld(Movement move){
+        List<GeometryItem<Point>> points = move.getPoints();
+        Point lastPoint = null;
+        for (GeometryItem g : points) {
+            Point p = (Point) g.getObject();
+            if (lastPoint != null) {
+                LineString line = GEOMETRY_FACTORY.createLineString(
+                        new Coordinate[]{lastPoint.getCoordinate(), p.getCoordinate()});
+                move.addAdditionalItem(
+                        new GeometryItem(line, GeometryType.SEARCHER_MOVEMENT)
                 );
             }
             lastPoint = p;
@@ -295,6 +385,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     /**
      * Increments the phase-field and updates ABCD accordingly.
      * Goes to the center of the new rectangle ABCD.
+     *
      * @param move
      * @return the parameter move with the center of the new ABCD added
      */
