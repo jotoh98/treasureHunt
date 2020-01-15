@@ -38,6 +38,8 @@ public class HalfPlaneHint extends Hint {
     // to the line (the up and down enumerators are only used when the line is horizontal)
     // left and down respectively
 
+    private HalfPlaneHint lastHint; // if it is not null it also gets drawn by this HalfPlaneHint
+
     public HalfPlaneHint(Coordinate leftPoint, Coordinate rightPoint) {
         Direction dir = null;
         this.leftPoint = leftPoint;
@@ -62,6 +64,11 @@ public class HalfPlaneHint extends Hint {
             dir = right;
         }
         direction = dir;
+    }
+
+    public HalfPlaneHint(Coordinate leftPoint, Coordinate rightPoint, HalfPlaneHint lastHint) {
+        this(leftPoint, rightPoint);
+        this.lastHint = lastHint;
     }
 
     /**
@@ -138,27 +145,13 @@ public class HalfPlaneHint extends Hint {
         this.direction = direction;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @return
-     */
-    @Override
-    public List<GeometryItem<?>> getGeometryItems() {
-        List<GeometryItem<?>> output = new ArrayList<>();
+    public LineString getHalfPlaneLine() {
         if (halfPlaneLine == null) {
-            //TODO nachfragen ob andere bessere idee haben
-
             Vector2D l_to_r = new Vector2D(leftPoint, rightPoint);
             Vector2D r_to_l = new Vector2D(rightPoint, leftPoint);
 
             l_to_r = l_to_r.multiply(visual_extent / l_to_r.length());
             r_to_l = r_to_l.multiply(visual_extent / r_to_l.length());
-            //test
-            System.out.println("extended lines:");
-            System.out.println(l_to_r);
-            System.out.println(r_to_l);
-            //end test
 
             Coordinate extendedL = new Coordinate(
                     rightPoint.x + r_to_l.getX(),
@@ -168,41 +161,24 @@ public class HalfPlaneHint extends Hint {
                     leftPoint.x + l_to_r.getX(),
                     leftPoint.y + l_to_r.getY()
             );
-            Vector2D extended_l_to_r = new Vector2D(extendedL, extendedR);
-            Vector2D extended_r_to_l = new Vector2D(extendedR, extendedL);
-
-            //Coordinate polygon
-            Coordinate firstPointPoly = null, secondPointPoly = null; // third and forth are left and right
-            switch (direction) {
-                case up:
-                    firstPointPoly = new Coordinate(extendedR.x, extendedR.y - visual_extent);
-                    secondPointPoly = new Coordinate(extendedL.x, extendedL.y - visual_extent);
-                    break;
-                case down:
-                    firstPointPoly = new Coordinate(extendedR.x, extendedR.y + visual_extent);
-                    secondPointPoly = new Coordinate(extendedL.x, extendedL.y + visual_extent);
-                    break;
-                case left:
-                case right:
-                    extended_r_to_l = extended_r_to_l.rotateByQuarterCircle(1);
-                    firstPointPoly = new Coordinate(extendedR.x + extended_r_to_l.getX(),
-                            extendedR.y + extended_r_to_l.getY());
-                    extended_l_to_r = extended_l_to_r.rotateByQuarterCircle(3);
-                    secondPointPoly = new Coordinate(extendedL.x + extended_l_to_r.getX(),
-                            extendedL.y + extended_l_to_r.getY());
-            }
-
-            Coordinate[] polyShell = new Coordinate[]{firstPointPoly, secondPointPoly,
-                    extendedL, extendedR, firstPointPoly};
             Coordinate[] line = new Coordinate[]{extendedL, extendedR};
             halfPlaneLine = GEOMETRY_FACTORY.createLineString(line);
         }
+        return halfPlaneLine;
+    }
 
-        //output.add(new GeometryItem(GEOMETRY_FACTORY.createPoint(leftPoint), GeometryType.HALF_PLANE_POINT_LEFT));
-        //output.add(new GeometryItem(GEOMETRY_FACTORY.createPoint(rightPoint), GeometryType.HALF_PLANE_POINT_RIGHT));
-
-        //output.add(new GeometryItem(halfPlanePoly, GeometryType.HALF_PLANE));
-        output.add(new GeometryItem(halfPlaneLine, GeometryType.HALF_PLANE_LINE));
+    /**
+     * {@inheritDoc}
+     *
+     * @return
+     */
+    @Override
+    public List<GeometryItem<?>> getGeometryItems() {
+        List<GeometryItem<?>> output = new ArrayList<>();
+        output.add(new GeometryItem(getHalfPlaneLine(), GeometryType.HALF_PLANE_LINE));
+        if (lastHint != null && lastHint.getHalfPlaneLine() != null) {
+            output.add(new GeometryItem(lastHint.getHalfPlaneLine(), GeometryType.HALF_PLANE_LINE_BLUE));
+        }
 
         return output;
     }

@@ -3,6 +3,7 @@ package com.treasure.hunt.strategy.hider.impl;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.Movement;
+import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Coordinate;
@@ -20,6 +21,17 @@ public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
     private Point treasurePos = JTSUtils.createPoint(Math.random() * xmax * 2 - xmax,
             Math.random() * ymax * 2 - ymax);
 
+    HalfPlaneHint lastHint = null;
+
+    /**
+     * @param searcherStartPosition the {@link Searcher} starting position,
+     *                              he will initialized on.
+     * @param width                 the width of the playing area
+     * @param height                the height of the playing area
+     */
+    @Override
+    public void init(Point searcherStartPosition, int width, int height) { }
+
     /**
      * @param movement the {@link Movement}, the {@link com.treasure.hunt.strategy.searcher.Searcher} did last
      * @return T a (new) hint.
@@ -33,11 +45,15 @@ public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
         double rightAngle = Angle.angle(searcherPos.getCoordinate(), treasurePos.getCoordinate()) + randomAngle;
         double rightX = searcherPos.getX() + Math.cos(rightAngle);
         double rightY = searcherPos.getY() + Math.sin(rightAngle);
-        return new HalfPlaneHint(searcherPos.getCoordinate(), new Coordinate(rightX, rightY));
+
+        HalfPlaneHint newHint = new HalfPlaneHint(searcherPos.getCoordinate(), new Coordinate(rightX, rightY),
+                lastHint);
+        lastHint = newHint;
+        return newHint;
     }
 
     /**
-     * @return {@link Point} containing treasure location of [0,100)x[0x100)
+     * @return {@link Point} containing treasure location
      */
     @Override
     public Point getTreasureLocation() {

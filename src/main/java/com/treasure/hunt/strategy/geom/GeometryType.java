@@ -20,7 +20,7 @@ public enum GeometryType {
     HALF_PLANE_POINT_RIGHT(false, "right half-plane-point"),
     HALF_PLANE(true, "the treasure is not here", true),
     HALF_PLANE_LINE(true, "half plane line", true),
-
+    HALF_PLANE_LINE_BLUE(true, "half plane line", true),
 
     // treasure/no-treasure (areas)
     NO_TREASURE(false, "no treasure"),
@@ -30,6 +30,7 @@ public enum GeometryType {
     // searcher movements
     SEARCHER_POSITION(true, "searcher position"),
     SEARCHER_MOVEMENT(true, "searcher movement"),
+    SEARCHER_LAST_MOVE(true, "the searchers last movement", true),
 
     // treasure location
     TREASURE(true, "no treasure"),
@@ -45,7 +46,8 @@ public enum GeometryType {
 
     STANDARD(true, ""),
 
-    BOUNDING_CIRCE(false, "bounding circle")
+    BOUNDING_CIRCE(false, "bounding circle"),
+
     // TODO add more..
     ;
 
