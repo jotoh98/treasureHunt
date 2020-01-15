@@ -109,5 +109,6 @@ public class StrategyFromPaperTest {
         tester.testBadCases();
         tester.testPhiHint();
         tester.testPhiRectangle();
+        tester.testPhiRectangleRectangleReverse();
     }
 }

@@ -10,17 +10,18 @@ import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.BadHint
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.*;
 import static com.treasure.hunt.utils.JTSUtils.*;
 
+
 /**
  * @author bsen
  */
-public class Test {
+public class Tester {
     StrategyFromPaper strategy;
 
-    public Test(StrategyFromPaper strategy) {
+    public Tester(StrategyFromPaper strategy) {
         this.strategy = strategy;
     }
 
-    private void testRectHint(Coordinate[] rect, HalfPlaneHint hint, int basicTrans) {
+    public void testRectHint(Coordinate[] rect, HalfPlaneHint hint, int basicTrans) {
         int testBasicTrans = getBasicTransformation(rect, hint);
         if (basicTrans != testBasicTrans) {
             throw new IllegalArgumentException("The basic transformation should equal " + basicTrans +
@@ -28,8 +29,8 @@ public class Test {
         }
     }
 
-    private void testLastHintBadSubroutine(StrategyFromPaper strategy, Coordinate[] rect, HalfPlaneHint lastBadHint,
-                                           HalfPlaneHint curHint) {
+    public void testLastHintBadSubroutine(StrategyFromPaper strategy, Coordinate[] rect, HalfPlaneHint lastBadHint,
+                                          HalfPlaneHint curHint) {
         strategy.A = GEOMETRY_FACTORY.createPoint(rect[0]);
         strategy.B = GEOMETRY_FACTORY.createPoint(rect[1]);
         strategy.C = GEOMETRY_FACTORY.createPoint(rect[2]);
@@ -121,6 +122,51 @@ public class Test {
             throw new IllegalArgumentException("left angle point is " + testHint.getLeftPoint() +
                     " and should equal (0.0, 0.0)");
         }
+    }
+
+
+    private void testOneRectanglePhiReverse(Coordinate[] toTransform) {
+        for (int i = 0; i <= 7; i++) {
+            Coordinate[] transformedRect = phiRectangle(i, toTransform);
+
+            Coordinate[] transformationUndo = phiOtherRectangleInverse(i, toTransform, transformedRect);
+            System.out.println(
+                    "basicTrans = " + i + "\n" +
+                            "toTransform = \n" + Arrays.toString(toTransform) + "\n" +
+                            "transformationUndo = \n" + Arrays.toString(transformationUndo)
+            );
+
+            for (int j = 0; j < 4; j++) {
+                if (
+                        !doubleEqual(toTransform[j].x, transformationUndo[j].x) ||
+                                !doubleEqual(toTransform[j].y, transformationUndo[j].y)
+                ) {
+                    throw new AssertionError(
+                            "basicTrans = " + i + "\n" +
+                                    "toTransform = \n" + Arrays.toString(toTransform) + "\n" +
+                                    "transformationUndo = \n" + Arrays.toString(transformationUndo)
+                    );
+                }
+            }
+        }
+    }
+
+    public void testPhiRectangleRectangleReverse() {
+        Coordinate[] rect = new Coordinate[]{
+                new Coordinate(-64, 64),
+                new Coordinate(64, 64),
+                new Coordinate(64, -64),
+                new Coordinate(-64, -64),
+        };
+        testOneRectanglePhiReverse(rect);
+        testOneRectanglePhiReverse(
+                new Coordinate[]{
+                        new Coordinate(-30, 28),
+                        new Coordinate(-10, 28),
+                        new Coordinate(-10, 26),
+                        new Coordinate(-30, 26)
+                }
+        );
     }
 }
 
