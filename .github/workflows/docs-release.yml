@@ -16,12 +16,11 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
-      - name: Get the version
-        id: get_version
-        run: echo ::set-output NAME=VERSION::${GITHUB_REF/refs\/tags\//}
+      - name: Echo version
+        run: echo ${GITHUB_REF##*/}
       - name: Build win zip
-        run: ./gradlew distZip -PprojVersion=${NAME} -PjavafxPlatform=win
+        run: ./gradlew distZip -PprojVersion=${GITHUB_REF##*/} -PjavafxPlatform=win
       - name: Build linux zip
-        run: ./gradlew distZip -PprojVersion=${NAME} -PjavafxPlatform=linux
+        run: ./gradlew distZip -PprojVersion=${GITHUB_REF##*/} -PjavafxPlatform=linux
       - name: Build mac zip
-        run: ./gradlew distZip -PprojVersion=${NAME} -PjavafxPlatform=mac && ls ./build/distributions
+        run: ./gradlew distZip -PprojVersion=${GITHUB_REF##*/} -PjavafxPlatform=mac && ls ./build/distributions
