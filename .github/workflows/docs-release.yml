@@ -1,4 +1,4 @@
-name: Java docs test
+name: Build and relase
 
 on:
   push:
