@@ -58,10 +58,14 @@ public class MainController {
     public HBox stepViewNavigator;
 
     @FXML
-    public NavigationController stepViewNavigatorController;
+    private NavigationController stepViewNavigatorController;
+
+    @FXML
+    private Label versionLabel;
 
     @FXML
     private WidgetBarController leftWidgetBarController;
+
     @FXML
     private WidgetBarController rightWidgetBarController;
 
@@ -82,6 +86,8 @@ public class MainController {
 
     public void initialize() {
         canvasController.setGameManager(gameManager);
+        String implementationVersion = getClass().getPackage().getImplementationVersion();
+        versionLabel.setText(implementationVersion == null ? "snapshot" : "v" + implementationVersion);
         setListStringConverters();
         fillLists();
         addPromptBindings();

@@ -120,17 +120,21 @@ public class FileService {
     }
 
     private boolean correctVersion(DataWithVersion dataWithVersion) {
-        boolean divergentVersion = dataWithVersion.getVersion() != null && !dataWithVersion.getVersion().equals(GameManager.class.getPackage().getImplementationVersion());
-        boolean loadingDevelopmentVersion = dataWithVersion.getVersion() == null && GameManager.class.getPackage().getImplementationVersion() != null;
+        boolean divergentVersion = !isDevelopmentVersion(dataWithVersion.getVersion()) && !dataWithVersion.getVersion().equals(GameManager.class.getPackage().getImplementationVersion());
+        boolean loadingDevelopmentVersion = isDevelopmentVersion(dataWithVersion.getVersion()) && isDevelopmentVersion(GameManager.class.getPackage().getImplementationVersion());
 
         return divergentVersion || loadingDevelopmentVersion;
+    }
+
+    private boolean isDevelopmentVersion(String version) {
+        return version == null || version.equalsIgnoreCase("snapshot") || version.equalsIgnoreCase("undefined");
     }
 
     private boolean askUserWhetherToLoadWrongVersion(String oldVersion) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Proceed loading wrong version");
         alert.setHeaderText("The file was record with a different version than your program is running. Loading it might cause unexpected behaviour.");
-        alert.setContentText("Version of file was " + (oldVersion == null ? "development" : oldVersion));
+        alert.setContentText("Version of file was " + (oldVersion));
 
         Optional<ButtonType> option = alert.showAndWait();
 

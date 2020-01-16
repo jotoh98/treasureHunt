@@ -1,0 +1,27 @@
+name: Java docs test
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  docs:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output NAME=VERSION::${GITHUB_REF/refs\/tags\//}
+      - name: Build win zip
+        run: ./gradlew distZip -PprojVersion=${NAME} -PjavafxPlatform=win
+      - name: Build linux zip
+        run: ./gradlew distZip -PprojVersion=${NAME} -PjavafxPlatform=linux
+      - name: Build mac zip
+        run: ./gradlew distZip -PprojVersion=${NAME} -PjavafxPlatform=mac && echo ls ./build/distributions
