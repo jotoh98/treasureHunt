@@ -24,4 +24,4 @@ jobs:
       - name: Build linux zip
         run: ./gradlew distZip -PprojVersion=${NAME} -PjavafxPlatform=linux
       - name: Build mac zip
-        run: ./gradlew distZip -PprojVersion=${NAME} -PjavafxPlatform=mac && echo ls ./build/distributions
+        run: ./gradlew distZip -PprojVersion=${NAME} -PjavafxPlatform=mac && ls ./build/distributions
