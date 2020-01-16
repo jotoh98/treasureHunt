@@ -5,12 +5,14 @@ import com.treasure.hunt.analysis.StatisticsWithId;
 import com.treasure.hunt.analysis.StatisticsWithIdsAndPath;
 import com.treasure.hunt.io.FileService;
 import com.treasure.hunt.service.SeriesService;
+import com.treasure.hunt.utils.EventBusUtils;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -19,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 public class StatisticsWindowController {
     public TableView<StatisticsWithId> instanceStatisticsTableView;
     public TableView<HashMap.Entry<StatisticObject.StatisticInfo, List<StatisticObject>>> statisticsMeasuresTable;
@@ -83,7 +86,8 @@ public class StatisticsWindowController {
                         FileService.getInstance().
                                 readGameManagerFromStreamAndLoad(inputStream);
                     } catch (Exception e) {
-                        throw new RuntimeException(e);
+                        log.info("Error loading hunt file from series", e);
+                        EventBusUtils.LOG_LABEL_EVENT.trigger("Unable to load run");
                     }
 
                 }

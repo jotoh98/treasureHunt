@@ -198,7 +198,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      * This simulates the whole game, until its finished.
      */
     public CompletableFuture<Void> beat() {
-        return beat(new SimpleObjectProperty<>(0d));
+        return beat(new SimpleObjectProperty<>(0d), false);
     }
 
     /**
@@ -255,11 +255,22 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
-     * This simulates the whole game, until its finished.
+     * {@code executeNextOnJavaFxThread} defaults to {@code true}.
      *
-     * @param delay time between each move
+     * @see GameManager#beat(ReadOnlyObjectProperty, Boolean)
      */
     public CompletableFuture<Void> beat(ReadOnlyObjectProperty<Double> delay) {
+        return beat(delay, true);
+    }
+
+    /**
+     * This simulates the whole game, until its finished.
+     *
+     * @param delay                     time between each move
+     * @param executeNextOnJavaFxThread if set to true the next call is made on javafx thread that is important when UI is attached to the GameManager,
+     *                                  if it false the delay parameter is ignored
+     */
+    public CompletableFuture<Void> beat(ReadOnlyObjectProperty<Double> delay, Boolean executeNextOnJavaFxThread) {
         CompletableFuture<Void> completableFuture = new CompletableFuture<>();
         if (beatThreadRunning.get()) {
             log.warn("There's already a beating thread running");
@@ -271,21 +282,29 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         AsyncUtils.EXECUTOR_SERVICE.submit(() -> {
             log.trace("Start beating thread");
             while (!stepForwardImpossibleBinding.get() && beatThreadRunning.get()) {
-                CountDownLatch latch = new CountDownLatch(1);
-                Platform.runLater(() -> {
+                if (executeNextOnJavaFxThread) {
+                    CountDownLatch latch = new CountDownLatch(1);
+                    Platform.runLater(() -> {
+                        next();
+                        latch.countDown();
+                    });
+                    try {
+                        latch.await();
+                        Thread.sleep((long) (delay.get() * 1000));
+                    } catch (InterruptedException e) {
+                        completableFuture.completeExceptionally(e);
+                        throw new RuntimeException(e);
+                    }
+                } else {
                     next();
-                    latch.countDown();
-                });
-                try {
-                    latch.await();
-                    Thread.sleep((long) (delay.get() * 1000));
-                } catch (InterruptedException e) {
-                    completableFuture.completeExceptionally(e);
-                    throw new RuntimeException(e);
                 }
             }
             log.trace("Terminating beating thread");
-            Platform.runLater(() -> beatThreadRunning.set(false));
+            if (executeNextOnJavaFxThread) {
+                Platform.runLater(() -> beatThreadRunning.set(false));
+            } else {
+                beatThreadRunning.set(false);
+            }
             completableFuture.complete(null);
         });
 
