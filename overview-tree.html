@@ -101,10 +101,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li><a href="com/treasure/hunt/cli/package-tree.html">com.treasure.hunt.cli</a>, </li>
 <li><a href="com/treasure/hunt/game/package-tree.html">com.treasure.hunt.game</a>, </li>
 <li><a href="com/treasure/hunt/game/mods/hideandseek/package-tree.html">com.treasure.hunt.game.mods.hideandseek</a>, </li>
-<li><a href="com/treasure/hunt/io/package-tree.html">com.treasure.hunt.io</a>, </li>
 <li><a href="com/treasure/hunt/jts/awt/package-tree.html">com.treasure.hunt.jts.awt</a>, </li>
 <li><a href="com/treasure/hunt/jts/geom/package-tree.html">com.treasure.hunt.jts.geom</a>, </li>
-<li><a href="com/treasure/hunt/service/package-tree.html">com.treasure.hunt.service</a>, </li>
+<li><a href="com/treasure/hunt/jts/other/package-tree.html">com.treasure.hunt.jts.other</a>, </li>
+<li><a href="com/treasure/hunt/service/io/package-tree.html">com.treasure.hunt.service.io</a>, </li>
 <li><a href="com/treasure/hunt/strategy/geom/package-tree.html">com.treasure.hunt.strategy.geom</a>, </li>
 <li><a href="com/treasure/hunt/strategy/hider/package-tree.html">com.treasure.hunt.strategy.hider</a>, </li>
 <li><a href="com/treasure/hunt/strategy/hider/impl/package-tree.html">com.treasure.hunt.strategy.hider.impl</a>, </li>
@@ -135,8 +135,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">com.treasure.hunt.<a href="com/treasure/hunt/CLIMain.html" title="class in com.treasure.hunt"><span class="typeNameLink">CLIMain</span></a></li>
 <li class="circle">com.treasure.hunt.view.<a href="com/treasure/hunt/view/Controller.html" title="class in com.treasure.hunt.view"><span class="typeNameLink">Controller</span></a></li>
 <li class="circle">com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/EventBusUtils.html" title="class in com.treasure.hunt.utils"><span class="typeNameLink">EventBusUtils</span></a></li>
-<li class="circle">com.treasure.hunt.io.<a href="com/treasure/hunt/io/FileService.html" title="class in com.treasure.hunt.io"><span class="typeNameLink">FileService</span></a></li>
-<li class="circle">com.treasure.hunt.io.<a href="com/treasure/hunt/io/FileService.DataWithVersion.html" title="class in com.treasure.hunt.io"><span class="typeNameLink">FileService.DataWithVersion</span></a>&lt;E&gt;</li>
+<li class="circle">com.treasure.hunt.service.io.<a href="com/treasure/hunt/service/io/FileService.html" title="class in com.treasure.hunt.service.io"><span class="typeNameLink">FileService</span></a></li>
+<li class="circle">com.treasure.hunt.service.io.<a href="com/treasure/hunt/service/io/FileService.DataWithVersion.html" title="class in com.treasure.hunt.service.io"><span class="typeNameLink">FileService.DataWithVersion</span></a>&lt;E&gt;</li>
 <li class="circle">com.treasure.hunt.view.<a href="com/treasure/hunt/view/FxUtils.html" title="class in com.treasure.hunt.view"><span class="typeNameLink">FxUtils</span></a></li>
 <li class="circle">com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameEngine.html" title="class in com.treasure.hunt.game"><span class="typeNameLink">GameEngine</span></a>
 <ul>
@@ -178,6 +178,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">com.treasure.hunt.strategy.searcher.<a href="com/treasure/hunt/strategy/searcher/Movement.html" title="class in com.treasure.hunt.strategy.searcher"><span class="typeNameLink">Movement</span></a></li>
 </ul>
 </li>
+<li class="circle">com.treasure.hunt.jts.other.<a href="com/treasure/hunt/jts/other/ImageItem.html" title="class in com.treasure.hunt.jts.other"><span class="typeNameLink">ImageItem</span></a> (implements com.treasure.hunt.strategy.geom.<a href="com/treasure/hunt/strategy/geom/JavaFxDrawable.html" title="interface in com.treasure.hunt.strategy.geom">JavaFxDrawable</a>)</li>
+<li class="circle">com.treasure.hunt.service.io.<a href="com/treasure/hunt/service/io/ImageService.html" title="class in com.treasure.hunt.service.io"><span class="typeNameLink">ImageService</span></a></li>
 <li class="circle">com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/JTSUtils.html" title="class in com.treasure.hunt.utils"><span class="typeNameLink">JTSUtils</span></a></li>
 <li class="circle">org.locationtech.jts.geom.LineSegment (implements java.lang.Comparable&lt;T&gt;, java.io.Serializable)
 <ul>
@@ -201,7 +203,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/ReflectionUtils.html" title="class in com.treasure.hunt.utils"><span class="typeNameLink">ReflectionUtils</span></a></li>
 <li class="circle">com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/SaveAndLoadController.html" title="class in com.treasure.hunt.view.widget"><span class="typeNameLink">SaveAndLoadController</span></a></li>
 <li class="circle">com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/ScaleController.html" title="class in com.treasure.hunt.view.widget"><span class="typeNameLink">ScaleController</span></a></li>
-<li class="circle">com.treasure.hunt.service.<a href="com/treasure/hunt/service/SeriesService.html" title="class in com.treasure.hunt.service"><span class="typeNameLink">SeriesService</span></a></li>
+<li class="circle">com.treasure.hunt.service.io.<a href="com/treasure/hunt/service/io/SeriesService.html" title="class in com.treasure.hunt.service.io"><span class="typeNameLink">SeriesService</span></a></li>
 <li class="circle">org.locationtech.jts.awt.ShapeWriter
 <ul>
 <li class="circle">com.treasure.hunt.jts.awt.<a href="com/treasure/hunt/jts/awt/AdvancedShapeWriter.html" title="class in com.treasure.hunt.jts.awt"><span class="typeNameLink">AdvancedShapeWriter</span></a></li>
@@ -238,6 +240,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">com.treasure.hunt.game.mods.hideandseek.<a href="com/treasure/hunt/game/mods/hideandseek/HideAndSeekHider.html" title="interface in com.treasure.hunt.game.mods.hideandseek"><span class="typeNameLink">HideAndSeekHider</span></a>&lt;T&gt;</li>
 </ul>
 </li>
+<li class="circle">com.treasure.hunt.strategy.geom.<a href="com/treasure/hunt/strategy/geom/JavaFxDrawable.html" title="interface in com.treasure.hunt.strategy.geom"><span class="typeNameLink">JavaFxDrawable</span></a></li>
 <li class="circle">com.treasure.hunt.strategy.searcher.<a href="com/treasure/hunt/strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><span class="typeNameLink">Searcher</span></a>&lt;T&gt;
 <ul>
 <li class="circle">com.treasure.hunt.game.mods.hideandseek.<a href="com/treasure/hunt/game/mods/hideandseek/HideAndSeekSearcher.html" title="interface in com.treasure.hunt.game.mods.hideandseek"><span class="typeNameLink">HideAndSeekSearcher</span></a>&lt;T&gt;</li>
@@ -261,6 +264,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul>
 <li class="circle">com.treasure.hunt.strategy.geom.<a href="com/treasure/hunt/strategy/geom/GeometryType.html" title="enum in com.treasure.hunt.strategy.geom"><span class="typeNameLink">GeometryType</span></a></li>
 <li class="circle">com.treasure.hunt.strategy.hint.impl.<a href="com/treasure/hunt/strategy/hint/impl/HalfPlaneHint.Direction.html" title="enum in com.treasure.hunt.strategy.hint.impl"><span class="typeNameLink">HalfPlaneHint.Direction</span></a></li>
+<li class="circle">com.treasure.hunt.jts.other.<a href="com/treasure/hunt/jts/other/ImageItem.Alignment.html" title="enum in com.treasure.hunt.jts.other"><span class="typeNameLink">ImageItem.Alignment</span></a></li>
 <li class="circle">com.treasure.hunt.analysis.<a href="com/treasure/hunt/analysis/StatisticObject.StatisticInfo.html" title="enum in com.treasure.hunt.analysis"><span class="typeNameLink">StatisticObject.StatisticInfo</span></a></li>
 <li class="circle">com.treasure.hunt.strategy.geom.<a href="com/treasure/hunt/strategy/geom/StatusMessageType.html" title="enum in com.treasure.hunt.strategy.geom"><span class="typeNameLink">StatusMessageType</span></a></li>
 </ul>

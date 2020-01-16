@@ -3,10 +3,10 @@ com.treasure.hunt.analysis
 com.treasure.hunt.cli
 com.treasure.hunt.game
 com.treasure.hunt.game.mods.hideandseek
-com.treasure.hunt.io
 com.treasure.hunt.jts.awt
 com.treasure.hunt.jts.geom
-com.treasure.hunt.service
+com.treasure.hunt.jts.other
+com.treasure.hunt.service.io
 com.treasure.hunt.strategy.geom
 com.treasure.hunt.strategy.hider
 com.treasure.hunt.strategy.hider.impl
