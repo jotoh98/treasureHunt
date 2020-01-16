@@ -24,7 +24,7 @@ jobs:
           draft: true
           prerelease: false
       - name: Build win zip
-          run: ./gradlew distZip -PprojVersion=${GITHUB_REF##*/} -PjavafxPlatform=win
+        run: ./gradlew distZip -PprojVersion=${GITHUB_REF##*/} -PjavafxPlatform=win
       - name: Build linux tar
         run: ./gradlew distTar -PprojVersion=${GITHUB_REF##*/} -PjavafxPlatform=linux
       - name: Build mac tar
