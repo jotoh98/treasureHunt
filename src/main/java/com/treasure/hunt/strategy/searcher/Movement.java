@@ -1,5 +1,7 @@
 package com.treasure.hunt.strategy.searcher;
 
+
+import com.treasure.hunt.jts.other.ImageItem;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.geom.HintAndMovement;
@@ -57,6 +59,7 @@ public class Movement extends HintAndMovement {
     public void addWayPoint(Point point) {
         points.add(new GeometryItem<>(point, GeometryType.WAY_POINT));
         addAdditionalItem(new GeometryItem<>(point, GeometryType.WAY_POINT));
+        addAdditionalItem(new GeometryItem<>(new ImageItem(point.getCoordinate(), 40, 40, "/images/pin.png", ImageItem.Alignment.BOTTOM_CENTER), GeometryType.CURRENT_WAY_POINT));
     }
 
     /**

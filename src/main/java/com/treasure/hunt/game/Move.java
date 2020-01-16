@@ -1,5 +1,6 @@
 package com.treasure.hunt.game;
 
+import com.treasure.hunt.jts.other.ImageItem;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.Hint;
@@ -48,6 +49,7 @@ public class Move {
         }
         if (treasureLocation != null) {
             output.add(new GeometryItem<>(treasureLocation, GeometryType.TREASURE));
+            output.add(new GeometryItem<>(new ImageItem(treasureLocation.getCoordinate(), 20, 20, "/images/target.png", ImageItem.Alignment.CENTER_CENTER), GeometryType.TREASURE_FLAG));
         }
         output.sort(Comparator.comparingInt(a -> a.getGeometryStyle().getZIndex()));
 

@@ -1,4 +1,4 @@
-package com.treasure.hunt.io;
+package com.treasure.hunt.service.io;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -45,11 +45,11 @@ public class FileService {
         return kryo;
     }
 
-    public static FileService getInstance() {
-        if (FileService.instance == null) {
-            FileService.instance = new FileService();
+    public synchronized static FileService getInstance() {
+        if (instance == null) {
+            instance = new FileService();
         }
-        return FileService.instance;
+        return instance;
     }
 
     public void writeGameDataToFile(GameManager gameManager, Path filePath) throws IOException {

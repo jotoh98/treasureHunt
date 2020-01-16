@@ -1,6 +1,7 @@
 package com.treasure.hunt.strategy.geom;
 
 import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
+import javafx.scene.canvas.GraphicsContext;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
@@ -52,11 +53,16 @@ public class GeometryItem<T> {
      * This lets {@code this} convert to a {@link Shape} via the given {@code shapeWriter}
      * and draws itself on the given {@code graphics2D}.
      *
-     * @param graphics2D  where we want to draw {@code this} on.
-     * @param shapeWriter converting {@code this} into a {@link Shape}.
+     * @param graphics2D        where we want to draw {@code this} on.
+     * @param shapeWriter       converting {@code this} into a {@link Shape}.
+     * @param graphicsContext2D
      */
-    public void draw(FXGraphics2D graphics2D, AdvancedShapeWriter shapeWriter) {
+    public void draw(FXGraphics2D graphics2D, AdvancedShapeWriter shapeWriter, GraphicsContext graphicsContext2D) {
         if (!geometryStyle.isVisible()) {
+            return;
+        }
+        if (object instanceof JavaFxDrawable) {
+            ((JavaFxDrawable) object).draw(geometryStyle, graphicsContext2D, shapeWriter);
             return;
         }
         Shape shape = shapeWriter.toShape(object);

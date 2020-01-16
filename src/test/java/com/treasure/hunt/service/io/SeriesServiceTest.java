@@ -1,4 +1,4 @@
-package com.treasure.hunt.service;
+package com.treasure.hunt.service.io;
 
 import com.treasure.hunt.analysis.StatisticsWithIdsAndPath;
 import com.treasure.hunt.game.GameEngine;

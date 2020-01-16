@@ -1,10 +1,9 @@
-package com.treasure.hunt.service;
+package com.treasure.hunt.service.io;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.treasure.hunt.analysis.StatisticsWithId;
 import com.treasure.hunt.analysis.StatisticsWithIdsAndPath;
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.io.FileService;
 import com.treasure.hunt.utils.AsyncUtils;
 import com.treasure.hunt.utils.EventBusUtils;
 import javafx.application.Platform;
@@ -56,11 +55,11 @@ public class SeriesService {
     }
 
 
-    public static SeriesService getInstance() {
-        if (SeriesService.instance == null) {
-            SeriesService.instance = new SeriesService();
+    public synchronized static SeriesService getInstance() {
+        if (instance == null) {
+            instance = new SeriesService();
         }
-        return SeriesService.instance;
+        return instance;
     }
 
     @SneakyThrows

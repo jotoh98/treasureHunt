@@ -16,7 +16,8 @@ public enum GeometryType {
     TRUE_HINT(false, "True Hint"),
 
     // treasure/no-treasure (areas)
-    TREASURE(true, "no treasure"),
+    TREASURE(true, "treasure"),
+    TREASURE_FLAG(true, "treasure flag", true),
     NO_TREASURE(false, "no treasure"),
     POSSIBLE_TREASURE(false, "possible treasure"),
     HINT_ANGLE(true, "angle hint", true),
@@ -27,9 +28,8 @@ public enum GeometryType {
 
     BOUNDING_CIRCE(false, "bounding circle"),
 
-    STANDARD(true, "")
-    // TODO add more..
-    ;
+    STANDARD(true, ""),
+    CURRENT_WAY_POINT(true, "Current way point", true);
 
     @Getter
     private final String displayName;
