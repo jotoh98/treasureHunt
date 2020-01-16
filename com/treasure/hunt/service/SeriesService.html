@@ -211,10 +211,12 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#runSeriesAndSaveToFile(java.lang.Integer,com.treasure.hunt.game.GameManager,java.util.function.Consumer,java.io.File)">runSeriesAndSaveToFile</a></span>&#8203;(java.lang.Integer&nbsp;rounds,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#runSeriesAndSaveToFile(java.lang.Integer,com.treasure.hunt.game.GameManager,java.util.function.Consumer,java.io.File,boolean,boolean)">runSeriesAndSaveToFile</a></span>&#8203;(java.lang.Integer&nbsp;rounds,
                       <a href="../game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a>&nbsp;gameManager,
                       java.util.function.Consumer&lt;java.lang.Double&gt;&nbsp;progressConsumer,
-                      java.io.File&nbsp;selectedFile)</code></th>
+                      java.io.File&nbsp;selectedFile,
+                      boolean&nbsp;alreadyInitialed,
+                      boolean&nbsp;writeGameManger)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -297,7 +299,7 @@ extends java.lang.Object</pre>
                       java.util.function.Consumer&lt;java.lang.Double&gt;&nbsp;progressConsumer)</pre>
 </li>
 </ul>
-<a id="runSeriesAndSaveToFile(java.lang.Integer,com.treasure.hunt.game.GameManager,java.util.function.Consumer,java.io.File)">
+<a id="runSeriesAndSaveToFile(java.lang.Integer,com.treasure.hunt.game.GameManager,java.util.function.Consumer,java.io.File,boolean,boolean)">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -306,12 +308,14 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public&nbsp;void&nbsp;runSeriesAndSaveToFile&#8203;(java.lang.Integer&nbsp;rounds,
                                    <a href="../game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a>&nbsp;gameManager,
                                    java.util.function.Consumer&lt;java.lang.Double&gt;&nbsp;progressConsumer,
-                                   java.io.File&nbsp;selectedFile)</pre>
+                                   java.io.File&nbsp;selectedFile,
+                                   boolean&nbsp;alreadyInitialed,
+                                   boolean&nbsp;writeGameManger)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>rounds</code> - amount of runs</dd>
 <dd><code>gameManager</code> - gameManager to be copied (preserves state for multiple starts with same states)</dd>
-<dd><code>progressConsumer</code> - consumer for working progress, We have 4 workload points per run 1 for copying GameManager, 2 for the actual run and one for writing the file</dd>
+<dd><code>progressConsumer</code> - consumer for working progress, We have 4 workload points per run 1 for copying GameManager, 6 for the actual run and 2 for writing the file</dd>
 <dd><code>selectedFile</code> - the file the runs are written to</dd>
 </dl>
 </li>

@@ -1,5 +1,6 @@
 com.treasure.hunt
 com.treasure.hunt.analysis
+com.treasure.hunt.cli
 com.treasure.hunt.game
 com.treasure.hunt.game.mods.hideandseek
 com.treasure.hunt.io
