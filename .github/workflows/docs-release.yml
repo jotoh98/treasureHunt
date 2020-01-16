@@ -20,7 +20,19 @@ jobs:
         run: echo ${GITHUB_REF##*/}
       - name: Build win zip
         run: ./gradlew distZip -PprojVersion=${GITHUB_REF##*/} -PjavafxPlatform=win
-      - name: Build linux zip
-        run: ./gradlew distZip -PprojVersion=${GITHUB_REF##*/} -PjavafxPlatform=linux
-      - name: Build mac zip
-        run: ./gradlew distZip -PprojVersion=${GITHUB_REF##*/} -PjavafxPlatform=mac && ls ./build/distributions
+      - name: Build linux tar
+        run: ./gradlew distTar -PprojVersion=${GITHUB_REF##*/} -PjavafxPlatform=linux
+      - name: Build mac tar
+        run: ./gradlew distTar -PprojVersion=${GITHUB_REF##*/} -PjavafxPlatform=mac && ls ./build/distributions
+      - name: Create Release
+          id: create_release
+          uses: actions/create-release@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          with:
+            tag_name: ${{ github.ref }}
+            release_name: Release ${{ github.ref }}
+            body: |
+              Auto generated release
+            draft: true
+            prerelease: false
