@@ -28,17 +28,9 @@ public enum GeometryType {
     HINT_ANGLE(true, "angle hint", true),
 
     // searcher movements
-    SEARCHER_POSITION(true, "searcher position"),
-    SEARCHER_MOVEMENT(true, "searcher movement"),
-    SEARCHER_LAST_MOVE(true, "the searchers last movement", true),
-
-    // treasure location
-    TREASURE(true, "no treasure"),
-
-    // Obstacle add-on
-    OBSTACLE(false, "no treasure"),
     WAY_POINT(true, "no treasure"),
     SEARCHER_MOVEMENT(true, "searcher movement"),
+    SEARCHER_LAST_MOVE(true, "the searchers last movement", true),
 
     BOUNDING_CIRCE(false, "bounding circle"),
 
