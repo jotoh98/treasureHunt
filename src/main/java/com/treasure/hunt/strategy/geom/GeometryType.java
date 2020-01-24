@@ -16,8 +16,6 @@ public enum GeometryType {
     TRUE_HINT(false, "True Hint"),
 
     // HalfPlaneHint
-    HALF_PLANE_POINT_LEFT(false, "left half-plane-point"),
-    HALF_PLANE_POINT_RIGHT(false, "right half-plane-point"),
     HALF_PLANE(true, "the treasure is not here", true),
     HALF_PLANE_LINE(true, "half plane line", true),
     HALF_PLANE_LINE_BLUE(true, "half plane line", true),
@@ -42,7 +40,6 @@ public enum GeometryType {
     // StrategyFromPaper
     CURRENT_PHASE(false, "current phase", true),
     CURRENT_RECTANGLE(true, "current rectangle", true),
-    RECTANGLE_SCAN(false, "rectangleScan", true),
 
     STANDARD(true, ""),
 
