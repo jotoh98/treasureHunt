@@ -14,8 +14,7 @@ import org.locationtech.jts.geom.Point;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for the {@link GameEngine}.
@@ -33,7 +32,7 @@ class GameEngineTest {
      */
     private void simulateSteps(GameEngine gameEngine, int moves) {
         for (int i = 0; i < moves; i++) {
-            if (gameEngine.finished) {
+            if (gameEngine.isFinished()) {
                 break;
             }
             gameEngine.move();
@@ -48,15 +47,15 @@ class GameEngineTest {
      */
     @Test
     void moveOnTreasure() {
-        GameEngine gameEngine = new GameEngine(new NaiveCircleSearcher(), new RevealingHider());
+        GameEngine gameEngine = new GameEngine(new NaiveCircleSearcher(), new RevealingHider(), new Coordinate(0, 0));
         gameEngine.init();
         simulateSteps(gameEngine, 2);
         assertTrue(gameEngine.isFinished());
-        assertTrue(gameEngine.treasurePos == gameEngine.searcherPos);
+        assertSame(gameEngine.treasurePos, gameEngine.searcherPos);
     }
 
     /**
-     * This tests the {@link GameEngine#located(List)} method.
+     * This tests the {@link GameEngine#located(List, Point)} method.
      */
     @Test
     void bruteForceTest1() {
@@ -108,7 +107,7 @@ class GameEngineTest {
     }
 
     /**
-     * {@link GameEngine#located(List)} )} test.
+     * {@link GameEngine#located(List, Point)} )} test.
      * In this test, the searcher moves <b>past</b> the treasure
      * with a minimum distance of 1.
      * searcher starts at (0,0) as usual.
@@ -128,9 +127,13 @@ class GameEngineTest {
             }
 
             @Override
+            public void init(Point searcherStartPosition) {
+
+            }
+
+            @Override
             public Hint move(Movement moves) {
-                CircleHint hint = new CircleHint(gf.createPoint(new Coordinate(0, 2)), 2);
-                return hint;
+                return new CircleHint(gf.createPoint(new Coordinate(0, 2)), 2);
             }
         });
         gameEngine.init();

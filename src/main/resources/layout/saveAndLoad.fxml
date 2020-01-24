@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" alignment="TOP_CENTER" spacing="10.0" xmlns="http://javafx.com/javafx/11"
+      fx:controller="com.treasure.hunt.view.widget.SaveAndLoadController">
+    <children>
+        <Label text="For instances"/>
+        <VBox alignment="TOP_CENTER" spacing="10.0">
+            <children>
+                <Button fx:id="saveButton" mnemonicParsing="false" onAction="#save" text="Save current run to file"/>
+                <Button mnemonicParsing="false" onAction="#load" text="Load run from file"/>
+            </children>
+        </VBox>
+        <Separator prefWidth="200.0"/>
+        <Label text="For series using current selection"/>
+        <HBox spacing="10.0">
+            <children>
+                <Spinner fx:id="roundSpinner"/>
+                <Label maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity"
+                       minWidth="-Infinity"
+                       text="rounds"/>
+            </children>
+        </HBox>
+        <Button mnemonicParsing="false" onAction="#onSeriesRun" fx:id="runMultipleButton" text="Run multiple games"/>
+        <ProgressIndicator fx:id="progressIndicator" progress="0.0" visible="false"/>
+        <Button mnemonicParsing="false" onAction="#onSeriesLoad" text="Load series file"/>
+    </children>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+    </padding>
+</VBox>

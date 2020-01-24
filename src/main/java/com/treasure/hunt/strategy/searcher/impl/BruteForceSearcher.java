@@ -1,20 +1,23 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Point;
 
+/**
+ * This type of {@link Searcher} runs in square-shaped circles around its
+ * initial position, which increases by one, after each step.
+ *
+ * @author dorianreineccius
+ */
 public class BruteForceSearcher implements Searcher<Hint> {
     private int limit = 1;
     private int lineSegmentDistance = 0;
     private int x = 0, y = 0;
-
-    public void init(Point startPosition, double insecurity) {
-        init(startPosition);
-    }
 
     @Override
     public void init(Point startPosition) {
@@ -55,7 +58,7 @@ public class BruteForceSearcher implements Searcher<Hint> {
                                             movement.getPoints().get(i + 1).getObject().getY()
                                     )
                             )
-                    ));
+                            , GeometryType.SEARCHER_MOVEMENT));
         }
         return movement;
     }

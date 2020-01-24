@@ -1,12 +1,14 @@
 package com.treasure.hunt;
 
-import com.treasure.hunt.view.main.MainFrameController;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author axel12
  */
+@Slf4j
 public class Main {
     public static void main(String[] args) {
-        MainFrameController.getInstance().start();
+        log.info("Starting Javafx UI application");
+        JavaFxApplication.main(args);
     }
 }

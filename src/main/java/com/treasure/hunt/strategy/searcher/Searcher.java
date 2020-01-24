@@ -12,11 +12,11 @@ import org.locationtech.jts.geom.Point;
  * @author dorianreineccius
  */
 public interface Searcher<T extends Hint> {
-
     /**
-     * @param startPosition the searchers starting position, he will initialized with.
+     * @param searcherStartPosition the {@link com.treasure.hunt.strategy.searcher.Searcher} starting position,
+     *                              he will initialized on.
      */
-    void init(Point startPosition);
+    void init(Point searcherStartPosition);
 
     /**
      * Use this to perform a initial move, without a hint given.

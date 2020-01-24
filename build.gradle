@@ -1,0 +1,120 @@
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.8'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url = 'https://artifactory.cronapp.io/public-release/'
+    }
+    maven {
+        url = 'https://jitpack.io'
+    }
+}
+
+if (javafxPlatform == "unspecified") {
+    switch (org.gradle.internal.os.OperatingSystem.current()) {
+        case org.gradle.internal.os.OperatingSystem.LINUX:
+            project.ext.javafxPlatform = "linux"
+            break
+        case org.gradle.internal.os.OperatingSystem.MAC_OS:
+            project.ext.javafxPlatform = "mac"
+            break
+        case org.gradle.internal.os.OperatingSystem.WINDOWS:
+            project.ext.javafxPlatform = "win"
+            break
+    }
+}
+println "Platform is: ${javafxPlatform}"
+
+dependencies {
+
+    compileOnly 'org.projectlombok:lombok:1.18.10'
+    testCompileOnly 'org.projectlombok:lombok:1.18.10'
+    annotationProcessor 'org.projectlombok:lombok:1.18.10'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.10'
+    implementation 'org.jetbrains:annotations:13.0'
+    implementation 'org.locationtech.jts:jts-core:1.16.1'
+    implementation 'ch.qos.logback:logback-core:1.2.3'
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'org.slf4j:slf4j-api:1.7.8'
+    implementation 'org.jfree:fxgraphics2d:1.7'
+    implementation 'org.reflections:reflections:0.9.11'
+    implementation 'com.esotericsoftware:kryo:4.0.2'
+    implementation 'com.github.Fylipp:easy-events:v1.1.0'
+    implementation 'info.picocli:picocli:4.1.4'
+    implementation 'me.tongfei:progressbar:0.8.0'
+    testCompile 'org.mockito:mockito-core:3.0.0'
+    testCompile group: 'org.testfx', name: 'testfx-junit', version: '4.0.8-alpha'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
+
+    compile("org.openjfx:javafx-base:${javafxVersion}:${javafxPlatform}")
+    compile("org.openjfx:javafx-controls:${javafxVersion}:${javafxPlatform}")
+    compile("org.openjfx:javafx-graphics:${javafxVersion}:${javafxPlatform}")
+    compile("org.openjfx:javafx-fxml:${javafxVersion}:${javafxPlatform}")
+}
+
+project.version = project.projVersion.replace('v','')
+
+distZip {
+    archiveName "${project.name}-v${project.version}-${javafxPlatform}.zip"
+}
+
+distTar {
+    archiveName "${project.name}-v${project.version}-${javafxPlatform}.tar"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+javafx {
+    version = "${javafxVersion}"
+    modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.graphics']
+    /**
+     * https://github.com/openjfx/javafx-gradle-plugin
+     * JavaFX modules require native binaries for each platform. The plugin only includes binaries for the platform
+     * running the build. By declaring the dependency configuration compileOnly, the native binaries will not be
+     * included. You will need to provide those separately during deployment for each target platform.
+     */
+     configuration = 'compileOnly'
+}
+
+mainClassName = 'com.treasure.hunt.Main'
+
+group = 'com.treasure'
+description = 'hunt'
+sourceCompatibility = '11'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.treasure.hunt.Main',
+                                 'Implementation-Version': project.version
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    // This fixes signature issues by removing all signatures
+    doFirst {
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+}
+
+// This fixes the "line too long" error when running the .bat with windows CLI
+tasks.withType(CreateStartScripts).each { task ->
+    task.doLast {
+        String text = task.windowsScript.text
+        // Replaces the per file classpath (which are all jars in "lib") with a wildcard on lib
+        text = text.replaceFirst(/(set CLASSPATH=%APP_HOME%\\lib\\).*/, { "${it[1]}*" })
+        task.windowsScript.write text
+    }
+}
+

@@ -1,13 +1,12 @@
 package com.treasure.hunt.strategy.geom;
 
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * This is conventions for GeometryItems,
  * how to display them.
  *
- * @author hassel
+ * @author jotoh
  */
 public enum GeometryType {
     // hints
@@ -17,44 +16,36 @@ public enum GeometryType {
     TRUE_HINT(false, "True Hint"),
 
     // treasure/no-treasure (areas)
+    TREASURE(true, "treasure"),
+    TREASURE_FLAG(true, "treasure flag", true),
     NO_TREASURE(false, "no treasure"),
     POSSIBLE_TREASURE(false, "possible treasure"),
-    HINT_ANGLE(true, "angle hint"),
+    HINT_ANGLE(true, "angle hint", true),
 
     // searcher movements
-    SEARCHER_POSITION(true, "searcher position"),
+    WAY_POINT(true, "no treasure"),
     SEARCHER_MOVEMENT(true, "searcher movement"),
 
-    // treasure location
-    TREASURE(true, "no treasure"),
-
-    // Obstacle add-on
-    OBSTACLE(false, "no treasure"),
-    WAY_POINT(false, "no treasure"),
+    BOUNDING_CIRCE(false, "bounding circle"),
 
     STANDARD(true, ""),
-
-    BOUNDING_CIRCE(false,"bounding circle")
-    // TODO add more..
-    ;
-
+    CURRENT_WAY_POINT(true, "Current way point", true);
 
     @Getter
     private final String displayName;
     @Getter
-    @Setter
     private boolean enabled;
     @Getter
-    @Setter
     private boolean override;
 
-    GeometryType(String displayName, boolean enabled, boolean override) {
+    GeometryType(boolean enabled, String displayName, boolean override) {
         this.displayName = displayName;
         this.enabled = enabled;
         this.override = override;
     }
 
     GeometryType(boolean enabledByDefault, String displayName) {
-        this(displayName, enabledByDefault, false);
+        this(enabledByDefault, displayName, false);
     }
+
 }

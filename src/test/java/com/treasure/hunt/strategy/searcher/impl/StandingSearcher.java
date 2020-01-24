@@ -14,7 +14,7 @@ public class StandingSearcher implements Searcher<Hint> {
     private Point startPosition;
 
     @Override
-    public void init(Point startPosition) {
+    public void init(Point searcherStartPosition) {
         this.startPosition = startPosition;
     }
 
