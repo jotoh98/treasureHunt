@@ -19,17 +19,18 @@ public enum GeometryType {
     TREASURE(true, "treasure"),
     TREASURE_FLAG(true, "treasure flag", true),
     NO_TREASURE(false, "no treasure"),
-    POSSIBLE_TREASURE(false, "possible treasure"),
+    POSSIBLE_TREASURE(false, "possible treasure", true),
     HINT_ANGLE(true, "angle hint", true),
 
     // searcher movements
     WAY_POINT(true, "no treasure"),
     SEARCHER_MOVEMENT(true, "searcher movement"),
 
-    BOUNDING_CIRCE(false, "bounding circle"),
+    BOUNDING_CIRCE(false, "bounding circle", true),
 
     STANDARD(true, ""),
-    CURRENT_WAY_POINT(true, "Current way point", true);
+    CURRENT_WAY_POINT(true, "Current way point", true),
+    WORST_CONSTANT(false, "Point with worst Constant",true);
 
     @Getter
     private final String displayName;
