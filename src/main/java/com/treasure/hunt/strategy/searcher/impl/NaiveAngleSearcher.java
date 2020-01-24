@@ -1,7 +1,9 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
+import com.treasure.hunt.game.mods.hideandseek.HideAndSeekSearcher;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
+import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
@@ -17,7 +19,7 @@ import org.locationtech.jts.geom.impl.CoordinateArraySequence;
  *
  * @author dorianreineccius
  */
-public class NaiveAngleSearcher implements Searcher<AngleHint> {
+public class NaiveAngleSearcher implements Searcher<AngleHint> , HideAndSeekSearcher<AngleHint> {
     private Point startPosition;
 
     /**
