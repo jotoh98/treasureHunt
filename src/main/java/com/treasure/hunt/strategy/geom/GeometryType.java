@@ -21,6 +21,8 @@ public enum GeometryType {
     HALF_PLANE_LINE_BLUE(true, "half plane line", true),
 
     // treasure/no-treasure (areas)
+    TREASURE(true, "treasure"),
+    TREASURE_FLAG(true, "treasure flag", true),
     NO_TREASURE(false, "no treasure"),
     POSSIBLE_TREASURE(false, "possible treasure"),
     HINT_ANGLE(true, "angle hint", true),
@@ -36,17 +38,16 @@ public enum GeometryType {
     // Obstacle add-on
     OBSTACLE(false, "no treasure"),
     WAY_POINT(true, "no treasure"),
+    SEARCHER_MOVEMENT(true, "searcher movement"),
+
+    BOUNDING_CIRCE(false, "bounding circle"),
 
     // StrategyFromPaper
     CURRENT_PHASE(false, "current phase", true),
     CURRENT_RECTANGLE(true, "current rectangle", true),
 
     STANDARD(true, ""),
-
-    BOUNDING_CIRCE(false, "bounding circle"),
-
-    // TODO add more..
-    ;
+    CURRENT_WAY_POINT(true, "Current way point", true);
 
     @Getter
     private final String displayName;

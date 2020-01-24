@@ -1,6 +1,6 @@
 package com.treasure.hunt.view.widget;
 
-import com.treasure.hunt.jts.PointTransformation;
+import com.treasure.hunt.jts.awt.PointTransformation;
 import com.treasure.hunt.view.CanvasController;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -21,6 +21,7 @@ public class ScaleController {
     public Slider slider;
     public TextField textField;
     public VBox wrapper;
+
     @Getter
     private DoubleProperty scale = new SimpleDoubleProperty(1);
 

@@ -6,7 +6,7 @@
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" alignment="TOP_CENTER" spacing="10.0" xmlns="http://javafx.com/javafx/11.0.1"
+<VBox xmlns:fx="http://javafx.com/fxml/1" alignment="TOP_CENTER" spacing="10.0" xmlns="http://javafx.com/javafx/11"
       fx:controller="com.treasure.hunt.view.widget.BeatWidgetController">
     <HBox alignment="TOP_CENTER" spacing="10.0">
         <Button fx:id="playToggle" mnemonicParsing="false" onAction="#playToggle"/>

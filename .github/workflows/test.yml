@@ -1,6 +1,6 @@
 name: Gradle Test
 
-on: [push]
+on: [pull_request]
 
 jobs:
   test:
@@ -13,5 +13,9 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+      - name: install xvfb
+        run: sudo apt-get install xvfb
       - name: Build with Gradle
-        run: ./gradlew test
+        run: xvfb-run ./gradlew test
+      - name: Cleanup xvfb pidx
+        uses: bcomnes/cleanup-xvfb@v1

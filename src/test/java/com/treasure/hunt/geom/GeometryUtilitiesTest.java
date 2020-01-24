@@ -1,5 +1,6 @@
 package com.treasure.hunt.geom;
 
+import com.treasure.hunt.jts.geom.Line;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;

@@ -22,7 +22,7 @@ public class GeometryStyle {
 
     private Color fillColor;
 
-    int zIndex = 0;
+    private int zIndex = 0;
 
     public GeometryStyle(boolean visible, Color outlineColor) {
         this(visible, false, outlineColor, Color.black, 0);

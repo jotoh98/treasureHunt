@@ -2,7 +2,7 @@ package com.treasure.hunt.view;
 
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.service.FileService;
+import com.treasure.hunt.service.io.FileService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.EventBusUtils;
@@ -28,12 +28,9 @@ import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.reflections.Reflections;
 
-import java.lang.reflect.Modifier;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 /**
  * @author jotoh
@@ -61,10 +58,14 @@ public class MainController {
     public HBox stepViewNavigator;
 
     @FXML
-    public NavigationController stepViewNavigatorController;
+    private NavigationController stepViewNavigatorController;
+
+    @FXML
+    private Label versionLabel;
 
     @FXML
     private WidgetBarController leftWidgetBarController;
+
     @FXML
     private WidgetBarController rightWidgetBarController;
 
@@ -85,6 +86,8 @@ public class MainController {
 
     public void initialize() {
         canvasController.setGameManager(gameManager);
+        String implementationVersion = getClass().getPackage().getImplementationVersion();
+        versionLabel.setText(implementationVersion == null ? "snapshot" : "v" + implementationVersion);
         setListStringConverters();
         fillLists();
         addPromptBindings();
@@ -93,19 +96,29 @@ public class MainController {
         bindWidgetBarVisibility();
         addBindingsToGameManager();
         listenToGameMangerLoad();
+        listenToLogLabelEvent();
+        addGameIndependentWidgets();
+    }
+
+    private void addGameIndependentWidgets() {
+        Widget<SaveAndLoadController, ?> saveAndLoadWidget = new Widget<>("/layout/saveAndLoad.fxml");
+        saveAndLoadWidget.getController().init(gameManager, searcherList, hiderList, gameEngineList);
+        insertWidget(true, "Save & Load", saveAndLoadWidget.getComponent(), true);
+    }
+
+    private void listenToLogLabelEvent() {
+        EventBusUtils.LOG_LABEL_EVENT.addListener(logLabelMessage -> Platform.runLater(() -> EventBusUtils.LOG_LABEL_EVENT.trigger(logLabelMessage)));
     }
 
     private void listenToGameMangerLoad() {
-        EventBusUtils.GAME_MANAGER_LOADED_EVENT.addListener(loadedGameManager -> {
-            Platform.runLater(() -> {
-                try {
-                    initGameManager(loadedGameManager);
-                } catch (Exception e) {
-                    log.error("Error loading GameManger in UI", e);
-                    logLabel.setText("Error loading GameManger in UI from file");
-                }
-            });
-        });
+        EventBusUtils.GAME_MANAGER_LOADED_EVENT.addListener(loadedGameManager -> Platform.runLater(() -> {
+            try {
+                initGameManager(loadedGameManager);
+            } catch (Exception e) {
+                log.error("Error loading GameManger in UI", e);
+                EventBusUtils.LOG_LABEL_EVENT.trigger("Error loading GameManger in UI from file");
+            }
+        }));
     }
 
     /**
@@ -116,7 +129,7 @@ public class MainController {
             if (gameManager.isNull().get()) {
                 return;
             }
-            gameManager.get().getFinishedProperty().addListener(invalidation -> logLabel.setText("Game ended"));
+            gameManager.get().getFinishedProperty().addListener(invalidation -> EventBusUtils.LOG_LABEL_EVENT.trigger("Game ended"));
         });
         gameManager.bindBidirectional(stepViewNavigatorController.getGameManager());
     }
@@ -136,7 +149,6 @@ public class MainController {
         if (!left) {
             savedBar.set(rightWidgetBar);
         }
-
 
         toolbarController.getToggleGroup().selectedToggleProperty().addListener((observableValue, oldItem, newItem) -> {
             final int readPosition = left ? 0 : mainSplitPane.getItems().size() - 1;
@@ -166,16 +178,17 @@ public class MainController {
         pointInspectorWidget.getController().init(gameManager);
         insertWidget(true, "Inspector", pointInspectorWidget.getComponent());
 
-        Widget<SaveAndLoadController, ?> saveAndLoadWidget = new Widget<>("/layout/saveAndLoad.fxml");
-        saveAndLoadWidget.getController().init(gameManager, logLabel);
-        insertWidget(true, "Save & Load", saveAndLoadWidget.getComponent());
-
         Widget<BeatWidgetController, ?> beatWidget = new Widget<>("/layout/beatWidget.fxml");
-        beatWidget.getController().init(gameManager, logLabel);
+        beatWidget.getController().init(gameManager);
         insertWidget(true, "Game controls", beatWidget.getComponent());
+
         Widget<StatisticsWidgetController, ?> statisticsWidget = new Widget<>("/layout/statisticsWidget.fxml");
-        statisticsWidget.getController().init(gameManager, logLabel);
+        statisticsWidget.getController().init(gameManager);
         insertWidget(true, "Statistics", statisticsWidget.getComponent());
+
+        Widget<StatusMessageWidgetController, ?> statusWidget = new Widget<>("/layout/statusMessageWidget.fxml");
+        statusWidget.getController().init(gameManager);
+        insertWidget(false, "Status", statusWidget.getComponent());
 
         Widget<ScaleController, ?> scaleWidget = new Widget<>("/layout/scaling.fxml");
         scaleWidget.getController().init(canvasController);
@@ -226,20 +239,15 @@ public class MainController {
     }
 
     private void fillLists() {
-        Reflections searcherReflections = new Reflections("com.treasure.hunt.strategy.searcher.impl");
-        Reflections hiderReflections = new Reflections("com.treasure.hunt.strategy.hider.impl");
-        Reflections reflections = new Reflections("com.treasure.hunt.game");
 
-        Set<Class<? extends Searcher>> allSearchers = searcherReflections.getSubTypesOf(Searcher.class);
-        allSearchers = allSearchers.stream().filter(aClass -> !Modifier.isAbstract(aClass.getModifiers())).collect(Collectors.toSet());
+        Set<Class<? extends Searcher>> allSearchers = ReflectionUtils.getAllSearchers();
+        Set<Class<? extends Hider>> allHiders = ReflectionUtils.getAllHiders();
+        Set<Class<? extends GameEngine>> allGameEngines = ReflectionUtils.getAllGameEngines();
 
         ObservableList<Class<? extends Searcher>> observableSearchers = FXCollections.observableArrayList(allSearchers);
         FilteredList<Class<? extends Searcher>> filteredSearchers = new FilteredList<>(observableSearchers);
 
         searcherList.setItems(filteredSearchers);
-
-        Set<Class<? extends Hider>> allHiders = hiderReflections.getSubTypesOf(Hider.class);
-        allHiders = allHiders.stream().filter(aClass -> !Modifier.isAbstract(aClass.getModifiers())).collect(Collectors.toSet());
 
         ObservableList<Class<? extends Hider>> observableHiders = FXCollections.observableArrayList(allHiders);
         FilteredList<Class<? extends Hider>> filteredHiders = new FilteredList<>(observableHiders);
@@ -258,9 +266,6 @@ public class MainController {
                 })
         );
 
-        Set<Class<? extends GameEngine>> allGameEngines = reflections.getSubTypesOf(GameEngine.class);
-        allGameEngines = allGameEngines.stream().filter(aClass -> !Modifier.isAbstract(aClass.getModifiers())).collect(Collectors.toSet());
-        allGameEngines.add(GameEngine.class);
         ObservableList<Class<? extends GameEngine>> observableGameEngines = FXCollections.observableArrayList(allGameEngines);
         FilteredList<Class<? extends GameEngine>> filteredGameEngines = new FilteredList<>(observableGameEngines);
 
@@ -329,15 +334,16 @@ public class MainController {
             initGameManager(new GameManager(searcherClass, hiderClass, gameEngineClass));
         } catch (Exception e) {
             log.error("Something important crashed", e);
-            logLabel.setText("Could not create game");
+            EventBusUtils.LOG_LABEL_EVENT.trigger("Could not create game");
         }
     }
 
     private void initGameManager(GameManager gameManagerInstance) {
+        gameManagerInstance.init();
         boolean initialize = gameManager.isNull().get();
 
         gameManager.set(gameManagerInstance);
-        logLabel.setText("Game initialized");
+        EventBusUtils.LOG_LABEL_EVENT.trigger("Game initialized");
 
         if (initialize) {
             gameManager.addListener(change -> canvasController.drawShapes());
@@ -351,6 +357,6 @@ public class MainController {
     }
 
     public void onLoadGame(ActionEvent actionEvent) {
-        FileService.getInstance().load(logLabel);
+        FileService.getInstance().loadGameManager();
     }
 }

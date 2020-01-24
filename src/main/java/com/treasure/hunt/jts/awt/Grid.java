@@ -1,7 +1,5 @@
-package com.treasure.hunt.geom;
+package com.treasure.hunt.jts.awt;
 
-import com.treasure.hunt.jts.AdvancedShapeWriter;
-import com.treasure.hunt.jts.PointTransformation;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 

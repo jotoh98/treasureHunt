@@ -6,7 +6,7 @@
 <?import java.lang.String?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" id="root" maxHeight="-Infinity" maxWidth="-Infinity"
             minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1080.0"
-            xmlns="http://javafx.com/javafx/11.0.1" fx:controller="com.treasure.hunt.view.MainController">
+            xmlns="http://javafx.com/javafx/11" fx:controller="com.treasure.hunt.view.MainController">
     <bottom>
         <HBox BorderPane.alignment="CENTER">
             <children>
@@ -32,7 +32,8 @@
             <children>
                 <HBox alignment="CENTER_LEFT" maxWidth="60000.0" spacing="5.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Label text="TreasureHunt"/>
+                        <Label text="TreasureHunt: "/>
+                        <Label fx:id="versionLabel"/>
                     </children>
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" maxWidth="60000.0" spacing="5.0" HBox.hgrow="ALWAYS">
@@ -43,9 +44,6 @@
                                   promptText="Select game manager"/>
                         <Button fx:id="startGameButton" disable="true" maxHeight="1.7976931348623157E308"
                                 mnemonicParsing="false" onAction="#onStartButtonClicked" text="Init"
-                                textAlignment="CENTER"/>
-                        <Button maxHeight="1.7976931348623157E308"
-                                mnemonicParsing="false" onAction="#onLoadGame" text="Load"
                                 textAlignment="CENTER"/>
                     </children>
                 </HBox>

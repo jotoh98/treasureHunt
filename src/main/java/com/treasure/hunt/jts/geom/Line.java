@@ -1,6 +1,6 @@
-package com.treasure.hunt.geom;
+package com.treasure.hunt.jts.geom;
 
-import com.treasure.hunt.jts.AdvancedShapeWriter;
+import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
@@ -19,6 +19,9 @@ public class Line extends Ray {
         this(new Coordinate(x1, y1), new Coordinate(x2, y2));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Coordinate intersection(LineSegment line) {
         return super.lineIntersection(line);
@@ -32,6 +35,9 @@ public class Line extends Ray {
         return !rightOfPivot(coordinate);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Shape toShape(AdvancedShapeWriter shapeWriter) {
         double diameter = shapeWriter.getPointTransformation().diameter();

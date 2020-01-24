@@ -1,7 +1,7 @@
 package com.treasure.hunt.strategy.hint;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
-import lombok.Getter;
+import com.treasure.hunt.strategy.geom.HintAndMovement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,14 +12,8 @@ import java.util.List;
  *
  * @author jotoh
  */
-public abstract class Hint {
+public abstract class Hint extends HintAndMovement {
     protected List<GeometryItem<?>> additionalGeometryItems = new ArrayList<>();
-
-    /**
-     * Earlier added items that are now removed from display
-     */
-    @Getter
-    private List<GeometryItem> toBeRemoved = new ArrayList<>();
 
     /**
      * @param geometryItem to add {@link GeometryItem} objects, which are only relevant for displaying

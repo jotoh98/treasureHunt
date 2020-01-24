@@ -24,7 +24,7 @@ public class NaiveAngleSearcher implements Searcher<AngleHint> {
      * {@inheritDoc}
      */
     @Override
-    public void init(Point startPosition, int width, int height) {
+    public void init(Point startPosition) {
         this.startPosition = startPosition;
     }
 

@@ -1,4 +1,4 @@
-package com.treasure.hunt.geom;
+package com.treasure.hunt.jts.geom;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -13,11 +13,6 @@ import org.locationtech.jts.util.GeometricShapeFactory;
  * @see org.locationtech.jts.geom.Geometry
  */
 public class Circle extends Polygon {
-    /**
-     * The radius of the circle.
-     */
-    double radius;
-
     /**
      * The constructor
      *

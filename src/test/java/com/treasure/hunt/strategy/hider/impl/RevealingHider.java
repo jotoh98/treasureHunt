@@ -18,7 +18,7 @@ public class RevealingHider implements HideAndSeekHider<CircleHint> {
     private Point treasurePos = geometryFactory.createPoint(new Coordinate(45, 45));
 
     @Override
-    public void init(Point searcherStartPosition, int width, int height) {
+    public void init(Point searcherStartPosition) {
 
     }
 

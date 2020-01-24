@@ -1,4 +1,4 @@
-package com.treasure.hunt.jts;
+package com.treasure.hunt.jts.awt;
 
 import com.treasure.hunt.utils.JTSUtils;
 import javafx.beans.property.DoubleProperty;
@@ -67,7 +67,6 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
                 coordinate.y
         );
     }
-
 
     /**
      * Transform method between {@link Coordinate}'s.

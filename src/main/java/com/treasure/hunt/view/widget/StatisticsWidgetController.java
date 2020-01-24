@@ -6,12 +6,17 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.scene.control.*;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author axel1200, Daniel
+ */
 @Slf4j
 public class StatisticsWidgetController {
-
     public TableView<StatisticObject> statisticsTable;
     public TableColumn<StatisticObject, StatisticObject> nameColumn;
     public TableColumn<StatisticObject, String> valueColumn;
@@ -21,7 +26,7 @@ public class StatisticsWidgetController {
     public void initialize() {
     }
 
-    public void init(ObjectProperty<GameManager> gameManager, Label logLabel) {
+    public void init(ObjectProperty<GameManager> gameManager) {
         this.gameManager = gameManager;
 
         initializeColumnValueFactory();
@@ -51,13 +56,13 @@ public class StatisticsWidgetController {
                                     @Override
                                     protected void updateItem(StatisticObject item, boolean empty) {
                                         super.updateItem(item, empty);
-                                        if(empty || item==null){
+                                        if (empty || item == null) {
                                             setText(null);
                                             setTooltip(null);
                                             return;
                                         }
-                                        setText(item.getTitle());
-                                        setTooltip(new Tooltip(item.getDescription()));
+                                        setText(item.getStatisticInfo().getName());
+                                        setTooltip(new Tooltip(item.getStatisticInfo().getDescription()));
                                     }
                                 });
     }

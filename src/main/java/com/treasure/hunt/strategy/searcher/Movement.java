@@ -1,8 +1,10 @@
 package com.treasure.hunt.strategy.searcher;
 
+
+import com.treasure.hunt.jts.other.ImageItem;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
-import lombok.Getter;
+import com.treasure.hunt.strategy.geom.HintAndMovement;
 import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
@@ -16,21 +18,15 @@ import java.util.stream.Collectors;
  *
  * @author dorianreineccius
  */
-public class Movement {
-    private List<GeometryItem<Point>> points = new ArrayList<>();
+public class Movement extends HintAndMovement {
     protected List<GeometryItem<?>> additionalGeometryItems = new ArrayList<>();
-
     /**
      * Earlier added items that are now removed from display
      */
-    @Getter
-    private List<GeometryItem> toBeRemoved = new ArrayList<>();
+
+    private List<GeometryItem<Point>> points = new ArrayList<>();
 
     public Movement() {
-    }
-
-    public Movement(List<GeometryItem<Point>> points) {
-        this.points.addAll(points);
     }
 
     public Movement(Point... points) {
@@ -63,6 +59,7 @@ public class Movement {
     public void addWayPoint(Point point) {
         points.add(new GeometryItem<>(point, GeometryType.WAY_POINT));
         addAdditionalItem(new GeometryItem<>(point, GeometryType.WAY_POINT));
+        addAdditionalItem(new GeometryItem<>(new ImageItem(point.getCoordinate(), 40, 40, "/images/pin.png", ImageItem.Alignment.BOTTOM_CENTER), GeometryType.CURRENT_WAY_POINT));
     }
 
     /**
