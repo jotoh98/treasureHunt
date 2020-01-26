@@ -1,6 +1,7 @@
 package com.treasure.hunt.strategy.hider.impl;
 
 
+import com.treasure.hunt.game.Move;
 import com.treasure.hunt.game.mods.hideandseek.HideAndSeekHider;
 import com.treasure.hunt.jts.geom.Circle;
 import com.treasure.hunt.jts.geom.GeometryAngle;
@@ -9,7 +10,9 @@ import com.treasure.hunt.strategy.geom.GeometryStyle;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
+
 import java.lang.Math;
+
 import com.treasure.hunt.utils.JTSUtils;
 import javafx.util.Pair;
 import lombok.Getter;
@@ -22,6 +25,7 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.util.AffineTransformation;
 import org.locationtech.jts.geom.util.NoninvertibleTransformationException;
+import org.locationtech.jts.util.GeometricShapeFactory;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -46,13 +50,16 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
 
     private Point startingPoint;
     private Point currentPlayersPosition;
-    private List<AngleHint> givenHints;
-    private GeometryFactory gf;
+    private List<AngleHint> givenHints = new ArrayList<>();
+    ;
+    private GeometryFactory gf = JTSUtils.GEOMETRY_FACTORY;
+    ;
     private double walkedPathLength = 0.0;
     private List<Point> visitedPoints = new ArrayList<>();
 
     @Getter
     private GeometryItem<Geometry> possibleArea;
+    private GeometryStyle possibleAreaStyle = new GeometryStyle(true, new Color(255, 105, 180));
     private GeometryItem<Circle> boundingCircle;
     private GeometryItem<Polygon> checkedArea; //the area which has been visited by the player
     private GeometryItem<Point> pointWithWorstConstant;
@@ -79,21 +86,23 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
     }
 
     @Override
-    public void init(Point searcherStartPosition){
+    public void init(Point searcherStartPosition) {
         log.info("MaxAreaAngularHintStrategy init");
-        gf = JTSUtils.GEOMETRY_FACTORY;
-        givenHints = new ArrayList<>();
-        startingPoint = searcherStartPosition;
-        visitedPoints.add(startingPoint);
 
+        startingPoint = searcherStartPosition;
 
         currentPlayersPosition = startingPoint;
         Circle c = new Circle(startingPoint.getCoordinate(), boundingCircleSize, gf);
         boundingCircle = new GeometryItem<>(c, GeometryType.BOUNDING_CIRCE);
 
-        possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{c}, gf), GeometryType.POSSIBLE_TREASURE);
-        this.pointWithWorstConstant = new GeometryItem<>(gf.createPoint(new Coordinate(100.0,0)), GeometryType.WORST_CONSTANT);
+        visitedPoints.add(startingPoint);
+        Movement startingMovement = new Movement(searcherStartPosition);
+        integrateMovementWithCheckedArea(startingMovement);
+
+        possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{c}, gf).difference(checkedArea.getObject()), GeometryType.POSSIBLE_TREASURE);
+        this.pointWithWorstConstant = new GeometryItem<>(gf.createPoint(new Coordinate(10.0, -10)), GeometryType.WORST_CONSTANT, new GeometryStyle(true, new Color(0x800080)));
     }
+
     /**
      * TODO: get out of WIP, fix return text
      * Helper method to fix some instability issues; still WIP
@@ -139,7 +148,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
      * @param hint The hint to integrate
      * @return TODO
      */
-    public Geometry integrateHint(AngleHint hint) {
+    private Geometry integrateHin(AngleHint hint) {
 
         //for each hintVector there's going to be 2 intersections with the bounding circle, Take the ones which scale the Vector with a positive factor
         GeometryAngle geometryAngle = hint.getGeometryAngle();
@@ -238,6 +247,129 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
     }
 
 
+    private Geometry integrateHint(AngleHint hint) {
+        //log.debug("integrating Hint");
+        GeometryAngle angle = hint.getGeometryAngle();
+        /*
+        LineSegment left = new LineSegment(angle.getCenter(), angle.getLeft());
+        LineSegment right = new LineSegment(angle.getCenter(), angle.getLeft());
+
+        // if hint is given from outside the BoundingCircle the max distance needed to cross the twice can be approx by 2* distTo Center + 2* BoundingCircleSize
+        double lineSegLength = 2 * (Math.sqrt(2 * Math.pow(this.boundingCircleSize, 2)) + angle.getCenter().distance(this.startingPoint.getCoordinate())) + 10;
+
+        // create Square of that dimension
+        Coordinate[] squarePoints = new Coordinate[]{
+                new Coordinate(lineSegLength, 0),
+                new Coordinate(0, lineSegLength),
+                new Coordinate(-lineSegLength, 0),
+                new Coordinate(0, -lineSegLength),
+                new Coordinate(lineSegLength, 0)};
+
+        // under this construction the hintCenter is always within the Constructed Square
+        //Polygon square = gf.createPolygon(squarePoints);
+
+        double leftFraction = (lineSegLength + 10) / left.getLength();
+        double rightFraction = (lineSegLength + 10) / right.getLength();
+        Coordinate extLeftCoord = left.pointAlong(leftFraction);
+        Coordinate extRightCoord = right.pointAlong(rightFraction);
+
+        LineSegment extLeft = new LineSegment(angle.getCenter(), extLeftCoord);
+        LineSegment extRight = new LineSegment(angle.getCenter(), extRightCoord);
+        LineString leftLs = gf.createLineString(new Coordinate[]{angle.getCenter(), extLeftCoord});
+        LineString rightLs = gf.createLineString(new Coordinate[]{angle.getCenter(), extRightCoord});
+        log.info("left :" + extLeft);
+        log.info("right :" + extRight);
+
+//        Coordinate[] leftIntersections = square.intersection(leftLs).getCoordinates();
+//        Coordinate[] rightIntersections = square.intersection(rightLs).getCoordinates();
+//        int lLen = leftIntersections.length;
+//        int rLen = rightIntersections.length;
+
+        double leftIndex = -1, rightIndex = -1;
+        Coordinate leftIntersect = null, rightIntersect = null;
+        List<Coordinate> resultingCoords = new ArrayList<>();
+        for (int idx = 0; idx < 4; idx++) {
+            LineSegment boundarySegment = new LineSegment(squarePoints[idx], squarePoints[idx + 1]);
+            Coordinate ltest = boundarySegment.intersection(extLeft);
+            Coordinate rTest = boundarySegment.intersection(extRight);
+            if (ltest != null) {
+                leftIndex = idx + 0.5;
+                leftIntersect = ltest;
+                log.debug("left intersection Index" + leftIndex);
+            }
+            if (rTest != null) {
+                rightIndex = idx + 0.5;
+                rightIntersect = rTest;
+                log.debug("right intersection Index" + rightIndex);
+            }
+
+        }
+        resultingCoords.add(leftIntersect);
+        if (leftIndex == rightIndex) {
+            log.debug("same Segment");
+            LineSegment boundarySegment = new LineSegment(squarePoints[(int) (leftIndex - 0.5)], squarePoints[(int) (leftIndex + 0.5)]);
+            if (boundarySegment.projectionFactor(leftIntersect) > boundarySegment.projectionFactor(rightIntersect)) {
+                resultingCoords.add(rightIntersect);
+            } else {
+                leftIndex -= 0.25;
+            }
+        }
+        if (rightIndex < leftIndex) {
+            for (int i = (int) Math.floor(leftIndex); i > rightIndex; i--) {
+                resultingCoords.add(squarePoints[i]);
+
+            }
+            resultingCoords.add(rightIntersect);
+        } else if (leftFraction > rightIndex) {
+            leftIndex += 4;
+            for (int i = (int) Math.floor(leftIndex); i > rightIndex; i--) {
+                resultingCoords.add(squarePoints[i % 4]);
+            }
+        }
+
+        resultingCoords.add(angle.getCenter());
+        log.debug(resultingCoords.toString());
+        //Polygon cutSquarePoly = gf.createPolygon((Coordinate[]) resultingCoords.toArray());
+
+        //GeometryItem<Polygon> cutSquare = new GeometryItem<>(cutSquarePoly,GeometryType.BOUNDING_CIRCE);
+        //hint.addAdditionalItem(cutSquare);
+
+        //Geometry newPossibleArea = cutSquarePoly.intersection(this.boundingCircle.getObject());
+        */
+
+        double rightAngle = Angle.angle(angle.getCenter(), angle.getRight());
+        double extend = angle.extend();
+
+        //.info("right angle:" + Angle.toDegrees(rightAngle));
+        //log.info("angle size: " + Angle.toDegrees(extend));
+
+        GeometricShapeFactory shapeFactory = new GeometricShapeFactory(gf);
+        shapeFactory.setNumPoints(4);
+        shapeFactory.setCentre(angle.getCenter());
+        shapeFactory.setSize(boundingCircleSize * 8);
+        LineString arcLine = shapeFactory.createArc(rightAngle, extend);
+        GeometryItem<LineString> angleArea = new GeometryItem<>(arcLine, GeometryType.BOUNDING_CIRCE);
+        hint.addAdditionalItem(angleArea);
+
+        ArrayList<Coordinate> arCoords = new ArrayList<>(Arrays.asList(arcLine.getCoordinates()));
+
+        arCoords.add(angle.getCenter());
+        arCoords.add(arCoords.get(0));
+        //log.debug("arc coords" + arCoords.toString());
+        Coordinate[] arcArray = new Coordinate[arCoords.size()];
+        arcArray = arCoords.toArray(arcArray);
+        Polygon arc = gf.createPolygon(arcArray);
+        //log.debug("arc polygon" + arc.getExteriorRing());
+        //log.debug("circle polygon" + boundingCircle.getObject().getBoundary());
+
+        Geometry newPossibleArea = possibleArea.getObject().intersection(arc).difference(this.checkedArea.getObject());
+        GeometryItem<Geometry> circleIntersection = new GeometryItem<>(arc, GeometryType.OUTER_CIRCLE, new GeometryStyle(true, new Color(0x800080)));
+        hint.addAdditionalItem(circleIntersection);
+
+        return newPossibleArea;
+
+    }
+
     /**
      * TODO Could be factored out into util Class
      *
@@ -261,6 +393,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
      * @return
      */
     private AngleHint generateHint(int samples, Point origin) {
+        log.info("Generating Hint #"+ (this.givenHints.size()+1));
         final double twoPi = Math.PI * 2;
 
         int numberOfFeatures = 2; // feature 0: area ; feature 1: approximation to get C high
@@ -293,64 +426,72 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         double dX, dY;
         Point right, left;
 
+        Coordinate maxPoint = getMaxConstantPoint();
+//        try hacky move it slightly towards origin ( isn't always the right direction though)
+//        AffineTransformation tranform = new AffineTransformation();
+//        tranform.scale(0.9999,0.9999);
+//        maxPoint = tranform.transform(maxPoint,maxPoint);
 
-        this.pointWithWorstConstant = new GeometryItem<>(gf.createPoint(getMaxConstantPoint()), GeometryType.WORST_CONSTANT);
+        this.pointWithWorstConstant = new GeometryItem<>(gf.createPoint(maxPoint), GeometryType.WORST_CONSTANT);
 
         //this.pointWithWorstConstant = new GeometryItem<>(gf.createPoint(new Coordinate(20,-50)),GeometryType.WORST_CONSTANT);
-        log.info("results: (" + this.pointWithWorstConstant.getObject().getX() + ", " + this.pointWithWorstConstant.getObject().getY() + ")");
+        log.info("Checking possible Hints for containment of " + this.pointWithWorstConstant.getObject());
 
-        for (double i = 0; i < samples; i++) {
-            double angle = twoPi * (i / samples);
+        for (int i = 0; i < samples; i++) {
+            double angle = twoPi * (((double) i) / samples);
             dX = Math.cos(angle);
             dY = Math.sin(angle);
             right = gf.createPoint(new Coordinate(origin.getX() + dX, origin.getY() + dY));
             left = gf.createPoint(new Coordinate(origin.getX() - dX, origin.getY() - dY));
 
-
             hint = new AngleHint(right.getCoordinate(), origin.getCoordinate(), left.getCoordinate());
             resultingGeom = integrateHint(hint);
 
-            features[(int) i][0] = resultingGeom.getArea();
+            features[i][0] = resultingGeom.getArea();
 
             // get the largest area, but only if the Geometry contains the Point with the best constant
-            if (features[(int) i][0] > maxArea) {
+            if (features[i][0] > maxArea) {
 
-//                log.info("Containment Test");
-//                log.info(" contains: " + resultingGeom.contains(pointWithWorstConstant.getObject()));
-//                log.info(" covers: " +resultingGeom.covers(pointWithWorstConstant.getObject()));
-//                log.info(" buffer contains: " +resultingGeom.buffer(0.0001).contains(pointWithWorstConstant.getObject()));
-//                log.info(" buffer covers: " +resultingGeom.buffer(0.0001).covers(pointWithWorstConstant.getObject()));
+                log.info("Containment Test on " + resultingGeom);
+                log.info(" contains: " + resultingGeom.contains(pointWithWorstConstant.getObject()));
+                log.info(" covers: " + resultingGeom.covers(pointWithWorstConstant.getObject()));
+                log.info(" buffer contains: " + resultingGeom.buffer(0.0001).contains(pointWithWorstConstant.getObject()));
+                log.info(" buffer covers: " + resultingGeom.buffer(0.0001).covers(pointWithWorstConstant.getObject()));
+                log.info("boundary " + resultingGeom.getBoundary().intersects(pointWithWorstConstant.getObject()));
+                log.info("distance" + resultingGeom.distance(pointWithWorstConstant.getObject()));
+                log.info("inview" + hint.getGeometryAngle().inView(pointWithWorstConstant.getObject().getCoordinate()));
+                //TODO rework
 
-                if (resultingGeom.distance(pointWithWorstConstant.getObject()) < 0.00001){//resultingGeom.buffer(0.0001).contains(this.pointWithWorstConstant.getObject())) {
+                if (hint.getGeometryAngle().inView(pointWithWorstConstant.getObject().getCoordinate())) { // c
 
                     log.info("area contains Worst Constant Point --> viable hint");
                     //log.debug("containment: " + resultingGeom.contains(this.pointWithWorstConstant.getObject()) + ", coverage: " + resultingGeom.covers(gf.createPoint(new Coordinate(99.87961816680493, 2.450428508239015))));
                     maxGeometry = resultingGeom;
                     maxArea = features[(int) i][0];
                     maxAngle = hint;
-                    log.info("current max angle hint with Containtment of Worst Point: " + hint.getGeometryAngle().getRight() + " , " + hint.getGeometryAngle().getCenter() + " " + hint.getGeometryAngle().getLeft());
+                    //log.info("current max angle hint with Containtment of Worst Point: " + hint.getGeometryAngle().getRight() + " , " + hint.getGeometryAngle().getCenter() + " " + hint.getGeometryAngle().getLeft());
                 }
 
 
             }
         }
-        Coordinate[] pl= new Coordinate[5];
-        pl[0] = new Coordinate(1.0,1.0);
-        pl[1] = new Coordinate(-1.0,1.0);
-        pl[2] = new Coordinate(-1.0,-1.0);
-        pl[3] = new Coordinate(1.0,-1.0);
-        pl[4] = new Coordinate(1.0,1.0);
+        Coordinate[] pl = new Coordinate[5];
+        pl[0] = new Coordinate(1.0, 1.0);
+        pl[1] = new Coordinate(-1.0, 1.0);
+        pl[2] = new Coordinate(-1.0, -1.0);
+        pl[3] = new Coordinate(1.0, -1.0);
+        pl[4] = new Coordinate(1.0, 1.0);
 
-        Geometry tPoly = gf.createPolygon(pl);
-        log.info("Custom Poly: " + tPoly.covers(gf.createPoint(new Coordinate(0.0,0.0))));
-        log.info("Custom Poly2: " + tPoly.covers(gf.createPoint(new Coordinate(1.0,0.0))));
-        log.info("Custom Poly3: " + tPoly.covers(gf.createPoint(new Coordinate(1.0,0.5))));
-        assert maxAngle != null;
-        assert maxGeometry != null : "MaxGeometry is NULL!";
-        log.info(" the maxGeometry " +  maxGeometry);
+//        Geometry tPoly = gf.createPolygon(pl);
+//        log.info("Custom Poly: " + tPoly.covers(gf.createPoint(new Coordinate(0.0, 0.0))));
+//        log.info("Custom Poly2: " + tPoly.covers(gf.createPoint(new Coordinate(1.0, 0.0))));
+//        log.info("Custom Poly3: " + tPoly.covers(gf.createPoint(new Coordinate(1.0, 0.5))));
+//        assert maxAngle != null;
+//        assert maxGeometry != null : "MaxGeometry is NULL!";
+        log.info(" the maxGeometry " + maxGeometry);
         log.info(" the worst Point " + this.pointWithWorstConstant.getObject());
-        log.info(" the maxGeometry covers: " + maxGeometry.covers(pointWithWorstConstant.getObject()));
-        this.possibleArea = new GeometryItem<>(maxGeometry, GeometryType.POSSIBLE_TREASURE, new GeometryStyle(true, new Color(255,105,180)));
+        log.info(" the maxGeometry covers: " + maxGeometry.buffer(0.0001).covers(pointWithWorstConstant.getObject()));
+        this.possibleArea = new GeometryItem<>(maxGeometry, GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
         log.info(possibleArea.getObject().toString());
 
         return maxAngle;
@@ -364,171 +505,183 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
     private Coordinate getMaxConstantPoint() {
         assert this.possibleArea.getObject().getNumGeometries() == 1 : "more than one geom";
         Coordinate[] edges = this.possibleArea.getObject().getCoordinates();
-        log.info("Sampling " +  edges.length + " edges in run " + visitedPoints.size());
-        Pair<Coordinate, Double> bestPoint = new Pair(edges[0], edges[0].distance(this.currentPlayersPosition.getCoordinate()) / edges[0].distance(this.startingPoint.getCoordinate()));
+        log.info("Sampling " + edges.length + " edges in run " + visitedPoints.size());
+        Pair<Coordinate, Double> bestPoint = new Pair(this.pointWithWorstConstant.getObject().getCoordinate(), this.pointWithWorstConstant.getObject().getCoordinate().distance(this.currentPlayersPosition.getCoordinate()) / this.pointWithWorstConstant.getObject().getCoordinate().distance(this.startingPoint.getCoordinate()));
+        Pair<Coordinate, Double> bestCalc = new Pair(this.pointWithWorstConstant.getObject().getCoordinate(), this.pointWithWorstConstant.getObject().getCoordinate().distance(this.currentPlayersPosition.getCoordinate()) / this.pointWithWorstConstant.getObject().getCoordinate().distance(this.startingPoint.getCoordinate()));
         Pair<Coordinate, Double> bestPointOnEdge;
+        Pair<Coordinate, Double> calculatedPoint;
 
         for (int currentCoordinateIndex = 1; currentCoordinateIndex < edges.length; currentCoordinateIndex++) {
-            //calculatedPoint = calcMaxConstantPointOnSegment(edges[currentCoordinateIndex - 1], edges[currentCoordinateIndex], this.currentPlayersPosition.getCoordinate());
+            calculatedPoint = calcMaxConstantPointOnSegment(edges[currentCoordinateIndex - 1], edges[currentCoordinateIndex], this.currentPlayersPosition.getCoordinate());
             bestPointOnEdge = sampleMaxConstantPointOnLineSegment(edges[currentCoordinateIndex - 1], edges[currentCoordinateIndex], this.currentPlayersPosition.getCoordinate());
 
             if (bestPointOnEdge.getValue() > bestPoint.getValue()) {
                 bestPoint = bestPointOnEdge;
             }
+            if (calculatedPoint.getValue() > bestCalc.getValue()) {
+                bestCalc = bestPointOnEdge;
+            }
         }
-        calcMaxConstantPointOnSegment(new Coordinate(-6.0,8.0) , new Coordinate(8.0,4.0), this.currentPlayersPosition.getCoordinate());
+        calcMaxConstantPointOnSegment(new Coordinate(-6.0, 8.0), new Coordinate(8.0, 4.0), this.currentPlayersPosition.getCoordinate());
         //calculatedPoint = calcMaxConstantPointOnSegment(edges[edges.length - 1], edges[0], this.currentPlayersPosition.getCoordinate());
 
-        log.info("best OVERALL constant is" + bestPoint.getValue() + " at " + bestPoint.getKey().toString());
-        return bestPoint.getKey();
+        log.info("best overall Sampled constant is" + bestPoint.getValue() + " at " + bestPoint.getKey().toString());
+        log.info("best overall calculated constant is" + bestPoint.getValue() + " at " + bestPoint.getKey().toString());
+        return bestCalc.getKey();
     }
 
     /**
-     *  Alternate to {@sampleMaxConstantPointOnLineSegment}
+     * Alternate to {@sampleMaxConstantPointOnLineSegment}
      * Calculates the Point on the boundarySegment described by p1,p2 of the possible Area which results in the largest Constant of PathMin * C = PathActual
      *
-     * @param p1 the Start of the Segment v
-     * @param p2 the End of the Segment v
+     * @param p1     the Start of the Segment v
+     * @param p2     the End of the Segment v
      * @param player current Position of the Player
      * @return the Point and its corresponding constant C
      */
-    private Pair<Coordinate,Double> calcMaxConstantPointOnSegment(Coordinate p1, Coordinate p2, Coordinate player){
-        LineSegment unscaled = new LineSegment(p1,p2);
-        log.info("Calculating on " + unscaled);
-        Point origin = gf.createPoint(new Coordinate(0,0)); // origin assumed to be (0,0)
+    private Pair<Coordinate, Double> calcMaxConstantPointOnSegment(Coordinate p1, Coordinate p2, Coordinate player) {
+        LineSegment unscaled = new LineSegment(p1, p2);
+        //log.debug("Calculating on " + unscaled);
+        Point origin = gf.createPoint(new Coordinate(0, 0)); // origin assumed to be (0,0)
         assert origin.equals(this.startingPoint);
 
         Coordinate projection = unscaled.project(origin.getCoordinate());
         double scalingFactor = 1.0 / projection.distance(origin.getCoordinate());
 
-
-        AffineTransformation scalingTransform = AffineTransformation.scaleInstance(scalingFactor,scalingFactor);
+        AffineTransformation scalingTransform = AffineTransformation.scaleInstance(scalingFactor, scalingFactor);
 
         //determine rotation angle to put ProjectionPoint onto the Y-Axis
-        double roationAngle = Angle.angleBetweenOriented(projection,origin.getCoordinate(),new Coordinate(0,1));
+        double rotationAngle = Angle.angleBetweenOriented(projection, origin.getCoordinate(), new Coordinate(0, 1));
 
-        AffineTransformation roationTransform = AffineTransformation.rotationInstance(roationAngle);
+        AffineTransformation rotationTransform = AffineTransformation.rotationInstance(rotationAngle);
 
-        Coordinate p1Transformed = p1;
-        Coordinate p2Transformed = p2;
-        Coordinate playerTransformed = player;
+        Coordinate p1Transformed = p1.copy();
+        Coordinate p2Transformed = p2.copy();
+        Coordinate playerTransformed = player.copy();
 
-        log.info("scaling by Factor" + scalingFactor);
-        p1Transformed = scalingTransform.transform(p1,p1Transformed);
-        p2Transformed = scalingTransform.transform(p2,p2Transformed);
-        playerTransformed = scalingTransform.transform(player,playerTransformed);
-        log.info("after scaling: " + new LineSegment(p1Transformed,p2Transformed));
-        log.info(playerTransformed.toString());
+        //log.debug("scaling by Factor" + scalingFactor);
+        p1Transformed = scalingTransform.transform(p1, p1Transformed);
+        p2Transformed = scalingTransform.transform(p2, p2Transformed);
+        playerTransformed = scalingTransform.transform(player, playerTransformed);
+        //log.info("after scaling: " + new LineSegment(p1Transformed, p2Transformed));
+        //log.info(playerTransformed.toString());
 
-        log.info("rotation by Angle" + Angle.toDegrees(roationAngle));
-        p1Transformed = roationTransform.transform(p1Transformed,p1Transformed);
-        p2Transformed = roationTransform.transform(p2Transformed,p2Transformed);
-        playerTransformed = roationTransform.transform(playerTransformed,playerTransformed);
+        //log.info("rotation by Angle" + Angle.toDegrees(rotationAngle));
+        p1Transformed = rotationTransform.transform(p1Transformed, p1Transformed);
+        p2Transformed = rotationTransform.transform(p2Transformed, p2Transformed);
+        playerTransformed = rotationTransform.transform(playerTransformed, playerTransformed);
 
-        LineSegment normalizedLineSegment = new LineSegment(p1Transformed,p2Transformed);
-        log.info("final " + normalizedLineSegment);
-        log.info("Projection Point on LS: " + normalizedLineSegment.project(origin.getCoordinate()));
+        LineSegment normalizedLineSegment = new LineSegment(p1Transformed, p2Transformed);
+        //log.info("final " + normalizedLineSegment);
+        //log.info("Projection Point on LS: " + normalizedLineSegment.project(origin.getCoordinate()));
 
         //now normal state is reached and Derivative can be applied for MaxConstant Search
 
-        log.info("player is now on " + playerTransformed);
+        //log.info("player is now on " + playerTransformed);
         double a = playerTransformed.x;
         double b = playerTransformed.y;
         double maximum, extremum1, extremum2, variableTerm;
 
-        if(a != 0.0){ //player is not on Y-Axis --> 2 Extrema
-            log.info(" player NOT on Y-Axis");
-            variableTerm = Math.sqrt(Math.pow(-2 * Math.pow(a,2.0) - 2 * Math.pow(b,2.0) + 4*b , 2.0) + 16* Math.pow(a,2.0));
+        if (a != 0.0) { //player is not on Y-Axis --> 2 Extrema
+            //log.info(" player NOT on Y-Axis");
+            variableTerm = Math.sqrt(Math.pow(-2 * Math.pow(a, 2.0) - 2 * Math.pow(b, 2.0) + 4 * b, 2.0) + 16 * Math.pow(a, 2.0));
 
-            extremum1 = (variableTerm + 2 * Math.pow(a,2.0) + 2 * Math.pow(b,2.0) - 4 * b) / (4*a);
-            extremum2 = ( - variableTerm + 2 * Math.pow(a,2.0) + 2 * Math.pow(b,2.0) - 4 * b) / (4*a);
-            log.info(" extremum1 : " +  extremum1);
-            log.info(" extremum2 : " +  extremum2);
+            extremum1 = (variableTerm + 2 * Math.pow(a, 2.0) + 2 * Math.pow(b, 2.0) - 4 * b) / (4 * a);
+            extremum2 = (-variableTerm + 2 * Math.pow(a, 2.0) + 2 * Math.pow(b, 2.0) - 4 * b) / (4 * a);
+            //log.info(" extremum1 : " + extremum1);
+            //log.info(" extremum2 : " + extremum2);
             //now plug into 2nd Derivative to see who is Max and whos Min
-            if( evalSecondDerivOfConstFunction(extremum1,a,b) < 0 ){
-                log.info("Extremum 1 is a maxima");
+            if (evalSecondDerivOfConstFunction(extremum1, a, b) < 0) {
+                //log.info("Extremum 1 is a maxima");
                 maximum = extremum1;
-            }else if( evalSecondDerivOfConstFunction(extremum2,a,b) < 0 ){
-                log.info("Extremum 2 is a maxima");
+            } else if (evalSecondDerivOfConstFunction(extremum2, a, b) < 0) {
+                //log.info("Extremum 2 is a maxima");
                 maximum = extremum2;
-            } else{
-                log.info("This should not be possible");
+            } else {
+                //log.info("This should not be possible");
                 maximum = 0.0;
             }
             //SavetyCheck nessecary here, but long formula .....
 
-        }else{ // either both points are Identical( x can be chosen arbitrarily), or x == 0
-            log.info(" player on Y-Axis");
-            if(b==0.0 || b == 2.0){ // all points on line have the same constant ==> choose x=0
+        } else { // either both points are Identical( x can be chosen arbitrarily), or x == 0
+            //log.info(" player on Y-Axis");
+            if (b == 0.0 || b == 2.0) { // all points on line have the same constant ==> choose x=0
                 maximum = 0;
-            }else if(b>0 || b >2){ // 0 maximizes the Constant
+            } else if (b > 0 || b > 2) { // 0 maximizes the Constant
                 maximum = 0;
 
-            }else{ //  0 < b < 2 --> 0 minimizes the Constant --> choose the Endpoint of the segment, which is further away
+            } else { //  0 < b < 2 --> 0 minimizes the Constant --> choose the Endpoint of the segment, which is further away
                 maximum = Math.abs(p1Transformed.x) > Math.abs(p2Transformed.x) ? p1Transformed.x : p2Transformed.x;
             }
         }
-        log.info("Calculated Maximum on Line is Point : " + maximum + " , 1"  );
+        //log.info("Calculated Maximum on Line is Point : " + maximum + " , 1");
 
         // check if maximum is on LineSegment
-        double left = Math.min(p1Transformed.x , p2Transformed.x);
+        double left = Math.min(p1Transformed.x, p2Transformed.x);
         double right = Math.max(p1Transformed.x, p2Transformed.x);
-        double leftConstant = evaluateConstantFunction(playerTransformed,new Coordinate(left,1),origin.getCoordinate());
-        double rightConstant = evaluateConstantFunction(playerTransformed,new Coordinate(right,1),origin.getCoordinate());
+        double leftConstant = evaluateConstantFunction(playerTransformed, new Coordinate(left, 1), origin.getCoordinate());
+        double rightConstant = evaluateConstantFunction(playerTransformed, new Coordinate(right, 1), origin.getCoordinate());
 
-
-        if( maximum < left || maximum > right){ //if outside the LineSegment pick the better of the edgePoints
-            if (leftConstant > rightConstant){
+        if (maximum < left || maximum > right) { //if outside the LineSegment pick the better of the edgePoints
+            if (leftConstant > rightConstant) {
                 maximum = left;
-            }else{
+            } else {
                 maximum = right;
             }
-        } else{ // if inside the LineSegment pick the better out of the Max and the Two edgePoints
-            double maximumConstant = evaluateConstantFunction(playerTransformed, new Coordinate(maximum,1), origin.getCoordinate());
+        } else { // if inside the LineSegment pick the better out of the Max and the Two edgePoints
+            double maximumConstant = evaluateConstantFunction(playerTransformed, new Coordinate(maximum, 1), origin.getCoordinate());
 
-            if(maximumConstant > leftConstant && maximumConstant > rightConstant){
+            if (maximumConstant > leftConstant && maximumConstant > rightConstant) {
                 maximum = maximum;
-            }else if(leftConstant > maximumConstant && leftConstant > rightConstant){
+            } else if (leftConstant > maximumConstant && leftConstant > rightConstant) {
                 maximum = left;
-            }else{
+            } else {
                 maximum = right;
             }
         }
-        log.info("Calculated Maximum on LineSEGMENT is Point : " + maximum + " , 1"  );
-        Coordinate bestCoordinate = new Coordinate(maximum,1.0);
+        //log.info("Calculated Maximum on LineSEGMENT is Point : " + maximum + " , 1");
+        Coordinate bestCoordinate = new Coordinate(maximum, 1.0);
         // Now Transform that Point back and/or Calc the Angle which it has
         try {
-            bestCoordinate = roationTransform.getInverse().transform(bestCoordinate,bestCoordinate);
-            bestCoordinate = scalingTransform.getInverse().transform(bestCoordinate,bestCoordinate);
+            bestCoordinate = rotationTransform.getInverse().transform(bestCoordinate, bestCoordinate);
+            bestCoordinate = scalingTransform.getInverse().transform(bestCoordinate, bestCoordinate);
+
+            //bit hacky but needed to make bestCoordinate lie on the LineString
+            //log.info("Distance from " + bestCoordinate + "to " + unscaled + " : " + unscaled.distance(bestCoordinate)); // are in the range of 10e-16
+            bestCoordinate = unscaled.project(bestCoordinate);
+            //log.info("after projection; Distance from " + bestCoordinate + "to " + unscaled + " : " + unscaled.distance(bestCoordinate)); // stays in the 10e-16 range
+
         } catch (NoninvertibleTransformationException e) {
-            log.info("Non invertible, but it should be!");
+            //log.info("Non invertible, but it should be!");
             e.printStackTrace();
         }
-        log.info("Final Point after InverseTransformation: " + bestCoordinate);
+        //log.info("Final Point after InverseTransformation: " + bestCoordinate);
+
         return new Pair<>(bestCoordinate, evaluateConstantFunction(playerTransformed, bestCoordinate, origin.getCoordinate()));
 
     }
 
-    private double evaluateConstantFunction(Coordinate player, Coordinate pointToEvaluate, Coordinate origin){
-        return player.distance(pointToEvaluate) /  origin.distance(pointToEvaluate);
+    private double evaluateConstantFunction(Coordinate player, Coordinate pointToEvaluate, Coordinate origin) {
+        return player.distance(pointToEvaluate) / origin.distance(pointToEvaluate);
     }
-    private double evalSecondDerivOfConstFunction(double x, double a, double b){
-        double firstTerm = (8*x * ( Math.pow(a,2.0) * x - a * Math.pow(x,2.0) + a + (b-2)*b *x)) / Math.pow(Math.pow(x,2.0) +1 , 3);
-        double secondTerm = (2 * (Math.pow(a,2.0) - 2*a*x + (b-2)*b)) / Math.pow(Math.pow(x,2.0) +1 ,2.0);
+
+    private double evalSecondDerivOfConstFunction(double x, double a, double b) {
+        double firstTerm = (8 * x * (Math.pow(a, 2.0) * x - a * Math.pow(x, 2.0) + a + (b - 2) * b * x)) / Math.pow(Math.pow(x, 2.0) + 1, 3);
+        double secondTerm = (2 * (Math.pow(a, 2.0) - 2 * a * x + (b - 2) * b)) / Math.pow(Math.pow(x, 2.0) + 1, 2.0);
         return firstTerm - secondTerm;
     }
 
     /**
      * Samples for the Point on the boundarySegment described by p1,p2 of the possible Area which results in the largest Constant of PathMin * C = PathActual
      *
-     * @param p1 the Start of the Segment v
-     * @param p2 the End of the Segment v
+     * @param p1     the Start of the Segment v
+     * @param p2     the End of the Segment v
      * @param player current Position of the Player
      * @return the Point and its corresponding constant C
      */
     private Pair<Coordinate, Double> sampleMaxConstantPointOnLineSegment(Coordinate p1, Coordinate p2, Coordinate player) {
         //log.info("checking Linesegment(" + p1.getX() + ", " + p1.getY() + ") -> (" + p2.getX() + ", " + p2.getY() + ")");
-        double eps = 0.5; //the maximum distance between two sampled Point on the LineSegment
+        double eps = 0.2; //the maximum distance between two sampled Point on the LineSegment
 
         LineSegment segment = new LineSegment(p1, p2);
         double length = segment.getLength();
@@ -561,78 +714,45 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
     @Override
     public Point getTreasureLocation() {
         return this.pointWithWorstConstant.getObject();
-        /*
-        if (possibleArea.getObject().getArea() <= searcherScoutRadius * searcherScoutRadius * Math.PI) {
-            return currentPlayersPosition;
-        }
-
-        Coordinate[] boundingPoints = possibleArea.getObject().getCoordinates();
-
-        Coordinate player = currentPlayersPosition.getCoordinate();
-
-        for (int i = 0; i < boundingPoints.length; i++) {
-            if (boundingPoints[i].distance(player) >= searcherScoutRadius) {
-                return gf.createPoint(boundingPoints[i]);
-            }
-        }
-        assert false; // please never get here **praying**
-        return currentPlayersPosition;
-
-         */
     }
 
-    private void integrateMovementWithCheckedArea(Movement movement){
-        List<Point> newMovemenPoints = movement.getPoints().subList(1,movement.getPoints().size()).stream().map( p -> p.getObject()).collect(Collectors.toList());
-        log.info("LIst size "+ newMovemenPoints.size());
-        log.info("LIst "+ newMovemenPoints.toString());
-        log.info("before: " + visitedPoints.toString());
-        log.info(" result" + this.visitedPoints.addAll(newMovemenPoints));
-        log.info("whole size "+ visitedPoints.size());
-        log.info("whole view "+ visitedPoints.toString());
+    private void integrateMovementWithCheckedArea(Movement movement) {
+        List<Point> newMovementPoints = movement.getPoints().subList(1, movement.getPoints().size()).stream().map(p -> p.getObject()).collect(Collectors.toList());
+        this.visitedPoints.addAll(newMovementPoints);
+        log.info("new Points " + newMovementPoints.toString());
+        log.info("total Walked Path " + visitedPoints.toString());
         Polygon checkedPoly;
-        if(visitedPoints.size() > 1){
-            Coordinate[] visitedCoords = visitedPoints.stream().map( p -> p.getCoordinate()).toArray(Coordinate[]::new);
-            LineString walkedPath = gf.createLineString( visitedCoords);
-            checkedPoly = (Polygon) walkedPath.buffer(searcherScoutRadius + 0.001); //0.001 to just be outside the searchers radius
+        if (visitedPoints.size() > 1) {
+
+            Coordinate[] visitedCoords = visitedPoints.stream().map(p -> p.getCoordinate()).toArray(Coordinate[]::new);
+            LineString walkedPath = gf.createLineString(visitedCoords);
+            checkedPoly = (Polygon) walkedPath.buffer(searcherScoutRadius + 0.1); //0.001 to just be outside the searchers radius
             this.walkedPathLength = walkedPath.getLength();
-        }else{
+        } else {
+            log.info("1 point visited so far");
             //checkedPoly = (Polygon) newMovemenPoints.get(0).buffer(searcherScoutRadius + 0.001);
-            checkedPoly = (Polygon) startingPoint.buffer(searcherScoutRadius + 0.001);
+            checkedPoly = (Polygon) startingPoint.buffer(searcherScoutRadius + 0.1);
         }
 
-
-
-        checkedArea = new GeometryItem<>(checkedPoly, GeometryType.NO_TREASURE);
-
+        checkedArea = new GeometryItem<>(checkedPoly, GeometryType.NO_TREASURE, new GeometryStyle(true, new Color(0x1E90FF)));
     }
 
     @Override
     public AngleHint move(Movement movement) {
         currentPlayersPosition = movement.getEndPoint();
-        adaptBoundingCircle();
         integrateMovementWithCheckedArea(movement);
-        /*
-        //calc the visited Area by the player TODO should be done incrementally from move to move or be globally accessible
-        Coordinate[] visitedCoordinates = new Coordinate[movement.getPoints().size()];
-        for (int coordinateIndex = 0; coordinateIndex < movement.getPoints().size(); coordinateIndex++) {
-            visitedCoordinates[coordinateIndex] = movement.getPoints().get(coordinateIndex).getObject().getCoordinate();
-        }
-        LineString walkedPath = gf.createLineString(visitedCoordinates);
-        this.walkedPathLength = walkedPath.getLength();
-        Polygon checkedPoly = (Polygon) walkedPath.buffer(searcherScoutRadius + 0.001); //0.001 to just be outside the searchers radius
-        checkedArea = new GeometryItem<>(checkedPoly, GeometryType.NO_TREASURE);
-        */
+        adaptBoundingCircle();
+
         AngleHint hint = generateHint(360, currentPlayersPosition); //compute by maximizing the remaining possible Area after the Hint over 360 sample points
         givenHints.add(hint);
 
         hint.addAdditionalItem(checkedArea);
         hint.addAdditionalItem(possibleArea);
 
-
         hint.addAdditionalItem(boundingCircle);
         hint.addAdditionalItem(pointWithWorstConstant);
 
-        log.info("given Hint: " + hint.getGeometryAngle().getRight() + ",  " + hint.getGeometryAngle().getCenter() + ",  " + hint.getGeometryAngle().getLeft());
+        log.info("given Hint: " + hint.getGeometryAngle().getLeft() + ",  " + hint.getGeometryAngle().getCenter() + ",  " + hint.getGeometryAngle().getRight());
         log.info("whole circle area" + boundingCircle.getObject().getArea());
         log.info("possible area " + possibleArea.getObject().getArea());
         log.info("Point with worst constant (" + pointWithWorstConstant.getObject().getX() + ", " + pointWithWorstConstant.getObject().getY() + ")");
@@ -648,7 +768,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
 
         double distToBoundary = boundingCircleSize - currentPlayersPosition.distance(startingPoint);
         if (extensions < maxExtensions) {
-            while((distToBoundary < circleExtensionDistance || !boundingCircle.getObject().contains(currentPlayersPosition))) {
+            while ((distToBoundary < circleExtensionDistance || !boundingCircle.getObject().contains(currentPlayersPosition))) {
 
                 log.info("ext distance " + boundingCircle.getObject().isWithinDistance(currentPlayersPosition, circleExtensionDistance));
                 log.info("containment " + !boundingCircle.getObject().contains(currentPlayersPosition));
@@ -656,10 +776,10 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
                 boundingCircleSize += boundingCircleExtensionDelta;
                 log.info("extending Bounding Area by " + boundingCircleSize + "to " + boundingCircleSize);
                 boundingCircle = new GeometryItem<>(new Circle(startingPoint.getCoordinate(), boundingCircleSize, gf), GeometryType.BOUNDING_CIRCE, new GeometryStyle(true, new Color(50, 205, 50)));
-                possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{boundingCircle.getObject()}, gf), GeometryType.POSSIBLE_TREASURE, new GeometryStyle(true, new Color(255, 105, 180)));
+                possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{boundingCircle.getObject()}, gf), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
                 //now recompute all the intersections of Hints and the Bounding Circle
                 for (AngleHint hint : givenHints) {
-                    possibleArea = new GeometryItem<>(integrateHint(hint), GeometryType.POSSIBLE_TREASURE, new GeometryStyle(true, new Color(255, 105, 180)));
+                    possibleArea = new GeometryItem<>(integrateHint(hint), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
 
                 }
                 extensions++;

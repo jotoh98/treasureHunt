@@ -18,7 +18,7 @@ public enum GeometryType {
     // treasure/no-treasure (areas)
     TREASURE(true, "treasure"),
     TREASURE_FLAG(true, "treasure flag", true),
-    NO_TREASURE(false, "no treasure"),
+    NO_TREASURE(false, "no treasure", true),
     POSSIBLE_TREASURE(false, "possible treasure", true),
     HINT_ANGLE(true, "angle hint", true),
 
@@ -27,7 +27,7 @@ public enum GeometryType {
     SEARCHER_MOVEMENT(true, "searcher movement"),
 
     BOUNDING_CIRCE(false, "bounding circle", true),
-
+    OUTER_CIRCLE(false, "outer circle", true),
     STANDARD(true, ""),
     CURRENT_WAY_POINT(true, "Current way point", true),
     WORST_CONSTANT(false, "Point with worst Constant",true);
