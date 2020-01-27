@@ -36,14 +36,15 @@ public class PolyhedronSearcher implements Searcher<AngleHint> {
 
         addAngle(hint.getGeometryAngle());
         polyhedron.resolve();
-        final Coordinate nextPosition = nextPosition(lastPosition);
-        movePositions.add(nextPosition);
+        final Coordinate nextPosition;
+        nextPosition = nextPosition(lastPosition);
         movement.addWayPoint(JTSUtils.GEOMETRY_FACTORY.createPoint(nextPosition));
+        movePositions.add(nextPosition);
         return new Movement(lastPosition, nextPosition);
     }
 
     private Coordinate nextPosition(Coordinate lastPosition) {
-        final Coordinate centroid = polyhedron.getGeometry(false).convexHull().getCentroid().getCoordinate();
+        final Coordinate centroid = polyhedron.getGeometry(true).convexHull().getCentroid().getCoordinate();
         return JTSUtils.coordinateInDistance(lastPosition, centroid, 1);
     }
 

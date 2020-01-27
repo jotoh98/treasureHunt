@@ -82,7 +82,7 @@ public class HalfPlane extends Line {
 
     public boolean inside(Ray ray) {
         final Coordinate intersection = ray.intersection(toLine());
-        return intersection != null;
+        return (intersection != null) || inside(ray.getCoordinate(0));
     }
 
     public boolean inside(Vector2D v) {
