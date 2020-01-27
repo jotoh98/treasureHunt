@@ -60,7 +60,7 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
                     Coordinate angleLeft = new Coordinate(x2, y2);
                     Coordinate angleRight = new Coordinate(x, y);
                     checkAngle(angleLeft, angleRight, middle);
-                    return new AngleHint(angleRight, middle, angleLeft);
+                    return new AngleHint(angleLeft, middle, angleRight);
                 } catch (NumberFormatException e) {
                     JOptionPane.showConfirmDialog(null, "Please enter valid numbers", "Error", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
                 } catch (WrongAngleException e) {

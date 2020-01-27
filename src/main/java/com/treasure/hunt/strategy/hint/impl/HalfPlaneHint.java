@@ -26,7 +26,7 @@ public class HalfPlaneHint extends AngleHint {
     private Coordinate center;
 
     public HalfPlaneHint(Coordinate center, Coordinate halfPlanePoint, Direction direction) {
-        super(null, center, halfPlanePoint);
+        super(halfPlanePoint, center, null);
         this.direction = direction;
         this.center = center;
         this.halfPlanePoint = halfPlanePoint;

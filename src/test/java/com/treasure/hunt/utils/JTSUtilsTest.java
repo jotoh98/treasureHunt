@@ -184,8 +184,8 @@ class JTSUtilsTest {
         eq(S, JTSUtils.middleOfAngleHint(createAngleHint(NW, C, NE)));
     }
 
-    private AngleHint createAngleHint(Coordinate c1, Coordinate c2, Coordinate c3) {
-        return new AngleHint(c1, c2, c3);
+    private AngleHint createAngleHint(Coordinate left, Coordinate center, Coordinate right) {
+        return new AngleHint(left, center, right);
     }
 
     private void eq(Coordinate expected, Coordinate actual) {

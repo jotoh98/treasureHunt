@@ -28,12 +28,12 @@ public class GeometryAngle extends LineString implements Shapeable {
      * GeometryAngle constructor via three {@link Coordinate}s.
      *
      * @param factory The GeometryFactory suggested to create the <code>Angle</code>
-     * @param right   the right angles arm end point
-     * @param center  the central point of the angle
      * @param left    the left angles arm end point
+     * @param center  the central point of the angle
+     * @param right   the right angles arm end point
      */
-    public GeometryAngle(GeometryFactory factory, Coordinate right, Coordinate center, Coordinate left) {
-        super(factory.getCoordinateSequenceFactory().create(new Coordinate[]{center, left, right}), factory);
+    public GeometryAngle(GeometryFactory factory, Coordinate left, Coordinate center, Coordinate right) {
+        super(factory.getCoordinateSequenceFactory().create(new Coordinate[]{left, center, right}), factory);
     }
 
     /**
@@ -43,8 +43,8 @@ public class GeometryAngle extends LineString implements Shapeable {
      * @param center the central point of the angle
      * @param left   the left angles arm end point
      */
-    public GeometryAngle(Coordinate right, Coordinate center, Coordinate left) {
-        this(JTSUtils.GEOMETRY_FACTORY, right, center, left);
+    public GeometryAngle(Coordinate left, Coordinate center, Coordinate right) {
+        this(JTSUtils.GEOMETRY_FACTORY, left, center, right);
     }
 
     /**
@@ -58,9 +58,9 @@ public class GeometryAngle extends LineString implements Shapeable {
     public GeometryAngle(GeometryFactory factory, Coordinate center, double start, double extend) {
         this(
                 factory,
-                Vector2D.create(1, 0).rotate(start).translate(center),
+                Vector2D.create(1, 0).rotate(start + extend).translate(center),
                 center,
-                Vector2D.create(1, 0).rotate(start + extend).translate(center)
+                Vector2D.create(1, 0).rotate(start).translate(center)
         );
     }
 
@@ -69,20 +69,20 @@ public class GeometryAngle extends LineString implements Shapeable {
         points.getCoordinate(i).setY(c.getY());
     }
 
-    public Coordinate getCenter() {
+    public Coordinate getLeft() {
         return points.getCoordinate(0);
     }
 
-    public void setCenter(Coordinate center) {
-        setCoordinate(0, center);
+    public void setLeft(Coordinate left) {
+        setCoordinate(0, left);
     }
 
-    public Coordinate getLeft() {
+    public Coordinate getCenter() {
         return points.getCoordinate(1);
     }
 
-    public void setLeft(Coordinate left) {
-        setCoordinate(1, left);
+    public void setCenter(Coordinate center) {
+        setCoordinate(1, center);
     }
 
     public Coordinate getRight() {
@@ -152,6 +152,6 @@ public class GeometryAngle extends LineString implements Shapeable {
      */
     @Override
     public GeometryAngle copy() {
-        return new GeometryAngle(factory, getRight().copy(), getCenter().copy(), getLeft().copy());
+        return new GeometryAngle(factory, getLeft().copy(), getCenter().copy(), getRight().copy());
     }
 }

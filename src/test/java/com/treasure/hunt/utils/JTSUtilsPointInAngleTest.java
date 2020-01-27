@@ -60,27 +60,27 @@ class JTSUtilsPointInAngleTest {
 
     private boolean inUpperRightQuadrant(Coordinate coordinate) {
         return JTSUtils.pointInAngle(
-                new Coordinate(1, 0),
-                new Coordinate(0, 0),
                 new Coordinate(0, 1),
+                new Coordinate(0, 0),
+                new Coordinate(1, 0),
                 coordinate
         );
     }
 
     private boolean inUpperHalfPlane(Coordinate coordinate) {
         return JTSUtils.pointInAngle(
-                new Coordinate(1, 0),
-                new Coordinate(0, 0),
                 new Coordinate(-1, 0),
+                new Coordinate(0, 0),
+                new Coordinate(1, 0),
                 coordinate
         );
     }
 
     private boolean inLowerHalfPlane(Coordinate coordinate) {
         return JTSUtils.pointInAngle(
-                new Coordinate(-1, 0),
-                new Coordinate(0, 0),
                 new Coordinate(1, 0),
+                new Coordinate(0, 0),
+                new Coordinate(-1, 0),
                 coordinate
         );
     }

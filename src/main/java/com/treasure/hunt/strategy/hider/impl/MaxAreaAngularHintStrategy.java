@@ -271,7 +271,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
 
             Point right = gf.createPoint(new Coordinate(origin.getX() - (orth.x - origin.getX()), origin.getY() - (orth.y - origin.getY())));
             Point left = gf.createPoint(orth);
-            AngleHint ooBHint = new AngleHint(right.getCoordinate(), origin.getCoordinate(), left.getCoordinate());
+            AngleHint ooBHint = new AngleHint(left.getCoordinate(), origin.getCoordinate(), right.getCoordinate());
             return ooBHint;
 
         }
@@ -285,8 +285,8 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
             double angle = twoPi * (i / samples);
             dX = Math.cos(angle);
             dY = Math.sin(angle);
-            p1 = gf.createPoint(new Coordinate(origin.getX() + dX, origin.getY() + dY));
-            p2 = gf.createPoint(new Coordinate(origin.getX() - dX, origin.getY() - dY));
+            p1 = gf.createPoint(new Coordinate(origin.getX() - dX, origin.getY() - dY));
+            p2 = gf.createPoint(new Coordinate(origin.getX() + dX, origin.getY() + dY));
 
             hint = new AngleHint(p1.getCoordinate(), origin.getCoordinate(), p2.getCoordinate());
 

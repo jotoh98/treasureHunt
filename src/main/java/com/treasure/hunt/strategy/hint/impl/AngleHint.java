@@ -20,8 +20,8 @@ import java.util.List;
 public class AngleHint extends Hint {
     GeometryAngle geometryAngle;
 
-    public AngleHint(Coordinate right, Coordinate center, Coordinate left) {
-        this(new GeometryAngle(JTSUtils.GEOMETRY_FACTORY, right, center, left));
+    public AngleHint(Coordinate left, Coordinate center, Coordinate right) {
+        this(new GeometryAngle(JTSUtils.GEOMETRY_FACTORY, left, center, right));
     }
 
     public AngleHint(GeometryAngle angle) {

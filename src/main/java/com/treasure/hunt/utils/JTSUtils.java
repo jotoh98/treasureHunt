@@ -78,8 +78,8 @@ public final class JTSUtils {
      * @param left   closing line of the angle
      * @return {@link Coordinate} going through the middle of the angle
      */
-    public static Coordinate middleOfAngleHint(Coordinate right, Coordinate center, Coordinate left) {
-        final GeometryAngle angle = new GeometryAngle(GEOMETRY_FACTORY, right, center, left);
+    public static Coordinate middleOfAngleHint(Coordinate left, Coordinate center, Coordinate right) {
+        final GeometryAngle angle = new GeometryAngle(GEOMETRY_FACTORY, left, center, right);
         return angle
                 .rightVector()
                 .rotate(angle.extend() / 2)
@@ -169,8 +169,8 @@ public final class JTSUtils {
      * @param coordinate the {@link Coordinate}, we want to know, whether it lies in the given angle.
      * @return {@code true}, if {@code coordinate} lies in the given angle. {@code false}, otherwise.
      */
-    public static boolean pointInAngle(Coordinate right, Coordinate center, Coordinate left, Coordinate coordinate) {
-        final GeometryAngle geometryAngle = new GeometryAngle(GEOMETRY_FACTORY, right, center, left);
+    public static boolean pointInAngle(Coordinate left, Coordinate center, Coordinate right, Coordinate coordinate) {
+        final GeometryAngle geometryAngle = new GeometryAngle(GEOMETRY_FACTORY, left, center, right);
 
         GeometryAngle treasureGeometryAngle = geometryAngle.copy();
         treasureGeometryAngle.setRight(coordinate);
