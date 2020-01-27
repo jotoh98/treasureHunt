@@ -33,8 +33,7 @@ public class HalfPlaneHint extends AngleHint {
     private HalfPlaneHint lastHint; // if it is not null it also gets drawn by this HalfPlaneHint
 
     public HalfPlaneHint(Coordinate center, Coordinate right) {
-        super(new Coordinate(2 * center.x - right.x, 2 * center.y - right.y),
-                center, right);
+        super(right, center, new Coordinate(2 * center.x - right.x, 2 * center.y - right.y));
         Direction dir = null;
 
         if (center.getY() == right.getY()) {
@@ -72,7 +71,7 @@ public class HalfPlaneHint extends AngleHint {
      * @param direction
      */
     public HalfPlaneHint(Coordinate pointOne, Coordinate pointTwo, Direction direction) {
-        super(null, null, null);
+        super(new Coordinate(), new Coordinate(), new Coordinate());
 
         Coordinate right = null;
         Coordinate center = null;
