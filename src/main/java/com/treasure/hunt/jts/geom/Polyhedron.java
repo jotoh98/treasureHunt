@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.math.Vector2D;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class Polyhedron {
 
     @Getter
     private List<Coordinate> resolved = new ArrayList<>();
+    private LineSegment unbound = new LineSegment();
 
     public Polyhedron(List<HalfPlane> halfPlanes) {
         this.halfPlanes = halfPlanes;
@@ -60,6 +62,9 @@ public class Polyhedron {
      * @return whether the tested ray lays inside of the polyhedron
      */
     public boolean inside(Ray ray) {
+        if (halfPlanes.size() == 0) {
+            return true;
+        }
         return halfPlanes.stream().anyMatch(halfPlane -> inside(halfPlane.intersection(ray)));
     }
 
@@ -118,35 +123,32 @@ public class Polyhedron {
      * intersections. If that's not the case, the last half plane could'nt find an intersection rendering it unnecessary.
      * But we</p>
      */
+
     public void resolve() {
 
-        List<Coordinate> coordinates = new ArrayList<>();
+        List<Coordinate> coordinates = new ArrayList<>(); // end-resultat
 
-        final List<HalfPlane> sorted = sortByAngle(halfPlanes);
+        final List<HalfPlane> sorted = sortByAngle(halfPlanes);// sortierte liste nach winkel
 
-        final int halfPlaneAmount = sorted.size();
+        int halfPlaneAmount = sorted.size();
 
-        final List<Boolean> necessities = new ArrayList<>(Collections.nCopies(halfPlaneAmount, false));
+        final List<Integer> cutAmount = new ArrayList<>(Collections.nCopies(halfPlaneAmount, 0));
 
         for (int currentIndex = 0; currentIndex < halfPlaneAmount; ) {
             final HalfPlane current = sorted.get(currentIndex);
             boolean intersected = false;
-            for (int otherIndexOffset = 1; otherIndexOffset < halfPlaneAmount - 2; otherIndexOffset++) {
+            for (int otherIndexOffset = 1; otherIndexOffset < halfPlaneAmount - currentIndex; otherIndexOffset++) {
                 final int otherIndex = (currentIndex + otherIndexOffset) % halfPlaneAmount;
                 final HalfPlane other = sorted.get(otherIndex);
-
-                if (otherIndexOffset == 1 && twoPiAngle(current.getDirection()) <= twoPiAngle(other.getDirection().rotateByQuarterCircle(2))) {
-                    necessities.set(currentIndex, true);
-                    necessities.set(otherIndex, true);
-                    break;
-                }
 
                 final Coordinate intersection = current.intersection(other);
 
                 if (intersection != null && inside(intersection)) {
-                    coordinates.add(intersection);
-                    necessities.set(currentIndex, true);
-                    necessities.set(otherIndex, true);
+                    if (!coordinates.contains(intersection)) {
+                        coordinates.add(intersection);
+                        cutAmount.set(currentIndex, cutAmount.get(currentIndex) + 1);
+                        cutAmount.set(otherIndex, cutAmount.get(otherIndex) + 1);
+                    }
                     currentIndex = otherIndex;
                     intersected = true;
                     break;
@@ -157,9 +159,22 @@ public class Polyhedron {
             }
         }
 
-        filterHalfPlanes(sorted, necessities);
+        filterHalfPlanes(sorted, cutAmount);
 
+        List<Coordinate> coordinates1 = IntStream.range(0, cutAmount.size())
+                .filter(index -> cutAmount.get(index) == 1)
+                .mapToObj(index -> halfPlanes.get(index).getDirection().normalize().translate(halfPlanes.get(index).p0))
+                .collect(Collectors.toList());
         resolved = coordinates;
+        if (coordinates1.size() == 2) {
+            unbound = new LineSegment(coordinates1.get(0), coordinates1.get(1));
+            resolved.addAll(coordinates1);
+
+        } else {
+            unbound = null;
+        }
+
+
     }
 
     @Data
@@ -172,14 +187,14 @@ public class Polyhedron {
      * Filter the {@link HalfPlane}s on whether or not they are necessary for the polyhedron.
      *
      * @param halfPlanes the list of half planes
-     * @param necessary  the list of necessities
+     * @param cutAmount  the list of necessities
      */
-    private void filterHalfPlanes(List<HalfPlane> halfPlanes, List<Boolean> necessary) {
-        if (halfPlanes.size() != necessary.size()) {
+    private void filterHalfPlanes(List<HalfPlane> halfPlanes, List<Integer> cutAmount) {
+        if (halfPlanes.size() != cutAmount.size()) {
             return;
         }
-        this.halfPlanes = IntStream.range(0, necessary.size())
-                .filter(necessary::get)
+        this.halfPlanes = IntStream.range(0, cutAmount.size())
+                .filter(index -> cutAmount.get(index) > 0)
                 .mapToObj(halfPlanes::get)
                 .collect(Collectors.toList());
     }
@@ -247,5 +262,19 @@ public class Polyhedron {
 
         return rays;
     }
+
+    public void intersect(Ray ray) {
+
+        List<Coordinate> inters = new ArrayList<>();
+        for (HalfPlane plane : halfPlanes) {
+            if (ray.intersection(plane) == null) {
+                inters.add(ray.intersection(plane));
+            }
+        }
+        inters.stream()
+                .filter(point -> inside(point))
+                .collect(Collectors.toList());
+    }
+
 
 }
