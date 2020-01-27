@@ -1,5 +1,6 @@
 package com.treasure.hunt.jts;
 
+import com.treasure.hunt.jts.awt.PointTransformation;
 import com.treasure.hunt.utils.JTSUtils;
 import javafx.scene.canvas.Canvas;
 import lombok.Data;
