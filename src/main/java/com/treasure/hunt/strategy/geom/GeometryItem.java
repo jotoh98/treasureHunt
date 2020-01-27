@@ -1,5 +1,6 @@
 package com.treasure.hunt.strategy.geom;
 
+
 import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -36,11 +37,20 @@ public class GeometryItem<T> {
         this(object, geometryType, GeometryStyle.getDefaults(geometryType));
     }
 
+    public GeometryItem(T object) {
+        this(object, GeometryType.STANDARD);
+    }
+
     public void draw(FXGraphics2D graphics2D, AdvancedShapeWriter shapeWriter) {
         if (!geometryStyle.isVisible()) {
             return;
         }
         Shape shape = shapeWriter.toShape(object);
+
+        if (shape == null) {
+            return;
+        }
+
         if (geometryStyle.isFilled()) {
             graphics2D.setColor(geometryStyle.getFillColor());
             graphics2D.fill(shape);

@@ -6,7 +6,7 @@ import lombok.Getter;
  * This is conventions for GeometryItems,
  * how to display them.
  *
- * @author jotoh
+ * @author hassel
  */
 public enum GeometryType {
     // hints
@@ -16,18 +16,27 @@ public enum GeometryType {
     TRUE_HINT(false, "True Hint"),
 
     // treasure/no-treasure (areas)
-    TREASURE(true, "no treasure"),
     NO_TREASURE(false, "no treasure"),
     POSSIBLE_TREASURE(false, "possible treasure"),
     HINT_ANGLE(true, "angle hint", true),
 
     // searcher movements
-    WAY_POINT(true, "no treasure"),
+    SEARCHER_POSITION(true, "searcher position"),
     SEARCHER_MOVEMENT(true, "searcher movement"),
+
+    // treasure location
+    TREASURE(true, "no treasure"),
+
+    // Obstacle add-on
+    OBSTACLE(false, "no treasure"),
+    WAY_POINT(true, "no treasure"),
+
+    STANDARD(true, ""),
 
     BOUNDING_CIRCE(false, "bounding circle"),
 
-    STANDARD(true, "")
+    GRID(true, "Grid", false),
+    HALFPLANE(true, "HalfPlane", true)
     // TODO add more..
     ;
 

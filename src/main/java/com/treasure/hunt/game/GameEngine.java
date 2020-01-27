@@ -27,11 +27,11 @@ import java.util.List;
 @Requires(hider = Hider.class, searcher = Searcher.class)
 public class GameEngine {
     @Getter
-    private final Statistic statistics = new Statistic();
+    protected final Hider hider;
     @Getter
     protected final Searcher searcher;
     @Getter
-    protected final Hider hider;
+    private final Statistic statistics = new Statistic();
 
     protected final Coordinate initialSearcherCoordinate;
     /**

@@ -18,7 +18,7 @@
         <padding>
             <Insets left="6.0" right="6.0"/>
         </padding>
-   </TextField>
-   <Label fx:id="stepCountLabel" text="of 0"/>
-   <Button disable="true" fx:id="nextButton" mnemonicParsing="false" onAction="#nextButtonClicked" text="Next"/>
+    </TextField>
+    <Label fx:id="stepCountLabel" text="of 0"/>
+    <Button disable="true" fx:id="nextButton" mnemonicParsing="false" onAction="#nextButtonClicked" text="Next"/>
 </HBox>

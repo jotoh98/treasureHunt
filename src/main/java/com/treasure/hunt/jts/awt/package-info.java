@@ -1,5 +1,5 @@
 /**
- * This package expands the {@link org.locationtech.jts.awt} suite.
+ * This package expands the {@link org.locationtech.jts} suite.
  *
  * @author jotoh
  */

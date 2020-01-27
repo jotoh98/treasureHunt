@@ -15,4 +15,5 @@ public class WidgetBarController {
         widget.prefHeightProperty().bind(widgetBar.heightProperty());
         widgetBar.getChildren().add(widget);
     }
+
 }

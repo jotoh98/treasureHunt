@@ -58,11 +58,11 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         LineSegment piHintLine = new LineSegment(piHint.getGeometryAngle().getCenter(),
                 piHint.getHalfPlanePoint());
 
-        Point intersection_AD_hint = JTSUtils.lineLineSegmentIntersection(piHintLine, AD);
-        Point intersection_BC_hint = JTSUtils.lineLineSegmentIntersection(piHintLine, BC);
+        Point intersection_AD_hint = lineLineSegmentIntersection(piHintLine, AD);
+        Point intersection_BC_hint = lineLineSegmentIntersection(piHintLine, BC);
 
-        Point intersection_AB_hint = JTSUtils.lineLineSegmentIntersection(piHintLine, AB);
-        Point intersection_CD_hint = JTSUtils.lineLineSegmentIntersection(piHintLine, CD);
+        Point intersection_AB_hint = lineLineSegmentIntersection(piHintLine, AB);
+        Point intersection_CD_hint = lineLineSegmentIntersection(piHintLine, CD);
 
         Point[] horizontalSplit = splitRectangleHorizontally(A, B, C, D, piHint, intersection_AD_hint,
                 intersection_BC_hint);
@@ -83,6 +83,12 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             return movesToCenterOfRectangle(A, B, C, D);
         }
         return badHintSubroutine(piHint);
+    }
+
+    private Point lineLineSegmentIntersection(LineSegment infinite, LineSegment segment) {
+        return JTSUtils.GEOMETRY_FACTORY.createPoint(
+                JTSUtils.infiniteSegmentIntersection(infinite, segment)
+        );
     }
 
     private Point[] splitRectangleHorizontally(Point A, Point B, Point C, Point D, HalfPlaneHint piHint,

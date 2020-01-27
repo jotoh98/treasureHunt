@@ -2,15 +2,18 @@ package com.treasure.hunt.view;
 
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
+import com.treasure.hunt.jts.awt.CanvasBoundary;
 import com.treasure.hunt.jts.awt.PointTransformation;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
 import org.jfree.fx.FXGraphics2D;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.math.Vector2D;
 
 /**
@@ -20,7 +23,7 @@ public class CanvasController {
     @Getter
     public Canvas canvas;
     public Pane canvasPane;
-    private ObjectProperty<GameManager> gameManager;
+    private ObjectProperty<GameManager> gameManager = new SimpleObjectProperty<>();
 
     @Getter
     private PointTransformation transformation = new PointTransformation();
@@ -38,47 +41,36 @@ public class CanvasController {
         transformation.getScaleProperty().addListener(invalidation -> drawShapes());
 
         transformation.getOffsetProperty().addListener(invalidation -> drawShapes());
+        shapeWriter.setBoundary(new CanvasBoundary(canvas, transformation));
     }
 
     public void makeCanvasResizable() {
-
-        canvas.widthProperty().addListener((observable, oldValue, newValue) -> {
-            transformation.updateCanvasWidth((double) newValue);
-            drawShapes();
-        });
-
-        canvas.heightProperty().addListener((observable, oldValue, newValue) -> {
-            transformation.updateCanvasHeight((double) newValue);
-            drawShapes();
-        });
-
+        canvas.widthProperty().addListener((observable, oldValue, newValue) -> drawShapes());
+        canvas.heightProperty().addListener((observable, oldValue, newValue) -> drawShapes());
         canvas.heightProperty().bind(canvasPane.heightProperty());
         canvas.widthProperty().bind(canvasPane.widthProperty());
     }
 
     public void drawShapes() {
         Platform.runLater(() -> {
-            if (gameManager == null) {
+            if (gameManager.isNull().get()) {
                 return;
             }
-            if (gameManager.isNotNull().get()) {
-                deleteShapes();
-                gameManager.get().getGeometryItems(true).forEach(geometryItem ->
-                        geometryItem.draw(graphics2D, shapeWriter)
-                );
-            }
+            deleteShapes();
+            gameManager.get().getGeometryItems(true)
+                    .forEach(geometryItem -> geometryItem.draw(graphics2D, shapeWriter));
         });
     }
 
     private void deleteShapes() {
-        if (gameManager == null) {
+        if (gameManager.isNull().get()) {
             return;
         }
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
     public void onCanvasClicked(MouseEvent mouseEvent) {
-        if (gameManager == null) {
+        if (gameManager.isNull().get()) {
             return;
         }
         offsetBackup = transformation.getOffsetProperty().get();
@@ -94,7 +86,7 @@ public class CanvasController {
      * @param mouseEvent corresponding {@link MouseEvent}
      */
     public void onCanvasDragged(MouseEvent mouseEvent) {
-        if (gameManager == null) {
+        if (gameManager.isNull().get()) {
             return;
         }
         Vector2D dragOffset = Vector2D.create(mouseEvent.getX(), mouseEvent.getY()).subtract(dragStart);
@@ -102,7 +94,7 @@ public class CanvasController {
     }
 
     public void onCanvasZoom(ScrollEvent scrollEvent) {
-        if (gameManager == null) {
+        if (gameManager.isNull().get()) {
             return;
         }
         Vector2D mouse = new Vector2D(scrollEvent.getX(), scrollEvent.getY());
@@ -113,12 +105,20 @@ public class CanvasController {
     public void setGameManager(ObjectProperty<GameManager> gameManager) {
         this.gameManager = gameManager;
         gameManager.addListener(observable -> {
-            if (this.gameManager.get() == null) {
+            if (this.gameManager.isNull().get()) {
                 return;
             }
             this.gameManager.get().getViewIndex()
                     .addListener(observable1 -> drawShapes());
 
         });
+    }
+
+    public Coordinate upperLeftBoundary() {
+        return transformation.revert(0, 0);
+    }
+
+    public Coordinate lowerRightBoundary() {
+        return transformation.revert(canvas.getWidth(), canvas.getHeight());
     }
 }

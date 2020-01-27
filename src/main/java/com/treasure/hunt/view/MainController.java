@@ -3,6 +3,10 @@ package com.treasure.hunt.view;
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.io.FileService;
+import com.treasure.hunt.jts.geom.Grid;
+import com.treasure.hunt.jts.geom.HalfPlane;
+import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.EventBusUtils;
@@ -28,6 +32,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.geom.Coordinate;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Modifier;
@@ -349,6 +354,25 @@ public class MainController {
 
         gameManager.set(gameManagerInstance);
         EventBusUtils.LOG_LABEL_EVENT.trigger("Game initialized");
+        gameManager.get().addUtilityGeometry(
+                new GeometryItem<>(new Grid(), GeometryType.GRID)
+        );
+
+        /*gameManager.get().addUtilityGeometry(
+                new GeometryItem<>(new Line(new Coordinate(0, 0), new Coordinate(1, 1)))
+        );
+
+        gameManager.get().addUtilityGeometry(
+                new GeometryItem<>(new Ray(new Coordinate(10, 5), new Coordinate(7, 6)))
+        );*/
+
+        final HalfPlane halfPlane = new HalfPlane(new Coordinate(0, 0), new Coordinate(1, 1));
+        gameManager.get().addUtilityGeometry(
+                new GeometryItem<>(
+                        halfPlane,
+                        GeometryType.HALFPLANE
+                )
+        );
 
         if (initialize) {
             gameManager.addListener(change -> canvasController.drawShapes());

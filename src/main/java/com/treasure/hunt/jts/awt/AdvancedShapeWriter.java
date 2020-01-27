@@ -1,5 +1,6 @@
 package com.treasure.hunt.jts.awt;
 
+import com.treasure.hunt.jts.geom.Shapeable;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.Getter;
 import lombok.Setter;

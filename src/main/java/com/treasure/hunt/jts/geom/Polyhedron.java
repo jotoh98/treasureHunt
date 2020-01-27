@@ -1,74 +1,45 @@
 package com.treasure.hunt.jts.geom;
 
-import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
-import com.treasure.hunt.jts.awt.CanvasBoundary;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.locationtech.jts.algorithm.ConvexHull;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.math.Vector2D;
 
-import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * Polyhedron defined by a list of {@link HalfPlane}s.
  */
 @AllArgsConstructor
 @NoArgsConstructor
-public class Polyhedron implements Shapeable {
+public class Polyhedron {
 
     /**
      * List of halfPlanes defining the polyhedron.
      */
     private List<HalfPlane> halfPlanes = new ArrayList<>();
 
-    /**
-     * List of polygon coordinates.
-     */
     @Getter
-    private List<Coordinate> polygon = new ArrayList<>();
+    private List<Coordinate> resolved = new ArrayList<>();
 
-    /**
-     * Polyhedron constructor from {@link HalfPlane} list.
-     *
-     * @param halfPlanes half planes to construct the polyhedron
-     */
     public Polyhedron(List<HalfPlane> halfPlanes) {
-        halfPlanes.forEach(halfPlane -> halfPlane.setStrict(false));
         this.halfPlanes = halfPlanes;
         resolve();
     }
 
-    /**
-     * Polyhedron constructor from multiple {@link HalfPlane}s.
-     *
-     * @param halfPlanes half planes to construct the polyhedron
-     */
-    public Polyhedron(HalfPlane... halfPlanes) {
-        this(Arrays.asList(halfPlanes));
-    }
-
-    /**
-     * Add new {@link HalfPlane} to the polyhedron.
-     * Resolves the resulting polygon.
-     *
-     * @param halfPlane half plane to be added
-     */
     public void addHalfPlane(HalfPlane halfPlane) {
         if (inside(halfPlane)) {
-            halfPlane.setStrict(false);
             halfPlanes.add(halfPlane);
-            resolve();
         }
     }
 
@@ -79,10 +50,7 @@ public class Polyhedron implements Shapeable {
      * @return whether the tested coordinate lays inside of the polyhedron
      */
     public boolean inside(Coordinate c) {
-        if (c == null) {
-            return false;
-        }
-        return halfPlanes.stream().allMatch(halfPlane -> halfPlane.inside(c));
+        return halfPlanes.stream().anyMatch(halfPlane -> halfPlane.inside(c));
     }
 
     /**
@@ -104,7 +72,7 @@ public class Polyhedron implements Shapeable {
      * @return whether the polyhedron is bound
      */
     public boolean isBound() {
-        return halfPlanes.size() == polygon.size();
+        return halfPlanes.size() == resolved.size();
     }
 
     /**
@@ -133,8 +101,8 @@ public class Polyhedron implements Shapeable {
      *         <li>every other half plane was checked for an intersection unsuccessfully.</li>
      *     </ol>
      *     First, we check if the angle between the current and the next {@link HalfPlane} is negative. If so, we
-     *     found the unbound section, both {@link HalfPlane}s are necessary. We "jump" across the gap and continue
-     *     with the 2nd of the two unbound {@link HalfPlane}s.
+     *     found the unbounded section, both {@link HalfPlane}s are necessary. We "jump" across the gap and continue
+     *     with the 2nd of the two unbounded {@link HalfPlane}s.
      * </p>
      * <p>
      *     If there is no gap, we intersect the neighbours and check the intersection:
@@ -163,11 +131,11 @@ public class Polyhedron implements Shapeable {
         for (int currentIndex = 0; currentIndex < halfPlaneAmount; ) {
             final HalfPlane current = sorted.get(currentIndex);
             boolean intersected = false;
-            for (int offset = 1; offset < halfPlaneAmount; offset++) {
-                final int otherIndex = (currentIndex + offset) % halfPlaneAmount;
+            for (int otherIndexOffset = 1; otherIndexOffset < halfPlaneAmount - 2; otherIndexOffset++) {
+                final int otherIndex = (currentIndex + otherIndexOffset) % halfPlaneAmount;
                 final HalfPlane other = sorted.get(otherIndex);
 
-                if (offset == 1 && formingUnbound(current, other)) {
+                if (otherIndexOffset == 1 && twoPiAngle(current.getDirection()) <= twoPiAngle(other.getDirection().rotateByQuarterCircle(2))) {
                     necessities.set(currentIndex, true);
                     necessities.set(otherIndex, true);
                     break;
@@ -186,44 +154,18 @@ public class Polyhedron implements Shapeable {
             }
             if (!intersected) {
                 currentIndex++;
-            } else if (currentIndex == 0) {
-                break;
             }
         }
 
-        filterNaive(sorted, necessities);
+        filterHalfPlanes(sorted, necessities);
 
-        polygon = coordinates;
+        resolved = coordinates;
     }
 
-    public void resolveNaive() {
-        final Stream<HalfPlane> halfPlaneStream = this.halfPlanes.stream();
-
-        Coordinate[] coordinates = halfPlaneStream
-                .flatMap(firstHalfPlane -> halfPlaneStream
-                        .filter(otherHalfPlane -> !otherHalfPlane.equals(firstHalfPlane))
-                        .map(two -> two.intersection(firstHalfPlane))
-                )
-                .distinct()
-                .filter(this::inside)
-                .toArray(Coordinate[]::new);
-
-        ConvexHull convexHull = new ConvexHull(coordinates, JTSUtils.GEOMETRY_FACTORY);
-        this.polygon = Arrays.asList(convexHull.getConvexHull().getCoordinates());
-    }
-
-
-    /**
-     * Retrieve if two {@link HalfPlane}s are forming an unbound section.
-     * Unbound section means that the directional vector of the right and the directional vector of the left
-     * {@link HalfPlane} rotated by 180 degrees diverge forming an unbound infinite section.
-     *
-     * @param right right half plane compared
-     * @param left  left half plane compared
-     * @return if right and left half planes form an unbound section
-     */
-    private boolean formingUnbound(HalfPlane right, HalfPlane left) {
-        return right.getDirection().angle() <= left.getDirection().rotateByQuarterCircle(2).angle();
+    @Data
+    private class Connection {
+        private int prev;
+        private int next;
     }
 
     /**
@@ -232,25 +174,13 @@ public class Polyhedron implements Shapeable {
      * @param halfPlanes the list of half planes
      * @param necessary  the list of necessities
      */
-    private void filterNaive(List<HalfPlane> halfPlanes, List<Boolean> necessary) {
+    private void filterHalfPlanes(List<HalfPlane> halfPlanes, List<Boolean> necessary) {
         if (halfPlanes.size() != necessary.size()) {
             return;
         }
         this.halfPlanes = IntStream.range(0, necessary.size())
                 .filter(necessary::get)
                 .mapToObj(halfPlanes::get)
-                .collect(Collectors.toList());
-    }
-
-    private void filterNaive(List<HalfPlane> halfPlanes) {
-        this.halfPlanes = halfPlanes.stream()
-                .filter(halfPlane -> polygon.stream().anyMatch(halfPlane::inside))
-                .collect(Collectors.toList());
-    }
-
-    private List<HalfPlane> getUnbound() {
-        return halfPlanes.stream()
-                .filter(halfPlane -> polygon.stream().filter(halfPlane::inside).count() == 1)
                 .collect(Collectors.toList());
     }
 
@@ -281,91 +211,41 @@ public class Polyhedron implements Shapeable {
         return angle1;
     }
 
-    public Geometry getGeometry(boolean ignoreUnbound) {
-        final ConvexHull convexHull = JTSUtils.getConvexHull(polygon);
-        final Coordinate[] coordinates = convexHull.getConvexHull().norm().getCoordinates();
+    public Geometry getGeometry(boolean checkBound) {
+        final Coordinate[] coordinates = resolved.toArray(new Coordinate[0]);
         final GeometryFactory factory = JTSUtils.GEOMETRY_FACTORY;
 
-        if (coordinates.length == 1) {
-            return factory.createPoint(coordinates[0]);
-        }
-
-        if ((ignoreUnbound || isBound()) && coordinates.length > 2) {
+        if (!checkBound || isBound()) {
             return factory.createPolygon(coordinates).norm();
         }
 
         return factory.createLineString(coordinates).norm();
     }
 
-    /**
-     * Get rays of {@link HalfPlane}s in unbound section.
-     *
-     * @return list of half plane rays
-     */
-    public List<Ray> getUnboundRays() {
-        final List<HalfPlane> sorted = sortByAngle(halfPlanes);
-        for (int index = 0; index < sorted.size() - 1; index++) {
-            final HalfPlane current = sorted.get(index);
-            final HalfPlane next = sorted.get(index + 1);
-            if (formingUnbound(current, next)) {
-                return Arrays.asList(new Ray(current.p0, current.p1), new Ray(next.p1, next.p0));
-            }
+    public List<Ray> getRays() {
+        if (isBound()) {
+            return new ArrayList<>();
         }
-        return Collections.emptyList();
-    }
 
-    /**
-     * Get plain polygon from resolved list of {@link Coordinate}s.
-     *
-     * @return polygon from resolved {@link Coordinate}s
-     */
-    public Polygon toPolygon() {
-        return JTSUtils.createPolygon(polygon);
-    }
+        final ArrayList<Ray> rays = new ArrayList<>();
 
-    /**
-     * Get bound and unbound polygon.
-     *
-     * @param boundary canvas boundary to extract line segments and corners
-     * @return bound and unbound polygon
-     */
-    private Polygon toPolygon(CanvasBoundary boundary) {
-        final List<Ray> rays = getUnboundRays();
-
-        List<Coordinate> coordinates = new ArrayList<>();
-        if (isUnbound()) {
-            coordinates = boundary
-                    .getLineSegments()
-                    .stream()
-                    .flatMap(lineSegment -> rays
-                            .stream()
-                            .map(ray -> ray.intersection(lineSegment))
-                    )
+        halfPlanes.forEach(halfPlane -> {
+            final List<Coordinate> cutCoordinates = resolved.stream()
+                    .filter(halfPlane::inLine)
                     .collect(Collectors.toList());
-            coordinates.addAll(boundary
-                    .getCoordinates()
-                    .stream()
-                    .filter(this::inside)
-                    .collect(Collectors.toList()));
-        }
-        coordinates.addAll(polygon);
+            if (cutCoordinates.size() != 1) {
+                return;
+            }
+            final Coordinate p0 = cutCoordinates.get(0);
+            Vector2D direction = halfPlane.getDirection();
+            Coordinate p1 = direction.translate(p0);
+            if (!inside(p1)) {
+                p1 = direction.rotateByQuarterCircle(2).translate(p0);
+            }
+            rays.add(new Ray(p0, p1));
+        });
 
-        final Geometry geometry = JTSUtils.createPolygon(coordinates).norm();
-        return geometry instanceof Polygon ? (Polygon) geometry : null;
+        return rays;
     }
 
-    /**
-     * Get shape for polyhedron.
-     *
-     * @param advancedShapeWriter shape writer holding the {@link CanvasBoundary}
-     * @return polyhedron shape (bound & unbound)
-     */
-    @Override
-    public Shape toShape(AdvancedShapeWriter advancedShapeWriter) {
-        final Polygon polygon = toPolygon(advancedShapeWriter.getBoundary());
-        if (polygon == null) {
-            return null;
-        }
-        return advancedShapeWriter.toShape(polygon);
-    }
 }

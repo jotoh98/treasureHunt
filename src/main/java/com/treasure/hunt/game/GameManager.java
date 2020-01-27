@@ -33,6 +33,7 @@ import sun.reflect.ReflectionFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -57,6 +58,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      */
     @VisibleForTesting
     ObservableList<Move> moves = FXCollections.observableArrayList();
+
+    private ObservableList<GeometryItem<?>> utilityGeometries = FXCollections.observableArrayList();
 
     private GameEngine gameEngine;
     @Getter
@@ -228,8 +231,12 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      * @return The whole List of geometryItems of the gameHistory
      */
     public List<GeometryItem> getGeometryItems(Boolean excludeOverrideItems) {
-        ArrayList<GeometryItem> geometryItems = getMovesViewed().stream()
-                .flatMap(move -> move.getGeometryItems().stream())
+        ArrayList<GeometryItem> geometryItems = Stream.concat(
+                getMovesViewed().stream()
+                        .flatMap(move -> move.getGeometryItems().stream()),
+                utilityGeometries.stream()
+        )
+                .sorted(Comparator.comparingInt(o -> o.getGeometryStyle().getZIndex()))
                 .collect(Collectors.toCollection(ArrayList::new));
         if (!excludeOverrideItems) {
             return geometryItems;
@@ -306,6 +313,10 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         return stepBackwardImpossibleBinding.getValue();
     }
 
+    public void addUtilityGeometry(GeometryItem<?> item) {
+        utilityGeometries.add(item);
+    }
+
     @Override
     public void write(Kryo kryo, Output output) {
         kryo.writeObject(output, gameEngine);
@@ -323,6 +334,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         gameEngine = kryo.readObject(input, GameEngine.class);
         beatThreadRunning = new SimpleBooleanProperty(input.readBoolean());
         moves = FXCollections.observableArrayList(kryo.readObject(input, ArrayList.class));
+        utilityGeometries = FXCollections.observableArrayList();
         viewIndex = new SimpleIntegerProperty(input.readInt());
         finishedProperty = new SimpleBooleanProperty(input.readBoolean());
         setBindings();
