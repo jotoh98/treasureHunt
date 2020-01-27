@@ -106,7 +106,7 @@ public class StrategyFromPaperTest {
     @Test
     void testStrategyFromPaperInternMethods() {
         Tester tester = new Tester(strat);
-        tester.testBadCases();
+        tester.testBasicTransformation();
         tester.testPhiHint();
         tester.testPhiRectangle();
         tester.testPhiRectangleRectangleReverse();
