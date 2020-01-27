@@ -35,6 +35,7 @@ public class GeometricUtils {
         move.addWayPoint(centerOfRectangle(P1, P2, P3, P4));
         return move;
     }
+
     /**
      * Coordinate of rect are rounded in the precision model grid and reordered so tha rect[0] is the upper left point,
      * rect[1] is the upper right point, rect[2] is the bottom right point and rect[3] is the bottom left point.
@@ -76,7 +77,7 @@ public class GeometricUtils {
         if (A.equals2D(B) || A.equals2D(C) || A.equals2D(D) || B.equals2D(C) || B.equals2D(D) || C.equals2D(D)) {
             throw new IllegalArgumentException("rect is malformed. It equals " + rect[0] + rect[1] + rect[2] + rect[3]);
         }
-        //if (A.x != C.x || A.y != B.y || B.x != D.x || C.y != D.y) {
+
         if (!doubleEqual(A.x, D.x) || !doubleEqual(A.y, B.y) || !doubleEqual(B.x, C.x) || !doubleEqual(C.y, D.y)) {
             throw new IllegalArgumentException("rect is not parallel to x an y axis:" +
                     "\nrect[0] = " + rect[0] +
@@ -86,17 +87,14 @@ public class GeometricUtils {
                     "\nA = " + A +
                     "\nB = " + B +
                     "\nC = " + C +
-                    "\nD = " + D);
+                    "\nD = " + D
+            );
 
         }
-        Coordinate[] rectRes = new Coordinate[4];
-        rectRes[0] = A;
-        rectRes[1] = B;
-        rectRes[2] = C;
-        rectRes[3] = D;
-
+        Coordinate[] rectRes = new Coordinate[]{A,B,C,D};
         return rectRes;
     }
+
     static Coordinate twoStepsOrthogonal(HalfPlaneHint hint, Point P) {
         return twoStepsOrthogonal(hint, P.getCoordinate());
     }

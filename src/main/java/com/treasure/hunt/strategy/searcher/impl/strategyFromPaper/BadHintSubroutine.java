@@ -6,8 +6,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Point;
 
-import java.util.Arrays;
-
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.*;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.*;
@@ -19,7 +17,6 @@ import static org.locationtech.jts.algorithm.Angle.normalizePositive;
  * @author bsen
  */
 public class BadHintSubroutine {
-
 
     /**
      * If the last hint was bad, this function can be called and lastBadHint has to be set accordingly.
@@ -78,18 +75,13 @@ public class BadHintSubroutine {
             if (d != null)
                 d_apos = twoStepsOrthogonal(lastBadHint, d);
 
-            System.out.println("L1_doubleApos = " + L1_doubleApos); //testing
-            System.out.println("ABt = " + ABt); //testing
             Coordinate f = lineWayIntersection(L1_doubleApos, ABt);
-            System.out.println("f = " + f); //testing
             Coordinate j = lineWayIntersection(L1_doubleApos, BCt);
 
             Coordinate j_apos = null;
             if (j != null)
                 j_apos = new Coordinate(Dt.getX(), j.getY());
-            Coordinate t = null;
-            //if (f != null)
-            t = new Coordinate(f.getX(), Dt.getY());
+            Coordinate t = new Coordinate(f.getX(), Dt.getY());
 
             Coordinate m = new Coordinate(At.getX(), p.getY());
             Coordinate m_apos = new Coordinate(At.getX(), p_apos.getY());
@@ -111,11 +103,6 @@ public class BadHintSubroutine {
 
             HalfPlaneHint curHintT = phiHint(basicTrans, rect, curHint);
 
-            //testing:
-            System.out.println("curHintTransformed (" + curHintT.getLeftPoint() + ", " + curHintT.getRightPoint() + ")");
-            System.out.println("transformedHint (" + hintT.getLeftPoint() + ", " + hintT.getRightPoint() + ")");
-            System.out.println("transformedRect " + Arrays.toString(transformedRect)); // testing
-
             HalfPlaneHint.Direction x2_apos = curHintT.getDirection();
             LineSegment L2_apos = new LineSegment(curHintT.getLeftPoint(),
                     curHintT.getRightPoint());
@@ -132,30 +119,19 @@ public class BadHintSubroutine {
             if (x2_apos == right &&
                     lineBetweenClockwise(L2_apos, L1_doubleApos, pp_apos)
             ) {
-                System.out.println("--------------------------------------------------erster fall"); //testing
-                /*
-                System.out.println("f, Bt, Ct, t = \n" +
-                        f + '\n' + Bt + "\n" + Ct + "\n" + t + "\n"); // testing
-                System.out.println("phiOtherRectangleInverse(basicTrans, rect, (f, Bt, Ct, t) = \n" +
-                        Arrays.toString(phiOtherRectangleInverse(basicTrans, rect, new Coordinate[]{f, Bt, Ct, t})));
-                //testing
-                */
                 newRectangle = phiOtherRectangleInverse(basicTrans, rect,
                         new Coordinate[]{f, Bt, Ct, t});
-            } //else
+            }
             if (x2_apos == right &&
                     lineBetweenClockwise(L2_apos, pp_apos, m_apos_k_apos)
             ) {
-                System.out.println("--------------------------------------------------zweiter fall"); //testing
                 move = rectangleScanPhiReverse(basicTrans, rect, m_apos, k_apos, k, m, move);
                 newRectangle = phiOtherRectangleInverse(basicTrans, rect,
                         new Coordinate[]{g, Bt, Ct, h});
-            } //else
+            }
             if ((x2_apos == left || x2_apos == down) &&
                     lineBetweenClockwise(L2_apos, m_apos_k_apos, L1_doubleApos)
             ) {
-                System.out.println("--------------------------------------------------dritter fall"); //testing
-
                 // rectangleScan(phi_reverse(k, (s, s', d', d))
                 move = rectangleScanPhiReverse(basicTrans, rect, s, s_apos, d_apos, d, move);
                 // rectangleScan(phi_reverse(k, (m', k', k, m))
@@ -163,19 +139,17 @@ public class BadHintSubroutine {
                 // newRectangle := pkCh
                 newRectangle = phiOtherRectangleInverse(basicTrans, rect,
                         new Coordinate[]{p, k, Ct, h});
-            } //else
+            }
             if (x2_apos == left &&
                     lineBetweenClockwise(L2_apos, L1_doubleApos, h_apos_g_apos)
             ) {
-                System.out.println("--------------------------------------------------vierter fall"); //testing
-
                 // rectangleScan(phi_reverse(k, (s, s', d', d))
                 move = rectangleScanPhiReverse(basicTrans, rect, s, s_apos, d_apos, d, move);
                 // rectangleScan(phi_reverse(k, (g, g', h', h))
                 // newRectangle := Agpm
                 newRectangle = phiOtherRectangleInverse(basicTrans, rect,
                         new Coordinate[]{At, g, p, m});
-            } //else
+            }
             if ((x2_apos == left &&
                     lineBetweenClockwise(L2_apos, h_apos_g_apos, pp_apos)) ||
                     (x2_apos == left &&
@@ -184,18 +158,15 @@ public class BadHintSubroutine {
                             lineBetweenClockwise(L2_apos, m_apos_k_apos, p_apos_k)
                     )
             ) {
-                System.out.println("--------------------------------------------------fuenfter fall"); //testing
-
                 // rectangleScan(phireverse(k, (g, g', h', h))
                 move = rectangleScanPhiReverse(basicTrans, rect, g, g_apos, h_apos, h, move);
                 // newRectangle := ABkm
                 newRectangle = phiOtherRectangleInverse(basicTrans, rect,
                         new Coordinate[]{At, Bt, k, m});
-            } //else
+            }
             if (x2_apos == right &&
                     lineBetweenClockwise(L2_apos, p_apos_k, L1_doubleApos)
             ) {
-                System.out.println("--------------------------------------------------sechster fall"); //testing
                 // newRectangle := ABjj'
                 newRectangle = phiOtherRectangleInverse(basicTrans, rect,
                         new Coordinate[]{At, Bt, j, j_apos});
@@ -213,7 +184,6 @@ public class BadHintSubroutine {
         }
 
     }
-    //test end
 
     /**
      * Returns true if line is clockwise between between1 (included) and between2 (excluded).
@@ -235,7 +205,7 @@ public class BadHintSubroutine {
         return maxAngleBetween2and1 < maxAngleLineBetween1;
     }
 
-    //just for testing
+    // some things get printed when exception occurs
     static private void printRect(StrategyFromPaper s, Coordinate[] rect, HalfPlaneHint lastBadHint, HalfPlaneHint curHint) {
         Point A = s.A;
         Point B = s.B;

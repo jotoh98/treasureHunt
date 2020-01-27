@@ -28,11 +28,12 @@ import static com.treasure.hunt.utils.JTSUtils.*;
  */
 
 public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
-    int phase; //equals j in the paper. In phase i, the algorithm checks a rectangle with a side length of 2^i
+    int phase;  // equals j in the paper. In phase i, the algorithm checks a rectangle with a side length of 2^i
+    //             centered at the initial position of the searcher
     Point start, // the initial position of the player
             A, B, C, D; // The points current rectangle where the treasure is to be searched.
-    // The points are used like the points A,B,C and D in the paper, so please look there for
-    // more information.
+    //                     ABCD lies always in the rectangle of the current phase.
+    //                     The points are used like the points A,B,C and D in the paper.
 
     HalfPlaneHint lastBadHint; //only used when last hint was bad
     boolean lastHintWasBad = false;
@@ -70,12 +71,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         double width = B.getX() - A.getX();
         double height = A.getY() - D.getY();
         if (width < 4 || height < 4) {
-            System.out.println("---------------width or height < 4 therefore rectangle gets scanned");
             return moveReturn(addState(incrementPhase(move)));
         }
         //now analyse the hint:
         if (lastHintWasBad) {
-            System.out.println("--------------last case was bad");
             return moveReturn(addState(lastHintBadSubroutine(this, hint, lastBadHint, move)));
         }
 
@@ -110,7 +109,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             B = horizontalSplit[1];
             C = horizontalSplit[2];
             D = horizontalSplit[3];
-            System.out.println("------------good case");
+            // "good" case (as defined in the paper)
             return moveReturn(addState(moveToCenterOfRectangle(A, B, C, D, move)));
         }
         Point[] verticalSplit = splitRectangleVertically(A, B, C, D, hint, intersection_AB_hint,
@@ -120,15 +119,14 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             B = verticalSplit[1];
             C = verticalSplit[2];
             D = verticalSplit[3];
-            System.out.println("------------good case");
+            // "good" case (as defined in the paper)
             return moveReturn(addState(moveToCenterOfRectangle(A, B, C, D, move)));
         }
-        // when none of this cases takes place, the hint is bad. This gets handled here:
+        // when none of this cases takes place, the hint is bad (as defined in the paper). This gets handled here:
         Point destination = GEOMETRY_FACTORY.createPoint(twoStepsOrthogonal(hint, centerOfRectangle(A, B, C, D)));
         move.addWayPoint(destination);
         lastHintWasBad = true;
         lastBadHint = hint;
-        System.out.println("--------------bad case");
         return moveReturn(addState(move));
     }
 
@@ -187,7 +185,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                         !doubleEqual(D.getY(), rect[2].getY()) && D.getY() < rect[2].getY()
         ) {
             throw new AssertionError(
-                    //System.out.println(
                     "phaseRect:\n" +
                             rect[0].toString() + "\n" +
                             rect[1].toString() + "\n" +
@@ -233,21 +230,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             lastPoint = p;
         }
         lastLocation = move.getEndPoint();
-
-        //test
-        for (GeometryItem g : move.getPoints()) {
-            System.out.println(((Point) g.getObject()).getCoordinate());
-        }
-        for (GeometryItem g : move.getAdditionalGeometryItems()) {
-            System.out.println(g.getGeometryType());
-            System.out.println((Geometry) (g.getObject()));
-        }
-        // end test
-
         return move;
     }
 
-    private Movement moveReturnOld(Movement move){
+    private Movement moveReturnOld(Movement move) {
         List<GeometryItem<Point>> points = move.getPoints();
         Point lastPoint = null;
         for (GeometryItem g : points) {
@@ -267,7 +253,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
 
     /**
      * If the hint-line goes through AD and BC and the hint is good (i.e. the hint divides one side of the rectangle in
-     * two parts such that the smaller one is bigger or equal to 1), the biggest axis parallel rectangle which
+     * two parts such that the smaller one is bigger or equal to 1), the biggest axis parallel-rectangle which
      * lies in ABCD and where the treasure could be located due to the information gained by the hint, is returned.
      * Otherwise the return value is null.
      *
@@ -331,7 +317,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
 
     /**
      * If the hint-line goes through AB and CD and the hint is good (i.e. the hint divides one side of the rectangle in
-     * two parts such that the smaller one is bigger or equal to 1), the biggest axis parallel rectangle which
+     * two parts such that the smaller one is bigger or equal to 1), the biggest axis-parallel rectangle which
      * lies in ABCD and where the treasure could be located due to the information gained by the hint, is returned.
      * Otherwise the return value is null.
      *
@@ -384,7 +370,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
 
     /**
      * Increments the phase-field and updates ABCD accordingly.
-     * Goes to the center of the new rectangle ABCD.
+     * Then adds the step to the center of the new rectangle ABCD to move.
      *
      * @param move
      * @return the parameter move with the center of the new ABCD added

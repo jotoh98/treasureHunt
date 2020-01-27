@@ -16,6 +16,8 @@ import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.Geometr
 import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
 
 /**
+ * TODO explain what rho, sigma and phi do in the paper
+ *
  * @author bsen
  */
 public class RoutinesFromPaper {
@@ -48,7 +50,6 @@ public class RoutinesFromPaper {
 
         if (k % 2 == 1) //code like in paper
         {
-            //for (int i = 0; i <= k - 1; k += 2) {
             for (int i = 0; i <= k - 1; i += 2) {
                 move.addWayPoint(a[i]);
                 move.addWayPoint(b[i]);
@@ -56,7 +57,6 @@ public class RoutinesFromPaper {
                 move.addWayPoint(a[i + 1]);
             }
         } else {
-            //for (int i = 0; i <= k - 2; k += 2) {
             for (int i = 0; i <= k - 2; i += 2) {
                 move.addWayPoint(a[i]);
                 move.addWayPoint(b[i]);
@@ -66,7 +66,6 @@ public class RoutinesFromPaper {
             move.addWayPoint(a[k]);
             move.addWayPoint(b[k]);
         }
-        //move.addWayPoint(a); // go to a
         return move;
     }
 
@@ -123,8 +122,6 @@ public class RoutinesFromPaper {
      * @return
      */
     static Coordinate sigmaPoint(int i, Coordinate r, Coordinate P) {
-        //AffineTransformation rot_i = AffineTransformation.rotationInstance(Math.PI * i / 2, r.getX(), r.getY());
-        //Coordinate ret = P.copy();
         AffineTransformation rot_i;
         switch (i) {
             case 0:
@@ -196,10 +193,6 @@ public class RoutinesFromPaper {
         throw new IllegalArgumentException("i should be in [0,3] but is equal to " + i);
     }
 
-    static Coordinate[] sigmaRectangleReverse(int i, Coordinate[] rect) {
-        return sigmaRectangle(i, rect);
-    }
-
     /**
      * Returns the result of phi, defined by rect, with index i, applied on rect.
      *
@@ -267,6 +260,19 @@ public class RoutinesFromPaper {
         return sigmaPointReverse(i - 4, r, rhoPoint(rect, P));
     }
 
+    /**
+     * Calculate phi defined by basicTrans and phiRect of the rectangle ABCD.
+     * Add the steps to scan this rectangle with rectangleScan to move.
+     *
+     * @param basicTrans
+     * @param phiRect
+     * @param A
+     * @param B
+     * @param C
+     * @param D
+     * @param move
+     * @return
+     */
     static Movement rectangleScanPhiReverse(int basicTrans, Coordinate[] phiRect,
                                             Coordinate A, Coordinate B, Coordinate C, Coordinate D, Movement move) {
         return rectangleScan(
