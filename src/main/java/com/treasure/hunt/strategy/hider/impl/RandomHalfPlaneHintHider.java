@@ -18,19 +18,18 @@ import org.locationtech.jts.geom.Point;
 public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
     double xmax = 1000;
     double ymax = 1000;
+    HalfPlaneHint lastHint = null;
     private Point treasurePos = JTSUtils.createPoint(Math.random() * xmax * 2 - xmax,
             Math.random() * ymax * 2 - ymax);
-
-    HalfPlaneHint lastHint = null;
 
     /**
      * @param searcherStartPosition the {@link Searcher} starting position,
      *                              he will initialized on.
-     * @param width                 the width of the playing area
-     * @param height                the height of the playing area
      */
     @Override
-    public void init(Point searcherStartPosition, int width, int height) { }
+    public void init(Point searcherStartPosition) {
+    }
+
 
     /**
      * @param movement the {@link Movement}, the {@link com.treasure.hunt.strategy.searcher.Searcher} did last
