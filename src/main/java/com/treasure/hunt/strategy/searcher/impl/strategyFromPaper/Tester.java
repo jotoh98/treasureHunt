@@ -73,14 +73,14 @@ public class Tester {
         HalfPlaneHint hint = new HalfPlaneHint(new Coordinate(0, 0),
                 new Coordinate(0.6209474701786085, 0.7838521794820666));
         HalfPlaneHint testHint = phiHint(3, rect, hint);
-        if (!doubleEqual(testHint.getRightPoint().getX(), 0.7838521794820666) ||
-                !doubleEqual(testHint.getRightPoint().getY(), -0.6209474701786085)) {
-            throw new AssertionError("right angle point is " + testHint.getRightPoint() +
+        if (!doubleEqual(testHint.getRight().getX(), 0.7838521794820666) ||
+                !doubleEqual(testHint.getRight().getY(), -0.6209474701786085)) {
+            throw new AssertionError("right angle point is " + testHint.getRight() +
                     " and should equal (0.7838521794820666, -0.6209474701786085)");
         }
-        if (!doubleEqual(testHint.getLeftPoint().getX(), 0) ||
-                !doubleEqual(testHint.getLeftPoint().getY(), 0)) {
-            throw new AssertionError("left angle point is " + testHint.getLeftPoint() +
+        if (!doubleEqual(testHint.getCenter().getX(), 0) ||
+                !doubleEqual(testHint.getCenter().getY(), 0)) {
+            throw new AssertionError("left angle point is " + testHint.getCenter() +
                     " and should equal (0.0, 0.0)");
         }
     }

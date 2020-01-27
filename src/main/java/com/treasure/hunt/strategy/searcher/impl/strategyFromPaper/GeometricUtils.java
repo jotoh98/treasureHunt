@@ -100,8 +100,8 @@ public class GeometricUtils {
     }
 
     static Coordinate twoStepsOrthogonal(HalfPlaneHint hint, Coordinate cur_pos) {
-        Vector2D hintVector = new Vector2D(hint.getLeftPoint(),
-                hint.getRightPoint());
+        Vector2D hintVector = new Vector2D(hint.getCenter(),
+                hint.getRight());
 
         hintVector = hintVector.divide(hintVector.length() / 2);
         hintVector = hintVector.rotateByQuarterCircle(1);

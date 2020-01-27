@@ -83,8 +83,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         LineSegment CD = new LineSegment(C.getCoordinate(), D.getCoordinate());
         LineSegment AD = new LineSegment(A.getCoordinate(), D.getCoordinate());
 
-        LineSegment hintLine = new LineSegment(hint.getLeftPoint(),
-                hint.getRightPoint());
+        LineSegment hintLine = new LineSegment(hint.getCenter(),
+                hint.getRight());
 
         Point intersection_AD_hint = null;
         Point intersection_BC_hint = null;

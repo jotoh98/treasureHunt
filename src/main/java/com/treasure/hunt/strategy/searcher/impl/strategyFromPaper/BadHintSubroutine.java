@@ -57,13 +57,13 @@ public class BadHintSubroutine {
             LineSegment ADt = new LineSegment(At, Dt);
             LineSegment BCt = new LineSegment(Bt, Ct);
             LineSegment CDt = new LineSegment(Ct, Dt);
-            LineSegment L1_apos = new LineSegment(hintT.getLeftPoint(),
-                    hintT.getRightPoint());
+            LineSegment L1_apos = new LineSegment(hintT.getCenter(),
+                    hintT.getRight());
             LineSegment L1_doubleApos = new LineSegment(
-                    hintT.getLeftPoint().getX() + p_to_p_apos_x,
-                    hintT.getLeftPoint().getY() + p_to_p_apos_y,
-                    hintT.getRightPoint().getX() + p_to_p_apos_x,
-                    hintT.getRightPoint().getY() + p_to_p_apos_y
+                    hintT.getCenter().getX() + p_to_p_apos_x,
+                    hintT.getCenter().getY() + p_to_p_apos_y,
+                    hintT.getRight().getX() + p_to_p_apos_x,
+                    hintT.getRight().getY() + p_to_p_apos_y
             );
 
             Coordinate a = lineWayIntersection(L1_apos, ADt);
@@ -104,8 +104,8 @@ public class BadHintSubroutine {
             HalfPlaneHint curHintT = phiHint(basicTrans, rect, curHint);
 
             HalfPlaneHint.Direction x2_apos = curHintT.getDirection();
-            LineSegment L2_apos = new LineSegment(curHintT.getLeftPoint(),
-                    curHintT.getRightPoint());
+            LineSegment L2_apos = new LineSegment(curHintT.getCenter(),
+                    curHintT.getRight());
 
             // here begins line 24 of the ReduceRectangle routine from the paper:
             Coordinate[] newRectangle = null;
@@ -217,10 +217,10 @@ public class BadHintSubroutine {
         System.out.println(" D= (" + D.getX() + ", " + D.getY() + ")");
         for (int i = 0; i < rect.length; i++)
             System.out.println("rect[" + i + "]= " + rect[i]);
-        System.out.println("lastBadHint p1= " + lastBadHint.getLeftPoint() + "lastHint p2= " +
-                lastBadHint.getRightPoint());
-        System.out.println("curHint p1= " + curHint.getLeftPoint() + "curHint p2= " +
-                curHint.getRightPoint());
+        System.out.println("lastBadHint p1= " + lastBadHint.getCenter() + "lastHint p2= " +
+                lastBadHint.getRight());
+        System.out.println("curHint p1= " + curHint.getCenter() + "curHint p2= " +
+                curHint.getRight());
     }
 
 

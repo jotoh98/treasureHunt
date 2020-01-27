@@ -86,8 +86,8 @@ public class RoutinesFromPaper {
                 centerCD.getX(), centerCD.getY());
         Coordinate newAPLeft = new Coordinate();
         Coordinate newAPRight = new Coordinate();
-        reflection.transform(hint.getRightPoint(), newAPLeft);
-        reflection.transform(hint.getLeftPoint(), newAPRight);
+        reflection.transform(hint.getRight(), newAPLeft);
+        reflection.transform(hint.getCenter(), newAPRight);
         HalfPlaneHint newHint = new HalfPlaneHint(newAPLeft, newAPRight);
         return newHint;
     }
@@ -232,8 +232,8 @@ public class RoutinesFromPaper {
             throw new IllegalArgumentException("i must be in [0,7] but is " + i);
         Coordinate r = centerOfRectangle(rect);
         HalfPlaneHint transformedHint = new HalfPlaneHint(
-                sigmaPoint(i % 4, r, hint.getLeftPoint()),
-                sigmaPoint(i % 4, r, hint.getRightPoint())
+                sigmaPoint(i % 4, r, hint.getCenter()),
+                sigmaPoint(i % 4, r, hint.getRight())
         );
         if (i < 4)
             return transformedHint;
@@ -296,8 +296,8 @@ public class RoutinesFromPaper {
         for (int i = 0; i <= 7; i++) {
             Coordinate[] testRect = phiRectangle(i, rect);
             HalfPlaneHint testHint = phiHint(i, rect, hint);
-            LineSegment hintLine = new LineSegment(testHint.getLeftPoint(),
-                    testHint.getRightPoint());
+            LineSegment hintLine = new LineSegment(testHint.getCenter(),
+                    testHint.getRight());
             LineSegment testAD = new LineSegment(testRect[0], testRect[3]);
             Coordinate AD_hint = lineWayIntersection(hintLine, testAD);
             if (testHint.getDirection() == up)
@@ -308,7 +308,7 @@ public class RoutinesFromPaper {
                 return i;
         }
         System.out.println("rect: " + Arrays.toString(rect) + " anglepoints: "
-                + hint.getRightPoint() + hint.getLeftPoint());
+                + hint.getRight() + hint.getCenter());
         throw new IllegalArgumentException("Somehow there was no basic transformation found for this " +
                 "rectangle and hint. This is impossible.");
     }
