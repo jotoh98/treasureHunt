@@ -1,8 +1,8 @@
 package com.treasure.hunt.view;
 
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
 import com.treasure.hunt.jts.awt.PointTransformation;
+import com.treasure.hunt.utils.Renderer;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.canvas.Canvas;
@@ -10,7 +10,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
-import org.jfree.fx.FXGraphics2D;
 import org.locationtech.jts.math.Vector2D;
 
 /**
@@ -22,21 +21,19 @@ public class CanvasController {
     public Pane canvasPane;
     private ObjectProperty<GameManager> gameManager;
 
+
     @Getter
     private PointTransformation transformation = new PointTransformation();
-    private AdvancedShapeWriter shapeWriter = new AdvancedShapeWriter(transformation);
-
-    private FXGraphics2D graphics2D;
+    private Renderer renderer;
 
     private Vector2D dragStart = new Vector2D();
     private Vector2D offsetBackup = new Vector2D();
 
     public void initialize() {
         makeCanvasResizable();
-        graphics2D = new FXGraphics2D(canvas.getGraphicsContext2D());
+        renderer = new Renderer(canvas.getGraphicsContext2D(), transformation);
 
         transformation.getScaleProperty().addListener(invalidation -> drawShapes());
-
         transformation.getOffsetProperty().addListener(invalidation -> drawShapes());
     }
 
@@ -58,23 +55,11 @@ public class CanvasController {
 
     public void drawShapes() {
         Platform.runLater(() -> {
-            if (gameManager == null) {
+            if (gameManager == null || gameManager.isNull().get()) {
                 return;
             }
-            if (gameManager.isNotNull().get()) {
-                deleteShapes();
-                gameManager.get().getGeometryItems(true).forEach(geometryItem ->
-                        geometryItem.draw(graphics2D, shapeWriter, canvas.getGraphicsContext2D())
-                );
-            }
+            renderer.render(gameManager.get());
         });
-    }
-
-    private void deleteShapes() {
-        if (gameManager == null) {
-            return;
-        }
-        canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
     public void onCanvasClicked(MouseEvent mouseEvent) {

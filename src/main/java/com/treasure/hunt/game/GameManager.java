@@ -56,6 +56,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      * Contains the "gameHistory".
      */
     @VisibleForTesting
+    @Getter
     ObservableList<Move> moves = FXCollections.observableArrayList();
 
     private GameEngine gameEngine;
@@ -247,10 +248,16 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
                 .collect(Collectors.toList());
     }
 
+    public List<GeometryItem<?>> getGeometryItems() {
+        return moves.stream()
+                .flatMap(move -> move.getGeometryItems().stream())
+                .collect(Collectors.toList());
+    }
+
     /**
      * @return only viewed moves
      */
-    private List<Move> getMovesViewed() {
+    public List<Move> getMovesViewed() {
         return moves.subList(0, viewIndex.get() + 1);
     }
 
