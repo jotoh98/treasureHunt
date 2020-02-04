@@ -81,13 +81,6 @@ public class StrategyFromPaperTest {
         movePoints = strat.move(testedHint).getPoints();
         correctMovePoints = new Point[]{createPoint(0.75, -0.5), createPoint(0.75, 1.25)};
         assertPoints(movePoints, correctMovePoints);
-
-        testedHint = new HalfPlaneHint(new Coordinate(-2.5, 3), new Coordinate(4, -0.5), right);
-        movePoints = strat.move(testedHint).getPoints();
-        for (int i = 0; i < movePoints.size(); i++) {
-            System.out.print(movePoints.get(i).getObject());
-        }
-        System.out.println();
     }
 
     @Test
