@@ -8,7 +8,6 @@ import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,8 +37,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     HalfPlaneHint lastBadHint; //only used when last hint was bad
     boolean lastHintWasBad = false;
     Point lastLocation;
-
-    List<LineString> lastMove = null; // the lines of the move which was last calculated.
 
     /**
      * {@inheritDoc}
@@ -206,15 +203,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * @return move with lines added to the additionalGeometryItems
      */
     private Movement moveReturn(Movement move) {
-        if (lastMove != null) {
-            for (LineString g : lastMove) {
-                move.addAdditionalItem(
-                        new GeometryItem(g, GeometryType.SEARCHER_MOVEMENT)
-                );
-            }
-        }
-        lastMove = new ArrayList<>();
-
         List<GeometryItem<Point>> points = move.getPoints();
         Point lastPoint = null;
         for (GeometryItem g : points) {
@@ -222,25 +210,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             if (lastPoint != null) {
                 LineString line = GEOMETRY_FACTORY.createLineString(
                         new Coordinate[]{lastPoint.getCoordinate(), p.getCoordinate()});
-                move.addAdditionalItem(
-                        new GeometryItem(line, GeometryType.SEARCHER_LAST_MOVE)
-                );
-                lastMove.add(line);
-            }
-            lastPoint = p;
-        }
-        lastLocation = move.getEndPoint();
-        return move;
-    }
-
-    private Movement moveReturnOld(Movement move) {
-        List<GeometryItem<Point>> points = move.getPoints();
-        Point lastPoint = null;
-        for (GeometryItem g : points) {
-            Point p = (Point) g.getObject();
-            if (lastPoint != null) {
-                LineString line = GEOMETRY_FACTORY.createLineString(
-                        new Coordinate[]{lastPoint.getCoordinate(), p.getCoordinate()});
+                System.out.println("Line " + lastPoint.getCoordinate() + ", " + p.getCoordinate());//test
                 move.addAdditionalItem(
                         new GeometryItem(line, GeometryType.SEARCHER_MOVEMENT)
                 );
