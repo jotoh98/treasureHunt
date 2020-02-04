@@ -25,31 +25,42 @@ public class RoutinesFromPaper {
         return rectangleScan(A.getCoordinate(), B.getCoordinate(), C.getCoordinate(), D.getCoordinate(), move);
     }
 
+    /**
+     * Returns a Array of Points which are on the line P1P2 and which have distance one to one another.
+     *
+     * @param P1
+     * @param P2
+     * @return
+     */
+    static private Point[] lineOfPointsWithDistanceOne(Coordinate P1, Coordinate P2) {
+        int k = (int) P1.distance(P2);
+        Point[] res = new Point[k + 1];
+
+        double xDist = P2.getX() - P1.getX();
+        double yDist = P2.getY() - P1.getY();
+        for (int i = 0; i <= k; i++) {
+            res[i] = JTSUtils.createPoint(P1.getX() + xDist * ((double) i / (double) k), P1.getY() + yDist *
+                    ((double) i / (double) k));
+        }
+        return res;
+    }
+
+    /**
+     * Does the same as the routine rectangleScan in the paper.
+     * It adds the Points to move so that the player sees all points in the rectangle ABCD.
+     * @param A
+     * @param B
+     * @param C
+     * @param D
+     * @param move
+     * @return
+     */
     static Movement rectangleScan(Coordinate A, Coordinate B, Coordinate C, Coordinate D, Movement move) {
         int k = (int) A.distance(B);
-        Point[] a = new Point[k + 1];
-        Point[] b = new Point[k + 1];
+        Point[] a = lineOfPointsWithDistanceOne(A, B);
+        Point[] b = lineOfPointsWithDistanceOne(D, C);
 
-        { //create a_i on line segment AB
-            double xDist = B.getX() - A.getX();
-            double yDist = B.getY() - A.getY();
-            for (int i = 0; i <= k; i++) {
-                a[i] = JTSUtils.createPoint(A.getX() + xDist * ((double) i / (double) k), A.getY() + yDist *
-                        ((double) i / (double) k));
-            }
-        }
-        { //create b_i on line segment DC
-            double xDist = C.getX() - D.getX();
-            double yDist = C.getY() - D.getY();
-            //for (int i = 0; i <= k; i++) {
-            for (int i = 0; i <= k; i++) {
-                b[i] = JTSUtils.createPoint(D.getX() + xDist * ((double) i / (double) k), D.getY() + yDist *
-                        ((double) i / (double) k));
-            }
-        }
-
-        if (k % 2 == 1) //code like in paper
-        {
+        if (k % 2 == 1) {
             for (int i = 0; i <= k - 1; i += 2) {
                 move.addWayPoint(a[i]);
                 move.addWayPoint(b[i]);
