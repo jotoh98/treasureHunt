@@ -38,54 +38,54 @@ public class StrategyFromPaperTest {
     @Test
     void moveOnce() {
         Movement move = strat.move();
-        List<GeometryItem<Point>> points = move.getPoints();
-        Point[] true_points = new Point[]{
+        List<GeometryItem<Point>> movePoints = move.getPoints();
+        Point[] correctMovePoints = new Point[]{
                 createPoint(0, 0), createPoint(-1, 1), createPoint(-1, -1), createPoint(0, -1),
                 createPoint(0, 1), createPoint(1, 1), createPoint(1, -1), createPoint(0, 0)
         };
-        assertPoints(points, true_points);
+        assertPoints(movePoints, correctMovePoints);
     }
 
     @Test
     void moveTwice() {
         moveOnce();
-        HalfPlaneHint hint = new HalfPlaneHint(new Coordinate(-2, 1), new Coordinate(2, -1), right);
-        List<GeometryItem<Point>> points = strat.move(hint).getPoints();
-        assertPoints(points, new Point[]{createPoint(0, 0), createPoint(0, 0.5)});
+        HalfPlaneHint testedHint = new HalfPlaneHint(new Coordinate(-2, 1), new Coordinate(2, -1), right);
+        List<GeometryItem<Point>> movePoints = strat.move(testedHint).getPoints();
+        assertPoints(movePoints, new Point[]{createPoint(0, 0), createPoint(0, 0.5)});
 
-        hint = new HalfPlaneHint(new Coordinate(-2, 0.5), new Coordinate(2, 0.5), down);
-        points = strat.move(hint).getPoints();
-        Point[] true_points = new Point[]{
+        testedHint = new HalfPlaneHint(new Coordinate(-2, 0.5), new Coordinate(2, 0.5), down);
+        movePoints = strat.move(testedHint).getPoints();
+        Point[] correctMovePoints = new Point[]{
                 createPoint(0, 0.5),
                 createPoint(-2, 2), createPoint(-2, -1), createPoint(-1, -1), createPoint(-1, 2),
                 createPoint(0, 2), createPoint(0, -1), createPoint(1, -1), createPoint(1, 2),
                 createPoint(2, 2), createPoint(2, -1), createPoint(0, 0)
         };
-        assertPoints(points, true_points);
+        assertPoints(movePoints, correctMovePoints);
     }
 
     @Test
     void moveUntilThirdRectangle() {
         moveTwice();
-        HalfPlaneHint hint = new HalfPlaneHint(new Coordinate(-4, 3), new Coordinate(4, -3), left);
-        List<GeometryItem<Point>> points = strat.move(hint).getPoints();
-        Point[] true_points = new Point[]{createPoint(0, 0), createPoint(0, -0.5)};
-        assertPoints(points, true_points);
+        HalfPlaneHint testedHint = new HalfPlaneHint(new Coordinate(-4, 3), new Coordinate(4, -3), left);
+        List<GeometryItem<Point>> movePoints = strat.move(testedHint).getPoints();
+        Point[] correctMovePoints = new Point[]{createPoint(0, 0), createPoint(0, -0.5)};
+        assertPoints(movePoints, correctMovePoints);
 
-        hint = new HalfPlaneHint(new Coordinate(2.5, 3), new Coordinate(-2.5, -4), right);
-        points = strat.move(hint).getPoints();
-        true_points = new Point[]{createPoint(0, -0.5), createPoint(0.75, -0.5)};
-        assertPoints(points, true_points);
+        testedHint = new HalfPlaneHint(new Coordinate(2.5, 3), new Coordinate(-2.5, -4), right);
+        movePoints = strat.move(testedHint).getPoints();
+        correctMovePoints = new Point[]{createPoint(0, -0.5), createPoint(0.75, -0.5)};
+        assertPoints(movePoints, correctMovePoints);
 
-        hint = new HalfPlaneHint(new Coordinate(-4, -0.5), new Coordinate(4, -0.5), up);
-        points = strat.move(hint).getPoints();
-        true_points = new Point[]{createPoint(0.75, -0.5), createPoint(0.75, 1.25)};
-        assertPoints(points, true_points);
+        testedHint = new HalfPlaneHint(new Coordinate(-4, -0.5), new Coordinate(4, -0.5), up);
+        movePoints = strat.move(testedHint).getPoints();
+        correctMovePoints = new Point[]{createPoint(0.75, -0.5), createPoint(0.75, 1.25)};
+        assertPoints(movePoints, correctMovePoints);
 
-        hint = new HalfPlaneHint(new Coordinate(-2.5, 3), new Coordinate(4, -0.5), right);
-        points = strat.move(hint).getPoints();
-        for (int i = 0; i < points.size(); i++) {
-            System.out.print(points.get(i).getObject());
+        testedHint = new HalfPlaneHint(new Coordinate(-2.5, 3), new Coordinate(4, -0.5), right);
+        movePoints = strat.move(testedHint).getPoints();
+        for (int i = 0; i < movePoints.size(); i++) {
+            System.out.print(movePoints.get(i).getObject());
         }
         System.out.println();
     }
