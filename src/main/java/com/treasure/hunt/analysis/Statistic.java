@@ -1,7 +1,7 @@
 package com.treasure.hunt.analysis;
 
-import com.treasure.hunt.game.Move;
-import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.game.Turn;
+import com.treasure.hunt.utils.ListUtils;
 import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
@@ -13,41 +13,21 @@ import java.util.function.Function;
  * @author Trostorff, Daniel
  */
 public class Statistic {
-    private List<Move> moves;
+    private List<Turn> turns;
 
     public double getTraceLength() {
-        double traceroutelength = 0;
-        List<Point> listPoints = getListPoints();
-        for (int i = 0; i < listPoints.size() - 1; i++) {
-            traceroutelength += listPoints.get(i).distance(listPoints.get(i + 1));
-        }
-        return traceroutelength;
-    }
-
-    public List<Point> getListPoints() {
-        List<Point> stepPoints = new ArrayList<>();
-        stepPoints.add(getStartPoint());
-        for (Move move : moves) {
-            boolean firstElement = true;
-            for (GeometryItem<Point> point : move.getMovement().getPoints()
-            ) {
-                if (firstElement) {
-                    firstElement = false;
-                } else {
-                    stepPoints.add(point.getObject());
-                }
-            }
-        }
-        stepPoints.add(getTreasureLocation());
-        return stepPoints;
+        return ListUtils
+                .consecutive(turns, (turn, turn2) -> turn2.getSearchPath().getLength(turn.getSearchPath().getLastPoint()))
+                .reduce(Double::sum)
+                .orElse(0d);
     }
 
     public Point getStartPoint() {
-        return moves.get(0).getMovement().getPoints().get(0).getObject();
+        return turns.get(0).getSearchPath().getFirstPoint();
     }
 
     public Point getTreasureLocation() {
-        return moves.get(0).getTreasureLocation();
+        return turns.get(0).getTreasureLocation();
     }
 
     public double getOptimumSolution() {
@@ -67,15 +47,15 @@ public class Statistic {
     }
 
     public double getHintRequests() {
-        return moves.size() - 1;
+        return turns.size() - 1;
     }
 
     public double getHintTraceLengthRatio() {
         return getHintRequests() / getTraceLength();
     }
 
-    public List<StatisticObject> calculate(List<Move> moves) {
-        this.moves = new ArrayList<>(moves);
+    public List<StatisticObject> calculate(List<Turn> turns) {
+        this.turns = new ArrayList<>(turns);
         return new ArrayList<>(Arrays.asList(
                 new StatisticObject(StatisticObject.StatisticInfo.TRACE_LENGTH, getTraceLength()
                 ),

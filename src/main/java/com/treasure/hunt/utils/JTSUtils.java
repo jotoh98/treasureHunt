@@ -6,6 +6,9 @@ import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.math.Vector2D;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * A utility class for the work with {@link org.locationtech.jts}.
  *
@@ -193,5 +196,11 @@ public final class JTSUtils {
         double extend = Math.random() * maxExtend;
         double start = givenAngle - extend * Math.random();
         return new GeometryAngle(GEOMETRY_FACTORY, searcher, start, extend);
+    }
+
+    public static List<Coordinate> getCoordinateList(List<? extends Geometry> geometries) {
+        return geometries.stream()
+                .map(Geometry::getCoordinate)
+                .collect(Collectors.toList());
     }
 }

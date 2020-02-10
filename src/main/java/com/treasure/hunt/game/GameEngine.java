@@ -1,23 +1,17 @@
 package com.treasure.hunt.game;
 
 import com.treasure.hunt.analysis.Statistic;
-import com.treasure.hunt.strategy.geom.GeometryItem;
-import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.hint.impl.CircleHint;
-import com.treasure.hunt.strategy.searcher.Movement;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.Requires;
 import lombok.Getter;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Point;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * This is the engine which runs a simulation of a treasure hunt.
@@ -44,7 +38,7 @@ public class GameEngine {
      */
     protected boolean firstMove = true;
     protected Hint lastHint;
-    protected Movement lastMovement;
+    protected SearchPath lastSearchPath;
     protected Point searcherPos;
     protected Point treasurePos;
 
@@ -72,44 +66,11 @@ public class GameEngine {
     }
 
     /**
-     * @param geometryItemsList searcher path
-     * @param treasurePosition  the position of the treasure
-     * @return {@code true} if the searcher located the treasure successfully. {@code false}, otherwise.
-     */
-    protected static boolean located(List<GeometryItem<Point>> geometryItemsList, Point treasurePosition) {
-        assert geometryItemsList.size() > 0;
-
-        // Did the searcher move ?
-        if (geometryItemsList.size() == 1) {
-            return geometryItemsList.get(0).getObject().distance(treasurePosition) <= 1;
-        } else {
-            Point lastPoint = null;
-            Point point;
-            for (GeometryItem<Point> geometryItem : geometryItemsList) {
-                point = geometryItem.getObject();
-                if (lastPoint == null) {
-                    lastPoint = point;
-                } else {
-                    // Check the gap of each move-segment and treasurePos
-                    LineSegment lineSegment = new LineSegment(new Coordinate(lastPoint.getX(), lastPoint.getY()),
-                            new Coordinate(point.getX(), point.getY()));
-                    // Usage of distancePerpendicular is completely incorrect here, since the line will be infinite
-                    if (lineSegment.distance(new Coordinate(treasurePosition.getX(), treasurePosition.getY())) <= 1) {
-                        return true;
-                    }
-                    lastPoint = point;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
      * initialize searcher and treasure positions.
      *
-     * @return a {@link Move}, since the initialization must be displayed.
+     * @return a {@link Turn}, since the initialization must be displayed.
      */
-    public Move init() {
+    public Turn init() {
         searcherPos = JTSUtils.GEOMETRY_FACTORY.createPoint(initialSearcherCoordinate);
         searcher.init(searcherPos);
         hider.init(searcherPos);
@@ -120,13 +81,13 @@ public class GameEngine {
         }
 
         // Check, whether treasure spawns in range of searcher
-        if (located(Collections.singletonList(new GeometryItem<>(searcherPos, GeometryType.WAY_POINT)), treasurePos)) {
+        if (searcherPos.distance(treasurePos) <= Searcher.SCANNING_DISTANCE) {
             finished = true;
         }
 
-        return new Move(
+        return new Turn(
                 null,
-                new Movement(searcherPos),
+                new SearchPath(searcherPos),
                 treasurePos);
     }
 
@@ -136,64 +97,47 @@ public class GameEngine {
      * to take a initial hint, he eventually do not need,
      * f.e. if he works randomized!
      *
-     * @return the {@link Move}, happened in this step.
+     * @return the {@link Turn}, happened in this step.
      */
-    public Move move() {
+    public Turn move() {
         if (finished) {
             throw new IllegalStateException("Game is already finished");
         }
 
         searcherMove();
 
-        if (located(lastMovement.getPoints(), treasurePos)) {
+        if (lastSearchPath.located(treasurePos)) {
             finished = true;
-            return new Move(null, lastMovement, treasurePos);
+            return new Turn(null, lastSearchPath, treasurePos);
         } else {
             hiderMove();
         }
 
-        return new Move(lastHint, lastMovement, treasurePos);
+        return new Turn(lastHint, lastSearchPath, treasurePos);
     }
 
     /**
      * Let the {@link GameEngine#hider} give its {@link Hint}.
      */
     protected void hiderMove() {
-        lastHint = hider.move(lastMovement);
+        lastHint = hider.move(lastSearchPath);
         assert (lastHint != null);
         verifyHint(lastHint, treasurePos);
     }
 
     /**
-     * Let the {@link GameEngine#searcher} make {@link Movement}.
+     * Let the {@link GameEngine#searcher} make {@link SearchPath}.
      */
     protected void searcherMove() {
         if (firstMove) {
             firstMove = false;
-            lastMovement = searcher.move();
+            lastSearchPath = searcher.move();
         } else {
-            lastMovement = searcher.move(lastHint);
+            lastSearchPath = searcher.move(lastHint);
         }
-        assert (lastMovement != null);
-        assert (lastMovement.getPoints().size() != 0);
-        verifyMovement(lastMovement, searcherPos);
-
-        searcherPos = lastMovement.getEndPoint();
-    }
-
-    /**
-     * Verifies whether the performed {@link Movement} {@code movement} by the {@link Searcher} followed the rules.
-     *
-     * @param movement                which gets verified
-     * @param initialSearcherPosition initial searcher position
-     * @throws IllegalArgumentException when the {@link Movement} is not valid.
-     */
-    protected void verifyMovement(Movement movement, Point initialSearcherPosition) {
-        if (movement.getStartingPoint().getX() != initialSearcherPosition.getX() ||
-                movement.getStartingPoint().getY() != initialSearcherPosition.getY()) {
-            throw new IllegalArgumentException("Searcher stands last at " + initialSearcherPosition +
-                    " but continues his movement from " + movement.getStartingPoint());
-        }
+        assert (lastSearchPath != null);
+        assert (lastSearchPath.getPoints().size() != 0);
+        searcherPos = lastSearchPath.getLastPoint();
     }
 
     /**
