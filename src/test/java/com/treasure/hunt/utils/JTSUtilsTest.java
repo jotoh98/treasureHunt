@@ -58,130 +58,130 @@ class JTSUtilsTest {
 
     @Test
     void test90Degrees1() {
-        eq(normNE, JTSUtils.middleOfAngleHint(createAngleHint(E, C, N)));
+        eq(normNE, JTSUtils.middleOfAngleHint(createAngleHint(N, C, E)));
     }
 
     @Test
     void test90Degrees2() {
-        eq(E, JTSUtils.middleOfAngleHint(createAngleHint(SE, C, NE)));
+        eq(E, JTSUtils.middleOfAngleHint(createAngleHint(NE, C, SE)));
     }
 
     @Test
     void test90Degrees3() {
-        eq(normSE, JTSUtils.middleOfAngleHint(createAngleHint(S, C, E)));
+        eq(normSE, JTSUtils.middleOfAngleHint(createAngleHint(E, C, S)));
     }
 
     @Test
     void test90Degrees4() {
-        eq(S, JTSUtils.middleOfAngleHint(createAngleHint(SW, C, SE)));
+        eq(S, JTSUtils.middleOfAngleHint(createAngleHint(SE, C, SW)));
     }
 
     @Test
     void test90Degrees5() {
-        eq(normSW, JTSUtils.middleOfAngleHint(createAngleHint(W, C, S)));
+        eq(normSW, JTSUtils.middleOfAngleHint(createAngleHint(S, C, W)));
     }
 
     @Test
     void test90Degrees6() {
-        eq(W, JTSUtils.middleOfAngleHint(createAngleHint(NW, C, SW)));
+        eq(W, JTSUtils.middleOfAngleHint(createAngleHint(SW, C, NW)));
     }
 
     @Test
     void test90Degrees7() {
-        eq(normNW, JTSUtils.middleOfAngleHint(createAngleHint(N, C, W)));
+        eq(normNW, JTSUtils.middleOfAngleHint(createAngleHint(W, C, N)));
     }
 
     @Test
     void test90Degrees8() {
-        eq(N, JTSUtils.middleOfAngleHint(createAngleHint(NE, C, NW)));
+        eq(N, JTSUtils.middleOfAngleHint(createAngleHint(NW, C, NE)));
     }
 
     @Test
     void test180Degrees1() {
-        eq(N, JTSUtils.middleOfAngleHint(createAngleHint(E, C, W)));
-        neq(S, JTSUtils.middleOfAngleHint(createAngleHint(E, C, W)));
+        eq(N, JTSUtils.middleOfAngleHint(createAngleHint(W, C, E)));
+        neq(S, JTSUtils.middleOfAngleHint(createAngleHint(W, C, E)));
     }
 
     @Test
     void test180Degrees2() {
-        eq(normNE, JTSUtils.middleOfAngleHint(createAngleHint(SE, C, NW)));
-        neq(normSW, JTSUtils.middleOfAngleHint(createAngleHint(SE, C, NW)));
+        eq(normNE, JTSUtils.middleOfAngleHint(createAngleHint(NW, C, SE)));
+        neq(normSW, JTSUtils.middleOfAngleHint(createAngleHint(NW, C, SE)));
     }
 
     @Test
     void test180Degrees3() {
-        eq(E, JTSUtils.middleOfAngleHint(createAngleHint(S, C, N)));
-        neq(W, JTSUtils.middleOfAngleHint(createAngleHint(S, C, N)));
+        eq(E, JTSUtils.middleOfAngleHint(createAngleHint(N, C, S)));
+        neq(W, JTSUtils.middleOfAngleHint(createAngleHint(N, C, S)));
     }
 
     @Test
     void test180Degrees4() {
-        eq(normSE, JTSUtils.middleOfAngleHint(createAngleHint(SW, C, NE)));
-        neq(normNW, JTSUtils.middleOfAngleHint(createAngleHint(SW, C, NE)));
+        eq(normSE, JTSUtils.middleOfAngleHint(createAngleHint(NE, C, SW)));
+        neq(normNW, JTSUtils.middleOfAngleHint(createAngleHint(NE, C, SW)));
     }
 
     @Test
     void test180Degrees5() {
-        eq(S, JTSUtils.middleOfAngleHint(createAngleHint(W, C, E)));
-        neq(N, JTSUtils.middleOfAngleHint(createAngleHint(W, C, E)));
+        eq(S, JTSUtils.middleOfAngleHint(createAngleHint(E, C, W)));
+        neq(N, JTSUtils.middleOfAngleHint(createAngleHint(E, C, W)));
     }
 
     @Test
     void test180Degrees6() {
-        eq(normSW, JTSUtils.middleOfAngleHint(createAngleHint(NW, C, SE)));
-        neq(normNE, JTSUtils.middleOfAngleHint(createAngleHint(NW, C, SE)));
+        eq(normSW, JTSUtils.middleOfAngleHint(createAngleHint(SE, C, NW)));
+        neq(normNE, JTSUtils.middleOfAngleHint(createAngleHint(SE, C, NW)));
     }
 
     @Test
     void test180Degrees7() {
-        eq(W, JTSUtils.middleOfAngleHint(createAngleHint(N, C, S)));
-        neq(E, JTSUtils.middleOfAngleHint(createAngleHint(N, C, S)));
+        eq(W, JTSUtils.middleOfAngleHint(createAngleHint(S, C, N)));
+        neq(E, JTSUtils.middleOfAngleHint(createAngleHint(S, C, N)));
     }
 
     @Test
     void test180Degrees8() {
-        eq(normNW, JTSUtils.middleOfAngleHint(createAngleHint(NE, C, SW)));
-        neq(normSE, JTSUtils.middleOfAngleHint(createAngleHint(NE, C, SW)));
+        eq(normNW, JTSUtils.middleOfAngleHint(createAngleHint(SW, C, NE)));
+        neq(normSE, JTSUtils.middleOfAngleHint(createAngleHint(SW, C, NE)));
     }
 
     @Test
     void test270Degrees1() {
-        eq(normSW, JTSUtils.middleOfAngleHint(createAngleHint(N, C, E)));
+        eq(normSW, JTSUtils.middleOfAngleHint(createAngleHint(E, C, N)));
     }
 
     @Test
     void test270Degrees2() {
-        eq(W, JTSUtils.middleOfAngleHint(createAngleHint(NE, C, SE)));
+        eq(W, JTSUtils.middleOfAngleHint(createAngleHint(SE, C, NE)));
     }
 
     @Test
     void test270Degrees3() {
-        eq(normNW, JTSUtils.middleOfAngleHint(createAngleHint(E, C, S)));
+        eq(normNW, JTSUtils.middleOfAngleHint(createAngleHint(S, C, E)));
     }
 
     @Test
     void test270Degrees4() {
-        eq(N, JTSUtils.middleOfAngleHint(createAngleHint(SE, C, SW)));
+        eq(N, JTSUtils.middleOfAngleHint(createAngleHint(SW, C, SE)));
     }
 
     @Test
     void test270Degrees5() {
-        eq(normNE, JTSUtils.middleOfAngleHint(createAngleHint(S, C, W)));
+        eq(normNE, JTSUtils.middleOfAngleHint(createAngleHint(W, C, S)));
     }
 
     @Test
     void test270Degrees6() {
-        eq(E, JTSUtils.middleOfAngleHint(createAngleHint(SW, C, NW)));
+        eq(E, JTSUtils.middleOfAngleHint(createAngleHint(NW, C, SW)));
     }
 
     @Test
     void test270Degrees7() {
-        eq(normSE, JTSUtils.middleOfAngleHint(createAngleHint(W, C, N)));
+        eq(normSE, JTSUtils.middleOfAngleHint(createAngleHint(N, C, W)));
     }
 
     @Test
     void test270Degrees8() {
-        eq(S, JTSUtils.middleOfAngleHint(createAngleHint(NW, C, NE)));
+        eq(S, JTSUtils.middleOfAngleHint(createAngleHint(NE, C, NW)));
     }
 
     private AngleHint createAngleHint(Coordinate left, Coordinate center, Coordinate right) {
