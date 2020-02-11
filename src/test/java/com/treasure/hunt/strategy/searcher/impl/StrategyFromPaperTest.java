@@ -67,18 +67,18 @@ public class StrategyFromPaperTest {
     @Test
     void moveUntilThirdRectangle() {
         moveTwice();
-        HalfPlaneHint testedHint = new HalfPlaneHint(new Coordinate(-4, 3), new Coordinate(4, -3), left);
-        List<GeometryItem<Point>> movePoints = strat.move(testedHint).getPoints();
+        HalfPlaneHint testHint = new HalfPlaneHint(new Coordinate(-4, 3), new Coordinate(4, -3), left);
+        List<GeometryItem<Point>> movePoints = strat.move(testHint).getPoints();
         Point[] correctMovePoints = new Point[]{createPoint(0, 0), createPoint(0, -0.5)};
         assertPoints(movePoints, correctMovePoints);
 
-        testedHint = new HalfPlaneHint(new Coordinate(2.5, 3), new Coordinate(-2.5, -4), right);
-        movePoints = strat.move(testedHint).getPoints();
+        testHint = new HalfPlaneHint(new Coordinate(2.5, 3), new Coordinate(-2.5, -4), right);
+        movePoints = strat.move(testHint).getPoints();
         correctMovePoints = new Point[]{createPoint(0, -0.5), createPoint(0.75, -0.5)};
         assertPoints(movePoints, correctMovePoints);
 
-        testedHint = new HalfPlaneHint(new Coordinate(-4, -0.5), new Coordinate(4, -0.5), up);
-        movePoints = strat.move(testedHint).getPoints();
+        testHint = new HalfPlaneHint(new Coordinate(-4, -0.5), new Coordinate(4, -0.5), up);
+        movePoints = strat.move(testHint).getPoints();
         correctMovePoints = new Point[]{createPoint(0.75, -0.5), createPoint(0.75, 1.25)};
         assertPoints(movePoints, correctMovePoints);
     }
