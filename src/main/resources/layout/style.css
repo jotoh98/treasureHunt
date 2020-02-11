@@ -9,7 +9,7 @@
 }
 
 #root,
-#main-splitpane {
+.split-pane {
     -fx-background-color: BACKGROUND_COLOR;
 }
 
@@ -28,8 +28,7 @@
     -fx-border-color: BORDER_COLOR;
 }
 
-.toolbar.top,
-.toolbar.bottom {
+.toolbar.top {
     -fx-border-width: 0 0 1pt 0;
     -fx-padding: 0 0 0 10pt;
 }
@@ -53,6 +52,7 @@
 
 .toolbar.bottom {
     -fx-border-width: 1pt 0 0 0;
+    -fx-padding: 0 0 0 10pt;
 }
 
 .toolbar * {
@@ -73,6 +73,10 @@
 
 .table-view {
     -fx-background-color: transparent;
+}
+
+.table-view .placeholder .label {
+    -fx-text-fill: white;
 }
 
 .table-view:focused {
@@ -216,14 +220,15 @@
 .combo-box .list-view .scroll-bar .decrement-button {
 }
 
-#main-splitpane:horizontal > .split-pane-divider {
+.split-pane {
+    -fx-box-border: transparent;
     -fx-padding: 0;
-    -fx-pref-width: 2pt;
-    -fx-background-color: transparent;
 }
 
-#main-splitpane:horizontal {
-    -fx-box-border: transparent;
+.split-pane > .split-pane-divider {
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-pref-width: 2pt;
 }
 
 .scroll-bar:horizontal .track,
