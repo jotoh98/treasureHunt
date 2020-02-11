@@ -104,14 +104,17 @@ public class GameEngine {
             throw new IllegalStateException("Game is already finished");
         }
 
+        final Point searchPathStart = lastSearchPath == null ? searcherPos : lastSearchPath.getLastPoint();
+
         searcherMove();
 
-        if (lastSearchPath.located(treasurePos)) {
+        if (lastSearchPath.located(searchPathStart, treasurePos)) {
             finished = true;
             return new Turn(null, lastSearchPath, treasurePos);
         } else {
             hiderMove();
         }
+
 
         return new Turn(lastHint, lastSearchPath, treasurePos);
     }

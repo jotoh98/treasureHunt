@@ -9,8 +9,8 @@ import com.treasure.hunt.utils.ListUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.locationtech.jts.algorithm.Distance;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 
@@ -125,21 +125,29 @@ public class SearchPath extends HintAndMovement {
         return this.additional;
     }
 
-    public boolean located(Point treasure) {
+    public boolean located(Point pathStart, Point treasure) {
         if (points.size() < 1) {
             return false;
         }
 
         if (points.size() == 1) {
-            return points.get(0).distance(treasure) <= Searcher.SCANNING_DISTANCE;
+            return Distance.pointToSegment(
+                    treasure.getCoordinate(),
+                    pathStart.getCoordinate(),
+                    points.get(0).getCoordinate()) <= Searcher.SCANNING_DISTANCE;
         }
 
         List<Coordinate> wayCoordinates = points.stream()
                 .map(Point::getCoordinate)
                 .collect(Collectors.toList());
 
-        return ListUtils.consecutive(wayCoordinates, LineSegment::new)
-                .anyMatch(lineSegment -> lineSegment.distance(treasure.getCoordinate()) <= Searcher.SCANNING_DISTANCE);
+        wayCoordinates.add(0, pathStart.getCoordinate());
+
+        return ListUtils
+                .consecutive(wayCoordinates, (firstCoordinate, nextCoordinate) ->
+                        Distance.pointToSegment(treasure.getCoordinate(), firstCoordinate, nextCoordinate)
+                )
+                .anyMatch(distance -> distance <= Searcher.SCANNING_DISTANCE);
     }
 
     public double getLength(Point start) {
