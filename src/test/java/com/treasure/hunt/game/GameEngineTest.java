@@ -53,7 +53,7 @@ class GameEngineTest {
     }
 
     /**
-     * This tests the {@link SearchPath#located(Point)} method.
+     * This tests the {@link SearchPath#located(Point, Point)} method.
      */
     @Test
     void bruteForceTest1() {
@@ -105,7 +105,7 @@ class GameEngineTest {
     }
 
     /**
-     * {@link SearchPath#located(Point)} test.
+     * {@link SearchPath#located(Point, Point)} test.
      * In this test, the searcher moves <b>past</b> the treasure
      * with a minimum distance of 1.
      * searcher starts at (0,0) as usual.
@@ -126,7 +126,6 @@ class GameEngineTest {
 
             @Override
             public void init(Point searcherStartPosition) {
-
             }
 
             @Override
