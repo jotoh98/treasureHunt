@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -185,41 +185,37 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>double</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#diameter()">diameter</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Get the length of the diagonal of the boundary rectangle</div>
-</td>
+<td class="colFirst"><code>org.locationtech.jts.math.Vector2D</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getOffset()">getOffset</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>double</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBoundaryHeight()">getBoundaryHeight</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Get the boundary rectangle height.</div>
-</td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getScale()">getScale</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>double</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBoundaryWidth()">getBoundaryWidth</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Get the boundary rectangle width.</div>
-</td>
+<td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#revert(double,double)">revert</a></span>&#8203;(double&nbsp;x,
+      double&nbsp;y)</code></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>org.locationtech.jts.math.Vector2D</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLowerRightBoundary()">getLowerRightBoundary</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Retrieves the untransformed position vector of the lower right boundary point</div>
-</td>
+<td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#revert(org.locationtech.jts.geom.Coordinate)">revert</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;src)</code></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>org.locationtech.jts.math.Vector2D</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUpperLeftBoundary()">getUpperLeftBoundary</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Retrieves the untransformed position vector of the upper left boundary point</div>
-</td>
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#revertX(double)">revertX</a></span>&#8203;(double&nbsp;x)</code></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#revertY(double)">revertY</a></span>&#8203;(double&nbsp;y)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#scaleOffset(double,org.locationtech.jts.math.Vector2D)">scaleOffset</a></span>&#8203;(double&nbsp;gamma,
            org.locationtech.jts.math.Vector2D&nbsp;point)</code></th>
@@ -227,20 +223,12 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 <div class="block">Scale the offset relative keeping a point as scaling source.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#scaleRelative(double,org.locationtech.jts.math.Vector2D)">scaleRelative</a></span>&#8203;(double&nbsp;gamma,
              org.locationtech.jts.math.Vector2D&nbsp;point)</code></th>
 <td class="colLast">
 <div class="block">Scales the canvas and keeps a certain point centered.</div>
-</td>
-</tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBoundarySize(double,double)">setBoundarySize</a></span>&#8203;(double&nbsp;width,
-               double&nbsp;height)</code></th>
-<td class="colLast">
-<div class="block">Utility function to set lower right boundary vector according to boundary rectangle diagonal.</div>
 </td>
 </tr>
 <tr id="i8" class="altColor">
@@ -257,7 +245,7 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 <td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#transform(org.locationtech.jts.geom.Coordinate)">transform</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;src)</code></th>
 <td class="colLast">
-<div class="block">Transform method between <code>Coordinate</code>'s.</div>
+<div class="block">Transform method between <code>Coordinate</code>s.</div>
 </td>
 </tr>
 <tr id="i11" class="rowColor">
@@ -269,21 +257,13 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 </td>
 </tr>
 <tr id="i12" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateCanvasHeight(double)">updateCanvasHeight</a></span>&#8203;(double&nbsp;height)</code></th>
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#transformX(double)">transformX</a></span>&#8203;(double&nbsp;x)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i13" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateCanvasSize(double,double)">updateCanvasSize</a></span>&#8203;(double&nbsp;width,
-                double&nbsp;height)</code></th>
-<td class="colLast">
-<div class="block">Update boundary size according to the width and height of the <code>Canvas</code>.</div>
-</td>
-</tr>
-<tr id="i14" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateCanvasWidth(double)">updateCanvasWidth</a></span>&#8203;(double&nbsp;width)</code></th>
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#transformY(double)">transformY</a></span>&#8203;(double&nbsp;y)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -365,6 +345,24 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 </dl>
 </li>
 </ul>
+<a id="getScale()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getScale</h4>
+<pre class="methodSignature">public&nbsp;double&nbsp;getScale()</pre>
+</li>
+</ul>
+<a id="getOffset()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getOffset</h4>
+<pre class="methodSignature">public&nbsp;org.locationtech.jts.math.Vector2D&nbsp;getOffset()</pre>
+</li>
+</ul>
 <a id="transform(org.locationtech.jts.geom.Coordinate)">
 <!--   -->
 </a>
@@ -372,7 +370,7 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 <li class="blockList">
 <h4>transform</h4>
 <pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Coordinate&nbsp;transform&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;src)</pre>
-<div class="block">Transform method between <code>Coordinate</code>'s.</div>
+<div class="block">Transform method between <code>Coordinate</code>s.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>src</code> - the coordinate we want to transform</dd>
@@ -381,124 +379,59 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 </dl>
 </li>
 </ul>
-<a id="diameter()">
+<a id="transformX(double)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>diameter</h4>
-<pre class="methodSignature">public&nbsp;double&nbsp;diameter()</pre>
-<div class="block">Get the length of the diagonal of the boundary rectangle</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>length of main diagonal</dd>
-</dl>
+<h4>transformX</h4>
+<pre class="methodSignature">public&nbsp;double&nbsp;transformX&#8203;(double&nbsp;x)</pre>
 </li>
 </ul>
-<a id="getUpperLeftBoundary()">
+<a id="transformY(double)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getUpperLeftBoundary</h4>
-<pre class="methodSignature">public&nbsp;org.locationtech.jts.math.Vector2D&nbsp;getUpperLeftBoundary()</pre>
-<div class="block">Retrieves the untransformed position vector of the upper left boundary point</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>untransformed position vector of upper left boundary point</dd>
-</dl>
+<h4>transformY</h4>
+<pre class="methodSignature">public&nbsp;double&nbsp;transformY&#8203;(double&nbsp;y)</pre>
 </li>
 </ul>
-<a id="getLowerRightBoundary()">
+<a id="revert(org.locationtech.jts.geom.Coordinate)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getLowerRightBoundary</h4>
-<pre class="methodSignature">public&nbsp;org.locationtech.jts.math.Vector2D&nbsp;getLowerRightBoundary()</pre>
-<div class="block">Retrieves the untransformed position vector of the lower right boundary point</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>untransformed position vector of lower right boundary point</dd>
-</dl>
+<h4>revert</h4>
+<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Coordinate&nbsp;revert&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;src)</pre>
 </li>
 </ul>
-<a id="updateCanvasSize(double,double)">
+<a id="revert(double,double)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>updateCanvasSize</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;updateCanvasSize&#8203;(double&nbsp;width,
-                             double&nbsp;height)</pre>
-<div class="block">Update boundary size according to the width and height of the <code>Canvas</code>.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>width</code> - width of the <code>Canvas</code></dd>
-<dd><code>height</code> - height of the <code>Canvas</code></dd>
-</dl>
+<h4>revert</h4>
+<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Coordinate&nbsp;revert&#8203;(double&nbsp;x,
+                                                   double&nbsp;y)</pre>
 </li>
 </ul>
-<a id="updateCanvasWidth(double)">
+<a id="revertX(double)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>updateCanvasWidth</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;updateCanvasWidth&#8203;(double&nbsp;width)</pre>
+<h4>revertX</h4>
+<pre class="methodSignature">public&nbsp;double&nbsp;revertX&#8203;(double&nbsp;x)</pre>
 </li>
 </ul>
-<a id="updateCanvasHeight(double)">
+<a id="revertY(double)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>updateCanvasHeight</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;updateCanvasHeight&#8203;(double&nbsp;height)</pre>
-</li>
-</ul>
-<a id="setBoundarySize(double,double)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setBoundarySize</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setBoundarySize&#8203;(double&nbsp;width,
-                            double&nbsp;height)</pre>
-<div class="block">Utility function to set lower right boundary vector according to boundary rectangle diagonal.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>width</code> - width of boundary rectangle</dd>
-<dd><code>height</code> - height of boundary rectangle</dd>
-</dl>
-</li>
-</ul>
-<a id="getBoundaryWidth()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getBoundaryWidth</h4>
-<pre class="methodSignature">public&nbsp;double&nbsp;getBoundaryWidth()</pre>
-<div class="block">Get the boundary rectangle width.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>boundary rectangle width</dd>
-</dl>
-</li>
-</ul>
-<a id="getBoundaryHeight()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getBoundaryHeight</h4>
-<pre class="methodSignature">public&nbsp;double&nbsp;getBoundaryHeight()</pre>
-<div class="block">Get the boundary rectangle height.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>boundary rectangle height</dd>
-</dl>
+<h4>revertY</h4>
+<pre class="methodSignature">public&nbsp;double&nbsp;revertY&#8203;(double&nbsp;y)</pre>
 </li>
 </ul>
 <a id="scaleRelative(double,org.locationtech.jts.math.Vector2D)">
