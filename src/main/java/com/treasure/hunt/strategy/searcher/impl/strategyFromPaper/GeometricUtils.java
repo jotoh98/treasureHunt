@@ -16,9 +16,9 @@ import static com.treasure.hunt.utils.JTSUtils.doubleEqual;
  */
 public class GeometricUtils {
 
-    static void assertRectangle(Coordinate[] rect) {
-        if (rect.length != 4)
-            throw new IllegalArgumentException("The rectangle has " + rect.length + " points. It should have 4.");
+    static void assertRectangle(Coordinate[] rectangle) {
+        if (rectangle.length != 4)
+            throw new IllegalArgumentException("The rectangle has " + rectangle.length + " points. It should have 4.");
     }
 
     static Point centerOfRectangle(Point P1, Point P2, Point P3, Point P4) {
@@ -47,7 +47,11 @@ public class GeometricUtils {
     static Coordinate[] arrangeRectangle(Coordinate[] rect) {
         assertRectangle(rect);
 
-        Coordinate A = null, B = null, C = null, D = null;
+        /**
+         newABCD is the new (rearranged) rectangle
+         newA is the point left top, newB right top, newC right bottom and newD left bottom.
+         */
+        Coordinate newA = null, newB = null, newC = null, newD = null;
         double max_x = -Double.MAX_VALUE;
         double max_y = -Double.MAX_VALUE;
         double min_x = Double.MAX_VALUE;
@@ -61,37 +65,35 @@ public class GeometricUtils {
             min_x = Math.min(min_x, x);
             min_y = Math.min(min_y, y);
 
-
             if (doubleEqual(min_x, x) && doubleEqual(max_y, y))
-                A = rect[i];
+                newA = rect[i];
             if (doubleEqual(max_x, x) && doubleEqual(max_y, y))
-                B = rect[i];
+                newB = rect[i];
             if (doubleEqual(max_x, x) && doubleEqual(min_y, y))
-                C = rect[i];
+                newC = rect[i];
             if (doubleEqual(min_x, x) && doubleEqual(min_y, y))
-                D = rect[i];
+                newD = rect[i];
         }
-        if (A == null || B == null || C == null || D == null)
+        if (newA == null || newB == null || newC == null || newD == null)
             throw new IllegalArgumentException("rect is malformed. It equals " + rect[0] + rect[1] + rect[2] + rect[3]);
 
-        if (A.equals2D(B) || A.equals2D(C) || A.equals2D(D) || B.equals2D(C) || B.equals2D(D) || C.equals2D(D)) {
+        if (newA.equals2D(newB) || newA.equals2D(newC) || newA.equals2D(newD) || newB.equals2D(newC) || newB.equals2D(newD) || newC.equals2D(newD)) {
             throw new IllegalArgumentException("rect is malformed. It equals " + rect[0] + rect[1] + rect[2] + rect[3]);
         }
 
-        if (!doubleEqual(A.x, D.x) || !doubleEqual(A.y, B.y) || !doubleEqual(B.x, C.x) || !doubleEqual(C.y, D.y)) {
+        if (!doubleEqual(newA.x, newD.x) || !doubleEqual(newA.y, newB.y) || !doubleEqual(newB.x, newC.x) || !doubleEqual(newC.y, newD.y)) {
             throw new IllegalArgumentException("rect is not parallel to x an y axis:" +
                     "\nrect[0] = " + rect[0] +
                     "\nrect[1] = " + rect[1] +
                     "\nrect[2] = " + rect[2] +
                     "\nrect[3] = " + rect[3] +
-                    "\nA = " + A +
-                    "\nB = " + B +
-                    "\nC = " + C +
-                    "\nD = " + D
+                    "\nnewA = " + newA +
+                    "\nnewB = " + newB +
+                    "\nnewC = " + newC +
+                    "\nnewD = " + newD
             );
-
         }
-        Coordinate[] rectRes = new Coordinate[]{A,B,C,D};
+        Coordinate[] rectRes = new Coordinate[]{newA, newB, newC, newD};
         return rectRes;
     }
 
