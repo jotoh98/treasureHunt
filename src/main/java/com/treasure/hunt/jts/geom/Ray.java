@@ -1,7 +1,6 @@
 package com.treasure.hunt.jts.geom;
 
 import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
-import com.treasure.hunt.jts.awt.Shapeable;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
@@ -59,7 +58,7 @@ public class Ray extends LineSegment implements Shapeable {
      * @return A shape, {@code this} is converted into.
      */
     public Shape toShape(AdvancedShapeWriter shapeWriter) {
-        double diameter = shapeWriter.getPointTransformation().diameter();
+        double diameter = shapeWriter.getBoundary().diameter();
         Coordinate end = JTSUtils.coordinateInDistance(p0, p1, diameter);
         return shapeWriter.createLine(p0, end);
     }
