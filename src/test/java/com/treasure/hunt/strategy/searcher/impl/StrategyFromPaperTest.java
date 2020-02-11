@@ -89,8 +89,6 @@ public class StrategyFromPaperTest {
         HalfPlaneHint hint = new HalfPlaneHint(new Coordinate(0, 0),
                 new Coordinate(0.8269335876981098, -0.5622996012240562));
         List<GeometryItem<Point>> points = strat.move(hint).getPoints();
-        Point[] true_points = new Point[]{createPoint(0, 0),
-                createPoint(1.1245992024481124, 1.6538671753962195)};
         hint = new HalfPlaneHint(new Coordinate(1.1245992024481124, 1.6538671753962195),
                 new Coordinate(1.2148090667719662, 0.6579443970751934));
         strat.move(hint);
