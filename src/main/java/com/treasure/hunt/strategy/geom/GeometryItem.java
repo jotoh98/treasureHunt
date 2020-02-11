@@ -28,7 +28,7 @@ public class GeometryItem<T> {
     /**
      * The constructor.
      *
-     * @param object        the {@link org.locationtech.jts.geom.Geometry} or {@link com.treasure.hunt.jts.awt.Shapeable}.
+     * @param object        the {@link org.locationtech.jts.geom.Geometry} or {@link com.treasure.hunt.jts.geom.Shapeable}.
      * @param geometryType  the {@link GeometryType}, defining its role.
      * @param geometryStyle the {@link GeometryStyle}, defining its looking.
      */
@@ -42,7 +42,7 @@ public class GeometryItem<T> {
     /**
      * The constructor, using default {@link GeometryStyle}.
      *
-     * @param object       the {@link org.locationtech.jts.geom.Geometry} or {@link com.treasure.hunt.jts.awt.Shapeable}.
+     * @param object       the {@link org.locationtech.jts.geom.Geometry} or {@link com.treasure.hunt.jts.geom.Shapeable}.
      * @param geometryType the {@link GeometryType}, defining its role.
      */
     public GeometryItem(T object, GeometryType geometryType) {

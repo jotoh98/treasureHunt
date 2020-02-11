@@ -11,22 +11,22 @@ import java.awt.image.BufferedImage;
 public class RenderUtils {
 
     public static Shape shapeFromText(Font font, String string, double x, double y) {
-        AffineTransform tx = new AffineTransform();
-        tx.translate(x, y);
-        return tx.createTransformedShape(shapeFromText(font, string));
+        AffineTransform affineTransform = new AffineTransform();
+        affineTransform.translate(x, y);
+        return affineTransform.createTransformedShape(shapeFromText(font, string));
     }
 
     public static Shape shapeFromText(Font font, String string) {
-        BufferedImage img = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2 = img.createGraphics();
+        BufferedImage bufferedImage = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graphics2D = bufferedImage.createGraphics();
 
         try {
-            GlyphVector vect = font.createGlyphVector(g2.getFontRenderContext(), string);
-            return vect.getOutline(0f, (float) -vect.getVisualBounds().getY());
+            GlyphVector glyphVector = font.createGlyphVector(graphics2D.getFontRenderContext(), string);
+            return glyphVector.getOutline(0f, (float) -glyphVector.getVisualBounds().getY());
         } catch (Exception e) {
             log.warn("Could not render text", e);
         } finally {
-            g2.dispose();
+            graphics2D.dispose();
         }
         return null;
     }

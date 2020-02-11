@@ -41,22 +41,22 @@ public class Grid implements Shapeable {
     /**
      * Minimal rendering distance between two grid lines.
      */
-    private double minDistance = 40d;
+    private static final double MIN_DISTANCE = 40d;
 
     /**
      * Maximal rendering distance between two grid lines.
      */
-    private double maxDistance = 80d;
+    private static final double MAX_DISTANCE = 80d;
 
     /**
      * Font for grid line identification number.
      */
-    private Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 11);
+    private static final Font FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 11);
 
     /**
      * Formatter for grid line identification numbers.
      */
-    private DecimalFormat df = new DecimalFormat("###.###");
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("###.###");
 
     /**
      * Get a shape of the grid.
@@ -87,14 +87,14 @@ public class Grid implements Shapeable {
      * @return corrected (jumping) scale for spacing between grid lines
      */
     private double getDistance(double scale) {
-        double ratio = maxDistance / minDistance;
+        double ratio = MAX_DISTANCE / MIN_DISTANCE;
         int log2 = (int) (Math.log(scale) / Math.log(ratio));
 
         if (scale < 1) {
             log2 -= 1;
         }
 
-        return Math.pow(ratio, -log2) * minDistance;
+        return Math.pow(ratio, -log2) * MIN_DISTANCE;
     }
 
     /**
@@ -146,6 +146,6 @@ public class Grid implements Shapeable {
     }
 
     private Shape renderNumber(double number, double x, double y) {
-        return RenderUtils.shapeFromText(font, df.format(number), x, y);
+        return RenderUtils.shapeFromText(FONT, DECIMAL_FORMAT.format(number), x, y);
     }
 }
