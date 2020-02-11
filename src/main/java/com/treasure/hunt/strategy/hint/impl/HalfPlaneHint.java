@@ -22,13 +22,16 @@ public class HalfPlaneHint extends AngleHint {
     static final double visual_extent = 1000;
     private LineString halfPlaneLine = null;
     @Getter
+    /**
+     *
+     * when the line indicated by anglePointLeft and anglePointRight is not horizontal,
+     * right and left indicate where the target is (right indicates the target is in positive x-Direction
+     * in relationship to the line)
+     * when the line is horizontal, up signals the target is in positive y-Direction in relationship
+     * to the line (the up and down enumerators are only used when the line is horizontal)
+     * left and down respectively
+     */
     private Direction direction;
-    // when the line indicated by anglePointLeft and anglePointRight is not horizontal,
-    // right and left indicate where the target is (right indicates the target is in positive x-Direction
-    // in relationship to the line)
-    // when the line is horizontal, up signals the target is in positive y-Direction in relationship
-    // to the line (the up and down enumerators are only used when the line is horizontal)
-    // left and down respectively
 
     private HalfPlaneHint lastHint; // if it is not null it also gets drawn by this HalfPlaneHint
 
