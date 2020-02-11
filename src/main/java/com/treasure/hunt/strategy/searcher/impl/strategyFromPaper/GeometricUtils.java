@@ -52,6 +52,10 @@ public class GeometricUtils {
          newA is the point left top, newB right top, newC right bottom and newD left bottom.
          */
         Coordinate newA = null, newB = null, newC = null, newD = null;
+        /**
+         * max_x represents the maximum value of an x-coordinate of one of the edges in the rectangle rect.
+         * max_y, min_x and min_y are set equivalent.
+         */
         double max_x = -Double.MAX_VALUE;
         double max_y = -Double.MAX_VALUE;
         double min_x = Double.MAX_VALUE;
