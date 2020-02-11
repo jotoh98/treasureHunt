@@ -53,29 +53,29 @@ public class GeometricUtils {
          */
         Coordinate newA = null, newB = null, newC = null, newD = null;
         /**
-         * max_x represents the maximum value of an x-coordinate of one of the edges in the rectangle rect.
-         * max_y, min_x and min_y are set equivalent.
+         * maxX represents the maximum value of an x-coordinate of one of the edges in the rectangle rect.
+         * maxY, minX and minY are set equivalent.
          */
-        double max_x = -Double.MAX_VALUE;
-        double max_y = -Double.MAX_VALUE;
-        double min_x = Double.MAX_VALUE;
-        double min_y = Double.MAX_VALUE;
+        double maxX = -Double.MAX_VALUE;
+        double maxY = -Double.MAX_VALUE;
+        double minX = Double.MAX_VALUE;
+        double minY = Double.MAX_VALUE;
         for (int i = 0; i < 4; i++) {
             double x = rect[i].getX();
             double y = rect[i].getY();
 
-            max_x = Math.max(max_x, x);
-            max_y = Math.max(max_y, y);
-            min_x = Math.min(min_x, x);
-            min_y = Math.min(min_y, y);
+            maxX = Math.max(maxX, x);
+            maxY = Math.max(maxY, y);
+            minX = Math.min(minX, x);
+            minY = Math.min(minY, y);
 
-            if (doubleEqual(min_x, x) && doubleEqual(max_y, y))
+            if (doubleEqual(minX, x) && doubleEqual(maxY, y))
                 newA = rect[i];
-            if (doubleEqual(max_x, x) && doubleEqual(max_y, y))
+            if (doubleEqual(maxX, x) && doubleEqual(maxY, y))
                 newB = rect[i];
-            if (doubleEqual(max_x, x) && doubleEqual(min_y, y))
+            if (doubleEqual(maxX, x) && doubleEqual(minY, y))
                 newC = rect[i];
-            if (doubleEqual(min_x, x) && doubleEqual(min_y, y))
+            if (doubleEqual(minX, x) && doubleEqual(minY, y))
                 newD = rect[i];
         }
         if (newA == null || newB == null || newC == null || newD == null)
