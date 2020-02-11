@@ -261,6 +261,12 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
                 .collect(Collectors.toList());
     }
 
+    public List<GeometryItem<?>> getGeometryItems() {
+        return moves.stream()
+                .flatMap(move -> move.getGeometryItems().stream())
+                .collect(Collectors.toList());
+    }
+
     /**
      * @return only viewed moves
      */

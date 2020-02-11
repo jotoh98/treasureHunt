@@ -37,11 +37,18 @@ public enum GeometryType {
     private boolean enabled;
     @Getter
     private boolean override;
+    @Getter
+    private boolean multiStyle = false;
 
     GeometryType(boolean enabled, String displayName, boolean override) {
         this.displayName = displayName;
         this.enabled = enabled;
         this.override = override;
+    }
+
+    GeometryType(boolean enabled, String displayName, boolean override, boolean multiStyle) {
+        this(enabled, displayName, override);
+        this.multiStyle = multiStyle;
     }
 
     GeometryType(boolean enabledByDefault, String displayName) {
