@@ -3,6 +3,7 @@ package com.treasure.hunt.utils;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.game.Move;
 import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
+import com.treasure.hunt.jts.awt.CanvasBoundary;
 import com.treasure.hunt.jts.awt.PointTransformation;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryStyle;
@@ -46,9 +47,11 @@ public class Renderer {
      */
     private GraphicsContext context;
 
+
     /**
      * Construct the renderer held by {@link com.treasure.hunt.view.CanvasController}.
-     * The given {@link GraphicsContext} forms the awt translator
+     * The given {@link GraphicsContext} forms the awt translator.
+     * The {@link org.locationtech.jts.awt.ShapeWriter} gets linked to a new {@link CanvasBoundary}.
      *
      * @param context        the native context
      * @param transformation the point transformation for {@link org.locationtech.jts.geom.Geometry} instances
@@ -57,6 +60,7 @@ public class Renderer {
         graphics2D = new FXGraphics2D(context);
         this.context = context;
         this.shapeWriter = new AdvancedShapeWriter(transformation);
+        shapeWriter.setBoundary(new CanvasBoundary(context.getCanvas(), transformation));
     }
 
     /**

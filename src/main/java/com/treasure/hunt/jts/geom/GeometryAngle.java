@@ -1,7 +1,6 @@
 package com.treasure.hunt.jts.geom;
 
 import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
-import com.treasure.hunt.jts.awt.Shapeable;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;

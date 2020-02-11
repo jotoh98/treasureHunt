@@ -29,7 +29,8 @@ public enum GeometryType {
     BOUNDING_CIRCE(false, "bounding circle"),
 
     STANDARD(true, ""),
-    CURRENT_WAY_POINT(true, "Current way point", true);
+    CURRENT_WAY_POINT(true, "Current way point", true),
+    GRID(true, "Grid", false);
 
     @Getter
     private final String displayName;

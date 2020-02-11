@@ -2,9 +2,13 @@ package com.treasure.hunt.view;
 
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.jts.awt.PointTransformation;
+import com.treasure.hunt.jts.geom.Grid;
+import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.utils.Renderer;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -19,8 +23,7 @@ public class CanvasController {
     @Getter
     public Canvas canvas;
     public Pane canvasPane;
-    private ObjectProperty<GameManager> gameManager;
-
+    private ObjectProperty<GameManager> gameManager = new SimpleObjectProperty<>();
 
     @Getter
     private PointTransformation transformation = new PointTransformation();
@@ -33,29 +36,21 @@ public class CanvasController {
         makeCanvasResizable();
         renderer = new Renderer(canvas.getGraphicsContext2D(), transformation);
 
+        renderer.addAdditional("grid", new GeometryItem<>(new Grid(), GeometryType.GRID));
         transformation.getScaleProperty().addListener(invalidation -> drawShapes());
         transformation.getOffsetProperty().addListener(invalidation -> drawShapes());
     }
 
     public void makeCanvasResizable() {
-
-        canvas.widthProperty().addListener((observable, oldValue, newValue) -> {
-            transformation.updateCanvasWidth((double) newValue);
-            drawShapes();
-        });
-
-        canvas.heightProperty().addListener((observable, oldValue, newValue) -> {
-            transformation.updateCanvasHeight((double) newValue);
-            drawShapes();
-        });
-
+        canvas.widthProperty().addListener((observable, oldValue, newValue) -> drawShapes());
+        canvas.heightProperty().addListener((observable, oldValue, newValue) -> drawShapes());
         canvas.heightProperty().bind(canvasPane.heightProperty());
         canvas.widthProperty().bind(canvasPane.widthProperty());
     }
 
     public void drawShapes() {
         Platform.runLater(() -> {
-            if (gameManager == null || gameManager.isNull().get()) {
+            if (gameManager.isNull().get()) {
                 return;
             }
             renderer.render(gameManager.get());
@@ -63,7 +58,7 @@ public class CanvasController {
     }
 
     public void onCanvasClicked(MouseEvent mouseEvent) {
-        if (gameManager == null) {
+        if (gameManager.isNull().get()) {
             return;
         }
         offsetBackup = transformation.getOffsetProperty().get();
@@ -79,7 +74,7 @@ public class CanvasController {
      * @param mouseEvent corresponding {@link MouseEvent}
      */
     public void onCanvasDragged(MouseEvent mouseEvent) {
-        if (gameManager == null) {
+        if (gameManager.isNull().get()) {
             return;
         }
         Vector2D dragOffset = Vector2D.create(mouseEvent.getX(), mouseEvent.getY()).subtract(dragStart);
@@ -87,7 +82,7 @@ public class CanvasController {
     }
 
     public void onCanvasZoom(ScrollEvent scrollEvent) {
-        if (gameManager == null) {
+        if (gameManager.isNull().get()) {
             return;
         }
         Vector2D mouse = new Vector2D(scrollEvent.getX(), scrollEvent.getY());
@@ -98,7 +93,7 @@ public class CanvasController {
     public void setGameManager(ObjectProperty<GameManager> gameManager) {
         this.gameManager = gameManager;
         gameManager.addListener(observable -> {
-            if (this.gameManager.get() == null) {
+            if (this.gameManager.isNull().get()) {
                 return;
             }
             this.gameManager.get().getViewIndex()
