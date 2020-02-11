@@ -57,6 +57,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      * Contains the "gameHistory".
      */
     @VisibleForTesting
+    @Getter
     ObservableList<Turn> turns = FXCollections.observableArrayList();
 
     private GameEngine gameEngine;
@@ -123,7 +124,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     private void setBindings() {
         latestStepViewedBinding = Bindings.createBooleanBinding(() -> turns.size() - 1 == viewIndex.get(), viewIndex, turns);
         stepForwardImpossibleBinding = finishedProperty.and(latestStepViewedBinding);
-        statistics = Bindings.createObjectBinding(() -> gameEngine.getStatistics().calculate(getTurnsVisible()), viewIndex);
+        statistics = Bindings.createObjectBinding(() -> gameEngine.getStatistics().calculate(getVisibleTurns()), viewIndex);
         stepBackwardImpossibleBinding = viewIndex.isEqualTo(0);
         lastMoveBinding = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()), viewIndex, turns);
         lastTreasureBindings = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()).getTreasureLocation(), viewIndex, turns);
@@ -223,7 +224,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      */
     public List<GeometryItem<?>> getGeometryItems(Boolean excludeOverrideItems) {
 
-        List<Turn> visible = getTurnsVisible();
+        List<Turn> visible = getVisibleTurns();
 
         //TODO: move to #151-rendering-pipeline
         ArrayList<GeometryItem<?>> geometryItems = IntStream
@@ -261,16 +262,10 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
                 .collect(Collectors.toList());
     }
 
-    public List<GeometryItem<?>> getGeometryItems() {
-        return moves.stream()
-                .flatMap(move -> move.getGeometryItems().stream())
-                .collect(Collectors.toList());
-    }
-
     /**
      * @return only viewed moves
      */
-    private List<Turn> getTurnsVisible() {
+    public List<Turn> getVisibleTurns() {
         return turns.subList(0, viewIndex.get() + 1);
     }
 
