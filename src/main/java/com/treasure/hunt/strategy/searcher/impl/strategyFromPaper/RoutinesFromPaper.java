@@ -20,7 +20,10 @@ import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
  *
  * @author bsen
  */
-public class RoutinesFromPaper {
+class RoutinesFromPaper {
+    private RoutinesFromPaper() {
+    }
+
     static Movement rectangleScan(Point A, Point B, Point C, Point D, Movement move) {
         return rectangleScan(A.getCoordinate(), B.getCoordinate(), C.getCoordinate(), D.getCoordinate(), move);
     }
@@ -48,6 +51,7 @@ public class RoutinesFromPaper {
     /**
      * Does the same as the routine rectangleScan in the paper.
      * It adds the Points to move so that the player sees all points in the rectangle ABCD.
+     *
      * @param A
      * @param B
      * @param C
@@ -83,9 +87,9 @@ public class RoutinesFromPaper {
     /**
      * Returns the result of rho, defined by rectangle rect, applied on hint.
      *
-     * @param rect defines rho
+     * @param rect the rectangle that defines rho
      * @param hint used as input in rho
-     * @return
+     * @return the result of rho(hint)
      */
     static HalfPlaneHint rhoHint(Coordinate[] rect, HalfPlaneHint hint) {
         assertRectangle(rect);
@@ -106,9 +110,9 @@ public class RoutinesFromPaper {
     /**
      * Returns the result of rho, defined by rectangle rect, applied on P.
      *
-     * @param rect
-     * @param P
-     * @return
+     * @param rect the rectangle that defines rho
+     * @param P    used as input in rho
+     * @return the result of rho(P)
      */
     static Coordinate rhoPoint(Coordinate[] rect, Coordinate P) {
         assertRectangle(rect);

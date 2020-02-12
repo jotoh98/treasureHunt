@@ -16,7 +16,10 @@ import static org.locationtech.jts.algorithm.Angle.normalizePositive;
 /**
  * @author bsen
  */
-public class BadHintSubroutine {
+class BadHintSubroutine {
+
+    private BadHintSubroutine() {
+    }
 
     /**
      * If the last hint was bad, this function can be called and lastBadHint has to be set accordingly.

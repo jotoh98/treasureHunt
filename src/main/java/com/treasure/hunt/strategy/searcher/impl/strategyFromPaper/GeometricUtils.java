@@ -14,7 +14,9 @@ import static com.treasure.hunt.utils.JTSUtils.doubleEqual;
 /**
  * @author bsen
  */
-public class GeometricUtils {
+class GeometricUtils {
+    private GeometricUtils() {
+    }
 
     static void assertRectangle(Coordinate[] rectangle) {
         if (rectangle.length != 4)
