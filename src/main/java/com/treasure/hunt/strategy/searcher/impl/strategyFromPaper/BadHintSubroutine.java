@@ -23,8 +23,8 @@ public class BadHintSubroutine {
      * The function equals the "else"-part of the first if-condition in Algorithm 3 (Function ReduceRectangle(R))
      * in the paper.
      * Variable names are equivalent to the paper, but since a', d', etc. is not a valid variable name in Java,
-     * _apos is used in such cases (apos for apostrophe), e.g. a_apos in this implementation equates to a'
-     * in the paper. _doubleApos signals a double apostrophe.
+     * Apos is used in such cases (apos for apostrophe), e.g. pApos in this implementation equates to p'
+     * in the paper and pDoubleApos euqates to p''.
      * At, Bt, Ct and Dt in this implementation equate to A, B, C and D in the paper, since the
      * not by phi transformed variables of the current rectangle R are also stored with A, B, C and D.
      * The t signals the transformed state of these variables.
@@ -49,127 +49,127 @@ public class BadHintSubroutine {
             HalfPlaneHint hintT = phiHint(basicTrans, rect, lastBadHint);
 
             Coordinate p = centerOfRectangle(transformedRect);
-            Coordinate p_apos = twoStepsOrthogonal(hintT, p);
-            double p_to_p_apos_x = p_apos.getX() - p.getX(); // the x coordinate of the vector from p to p_apos
-            double p_to_p_apos_y = p_apos.getY() - p.getY(); // the y coordinate of the vector from p to p_apos
+            Coordinate pApos = twoStepsOrthogonal(hintT, p);
+            double pToPAposX = pApos.getX() - p.getX(); // the x coordinate of the vector from p to pApos
+            double pToPAposY = pApos.getY() - p.getY(); // the y coordinate of the vector from p to pApos
 
             LineSegment ABt = new LineSegment(At, Bt);
             LineSegment ADt = new LineSegment(At, Dt);
             LineSegment BCt = new LineSegment(Bt, Ct);
             LineSegment CDt = new LineSegment(Ct, Dt);
-            LineSegment L1_apos = new LineSegment(hintT.getCenter(),
+            LineSegment L1Apos = new LineSegment(hintT.getCenter(),
                     hintT.getRight());
-            LineSegment L1_doubleApos = new LineSegment(
-                    hintT.getCenter().getX() + p_to_p_apos_x,
-                    hintT.getCenter().getY() + p_to_p_apos_y,
-                    hintT.getRight().getX() + p_to_p_apos_x,
-                    hintT.getRight().getY() + p_to_p_apos_y
+            LineSegment L1DoubleApos = new LineSegment(
+                    hintT.getCenter().getX() + pToPAposX,
+                    hintT.getCenter().getY() + pToPAposY,
+                    hintT.getRight().getX() + pToPAposX,
+                    hintT.getRight().getY() + pToPAposY
             );
 
-            Coordinate a = lineWayIntersection(L1_apos, ADt);
-            Coordinate d = lineWayIntersection(L1_apos, BCt);
+            Coordinate a = lineWayIntersection(L1Apos, ADt);
+            Coordinate d = lineWayIntersection(L1Apos, BCt);
             Coordinate e = null;
             if (d != null)
                 e = new Coordinate(Dt.getX(), d.getY());
-            Coordinate d_apos = null;
+            Coordinate dApos = null;
             if (d != null)
-                d_apos = twoStepsOrthogonal(lastBadHint, d);
+                dApos = twoStepsOrthogonal(lastBadHint, d);
 
-            Coordinate f = lineWayIntersection(L1_doubleApos, ABt);
-            Coordinate j = lineWayIntersection(L1_doubleApos, BCt);
+            Coordinate f = lineWayIntersection(L1DoubleApos, ABt);
+            Coordinate j = lineWayIntersection(L1DoubleApos, BCt);
 
-            Coordinate j_apos = null;
+            Coordinate jApos = null;
             if (j != null)
-                j_apos = new Coordinate(Dt.getX(), j.getY());
+                jApos = new Coordinate(Dt.getX(), j.getY());
             Coordinate t = new Coordinate(f.getX(), Dt.getY());
 
             Coordinate m = new Coordinate(At.getX(), p.getY());
-            Coordinate m_apos = new Coordinate(At.getX(), p_apos.getY());
+            Coordinate mApos = new Coordinate(At.getX(), pApos.getY());
             Coordinate k = new Coordinate(Bt.getX(), p.getY());
-            Coordinate k_apos = new Coordinate(Bt.getX(), p_apos.getY());
+            Coordinate kApos = new Coordinate(Bt.getX(), pApos.getY());
 
             Coordinate g = new Coordinate(p.getX(), At.getY());
-            Coordinate g_apos = new Coordinate(p_apos.getX(), At.getY());
+            Coordinate gApos = new Coordinate(pApos.getX(), At.getY());
             Coordinate h = new Coordinate(p.getX(), Dt.getY());
-            Coordinate h_apos = new Coordinate(p_apos.getX(), Dt.getY());
+            Coordinate hApos = new Coordinate(pApos.getX(), Dt.getY());
 
-            Coordinate s, s_apos;
+            Coordinate s, sApos;
 
-            LineSegment A_s_apos = new LineSegment(At.getX(), At.getY(),
-                    At.getX() + p_to_p_apos_x, At.getY() + p_to_p_apos_y);
-            // the line from A to s gets constructed by using the line from p to p' (p_apos)
-            s = new Coordinate(L1_apos.lineIntersection(A_s_apos));
-            s_apos = new Coordinate(L1_doubleApos.lineIntersection(A_s_apos));
+            LineSegment AsApos = new LineSegment(At.getX(), At.getY(),
+                    At.getX() + pToPAposX, At.getY() + pToPAposY);
+            // the line from A to s gets constructed by using the line from p to p' (pApos)
+            s = new Coordinate(L1Apos.lineIntersection(AsApos));
+            sApos = new Coordinate(L1DoubleApos.lineIntersection(AsApos));
 
             HalfPlaneHint curHintT = phiHint(basicTrans, rect, curHint);
 
-            HalfPlaneHint.Direction x2_apos = curHintT.getDirection();
-            LineSegment L2_apos = new LineSegment(curHintT.getCenter(),
+            HalfPlaneHint.Direction x2Apos = curHintT.getDirection();
+            LineSegment L2Apos = new LineSegment(curHintT.getCenter(),
                     curHintT.getRight());
 
             // here begins line 24 of the ReduceRectangle routine from the paper:
             Coordinate[] newRectangle = null;
 
-            LineSegment pp_apos = new LineSegment(p, p_apos);
-            LineSegment m_apos_k_apos = new LineSegment(m_apos, k_apos);
-            LineSegment h_apos_g_apos = new LineSegment(h_apos, g_apos);
-            LineSegment p_apos_k = new LineSegment(p_apos, k);
+            LineSegment ppApos = new LineSegment(p, pApos);
+            LineSegment mAposKApos = new LineSegment(mApos, kApos);
+            LineSegment hAposGApos = new LineSegment(hApos, gApos);
+            LineSegment pAposK = new LineSegment(pApos, k);
 
 
-            if (x2_apos == right &&
-                    lineBetweenClockwise(L2_apos, L1_doubleApos, pp_apos)
+            if (x2Apos == right &&
+                    lineBetweenClockwise(L2Apos, L1DoubleApos, ppApos)
             ) {
                 newRectangle = phiOtherRectangleInverse(basicTrans, rect,
                         new Coordinate[]{f, Bt, Ct, t});
             }
-            if (x2_apos == right &&
-                    lineBetweenClockwise(L2_apos, pp_apos, m_apos_k_apos)
+            if (x2Apos == right &&
+                    lineBetweenClockwise(L2Apos, ppApos, mAposKApos)
             ) {
-                move = rectangleScanPhiReverse(basicTrans, rect, m_apos, k_apos, k, m, move);
+                move = rectangleScanPhiReverse(basicTrans, rect, mApos, kApos, k, m, move);
                 newRectangle = phiOtherRectangleInverse(basicTrans, rect,
                         new Coordinate[]{g, Bt, Ct, h});
             }
-            if ((x2_apos == left || x2_apos == down) &&
-                    lineBetweenClockwise(L2_apos, m_apos_k_apos, L1_doubleApos)
+            if ((x2Apos == left || x2Apos == down) &&
+                    lineBetweenClockwise(L2Apos, mAposKApos, L1DoubleApos)
             ) {
                 // rectangleScan(phi_reverse(k, (s, s', d', d))
-                move = rectangleScanPhiReverse(basicTrans, rect, s, s_apos, d_apos, d, move);
+                move = rectangleScanPhiReverse(basicTrans, rect, s, sApos, dApos, d, move);
                 // rectangleScan(phi_reverse(k, (m', k', k, m))
-                move = rectangleScanPhiReverse(basicTrans, rect, m_apos, k_apos, k, m, move);
+                move = rectangleScanPhiReverse(basicTrans, rect, mApos, kApos, k, m, move);
                 // newRectangle := pkCh
                 newRectangle = phiOtherRectangleInverse(basicTrans, rect,
                         new Coordinate[]{p, k, Ct, h});
             }
-            if (x2_apos == left &&
-                    lineBetweenClockwise(L2_apos, L1_doubleApos, h_apos_g_apos)
+            if (x2Apos == left &&
+                    lineBetweenClockwise(L2Apos, L1DoubleApos, hAposGApos)
             ) {
                 // rectangleScan(phi_reverse(k, (s, s', d', d))
-                move = rectangleScanPhiReverse(basicTrans, rect, s, s_apos, d_apos, d, move);
+                move = rectangleScanPhiReverse(basicTrans, rect, s, sApos, dApos, d, move);
                 // rectangleScan(phi_reverse(k, (g, g', h', h))
                 // newRectangle := Agpm
                 newRectangle = phiOtherRectangleInverse(basicTrans, rect,
                         new Coordinate[]{At, g, p, m});
             }
-            if ((x2_apos == left &&
-                    lineBetweenClockwise(L2_apos, h_apos_g_apos, pp_apos)) ||
-                    (x2_apos == left &&
-                            lineBetweenClockwise(L2_apos, pp_apos, m_apos_k_apos)) ||
-                    ((x2_apos == up || x2_apos == right) &&
-                            lineBetweenClockwise(L2_apos, m_apos_k_apos, p_apos_k)
+            if ((x2Apos == left &&
+                    lineBetweenClockwise(L2Apos, hAposGApos, ppApos)) ||
+                    (x2Apos == left &&
+                            lineBetweenClockwise(L2Apos, ppApos, mAposKApos)) ||
+                    ((x2Apos == up || x2Apos == right) &&
+                            lineBetweenClockwise(L2Apos, mAposKApos, pAposK)
                     )
             ) {
                 // rectangleScan(phireverse(k, (g, g', h', h))
-                move = rectangleScanPhiReverse(basicTrans, rect, g, g_apos, h_apos, h, move);
+                move = rectangleScanPhiReverse(basicTrans, rect, g, gApos, hApos, h, move);
                 // newRectangle := ABkm
                 newRectangle = phiOtherRectangleInverse(basicTrans, rect,
                         new Coordinate[]{At, Bt, k, m});
             }
-            if (x2_apos == right &&
-                    lineBetweenClockwise(L2_apos, p_apos_k, L1_doubleApos)
+            if (x2Apos == right &&
+                    lineBetweenClockwise(L2Apos, pAposK, L1DoubleApos)
             ) {
                 // newRectangle := ABjj'
                 newRectangle = phiOtherRectangleInverse(basicTrans, rect,
-                        new Coordinate[]{At, Bt, j, j_apos});
+                        new Coordinate[]{At, Bt, j, jApos});
             }
 
             strategy.A = GEOMETRY_FACTORY.createPoint(newRectangle[0]);
