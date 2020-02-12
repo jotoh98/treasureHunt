@@ -179,8 +179,7 @@ public class BadHintSubroutine {
             strategy.lastHintWasBad = false;
             return moveToCenterOfRectangle(strategy.A, strategy.B, strategy.C, strategy.D, move);
         } catch (Exception ee) {
-            printRect(strategy, rect, lastBadHint, curHint);
-            throw ee;
+            throw processError(ee, strategy, rect, lastBadHint, curHint);
         }
 
     }
@@ -205,23 +204,21 @@ public class BadHintSubroutine {
         return maxAngleBetween2and1 < maxAngleLineBetween1;
     }
 
-    // some things get printed when exception occurs
-    static private void printRect(StrategyFromPaper s, Coordinate[] rect, HalfPlaneHint lastBadHint, HalfPlaneHint curHint) {
+    static private RuntimeException processError(Exception e, StrategyFromPaper s, Coordinate[] rect, HalfPlaneHint lastBadHint, HalfPlaneHint curHint) {
         Point A = s.A;
         Point B = s.B;
         Point C = s.C;
         Point D = s.D;
-        System.out.println("A= (" + A.getX() + ", " + A.getY() + ")");
-        System.out.println(" B= (" + B.getX() + ", " + B.getY() + ")");
-        System.out.println(" C= (" + C.getX() + ", " + C.getY() + ")");
-        System.out.println(" D= (" + D.getX() + ", " + D.getY() + ")");
+        String message = "A= (" + A.getX() + ", " + A.getY() + ")\n"
+                + " B= (" + B.getX() + ", " + B.getY() + ")\n"
+                + " C= (" + C.getX() + ", " + C.getY() + ")\n"
+                + " D= (" + D.getX() + ", " + D.getY() + ")";
         for (int i = 0; i < rect.length; i++)
-            System.out.println("rect[" + i + "]= " + rect[i]);
-        System.out.println("lastBadHint p1= " + lastBadHint.getCenter() + "lastHint p2= " +
-                lastBadHint.getRight());
-        System.out.println("curHint p1= " + curHint.getCenter() + "curHint p2= " +
+            message.concat("rect[" + i + "]= " + rect[i] + "\n");
+        message.concat("lastBadHint p1= " + lastBadHint.getCenter() + "lastHint p2= " +
+                lastBadHint.getRight() + "\n");
+        message.concat("curHint p1= " + curHint.getCenter() + "curHint p2= " +
                 curHint.getRight());
+        return new RuntimeException(message, e);
     }
-
-
 }
