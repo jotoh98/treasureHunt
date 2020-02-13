@@ -2,12 +2,15 @@ package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
+import com.treasure.hunt.strategy.geom.StatusMessageItem;
+import com.treasure.hunt.strategy.geom.StatusMessageType;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,6 +47,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
 
     HalfPlaneHint lastBadHint; //only used when last hint was bad
     boolean lastHintWasBad = false;
+    List<StatusMessageItem> statusMessageItemsToBeRemovedNextMove = new ArrayList<>();
     private Point lastLocation;
 
     /**
@@ -71,6 +75,11 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     @Override
     public Movement move(HalfPlaneHint hint) {
         Movement move = new Movement();
+        move.getStatusMessageItemsToBeRemoved().addAll(statusMessageItemsToBeRemovedNextMove);
+        statusMessageItemsToBeRemovedNextMove.clear();
+
+        StatusMessageItem goodStatusMessage = new StatusMessageItem(StatusMessageType.HINT_STATUS, "good");
+        move.getStatusMessageItemsToBeAdded().add(goodStatusMessage);
 
         move.addWayPoint(lastLocation);
         double width = searchAreaCornerB.getX() - searchAreaCornerA.getX();
@@ -91,6 +100,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
 
         LineSegment hintLine = new LineSegment(hint.getCenter(),
                 hint.getRight());
+
+        //TODO einzelne Dinge aus der Methode rausziehen und intersection_AD_hint usw umbenennen (naming conventions)
 
         Point intersection_AD_hint = null;
         Point intersection_BC_hint = null;
@@ -131,6 +142,11 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                     searchAreaCornerC, searchAreaCornerD, move)));
         }
         // when none of this cases takes place, the hint is bad (as defined in the paper). This gets handled here:
+        move.getStatusMessageItemsToBeAdded().remove(goodStatusMessage);
+        StatusMessageItem badStatusMessage = new StatusMessageItem(StatusMessageType.HINT_STATUS, "bad");
+        move.getStatusMessageItemsToBeAdded().add(badStatusMessage);
+        statusMessageItemsToBeRemovedNextMove.add(badStatusMessage);
+
         Point destination = GEOMETRY_FACTORY.createPoint(twoStepsOrthogonal(hint,
                 centerOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD)));
         move.addWayPoint(destination);

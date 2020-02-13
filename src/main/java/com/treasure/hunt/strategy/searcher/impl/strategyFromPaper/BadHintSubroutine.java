@@ -1,5 +1,7 @@
 package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 
+import com.treasure.hunt.strategy.geom.StatusMessageItem;
+import com.treasure.hunt.strategy.geom.StatusMessageType;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import lombok.Getter;
@@ -123,7 +125,17 @@ class BadHintSubroutine {
         mAposKApos = new LineSegment(mApos, kApos);
         hAposGApos = new LineSegment(hApos, gApos);
         pAposK = new LineSegment(pApos, k);
+    }
 
+    private void printBasicTransformation(StrategyFromPaper strategy, Movement move) {
+        StatusMessageItem basicTransformationStatus = new StatusMessageItem(
+                StatusMessageType.BASIC_TRANSFORMATION, Integer.toString(basicTransformation));
+        move.getStatusMessageItemsToBeAdded().add(basicTransformationStatus);
+        strategy.statusMessageItemsToBeRemovedNextMove.add(basicTransformationStatus);
+        switch (basicTransformation) {
+            case 0:
+                //TODO
+        }
     }
 
     /**
@@ -140,8 +152,11 @@ class BadHintSubroutine {
      */
     Movement lastHintBadSubroutine(StrategyFromPaper strategy, HalfPlaneHint curHint,
                                    HalfPlaneHint lastBadHint, Movement move) {
+
         try {
             initializeVariables(strategy, curHint, lastBadHint);
+
+            printBasicTransformation(strategy, move);
 
             // here begins line 24 of the ReduceRectangle routine from the paper:
             Coordinate[] newRectangle = null;
