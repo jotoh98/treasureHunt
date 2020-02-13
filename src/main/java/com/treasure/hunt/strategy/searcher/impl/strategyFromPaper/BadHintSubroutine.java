@@ -18,122 +18,147 @@ import static org.locationtech.jts.algorithm.Angle.normalizePositive;
  * @author bsen
  */
 class BadHintSubroutine {
+
     @Getter
     static private BadHintSubroutine instance = new BadHintSubroutine();
 
+    /**
+     * Variable names are equivalent to the paper, but since a', d', etc. is not a valid variable name in Java,
+     * Apos gets added to the variable name in such cases (apos for apostrophe).
+     * E.g. pApos in this implementation equates to p' in the paper and pDoubleApos equates to p''.
+     */
+    HalfPlaneHint.Direction x2Apos;
+    private int basicTransformation;
+    private Coordinate[] rect;
+    private LineSegment AB, AD, BC, CD, L1Apos, L1DoubleApos, L2Apos, AsApos, ppApos, mAposKApos, hAposGApos, pAposK;
+    private Coordinate p, pApos, a, d, e, dApos, f, j, jApos, t, m, mApos, k, kApos, g, gApos, h, hApos, s, sApos;
+    private Coordinate A, B, C, D;
+
     private BadHintSubroutine() {
+    }
+
+
+    /**
+     * Initializes the various variables.
+     * T is added to variable-names where the variables got transformed to match a basicTransformation
+     * (e.g. the current hint in its transformed state is called curHintT)
+     *
+     * @param strategy
+     * @param curHint
+     * @param lastBadHint
+     */
+    private void initializeVariables(StrategyFromPaper strategy, HalfPlaneHint curHint,
+                                     HalfPlaneHint lastBadHint) {
+        rect = new Coordinate[]{strategy.A.getCoordinate(), strategy.B.getCoordinate(),
+                strategy.C.getCoordinate(), strategy.D.getCoordinate()};
+
+        basicTransformation = getBasicTransformation(rect, lastBadHint);
+
+        Coordinate[] transformedRect = phiRectangle(basicTransformation, rect);
+        A = transformedRect[0];
+        B = transformedRect[1];
+        C = transformedRect[2];
+        D = transformedRect[3];
+        HalfPlaneHint lastHintT = phiHint(basicTransformation, rect, lastBadHint);
+
+        p = centerOfRectangle(transformedRect);
+        pApos = twoStepsOrthogonal(lastHintT, p);
+        double pToPAposX = pApos.getX() - p.getX(); // the x coordinate of the vector from p to pApos
+        double pToPAposY = pApos.getY() - p.getY(); // the y coordinate of the vector from p to pApos
+
+        AB = new LineSegment(A, B);
+        AD = new LineSegment(A, D);
+        BC = new LineSegment(B, C);
+        CD = new LineSegment(C, D);
+        L1Apos = new LineSegment(lastHintT.getCenter(),
+                lastHintT.getRight());
+        L1DoubleApos = new LineSegment(
+                lastHintT.getCenter().getX() + pToPAposX,
+                lastHintT.getCenter().getY() + pToPAposY,
+                lastHintT.getRight().getX() + pToPAposX,
+                lastHintT.getRight().getY() + pToPAposY
+        );
+
+        a = lineWayIntersection(L1Apos, AD);
+        d = lineWayIntersection(L1Apos, BC);
+        e = null;
+        if (d != null)
+            e = new Coordinate(D.getX(), d.getY());
+        dApos = null;
+        if (d != null)
+            dApos = twoStepsOrthogonal(lastBadHint, d);
+
+        f = lineWayIntersection(L1DoubleApos, AB);
+        j = lineWayIntersection(L1DoubleApos, BC);
+
+        jApos = null;
+        if (j != null)
+            jApos = new Coordinate(D.getX(), j.getY());
+        t = new Coordinate(f.getX(), D.getY());
+
+        m = new Coordinate(A.getX(), p.getY());
+        mApos = new Coordinate(A.getX(), pApos.getY());
+        k = new Coordinate(B.getX(), p.getY());
+        kApos = new Coordinate(B.getX(), pApos.getY());
+
+        g = new Coordinate(p.getX(), A.getY());
+        gApos = new Coordinate(pApos.getX(), A.getY());
+        h = new Coordinate(p.getX(), D.getY());
+        hApos = new Coordinate(pApos.getX(), D.getY());
+
+        AsApos = new LineSegment(A.getX(), A.getY(),
+                A.getX() + pToPAposX, A.getY() + pToPAposY);
+        // the line from A to s gets constructed by using the line from p to p' (pApos)
+        s = new Coordinate(L1Apos.lineIntersection(AsApos));
+        sApos = new Coordinate(L1DoubleApos.lineIntersection(AsApos));
+
+        HalfPlaneHint curHintT = phiHint(basicTransformation, rect, curHint);
+
+        x2Apos = curHintT.getDirection();
+        L2Apos = new LineSegment(curHintT.getCenter(),
+                curHintT.getRight());
+
+
+        ppApos = new LineSegment(p, pApos);
+        mAposKApos = new LineSegment(mApos, kApos);
+        hAposGApos = new LineSegment(hApos, gApos);
+        pAposK = new LineSegment(pApos, k);
+
     }
 
     /**
      * If the last hint was bad, this function can be called and lastBadHint has to be set accordingly.
      * The function equals the "else"-part of the first if-condition in Algorithm 3 (Function ReduceRectangle(R))
      * in the paper.
-     * Variable names are equivalent to the paper, but since a', d', etc. is not a valid variable name in Java,
-     * Apos is used in such cases (apos for apostrophe), e.g. pApos in this implementation equates to p'
-     * in the paper and pDoubleApos euqates to p''.
-     * At, Bt, Ct and Dt in this implementation equate to A, B, C and D in the paper, since the
-     * not by phi transformed variables of the current rectangle R are also stored with A, B, C and D.
-     * The t signals the transformed state of these variables.
-     * hintT equates to the hint (L1', x1')
      *
+     * @param strategy
      * @param curHint
+     * @param lastBadHint
+     * @param move
      * @return The move to scan various areas so that A,B,C and D can be updated to a smaller rectangle (or the treasure
      * is found)
      */
     Movement lastHintBadSubroutine(StrategyFromPaper strategy, HalfPlaneHint curHint,
-                                          HalfPlaneHint lastBadHint, Movement move) {
-        Coordinate[] rect = new Coordinate[]{strategy.A.getCoordinate(), strategy.B.getCoordinate(),
-                strategy.C.getCoordinate(), strategy.D.getCoordinate()};
+                                   HalfPlaneHint lastBadHint, Movement move) {
         try {
-            int basicTransformation = getBasicTransformation(rect, lastBadHint);
-
-            Coordinate[] transformedRect = phiRectangle(basicTransformation, rect);
-            Coordinate At = transformedRect[0];
-            Coordinate Bt = transformedRect[1];
-            Coordinate Ct = transformedRect[2];
-            Coordinate Dt = transformedRect[3];
-            HalfPlaneHint hintT = phiHint(basicTransformation, rect, lastBadHint);
-
-            Coordinate p = centerOfRectangle(transformedRect);
-            Coordinate pApos = twoStepsOrthogonal(hintT, p);
-            double pToPAposX = pApos.getX() - p.getX(); // the x coordinate of the vector from p to pApos
-            double pToPAposY = pApos.getY() - p.getY(); // the y coordinate of the vector from p to pApos
-
-            LineSegment ABt = new LineSegment(At, Bt);
-            LineSegment ADt = new LineSegment(At, Dt);
-            LineSegment BCt = new LineSegment(Bt, Ct);
-            LineSegment CDt = new LineSegment(Ct, Dt);
-            LineSegment L1Apos = new LineSegment(hintT.getCenter(),
-                    hintT.getRight());
-            LineSegment L1DoubleApos = new LineSegment(
-                    hintT.getCenter().getX() + pToPAposX,
-                    hintT.getCenter().getY() + pToPAposY,
-                    hintT.getRight().getX() + pToPAposX,
-                    hintT.getRight().getY() + pToPAposY
-            );
-
-            Coordinate a = lineWayIntersection(L1Apos, ADt);
-            Coordinate d = lineWayIntersection(L1Apos, BCt);
-            Coordinate e = null;
-            if (d != null)
-                e = new Coordinate(Dt.getX(), d.getY());
-            Coordinate dApos = null;
-            if (d != null)
-                dApos = twoStepsOrthogonal(lastBadHint, d);
-
-            Coordinate f = lineWayIntersection(L1DoubleApos, ABt);
-            Coordinate j = lineWayIntersection(L1DoubleApos, BCt);
-
-            Coordinate jApos = null;
-            if (j != null)
-                jApos = new Coordinate(Dt.getX(), j.getY());
-            Coordinate t = new Coordinate(f.getX(), Dt.getY());
-
-            Coordinate m = new Coordinate(At.getX(), p.getY());
-            Coordinate mApos = new Coordinate(At.getX(), pApos.getY());
-            Coordinate k = new Coordinate(Bt.getX(), p.getY());
-            Coordinate kApos = new Coordinate(Bt.getX(), pApos.getY());
-
-            Coordinate g = new Coordinate(p.getX(), At.getY());
-            Coordinate gApos = new Coordinate(pApos.getX(), At.getY());
-            Coordinate h = new Coordinate(p.getX(), Dt.getY());
-            Coordinate hApos = new Coordinate(pApos.getX(), Dt.getY());
-
-            Coordinate s, sApos;
-
-            LineSegment AsApos = new LineSegment(At.getX(), At.getY(),
-                    At.getX() + pToPAposX, At.getY() + pToPAposY);
-            // the line from A to s gets constructed by using the line from p to p' (pApos)
-            s = new Coordinate(L1Apos.lineIntersection(AsApos));
-            sApos = new Coordinate(L1DoubleApos.lineIntersection(AsApos));
-
-            HalfPlaneHint curHintT = phiHint(basicTransformation, rect, curHint);
-
-            HalfPlaneHint.Direction x2Apos = curHintT.getDirection();
-            LineSegment L2Apos = new LineSegment(curHintT.getCenter(),
-                    curHintT.getRight());
+            initializeVariables(strategy, curHint, lastBadHint);
 
             // here begins line 24 of the ReduceRectangle routine from the paper:
             Coordinate[] newRectangle = null;
-
-            LineSegment ppApos = new LineSegment(p, pApos);
-            LineSegment mAposKApos = new LineSegment(mApos, kApos);
-            LineSegment hAposGApos = new LineSegment(hApos, gApos);
-            LineSegment pAposK = new LineSegment(pApos, k);
 
 
             if (x2Apos == right &&
                     lineBetweenClockwise(L2Apos, L1DoubleApos, ppApos)
             ) {
                 newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
-                        new Coordinate[]{f, Bt, Ct, t});
+                        new Coordinate[]{f, B, C, t});
             }
             if (x2Apos == right &&
                     lineBetweenClockwise(L2Apos, ppApos, mAposKApos)
             ) {
                 move = rectangleScanPhiReverse(basicTransformation, rect, mApos, kApos, k, m, move);
                 newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
-                        new Coordinate[]{g, Bt, Ct, h});
+                        new Coordinate[]{g, B, C, h});
             }
             if ((x2Apos == left || x2Apos == down) &&
                     lineBetweenClockwise(L2Apos, mAposKApos, L1DoubleApos)
@@ -144,7 +169,7 @@ class BadHintSubroutine {
                 move = rectangleScanPhiReverse(basicTransformation, rect, mApos, kApos, k, m, move);
                 // newRectangle := pkCh
                 newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
-                        new Coordinate[]{p, k, Ct, h});
+                        new Coordinate[]{p, k, C, h});
             }
             if (x2Apos == left &&
                     lineBetweenClockwise(L2Apos, L1DoubleApos, hAposGApos)
@@ -152,9 +177,10 @@ class BadHintSubroutine {
                 // rectangleScan(phi_reverse(k, (s, s', d', d))
                 move = rectangleScanPhiReverse(basicTransformation, rect, s, sApos, dApos, d, move);
                 // rectangleScan(phi_reverse(k, (g, g', h', h))
+                move = rectangleScanPhiReverse(basicTransformation, rect, g, gApos, h, hApos, move);
                 // newRectangle := Agpm
                 newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
-                        new Coordinate[]{At, g, p, m});
+                        new Coordinate[]{A, g, p, m});
             }
             if ((x2Apos == left &&
                     lineBetweenClockwise(L2Apos, hAposGApos, ppApos)) ||
@@ -168,14 +194,14 @@ class BadHintSubroutine {
                 move = rectangleScanPhiReverse(basicTransformation, rect, g, gApos, hApos, h, move);
                 // newRectangle := ABkm
                 newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
-                        new Coordinate[]{At, Bt, k, m});
+                        new Coordinate[]{A, B, k, m});
             }
             if (x2Apos == right &&
                     lineBetweenClockwise(L2Apos, pAposK, L1DoubleApos)
             ) {
                 // newRectangle := ABjj'
                 newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
-                        new Coordinate[]{At, Bt, j, jApos});
+                        new Coordinate[]{A, B, j, jApos});
             }
 
             strategy.A = GEOMETRY_FACTORY.createPoint(newRectangle[0]);
