@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.awt.*;
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * @author jotoh
@@ -13,6 +15,23 @@ import java.awt.*;
 @NoArgsConstructor
 @Data
 public class GeometryStyle {
+
+    public static EnumMap<GeometryType, GeometryStyle> defaultsMap = new EnumMap<>(GeometryType.class);
+
+    static {
+        defaultsMap.putAll(Map.of(
+                GeometryType.WAY_POINT, new GeometryStyle(true, new Color(0xFFFFFF)),
+                GeometryType.TREASURE, new GeometryStyle(true, new Color(0xFFD700)),
+                GeometryType.HINT_ANGLE, new GeometryStyle(true, new Color(0x575757)),
+                GeometryType.GRID, new GeometryStyle(true, false, new Color(0x555555), null, -1),
+                GeometryType.CURRENT_PHASE, new GeometryStyle(true, Color.YELLOW),
+                GeometryType.CURRENT_RECTANGLE, new GeometryStyle(true, Color.RED),
+                GeometryType.SEARCHER_LAST_MOVE, new GeometryStyle(true, new Color(0x007A1D)),
+                GeometryType.HALF_PLANE, new GeometryStyle(true, new Color(0x505050), new Color(0x505050)),
+                GeometryType.HALF_PLANE_LINE, new GeometryStyle(true, new Color(0x000000)),
+                GeometryType.HALF_PLANE_LINE_BLUE, new GeometryStyle(true, Color.BLUE)
+        ));
+    }
 
     private boolean visible;
 
@@ -33,25 +52,9 @@ public class GeometryStyle {
     }
 
     public static GeometryStyle getDefaults(GeometryType type) {
-        switch (type) {
-            case WAY_POINT:
-                return new GeometryStyle(true, new Color(0xFFFFFF));
-            case TREASURE:
-                return new GeometryStyle(true, new Color(0xFFD700));
-            case HINT_ANGLE:
-                return new GeometryStyle(true, new Color(0x575757));
-            case CURRENT_PHASE:
-                return new GeometryStyle(true, Color.YELLOW);
-            case CURRENT_RECTANGLE:
-                return new GeometryStyle(true, Color.RED);
-            case SEARCHER_LAST_MOVE:
-                return new GeometryStyle(true, new Color(0x007A1D));
-            case HALF_PLANE:
-                return new GeometryStyle(true, new Color(0x505050), new Color(0x505050));
-            case HALF_PLANE_LINE:
-                return new GeometryStyle(true, new Color(0x000000));
-            case HALF_PLANE_LINE_BLUE:
-                return new GeometryStyle(true, Color.BLUE);
+
+        if (defaultsMap.containsKey(type)) {
+            return defaultsMap.get(type).clone();
         }
         return new GeometryStyle(true, Color.lightGray);
     }
@@ -60,4 +63,11 @@ public class GeometryStyle {
         return new BasicStroke(1);
     }
 
+    public static void registerDefault(GeometryType type, GeometryStyle style) {
+        defaultsMap.put(type, style);
+    }
+
+    protected GeometryStyle clone() {
+        return new GeometryStyle(visible, filled, outlineColor, fillColor, zIndex);
+    }
 }

@@ -1,13 +1,11 @@
 package com.treasure.hunt.strategy.geom;
 
-import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
-import javafx.scene.canvas.GraphicsContext;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import org.jfree.fx.FXGraphics2D;
 
-import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classifies a jts geometry item with parameters to distinguish between items for visualization/algorithm usages.
@@ -23,12 +21,14 @@ public class GeometryItem<T> {
     private T object;
     @NonNull
     private GeometryType geometryType;
-    private GeometryStyle geometryStyle;
+    @Getter
+    private List<GeometryStyle> geometryStyles = new ArrayList<>();
+    private int preferredStyle = 0;
 
     /**
      * The constructor.
      *
-     * @param object        the {@link org.locationtech.jts.geom.Geometry} or {@link com.treasure.hunt.jts.awt.Shapeable}.
+     * @param object        the {@link org.locationtech.jts.geom.Geometry} or {@link com.treasure.hunt.jts.geom.Shapeable}.
      * @param geometryType  the {@link GeometryType}, defining its role.
      * @param geometryStyle the {@link GeometryStyle}, defining its looking.
      */
@@ -36,43 +36,29 @@ public class GeometryItem<T> {
         assert (object != null);
         this.object = object;
         this.geometryType = geometryType;
-        this.geometryStyle = geometryStyle;
+        this.geometryStyles.add(geometryStyle);
     }
 
     /**
      * The constructor, using default {@link GeometryStyle}.
      *
-     * @param object       the {@link org.locationtech.jts.geom.Geometry} or {@link com.treasure.hunt.jts.awt.Shapeable}.
+     * @param object       the {@link org.locationtech.jts.geom.Geometry} or {@link com.treasure.hunt.jts.geom.Shapeable}.
      * @param geometryType the {@link GeometryType}, defining its role.
      */
     public GeometryItem(T object, GeometryType geometryType) {
         this(object, geometryType, GeometryStyle.getDefaults(geometryType));
     }
 
-    /**
-     * This lets {@code this} convert to a {@link Shape} via the given {@code shapeWriter}
-     * and draws itself on the given {@code graphics2D}.
-     *
-     * @param graphics2D        where we want to draw {@code this} on.
-     * @param shapeWriter       converting {@code this} into a {@link Shape}.
-     * @param graphicsContext2D
-     */
-    public void draw(FXGraphics2D graphics2D, AdvancedShapeWriter shapeWriter, GraphicsContext graphicsContext2D) {
-        if (!geometryStyle.isVisible()) {
-            return;
-        }
-        if (object instanceof JavaFxDrawable) {
-            ((JavaFxDrawable) object).draw(geometryStyle, graphicsContext2D, shapeWriter);
-            return;
-        }
-        Shape shape = shapeWriter.toShape(object);
-        if (geometryStyle.isFilled()) {
-            graphics2D.setColor(geometryStyle.getFillColor());
-            graphics2D.fill(shape);
-        }
 
-        graphics2D.setPaint(geometryStyle.getOutlineColor());
-        graphics2D.setStroke(geometryStyle.getStroke());
-        graphics2D.draw(shape);
+    public GeometryStyle getGeometryStyle() {
+        return geometryStyles.get(preferredStyle);
+    }
+
+    public void setPreferredStyle(int preferredStyle) {
+        this.preferredStyle = Math.max(0, Math.min(geometryStyles.size() - 1, preferredStyle));
+    }
+
+    public void addGeometryStyle(GeometryStyle style) {
+        geometryStyles.add(style);
     }
 }
