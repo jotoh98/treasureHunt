@@ -14,7 +14,6 @@ import java.util.List;
 import static com.treasure.hunt.strategy.geom.GeometryType.CURRENT_PHASE;
 import static com.treasure.hunt.strategy.geom.GeometryType.CURRENT_RECTANGLE;
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
-import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.BadHintSubroutine.lastHintBadSubroutine;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.*;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.rectangleScan;
 import static com.treasure.hunt.utils.JTSUtils.*;
@@ -72,7 +71,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         }
         //now analyse the hint:
         if (lastHintWasBad) {
-            return moveReturn(addState(lastHintBadSubroutine(this, hint, lastBadHint, move)));
+            return moveReturn(addState(BadHintSubroutine.getInstance().
+                    lastHintBadSubroutine(this, hint, lastBadHint, move)));
         }
 
         LineSegment AB = new LineSegment(A.getCoordinate(), B.getCoordinate());

@@ -2,6 +2,7 @@ package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.Movement;
+import lombok.Getter;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Point;
@@ -17,6 +18,8 @@ import static org.locationtech.jts.algorithm.Angle.normalizePositive;
  * @author bsen
  */
 class BadHintSubroutine {
+    @Getter
+    static private BadHintSubroutine instance = new BadHintSubroutine();
 
     private BadHintSubroutine() {
     }
@@ -37,19 +40,19 @@ class BadHintSubroutine {
      * @return The move to scan various areas so that A,B,C and D can be updated to a smaller rectangle (or the treasure
      * is found)
      */
-    static Movement lastHintBadSubroutine(StrategyFromPaper strategy, HalfPlaneHint curHint, HalfPlaneHint lastBadHint,
-                                          Movement move) {
+    Movement lastHintBadSubroutine(StrategyFromPaper strategy, HalfPlaneHint curHint,
+                                          HalfPlaneHint lastBadHint, Movement move) {
         Coordinate[] rect = new Coordinate[]{strategy.A.getCoordinate(), strategy.B.getCoordinate(),
                 strategy.C.getCoordinate(), strategy.D.getCoordinate()};
         try {
-            int basicTrans = getBasicTransformation(rect, lastBadHint); // basic transformation
+            int basicTransformation = getBasicTransformation(rect, lastBadHint);
 
-            Coordinate[] transformedRect = phiRectangle(basicTrans, rect);
+            Coordinate[] transformedRect = phiRectangle(basicTransformation, rect);
             Coordinate At = transformedRect[0];
             Coordinate Bt = transformedRect[1];
             Coordinate Ct = transformedRect[2];
             Coordinate Dt = transformedRect[3];
-            HalfPlaneHint hintT = phiHint(basicTrans, rect, lastBadHint);
+            HalfPlaneHint hintT = phiHint(basicTransformation, rect, lastBadHint);
 
             Coordinate p = centerOfRectangle(transformedRect);
             Coordinate pApos = twoStepsOrthogonal(hintT, p);
@@ -104,7 +107,7 @@ class BadHintSubroutine {
             s = new Coordinate(L1Apos.lineIntersection(AsApos));
             sApos = new Coordinate(L1DoubleApos.lineIntersection(AsApos));
 
-            HalfPlaneHint curHintT = phiHint(basicTrans, rect, curHint);
+            HalfPlaneHint curHintT = phiHint(basicTransformation, rect, curHint);
 
             HalfPlaneHint.Direction x2Apos = curHintT.getDirection();
             LineSegment L2Apos = new LineSegment(curHintT.getCenter(),
@@ -122,35 +125,35 @@ class BadHintSubroutine {
             if (x2Apos == right &&
                     lineBetweenClockwise(L2Apos, L1DoubleApos, ppApos)
             ) {
-                newRectangle = phiOtherRectangleInverse(basicTrans, rect,
+                newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
                         new Coordinate[]{f, Bt, Ct, t});
             }
             if (x2Apos == right &&
                     lineBetweenClockwise(L2Apos, ppApos, mAposKApos)
             ) {
-                move = rectangleScanPhiReverse(basicTrans, rect, mApos, kApos, k, m, move);
-                newRectangle = phiOtherRectangleInverse(basicTrans, rect,
+                move = rectangleScanPhiReverse(basicTransformation, rect, mApos, kApos, k, m, move);
+                newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
                         new Coordinate[]{g, Bt, Ct, h});
             }
             if ((x2Apos == left || x2Apos == down) &&
                     lineBetweenClockwise(L2Apos, mAposKApos, L1DoubleApos)
             ) {
                 // rectangleScan(phi_reverse(k, (s, s', d', d))
-                move = rectangleScanPhiReverse(basicTrans, rect, s, sApos, dApos, d, move);
+                move = rectangleScanPhiReverse(basicTransformation, rect, s, sApos, dApos, d, move);
                 // rectangleScan(phi_reverse(k, (m', k', k, m))
-                move = rectangleScanPhiReverse(basicTrans, rect, mApos, kApos, k, m, move);
+                move = rectangleScanPhiReverse(basicTransformation, rect, mApos, kApos, k, m, move);
                 // newRectangle := pkCh
-                newRectangle = phiOtherRectangleInverse(basicTrans, rect,
+                newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
                         new Coordinate[]{p, k, Ct, h});
             }
             if (x2Apos == left &&
                     lineBetweenClockwise(L2Apos, L1DoubleApos, hAposGApos)
             ) {
                 // rectangleScan(phi_reverse(k, (s, s', d', d))
-                move = rectangleScanPhiReverse(basicTrans, rect, s, sApos, dApos, d, move);
+                move = rectangleScanPhiReverse(basicTransformation, rect, s, sApos, dApos, d, move);
                 // rectangleScan(phi_reverse(k, (g, g', h', h))
                 // newRectangle := Agpm
-                newRectangle = phiOtherRectangleInverse(basicTrans, rect,
+                newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
                         new Coordinate[]{At, g, p, m});
             }
             if ((x2Apos == left &&
@@ -162,16 +165,16 @@ class BadHintSubroutine {
                     )
             ) {
                 // rectangleScan(phireverse(k, (g, g', h', h))
-                move = rectangleScanPhiReverse(basicTrans, rect, g, gApos, hApos, h, move);
+                move = rectangleScanPhiReverse(basicTransformation, rect, g, gApos, hApos, h, move);
                 // newRectangle := ABkm
-                newRectangle = phiOtherRectangleInverse(basicTrans, rect,
+                newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
                         new Coordinate[]{At, Bt, k, m});
             }
             if (x2Apos == right &&
                     lineBetweenClockwise(L2Apos, pAposK, L1DoubleApos)
             ) {
                 // newRectangle := ABjj'
-                newRectangle = phiOtherRectangleInverse(basicTrans, rect,
+                newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
                         new Coordinate[]{At, Bt, j, jApos});
             }
 
@@ -196,7 +199,7 @@ class BadHintSubroutine {
      * @param between2
      * @return if line is clockwise between between1 (included) and between2 (excluded)
      */
-    static boolean lineBetweenClockwise(LineSegment line, LineSegment between1, LineSegment between2) {
+    private boolean lineBetweenClockwise(LineSegment line, LineSegment between1, LineSegment between2) {
         LineSegment lineReverse = new LineSegment(line.p1, line.p0);
         LineSegment between2reverse = new LineSegment(between2.p1, between2.p0);
         double angleBetween1 = between1.angle();
@@ -207,7 +210,7 @@ class BadHintSubroutine {
         return maxAngleBetween2and1 < maxAngleLineBetween1;
     }
 
-    static private RuntimeException processError(Exception e, StrategyFromPaper s, Coordinate[] rect, HalfPlaneHint lastBadHint, HalfPlaneHint curHint) {
+    private RuntimeException processError(Exception e, StrategyFromPaper s, Coordinate[] rect, HalfPlaneHint lastBadHint, HalfPlaneHint curHint) {
         Point A = s.A;
         Point B = s.B;
         Point C = s.C;
