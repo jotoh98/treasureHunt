@@ -34,7 +34,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     int phase;
     Point start, // the initial position of the player
     /**
-     * searchAreaPointA, -B, -C and -D are the corners of the rectangle where the treasure is currently searched.
+     * searchCornerPointA, -B, -C and -D are the corners of the rectangle where the treasure is currently searched.
      * This rectangle always lies in the rectangle of the current phase.
      * The rectangle has the same function like the rectangle Ri in Algorithm2 (TreasureHunt1)
      * in the paper.
