@@ -49,8 +49,8 @@ class BadHintSubroutine {
      */
     private void initializeVariables(StrategyFromPaper strategy, HalfPlaneHint curHint,
                                      HalfPlaneHint lastBadHint) {
-        rect = new Coordinate[]{strategy.A.getCoordinate(), strategy.B.getCoordinate(),
-                strategy.C.getCoordinate(), strategy.D.getCoordinate()};
+        rect = new Coordinate[]{strategy.searchAreaCornerA.getCoordinate(), strategy.searchAreaCornerB.getCoordinate(),
+                strategy.searchAreaCornerC.getCoordinate(), strategy.searchAreaCornerD.getCoordinate()};
 
         basicTransformation = getBasicTransformation(rect, lastBadHint);
 
@@ -204,12 +204,13 @@ class BadHintSubroutine {
                         new Coordinate[]{A, B, j, jApos});
             }
 
-            strategy.A = GEOMETRY_FACTORY.createPoint(newRectangle[0]);
-            strategy.B = GEOMETRY_FACTORY.createPoint(newRectangle[1]);
-            strategy.C = GEOMETRY_FACTORY.createPoint(newRectangle[2]);
-            strategy.D = GEOMETRY_FACTORY.createPoint(newRectangle[3]);
+            strategy.searchAreaCornerA = GEOMETRY_FACTORY.createPoint(newRectangle[0]);
+            strategy.searchAreaCornerB = GEOMETRY_FACTORY.createPoint(newRectangle[1]);
+            strategy.searchAreaCornerC = GEOMETRY_FACTORY.createPoint(newRectangle[2]);
+            strategy.searchAreaCornerD = GEOMETRY_FACTORY.createPoint(newRectangle[3]);
             strategy.lastHintWasBad = false;
-            return moveToCenterOfRectangle(strategy.A, strategy.B, strategy.C, strategy.D, move);
+            return moveToCenterOfRectangle(strategy.searchAreaCornerA, strategy.searchAreaCornerB,
+                    strategy.searchAreaCornerC, strategy.searchAreaCornerD, move);
         } catch (Exception ee) {
             throw processError(ee, strategy, rect, lastBadHint, curHint);
         }
@@ -229,18 +230,21 @@ class BadHintSubroutine {
         LineSegment lineReverse = new LineSegment(line.p1, line.p0);
         LineSegment between2reverse = new LineSegment(between2.p1, between2.p0);
         double angleBetween1 = between1.angle();
-        double maxAngleLineBetween1 = Math.max(normalizePositive(line.angle() - angleBetween1), normalizePositive(lineReverse.angle() - angleBetween1));
-        double maxAngleBetween2and1 = Math.max(normalizePositive(between2.angle() - angleBetween1), normalizePositive(between2reverse.angle() - angleBetween1));
+        double maxAngleLineBetween1 = Math.max(normalizePositive(line.angle() - angleBetween1),
+                normalizePositive(lineReverse.angle() - angleBetween1));
+        double maxAngleBetween2and1 = Math.max(normalizePositive(between2.angle() - angleBetween1),
+                normalizePositive(between2reverse.angle() - angleBetween1));
         if (maxAngleLineBetween1 == 0)
             return true;
         return maxAngleBetween2and1 < maxAngleLineBetween1;
     }
 
-    private RuntimeException processError(Exception e, StrategyFromPaper s, Coordinate[] rect, HalfPlaneHint lastBadHint, HalfPlaneHint curHint) {
-        Point A = s.A;
-        Point B = s.B;
-        Point C = s.C;
-        Point D = s.D;
+    private RuntimeException processError(Exception e, StrategyFromPaper s, Coordinate[] rect,
+                                          HalfPlaneHint lastBadHint, HalfPlaneHint curHint) {
+        Point A = s.searchAreaCornerA;
+        Point B = s.searchAreaCornerB;
+        Point C = s.searchAreaCornerC;
+        Point D = s.searchAreaCornerD;
         String message = "A= (" + A.getX() + ", " + A.getY() + ")\n"
                 + " B= (" + B.getX() + ", " + B.getY() + ")\n"
                 + " C= (" + C.getX() + ", " + C.getY() + ")\n"

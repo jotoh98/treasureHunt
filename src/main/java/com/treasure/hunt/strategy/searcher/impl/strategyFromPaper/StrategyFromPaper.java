@@ -26,16 +26,25 @@ import static com.treasure.hunt.utils.JTSUtils.*;
  */
 
 public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
-    int phase;  // equals j in the paper. In phase i, the algorithm checks a rectangle with a side length of 2^i
-    //             centered at the initial position of the searcher
+    /**
+     * phase equals i in Algorithm2 (TreasureHunt1) in the paper.
+     * In phase k, the algorithm checks, if the treasure is located in a rectangle
+     * with a side length of 2^k, centered at the initial position of the searcher.
+     */
+    int phase;
     Point start, // the initial position of the player
-            A, B, C, D; // The points current rectangle where the treasure is to be searched.
-    //                     ABCD lies always in the rectangle of the current phase.
-    //                     The points are used like the points A,B,C and D in the paper.
+    /**
+     * searchAreaPointA, -B, -C and -D are the corners of the rectangle where the treasure is currently searched.
+     * This rectangle always lies in the rectangle of the current phase.
+     * The rectangle has the same function like the rectangle Ri in Algorithm2 (TreasureHunt1)
+     * in the paper.
+     */
+    searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD;
+
 
     HalfPlaneHint lastBadHint; //only used when last hint was bad
     boolean lastHintWasBad = false;
-    Point lastLocation;
+    private Point lastLocation;
 
     /**
      * {@inheritDoc}
@@ -64,8 +73,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Movement move = new Movement();
 
         move.addWayPoint(lastLocation);
-        double width = B.getX() - A.getX();
-        double height = A.getY() - D.getY();
+        double width = searchAreaCornerB.getX() - searchAreaCornerA.getX();
+        double height = searchAreaCornerA.getY() - searchAreaCornerD.getY();
         if (width < 4 || height < 4) {
             return moveReturn(addState(incrementPhase(move)));
         }
@@ -75,10 +84,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                     lastHintBadSubroutine(this, hint, lastBadHint, move)));
         }
 
-        LineSegment AB = new LineSegment(A.getCoordinate(), B.getCoordinate());
-        LineSegment BC = new LineSegment(B.getCoordinate(), C.getCoordinate());
-        LineSegment CD = new LineSegment(C.getCoordinate(), D.getCoordinate());
-        LineSegment AD = new LineSegment(A.getCoordinate(), D.getCoordinate());
+        LineSegment AB = new LineSegment(searchAreaCornerA.getCoordinate(), searchAreaCornerB.getCoordinate());
+        LineSegment BC = new LineSegment(searchAreaCornerB.getCoordinate(), searchAreaCornerC.getCoordinate());
+        LineSegment CD = new LineSegment(searchAreaCornerC.getCoordinate(), searchAreaCornerD.getCoordinate());
+        LineSegment AD = new LineSegment(searchAreaCornerA.getCoordinate(), searchAreaCornerD.getCoordinate());
 
         LineSegment hintLine = new LineSegment(hint.getCenter(),
                 hint.getRight());
@@ -99,28 +108,31 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         if (lineWayIntersection(hintLine, CD) != null)
             intersection_CD_hint = GEOMETRY_FACTORY.createPoint(JTSUtils.lineWayIntersection(hintLine, CD));
 
-        Point[] horizontalSplit = splitRectangleHorizontally(A, B, C, D, hint, intersection_AD_hint,
-                intersection_BC_hint);
+        Point[] horizontalSplit = splitRectangleHorizontally(searchAreaCornerA, searchAreaCornerB,
+                searchAreaCornerC, searchAreaCornerD, hint, intersection_AD_hint, intersection_BC_hint);
         if (horizontalSplit != null) {
-            A = horizontalSplit[0];
-            B = horizontalSplit[1];
-            C = horizontalSplit[2];
-            D = horizontalSplit[3];
+            searchAreaCornerA = horizontalSplit[0];
+            searchAreaCornerB = horizontalSplit[1];
+            searchAreaCornerC = horizontalSplit[2];
+            searchAreaCornerD = horizontalSplit[3];
             // "good" case (as defined in the paper)
-            return moveReturn(addState(moveToCenterOfRectangle(A, B, C, D, move)));
+            return moveReturn(addState(moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB,
+                    searchAreaCornerC, searchAreaCornerD, move)));
         }
-        Point[] verticalSplit = splitRectangleVertically(A, B, C, D, hint, intersection_AB_hint,
-                intersection_CD_hint);
+        Point[] verticalSplit = splitRectangleVertically(searchAreaCornerA, searchAreaCornerB,
+                searchAreaCornerC, searchAreaCornerD, hint, intersection_AB_hint, intersection_CD_hint);
         if (verticalSplit != null) {
-            A = verticalSplit[0];
-            B = verticalSplit[1];
-            C = verticalSplit[2];
-            D = verticalSplit[3];
+            searchAreaCornerA = verticalSplit[0];
+            searchAreaCornerB = verticalSplit[1];
+            searchAreaCornerC = verticalSplit[2];
+            searchAreaCornerD = verticalSplit[3];
             // "good" case (as defined in the paper)
-            return moveReturn(addState(moveToCenterOfRectangle(A, B, C, D, move)));
+            return moveReturn(addState(moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB,
+                    searchAreaCornerC, searchAreaCornerD, move)));
         }
         // when none of this cases takes place, the hint is bad (as defined in the paper). This gets handled here:
-        Point destination = GEOMETRY_FACTORY.createPoint(twoStepsOrthogonal(hint, centerOfRectangle(A, B, C, D)));
+        Point destination = GEOMETRY_FACTORY.createPoint(twoStepsOrthogonal(hint,
+                centerOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD)));
         move.addWayPoint(destination);
         lastHintWasBad = true;
         lastBadHint = hint;
@@ -137,11 +149,11 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     private Movement addState(Movement move) {
         // add current rectangle which the strategy is working on
         Coordinate[] cur_coords = new Coordinate[5];
-        cur_coords[0] = A.getCoordinate();
-        cur_coords[1] = B.getCoordinate();
-        cur_coords[2] = C.getCoordinate();
-        cur_coords[3] = D.getCoordinate();
-        cur_coords[4] = A.getCoordinate();
+        cur_coords[0] = searchAreaCornerA.getCoordinate();
+        cur_coords[1] = searchAreaCornerB.getCoordinate();
+        cur_coords[2] = searchAreaCornerC.getCoordinate();
+        cur_coords[3] = searchAreaCornerD.getCoordinate();
+        cur_coords[4] = searchAreaCornerA.getCoordinate();
 
         Polygon cur_rect = GEOMETRY_FACTORY.createPolygon(cur_coords);
         GeometryItem<Polygon> cur = new GeometryItem<Polygon>(cur_rect, CURRENT_RECTANGLE);
@@ -160,26 +172,41 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         // assert if the current rectangle ABCD lies in the rectangle of the current phase
         Coordinate[] rect = phaseRectangle();
         if (
-                !doubleEqual(A.getX(), rect[0].getX()) && A.getX() < rect[0].getX() ||
-                        !doubleEqual(A.getX(), rect[1].getX()) && A.getX() > rect[1].getX() ||
-                        !doubleEqual(A.getY(), rect[0].getY()) && A.getY() > rect[0].getY() ||
-                        !doubleEqual(A.getY(), rect[2].getY()) && A.getY() < rect[2].getY() ||
+                !doubleEqual(searchAreaCornerA.getX(), rect[0].getX()) && searchAreaCornerA.getX() < rect[0].getX() ||
+                        !doubleEqual(searchAreaCornerA.getX(), rect[1].getX())
+                                && searchAreaCornerA.getX() > rect[1].getX() ||
+                        !doubleEqual(searchAreaCornerA.getY(), rect[0].getY())
+                                && searchAreaCornerA.getY() > rect[0].getY() ||
+                        !doubleEqual(searchAreaCornerA.getY(), rect[2].getY())
+                                && searchAreaCornerA.getY() < rect[2].getY() ||
 
 
-                        !doubleEqual(B.getX(), rect[0].getX()) && B.getX() < rect[0].getX() ||
-                        !doubleEqual(B.getX(), rect[1].getX()) && B.getX() > rect[1].getX() ||
-                        !doubleEqual(B.getY(), rect[0].getY()) && B.getY() > rect[0].getY() ||
-                        !doubleEqual(B.getY(), rect[2].getY()) && B.getY() < rect[2].getY() ||
+                        !doubleEqual(searchAreaCornerB.getX(), rect[0].getX())
+                                && searchAreaCornerB.getX() < rect[0].getX() ||
+                        !doubleEqual(searchAreaCornerB.getX(), rect[1].getX())
+                                && searchAreaCornerB.getX() > rect[1].getX() ||
+                        !doubleEqual(searchAreaCornerB.getY(), rect[0].getY())
+                                && searchAreaCornerB.getY() > rect[0].getY() ||
+                        !doubleEqual(searchAreaCornerB.getY(), rect[2].getY())
+                                && searchAreaCornerB.getY() < rect[2].getY() ||
 
-                        !doubleEqual(C.getX(), rect[0].getX()) && C.getX() < rect[0].getX() ||
-                        !doubleEqual(C.getX(), rect[1].getX()) && C.getX() > rect[1].getX() ||
-                        !doubleEqual(C.getY(), rect[0].getY()) && C.getY() > rect[0].getY() ||
-                        !doubleEqual(C.getY(), rect[2].getY()) && C.getY() < rect[2].getY() ||
+                        !doubleEqual(searchAreaCornerC.getX(), rect[0].getX())
+                                && searchAreaCornerC.getX() < rect[0].getX() ||
+                        !doubleEqual(searchAreaCornerC.getX(), rect[1].getX())
+                                && searchAreaCornerC.getX() > rect[1].getX() ||
+                        !doubleEqual(searchAreaCornerC.getY(), rect[0].getY())
+                                && searchAreaCornerC.getY() > rect[0].getY() ||
+                        !doubleEqual(searchAreaCornerC.getY(), rect[2].getY())
+                                && searchAreaCornerC.getY() < rect[2].getY() ||
 
-                        !doubleEqual(D.getX(), rect[0].getX()) && D.getX() < rect[0].getX() ||
-                        !doubleEqual(D.getX(), rect[1].getX()) && D.getX() > rect[1].getX() ||
-                        !doubleEqual(D.getY(), rect[0].getY()) && D.getY() > rect[0].getY() ||
-                        !doubleEqual(D.getY(), rect[2].getY()) && D.getY() < rect[2].getY()
+                        !doubleEqual(searchAreaCornerD.getX(), rect[0].getX())
+                                && searchAreaCornerD.getX() < rect[0].getX() ||
+                        !doubleEqual(searchAreaCornerD.getX(), rect[1].getX())
+                                && searchAreaCornerD.getX() > rect[1].getX() ||
+                        !doubleEqual(searchAreaCornerD.getY(), rect[0].getY())
+                                && searchAreaCornerD.getY() > rect[0].getY() ||
+                        !doubleEqual(searchAreaCornerD.getY(), rect[2].getY())
+                                && searchAreaCornerD.getY() < rect[2].getY()
         ) {
             throw new AssertionError(
                     "phaseRect:\n" +
@@ -188,8 +215,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                             rect[2].toString() + "\n" +
                             rect[3].toString() + "\n" +
                             "ABCD:\n"
-                            + Arrays.toString(A.getCoordinates()) + "\n" + Arrays.toString(B.getCoordinates()) + "\n"
-                            + Arrays.toString(C.getCoordinates()) + "\n" + Arrays.toString(D.getCoordinates())
+                            + Arrays.toString(searchAreaCornerA.getCoordinates()) + "\n"
+                            + Arrays.toString(searchAreaCornerB.getCoordinates()) + "\n"
+                            + Arrays.toString(searchAreaCornerC.getCoordinates()) + "\n"
+                            + Arrays.toString(searchAreaCornerD.getCoordinates())
             );
         }
         return move;
@@ -347,13 +376,13 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      */
     private Movement incrementPhase(Movement move) {
         phase++;
-        Point oldA = A;
-        Point oldB = B;
-        Point oldC = C;
-        Point oldD = D;
+        Point oldA = searchAreaCornerA;
+        Point oldB = searchAreaCornerB;
+        Point oldC = searchAreaCornerC;
+        Point oldD = searchAreaCornerD;
         setRectToPhase();
         rectangleScan(oldA, oldB, oldC, oldD, move);
-        move.addWayPoint(centerOfRectangle(A, B, C, D));
+        move.addWayPoint(centerOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD));
         return move;
     }
 
@@ -380,9 +409,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      */
     private void setRectToPhase() {
         Coordinate[] rect = phaseRectangle();
-        A = GEOMETRY_FACTORY.createPoint(rect[0]);
-        B = GEOMETRY_FACTORY.createPoint(rect[1]);
-        C = GEOMETRY_FACTORY.createPoint(rect[2]);
-        D = GEOMETRY_FACTORY.createPoint(rect[3]);
+        searchAreaCornerA = GEOMETRY_FACTORY.createPoint(rect[0]);
+        searchAreaCornerB = GEOMETRY_FACTORY.createPoint(rect[1]);
+        searchAreaCornerC = GEOMETRY_FACTORY.createPoint(rect[2]);
+        searchAreaCornerD = GEOMETRY_FACTORY.createPoint(rect[3]);
     }
 }
