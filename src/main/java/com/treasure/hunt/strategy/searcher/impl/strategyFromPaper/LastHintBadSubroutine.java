@@ -11,6 +11,7 @@ import org.locationtech.jts.geom.Point;
 
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.*;
+import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.HintQuality.none;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.*;
 import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
 import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
@@ -19,10 +20,10 @@ import static org.locationtech.jts.algorithm.Angle.normalizePositive;
 /**
  * @author bsen
  */
-class BadHintSubroutine {
+class LastHintBadSubroutine {
 
     @Getter
-    static private BadHintSubroutine instance = new BadHintSubroutine();
+    static private LastHintBadSubroutine instance = new LastHintBadSubroutine();
 
     /**
      * Variable names are equivalent to the paper, but since a', d', etc. is not a valid variable name in Java,
@@ -36,7 +37,13 @@ class BadHintSubroutine {
     private Coordinate p, pApos, a, d, e, dApos, f, j, jApos, t, m, mApos, k, kApos, g, gApos, h, hApos, s, sApos;
     private Coordinate A, B, C, D;
 
-    private BadHintSubroutine() {
+    /**
+     * The result of applying phi, defined by basicTransformation on the hint received before the current hint
+     * (which is the bad hint)
+     */
+    private HalfPlaneHint lastHintT;
+
+    private LastHintBadSubroutine() {
     }
 
 
@@ -61,7 +68,7 @@ class BadHintSubroutine {
         B = transformedRect[1];
         C = transformedRect[2];
         D = transformedRect[3];
-        HalfPlaneHint lastHintT = phiHint(basicTransformation, rect, lastBadHint);
+        lastHintT = phiHint(basicTransformation, rect, lastBadHint);
 
         p = centerOfRectangle(transformedRect);
         pApos = twoStepsOrthogonal(lastHintT, p);
@@ -128,14 +135,58 @@ class BadHintSubroutine {
     }
 
     private void printBasicTransformation(StrategyFromPaper strategy, Movement move) {
+        String interpretationBasicTransformationMsg = "In order to simplify the many cases a bad hint can lie in, in the " +
+                " paper every configuration in which the last hint was bad, gets transformation to similar base cases.\n" +
+                "Then the configuration gets processed and the result is again transformed by undoing the previously" +
+                " applied transformation. Generally the configuration is rotated by a multiple of pi/2 around the " +
+                "middle point of our current rectangle (indicated by red) and it can be reflected by the line " +
+                "parallel to the y-axis going through the middle point of the current rectangle.\n" +
+                "This is done so that " +
+                "the line of the hint gotten before the current hint," +
+                " goes through the left and right side of current rectangle (indicated in red) and" +
+                "the treasure lies on the right side of this line or above this line (when this line is parallel to " +
+                "the x axis).\n" +
+                "In order to reach that, in our case, ";
+
+        if (basicTransformation == 0) {
+            interpretationBasicTransformationMsg =
+                    interpretationBasicTransformationMsg.concat(" nothing has to be done");
+        } else {
+            if (basicTransformation != 4) {
+                interpretationBasicTransformationMsg =
+                        interpretationBasicTransformationMsg.concat(" the configuration is rotated by ");
+                switch (basicTransformation % 4) {
+                    case 1:
+                        interpretationBasicTransformationMsg = interpretationBasicTransformationMsg.concat(" pi/2");
+                        break;
+                    case 2:
+                        interpretationBasicTransformationMsg = interpretationBasicTransformationMsg.concat(" pi");
+                        break;
+                    case 3:
+                        interpretationBasicTransformationMsg = interpretationBasicTransformationMsg.concat(" pi*3/2");
+                        break;
+                    default:
+                        throw new AssertionError("basicTransformation equals " + basicTransformation);
+                }
+            }
+        }
+        if (basicTransformation < 4) {
+            interpretationBasicTransformationMsg = interpretationBasicTransformationMsg.concat(".");
+        } else {
+            interpretationBasicTransformationMsg = interpretationBasicTransformationMsg.concat(
+                    " and reflected on the line though the middle point of the " +
+                    "current rectangle and parallel to the y-axis.");
+        }
+
+        StatusMessageItem interpretationBasicTransformation = new StatusMessageItem(
+                StatusMessageType.BASIC_TRANSFORMATION_INTERPRETATION, interpretationBasicTransformationMsg);
+        move.getStatusMessageItemsToBeAdded().add(interpretationBasicTransformation);
+        strategy.statusMessageItemsToBeRemovedNextMove.add(interpretationBasicTransformation);
+
         StatusMessageItem basicTransformationStatus = new StatusMessageItem(
                 StatusMessageType.BASIC_TRANSFORMATION, Integer.toString(basicTransformation));
         move.getStatusMessageItemsToBeAdded().add(basicTransformationStatus);
         strategy.statusMessageItemsToBeRemovedNextMove.add(basicTransformationStatus);
-        switch (basicTransformation) {
-            case 0:
-                //TODO
-        }
     }
 
     /**
@@ -155,7 +206,6 @@ class BadHintSubroutine {
 
         try {
             initializeVariables(strategy, curHint, lastBadHint);
-
             printBasicTransformation(strategy, move);
 
             // here begins line 24 of the ReduceRectangle routine from the paper:
@@ -223,7 +273,7 @@ class BadHintSubroutine {
             strategy.searchAreaCornerB = GEOMETRY_FACTORY.createPoint(newRectangle[1]);
             strategy.searchAreaCornerC = GEOMETRY_FACTORY.createPoint(newRectangle[2]);
             strategy.searchAreaCornerD = GEOMETRY_FACTORY.createPoint(newRectangle[3]);
-            strategy.lastHintWasBad = false;
+            strategy.lastHintQuality = none;
             return moveToCenterOfRectangle(strategy.searchAreaCornerA, strategy.searchAreaCornerB,
                     strategy.searchAreaCornerC, strategy.searchAreaCornerD, move);
         } catch (Exception ee) {
