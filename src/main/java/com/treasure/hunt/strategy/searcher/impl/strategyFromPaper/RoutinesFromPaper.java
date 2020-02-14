@@ -35,8 +35,7 @@ class RoutinesFromPaper {
      * @param P2
      * @return
      */
-    static private Point[] lineOfPointsWithDistanceOne(Coordinate P1, Coordinate P2) {
-        int k = (int) P1.distance(P2);
+    static private Point[] lineOfPointsWithDistanceOne(int k, Coordinate P1, Coordinate P2) {
         Point[] res = new Point[k + 1];
 
         double xDist = P2.getX() - P1.getX();
@@ -61,8 +60,8 @@ class RoutinesFromPaper {
      */
     static Movement rectangleScan(Coordinate A, Coordinate B, Coordinate C, Coordinate D, Movement move) {
         int k = (int) A.distance(B);
-        Point[] a = lineOfPointsWithDistanceOne(A, B);
-        Point[] b = lineOfPointsWithDistanceOne(D, C);
+        Point[] a = lineOfPointsWithDistanceOne(k, A, B);
+        Point[] b = lineOfPointsWithDistanceOne(k, D, C);
 
         if (k % 2 == 1) {
             for (int i = 0; i <= k - 1; i += 2) {
