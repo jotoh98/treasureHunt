@@ -43,6 +43,10 @@ public final class JTSUtils {
         return GEOMETRY_FACTORY.createLineString(coords);
     }
 
+    public static LineString createLineString(LineSegment lineSegment) {
+        return GEOMETRY_FACTORY.createLineString(new Coordinate[]{lineSegment.p0, lineSegment.p1});
+    }
+
     /**
      * Tests whether and infinite line intersects with a line segment
      *
@@ -241,7 +245,7 @@ public final class JTSUtils {
      * @param coordinates the list of coordinates
      * @return the convex hull for the list of coordinates
      */
-    public static ConvexHull getConvexHull(List<Coordinate> coordinates) {
+    public static ConvexHull createConvexHull(List<Coordinate> coordinates) {
         return new ConvexHull(
                 coordinates.toArray(new Coordinate[0]),
                 JTSUtils.GEOMETRY_FACTORY

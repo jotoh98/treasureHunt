@@ -1,38 +1,42 @@
 package com.treasure.hunt.jts.geom;
 
+import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
 import com.treasure.hunt.utils.JTSUtils;
+import com.treasure.hunt.utils.ListUtils;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.locationtech.jts.algorithm.ConvexHull;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.math.Vector2D;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.awt.*;
+import java.awt.geom.GeneralPath;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Polyhedron defined by a list of {@link HalfPlane}s.
  */
 @AllArgsConstructor
 @NoArgsConstructor
-public class Polyhedron {
+public class Polyhedron implements Shapeable {
 
     /**
      * List of halfPlanes defining the polyhedron.
      */
+    @Getter
     private List<HalfPlane> halfPlanes = new ArrayList<>();
 
     @Getter
     private List<Coordinate> resolved = new ArrayList<>();
-    private LineSegment unbound = new LineSegment();
+
+    private List<Ray> unbound = new ArrayList<>();
+
+    private List<LineSegment> resolvedList = new ArrayList<>();
 
     public Polyhedron(List<HalfPlane> halfPlanes) {
         this.halfPlanes = halfPlanes;
@@ -42,17 +46,13 @@ public class Polyhedron {
     public void addHalfPlane(HalfPlane halfPlane) {
         if (inside(halfPlane)) {
             halfPlanes.add(halfPlane);
+            resolve();
         }
     }
 
-    /**
-     * Tests, if a {@link Coordinate} lays inside of the polyhedron.
-     *
-     * @param c tested coordinate
-     * @return whether the tested coordinate lays inside of the polyhedron
-     */
-    public boolean inside(Coordinate c) {
-        return halfPlanes.stream().anyMatch(halfPlane -> halfPlane.inside(c));
+    public void addAngle(GeometryAngle angle) {
+        addHalfPlane(new HalfPlane(angle.getCenter(), angle.getRight()));
+        addHalfPlane(new HalfPlane(angle.getLeft(), angle.getCenter()));
     }
 
     /**
@@ -91,6 +91,19 @@ public class Polyhedron {
     }
 
     /**
+     * Tests, if a {@link Coordinate} lays inside of the polyhedron.
+     *
+     * @param c tested coordinate
+     * @return whether the tested coordinate lays inside of the polyhedron
+     */
+    public boolean inside(Coordinate c) {
+        if (c == null) {
+            return false;
+        }
+        return halfPlanes.stream().anyMatch(halfPlane -> halfPlane.inside(c));
+    }
+
+    /**
      * <p>Resolve the polyhedron's vertices destructively.</p>
      * <p>First, we sort the half planes by their angle relative to the x-axis. With this we can assert that
      *     <ol type="a">
@@ -126,76 +139,59 @@ public class Polyhedron {
 
     public void resolve() {
 
-        List<Coordinate> coordinates = new ArrayList<>(); // end-resultat
+        resolved = new ArrayList<>();
 
-        final List<HalfPlane> sorted = sortByAngle(halfPlanes);// sortierte liste nach winkel
+        sortByAngle();
 
-        int halfPlaneAmount = sorted.size();
+        final int size = halfPlanes.size();
 
-        final List<Integer> cutAmount = new ArrayList<>(Collections.nCopies(halfPlaneAmount, 0));
+        for (int outerIndex = 0; outerIndex < size; outerIndex++) {
+            for (int innerIndex = 0; innerIndex < size; innerIndex++) {
+                if (innerIndex == outerIndex) {
+                    continue;
+                }
 
-        for (int currentIndex = 0; currentIndex < halfPlaneAmount; currentIndex++) {
-            final HalfPlane current = sorted.get(currentIndex);
-            boolean intersected = false;
-            for (int otherIndexOffset = 1; otherIndexOffset <= halfPlaneAmount - 1; otherIndexOffset++) {
-                final int otherIndex = (currentIndex + otherIndexOffset) % halfPlaneAmount;
-                final HalfPlane other = sorted.get(otherIndex);
+                int nextIndex = (outerIndex + 1) % size;
 
-                final Coordinate intersection = current.intersection(other);
+                final HalfPlane current = halfPlanes.get(outerIndex);
+                final HalfPlane other = halfPlanes.get(innerIndex);
 
-                if (intersection != null && inside(intersection)) {
-                    if (!coordinates.contains(intersection)) {
-                        coordinates.add(intersection);
-                        cutAmount.set(currentIndex, cutAmount.get(currentIndex) + 1);
-                        cutAmount.set(otherIndex, cutAmount.get(otherIndex) + 1);
-                    }
-                    currentIndex = otherIndex;
-                    intersected = true;
-                    break;
+                Coordinate intersection = current.intersection(other);
+
+                if (inside(intersection)) {
+                    resolved.add(intersection);
                 }
             }
-            if (!intersected) {
-                currentIndex++;
-            }
         }
 
-        filterHalfPlanes(sorted, cutAmount);
+        filterHalfPlanes();
 
-        List<Coordinate> coordinates1 = IntStream.range(0, cutAmount.size())
-                .filter(index -> cutAmount.get(index) == 1)
-                .mapToObj(index -> halfPlanes.get(index).getDirection().normalize().translate(halfPlanes.get(index).p0))
-                .collect(Collectors.toList());
-        resolved = coordinates;
-        if (coordinates1.size() == 2) {
-            unbound = new LineSegment(coordinates1.get(0), coordinates1.get(1));
-            resolved.addAll(coordinates1);
-
-        } else {
-            unbound = null;
+        if (isUnbound()) {
         }
-
-
     }
 
-    @Data
-    private class Connection {
-        private int prev;
-        private int next;
+    private boolean formsUnbound(HalfPlane h1, HalfPlane h2) {
+        return h1.getDirection().angle() <= h2.getDirection().rotateByQuarterCircle(2).angle();
     }
 
     /**
      * Filter the {@link HalfPlane}s on whether or not they are necessary for the polyhedron.
-     *
-     * @param halfPlanes the list of half planes
-     * @param cutAmount  the list of necessities
      */
-    private void filterHalfPlanes(List<HalfPlane> halfPlanes, List<Integer> cutAmount) {
-        if (halfPlanes.size() != cutAmount.size()) {
-            return;
-        }
-        this.halfPlanes = IntStream.range(0, cutAmount.size())
-                .filter(index -> cutAmount.get(index) > 0)
-                .mapToObj(halfPlanes::get)
+    private void filterHalfPlanes() {
+
+        Coordinate[] coordinates = getConvexHull().getCoordinates();
+        List<LineSegment> lineSegments = ListUtils
+                .consecutive(coordinates, LineSegment::new)
+                .collect(Collectors.toList());
+
+        lineSegments.add(new LineSegment(coordinates[0], coordinates[coordinates.length - 1]));
+
+        halfPlanes = halfPlanes.stream()
+                .filter(halfPlane ->
+                        lineSegments.stream().anyMatch(lineSegment ->
+                                halfPlane.intersection(lineSegment) != null
+                        )
+                )
                 .collect(Collectors.toList());
     }
 
@@ -212,6 +208,10 @@ public class Polyhedron {
                 .collect(Collectors.toList());
     }
 
+    private void sortByAngle() {
+        halfPlanes = sortByAngle(halfPlanes);
+    }
+
     /**
      * Get the (2 &sdot; &pi;)-normalized angle for a direction vector.
      *
@@ -226,41 +226,52 @@ public class Polyhedron {
         return angle1;
     }
 
-    public Geometry getGeometry(boolean checkBound) {
-        final Coordinate[] coordinates = resolved.toArray(new Coordinate[0]);
-        final GeometryFactory factory = JTSUtils.GEOMETRY_FACTORY;
+    public Geometry getGeometry() {
+        ConvexHull convexHull = new ConvexHull(resolved.toArray(Coordinate[]::new), JTSUtils.GEOMETRY_FACTORY);
 
-        if (!checkBound || isBound()) {
-            return factory.createPolygon(coordinates).norm();
+        Geometry hullGeometry = convexHull.getConvexHull();
+
+        if (isBound()) {
+            return hullGeometry;
         }
 
-        return factory.createLineString(coordinates).norm();
+        List<Coordinate> coordinates = Arrays.asList(hullGeometry.norm().getCoordinates());
+
+        Coordinate firstUnbound = resolvedList.stream()
+                .filter(lineSegment -> lineSegment instanceof Ray)
+                .findFirst()
+                .map(ray -> ray.p0)
+                .orElse(null);
+
+        int startIndex = coordinates.indexOf(firstUnbound);
+
+        if (startIndex >= 0 && coordinates.size() > 1) {
+            Collections.rotate(coordinates, startIndex);
+
+            return JTSUtils
+                    .GEOMETRY_FACTORY
+                    .createLineString(coordinates.toArray(Coordinate[]::new))
+                    .norm();
+        }
+
+        return hullGeometry;
+
     }
+
 
     public List<Ray> getRays() {
         if (isBound()) {
             return new ArrayList<>();
         }
 
-        final ArrayList<Ray> rays = new ArrayList<>();
+        return resolvedList.stream()
+                .filter(lineSegment -> lineSegment instanceof Ray)
+                .map(lineSegment -> (Ray) lineSegment)
+                .collect(Collectors.toList());
+    }
 
-        halfPlanes.forEach(halfPlane -> {
-            final List<Coordinate> cutCoordinates = resolved.stream()
-                    .filter(halfPlane::inLine)
-                    .collect(Collectors.toList());
-            if (cutCoordinates.size() != 1) {
-                return;
-            }
-            final Coordinate p0 = cutCoordinates.get(0);
-            Vector2D direction = halfPlane.getDirection();
-            Coordinate p1 = direction.translate(p0);
-            if (!inside(p1)) {
-                p1 = direction.rotateByQuarterCircle(2).translate(p0);
-            }
-            rays.add(new Ray(p0, p1));
-        });
-
-        return rays;
+    public Geometry getConvexHull() {
+        return JTSUtils.createConvexHull(resolved).getConvexHull();
     }
 
     public void intersect(Ray ray) {
@@ -272,7 +283,24 @@ public class Polyhedron {
             }
         }
         inters.stream()
-                .filter(point -> inside(point))
+                .filter(this::inside)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Shape toShape(AdvancedShapeWriter advancedShapeWriter) {
+        Geometry convexHull = JTSUtils.createConvexHull(getResolved()).getConvexHull();
+
+        Shape hullShape = advancedShapeWriter.toShape(convexHull);
+
+        if (isBound()) {
+            return hullShape;
+        }
+
+        GeneralPath path = new GeneralPath();
+
+        path.append(hullShape, false);
+        getRays().forEach(ray -> path.append(advancedShapeWriter.toShape(ray), false));
+        return path;
     }
 }

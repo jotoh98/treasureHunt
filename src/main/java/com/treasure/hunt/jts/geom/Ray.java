@@ -140,4 +140,8 @@ public class Ray extends LineSegment implements Shapeable {
     public boolean inLine(Coordinate c) {
         return JTSUtils.inLine(this, c);
     }
+
+    public Vector2D getDirection() {
+        return Vector2D.create(p0, p1);
+    }
 }

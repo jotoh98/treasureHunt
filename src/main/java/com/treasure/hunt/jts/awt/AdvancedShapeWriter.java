@@ -62,7 +62,7 @@ public class AdvancedShapeWriter extends ShapeWriter {
         }
         try {
             return super.toShape((Geometry) object);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             log.debug("Could not render object to shape", e);
         }
         return null;

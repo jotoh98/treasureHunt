@@ -239,9 +239,7 @@ public class GeometryAngle extends LineString implements Shapeable {
     }
 
     public boolean inView(LineSegment lineSegment) {
-        return inView(lineSegment) ||
-                leftRay().intersection(lineSegment) != null ||
-                rightRay().intersection(lineSegment) != null;
+        return inView(lineSegment.p0) && inView(lineSegment.p1);
     }
 
     /**

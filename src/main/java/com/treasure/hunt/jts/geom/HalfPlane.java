@@ -130,4 +130,8 @@ public class HalfPlane extends Line {
         final Polygon polygon = toPolygon(shapeWriter.getBoundary());
         return polygon == null ? null : shapeWriter.toShape(polygon);
     }
+
+    public boolean equals(HalfPlane other) {
+        return p0.equals2D(other.p0) && p1.equals2D(other.p1);
+    }
 }
