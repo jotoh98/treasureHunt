@@ -37,7 +37,7 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
     public AngleHint move(Movement movement) {
         Coordinate searcherPos = movement.getEndPoint().getCoordinate();
 
-        GeometryAngle angle = JTSUtils.validRandomAngle(searcherPos, treasurePosition.getCoordinate(), 2 * Math.PI);
+        GeometryAngle angle = JTSUtils.validRandomAngle(searcherPos, treasurePosition.getCoordinate(), Math.PI);
         double angleDegree = interiorAngle(angle.getRight(), angle.getCenter(), angle.getLeft());
 
         AngleHint angleHint = new AngleHint(

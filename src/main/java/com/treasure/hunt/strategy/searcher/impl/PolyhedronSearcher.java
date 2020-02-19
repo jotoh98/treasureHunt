@@ -3,17 +3,21 @@ package com.treasure.hunt.strategy.searcher.impl;
 import com.treasure.hunt.jts.geom.GeometryAngle;
 import com.treasure.hunt.jts.geom.HalfPlane;
 import com.treasure.hunt.jts.geom.Polyhedron;
+import com.treasure.hunt.jts.geom.Ray;
+import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.geom.GeometryStyle;
+import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.algorithm.ConvexHull;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.math.Vector2D;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,8 +46,8 @@ public class PolyhedronSearcher implements Searcher<AngleHint> {
         final Coordinate lastPosition = lastMove();
         final Movement movement = new Movement(JTSUtils.GEOMETRY_FACTORY.createPoint(lastPosition));
 
-        convHull.addHalfPlane(new HalfPlane(hint.getGeometryAngle().getCenter(), hint.getGeometryAngle().getLeft()));
-        convHull.addHalfPlane(new HalfPlane(hint.getGeometryAngle().getCenter(), hint.getGeometryAngle().getRight()));
+        convHull.addHalfPlane(new HalfPlane(hint.getGeometryAngle().getCenter(), hint.getGeometryAngle().getLeft()), hint);
+        convHull.addHalfPlane(new HalfPlane(hint.getGeometryAngle().getRight(), hint.getGeometryAngle().getCenter()), hint);
 
         /*
         addAngle(hint.getGeometryAngle());
@@ -51,15 +55,30 @@ public class PolyhedronSearcher implements Searcher<AngleHint> {
         */
 
         final Coordinate nextPosition;
-        nextPosition = convHull.vertices.size() < 2 ? nextPosition(lastPosition) : JTSUtils.middleOfAngleHint(hint);
+        nextPosition = convHull.vertices.size() < 2 ? JTSUtils.middleOfAngleHint(hint) : nextPosition(lastPosition);
         movement.addWayPoint(JTSUtils.GEOMETRY_FACTORY.createPoint(nextPosition));
+        movement.addAdditionalItem(
+                new GeometryItem<>(new ConvexHull(convHull.vertices.toArray(Coordinate[]::new),
+                        JTSUtils.GEOMETRY_FACTORY).getConvexHull(),
+                        GeometryType.HALFPLANE, new GeometryStyle(true, Color.BLUE)
+                )
+        );
+      /*  for (LineSegment line: convHull.convexHull) {
+            movement.addAdditionalItem(new GeometryItem(JTSUtils.createLineString(JTSUtils.createPoint(line.p0.x,line.p0.y),JTSUtils.createPoint(line.p1.x,line.p1.y)),GeometryType.HALFPLANE));
+        }*/
         movePositions.add(nextPosition);
-        convHull.extend();
-        return new Movement(lastPosition, nextPosition);
+        movement.addWayPoint(JTSUtils.GEOMETRY_FACTORY.createPoint(nextPosition));
+        //convHull.extend();
+        return movement;
+    }
+
+    private HalfPlane orientateHalfplane(HalfPlane halfplane, AngleHint hint) {
+        return halfplane.inside(halfplane.getNormalVector().toCoordinate()) ? new HalfPlane(halfplane.p1, halfplane.p0) : halfplane;
+
     }
 
     private Coordinate nextPosition(Coordinate lastPosition) {
-        final Coordinate centroid = new ConvexHull((Geometry) convHull.vertices).getConvexHull().getCentroid().getCoordinate();
+        final Coordinate centroid = new ConvexHull(convHull.vertices.toArray(Coordinate[]::new), JTSUtils.GEOMETRY_FACTORY).getConvexHull().getCentroid().getCoordinate();
         /*final Coordinate centroid = polyhedron.getGeometry(true).convexHull().getCentroid().getCoordinate();*/
         return JTSUtils.coordinateInDistance(lastPosition, centroid, 1);
     }
@@ -93,46 +112,52 @@ public class PolyhedronSearcher implements Searcher<AngleHint> {
         private HalfPlane plane;
         private List<LineSegment> convexHull = new ArrayList<>();
 
-        public void addHalfPlane(HalfPlane half) {
+        public void addHalfPlane(Ray halfray, AngleHint hint) {
+            final HalfPlane half = orientateHalfplane(new HalfPlane(halfray.p0, halfray.p1), hint);
             if (vertices.size() == 0) {
                 if (plane == null) {
                     plane = half;
                     return;
                 }
                 final Coordinate intersect = plane.intersection(half);
-                final Coordinate unbSec0 = plane.getDirection().normalize().translate(plane.p0);
+                Coordinate unbSec0 = plane.getDirection().normalize().multiply(100).translate(plane.p0);
+                unbSec0 = hint.getGeometryAngle().inView(unbSec0) ? unbSec0 : flipCoordinate(unbSec0);
                 unbp0 = unbSec0;
                 convexHull.add(new LineSegment(intersect, unbp0));
-                final Coordinate unbSec1 = plane.getDirection().normalize().translate(plane.p1);
+                Coordinate unbSec1 = half.getDirection().normalize().multiply(100).translate(half.p0);
+                unbSec1 = hint.getGeometryAngle().inView(unbSec1) ? unbSec1 : flipCoordinate(unbSec1);
                 unbp1 = unbSec1;
+                vertices.add(unbp0);
+                vertices.add(unbp1);
+                vertices.add(intersect);
                 convexHull.add(new LineSegment(unbp0, unbp1));
                 convexHull.add(new LineSegment(unbp1, intersect));
 
+
             } else {
-                LineSegment intersectionLine = new LineSegment();
-                for (LineSegment line : convexHull) {
+                Coordinate intersectionLineX = null, intersectionLineY = null;
+                for (int i = 0; i < convexHull.size(); i++) {
+                    LineSegment line = convexHull.get(i);
                     Coordinate inter = half.intersection(line);
                     if (inter != null) {
-                        if (line.equalsTopo(new LineSegment(unbp0, unbp1))) {
-                            changeLineSegment(line, inter, half);
-                            unbp0 = line.p0;
-                            unbp1 = line.p1;
-                        }
-                        if (intersectionLine.p0 == null) {
-                            intersectionLine.p0 = inter;
+                        vertices.add(inter);
 
-                            break;
+                        if (intersectionLineX == null) {
+                            intersectionLineX = inter;
+                            convexHull.set(i, cutLineSegment(line, inter, half));
+                            continue;
                         }
-                        if (intersectionLine.p1 == null) {
-                            intersectionLine.p1 = inter;
-                            break;
+                        if (intersectionLineY == null) {
+                            intersectionLineY = inter;
+                            convexHull.set(i, cutLineSegment(line, inter, half));
+                            continue;
                         }
                     }
                 }
-                convexHull.add(intersectionLine);
-                convexHull = convexHull.stream()
-                        .filter(line -> half.inside(line.p0) && half.inside(line.p1))
-                        .collect(Collectors.toList());
+                convexHull.add(new LineSegment(intersectionLineX, intersectionLineY));
+//                convexHull = convexHull.stream()
+//                        .filter(line -> half.inside(line.p0) && half.inside(line.p1))
+//                        .collect(Collectors.toList());
 
             }
             vertices = convexHull.stream()
@@ -142,11 +167,11 @@ public class PolyhedronSearcher implements Searcher<AngleHint> {
                     .collect(Collectors.toList());
         }
 
-        private void changeLineSegment(LineSegment line, Coordinate inter, HalfPlane half) {
+        private LineSegment cutLineSegment(LineSegment line, Coordinate inter, HalfPlane half) {
             if (half.inside(line.p1)) {
-                line = new LineSegment(inter, line.p1);
+                return new LineSegment(inter, line.p1);
             } else {
-                line = new LineSegment(inter, line.p0);
+                return new LineSegment(inter, line.p0);
             }
         }
 
@@ -160,6 +185,10 @@ public class PolyhedronSearcher implements Searcher<AngleHint> {
                     }
                 }
             }
+        }
+
+        public Coordinate flipCoordinate(Coordinate coordinate) {
+            return new Coordinate(coordinate.x * (-1), coordinate.y * (-1));
         }
 
         public void extend() {
