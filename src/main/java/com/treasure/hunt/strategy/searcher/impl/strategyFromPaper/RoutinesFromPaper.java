@@ -321,10 +321,9 @@ class RoutinesFromPaper {
                     AD_hint != null)
                 return i;
         }
-        System.out.println("rect: " + Arrays.toString(rect) + " anglepoints: "
-                + hint.getRight() + hint.getCenter());
         throw new IllegalArgumentException("Somehow there was no basic transformation found for this " +
-                "rectangle and hint. This is impossible.");
+                "rectangle and hint. This is impossible.\n" + "rect: " + Arrays.toString(rect) + " anglepoints: "
+                + hint.getRight() + hint.getCenter());
     }
 
     /**
