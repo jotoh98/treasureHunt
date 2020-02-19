@@ -4,13 +4,14 @@ import lombok.Getter;
 
 public enum StatusMessageType {
     ANGLE_HINT_DEGREE("Degree of last angle", true, true, "The degree of the last given hint in radians."),
-    BASIC_TRANSFORMATION("Basic transformation of the current configuration", true, false,
-            "The basic transformation of the current configuration"),
-    HINT_QUALITY("This hint's quality", true, false, "The quality of the latest hint"),
-    LAST_HINT_STATUS("The last hint's quality", true, false, "The quality of the last hint"),
+    BASIC_TRANSFORMATION("Basic transformation of the previous configuration", true, false,
+            "The basic transformation of the previous configuration"),
+    PREVIOUS_HINT_QUALITY("The quality of the previous hint", true, false,
+            "The quality of the previous hint"),
+    BEFORE_PREVIOUS_QUALITY("The quality of the hint received before the previous hint", true,
+            false, "The quality of the hint received before the previous hint"),
     BASIC_TRANSFORMATION_INTERPRETATION("Interpretation of the basic transformation value",
-            true, false, "The interpretation of the basic transformation value")
-    ;
+            true, false, "The interpretation of the basic transformation value");
 
     @Getter
     private final String name;

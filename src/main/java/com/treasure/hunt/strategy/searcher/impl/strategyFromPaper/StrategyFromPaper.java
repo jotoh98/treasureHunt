@@ -79,28 +79,28 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Movement move = new Movement();
 
         // remove old status messages
-        move.getStatusMessageItemsToBeRemoved().addAll(statusMessageItemsToBeRemovedNextMove); // FIXME funkitoniert noch nicht
+        move.getStatusMessageItemsToBeRemoved().addAll(statusMessageItemsToBeRemovedNextMove);
         statusMessageItemsToBeRemovedNextMove.clear();
 
         //update status messages:
-        StatusMessageItem goodStatusMessage = new StatusMessageItem(StatusMessageType.HINT_QUALITY, "good");
+        StatusMessageItem goodStatusMessage = new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY, "good");
         move.getStatusMessageItemsToBeAdded().add(goodStatusMessage);
 
-        StatusMessageItem lastHintStatus;
+        StatusMessageItem lastHintQualityStatus;
         switch (lastHintQuality) {
             case bad:
-                lastHintStatus = new StatusMessageItem(StatusMessageType.LAST_HINT_STATUS, "bad");
+                lastHintQualityStatus = new StatusMessageItem(StatusMessageType.BEFORE_PREVIOUS_QUALITY, "bad");
                 break;
             case good:
-                lastHintStatus = new StatusMessageItem(StatusMessageType.LAST_HINT_STATUS, "good");
+                lastHintQualityStatus = new StatusMessageItem(StatusMessageType.BEFORE_PREVIOUS_QUALITY, "good");
                 break;
             case none:
-                lastHintStatus = new StatusMessageItem(StatusMessageType.LAST_HINT_STATUS, "none");
+                lastHintQualityStatus = new StatusMessageItem(StatusMessageType.BEFORE_PREVIOUS_QUALITY, "none");
                 break;
             default:
                 throw new AssertionError("The hint before the previous hint has no quality value");
         }
-        move.getStatusMessageItemsToBeAdded().add(lastHintStatus);
+        move.getStatusMessageItemsToBeAdded().add(lastHintQualityStatus);
 
         move.addWayPoint(lastLocation);
         double width = searchAreaCornerB.getX() - searchAreaCornerA.getX();
@@ -142,7 +142,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         }
         // when none of this cases takes place, the hint is bad (as defined in the paper). This gets handled here:
         move.getStatusMessageItemsToBeAdded().remove(goodStatusMessage);
-        move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.HINT_QUALITY, "bad"));
+        move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY, "bad"));
 
         Point destination = GEOMETRY_FACTORY.createPoint(twoStepsOrthogonal(hint,
                 centerOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD)));
