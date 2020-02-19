@@ -83,21 +83,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         statusMessageItemsToBeRemovedNextMove.clear();
 
         //update status messages:
-        StatusMessageItem goodStatusMessage = new StatusMessageItem(StatusMessageType.HINT_STATUS, "good");
+        StatusMessageItem goodStatusMessage = new StatusMessageItem(StatusMessageType.HINT_QUALITY, "good");
         move.getStatusMessageItemsToBeAdded().add(goodStatusMessage);
-        statusMessageItemsToBeRemovedNextMove.add(goodStatusMessage);
 
-        if (lastHintQuality != HintQuality.none) {
-            StatusMessageItem lastHintStatus = null;
-            if (lastHintQuality == HintQuality.bad)
-                lastHintStatus = new StatusMessageItem(StatusMessageType.LAST_HINT_STATUS, "bad");
-            if (lastHintQuality == HintQuality.good)
-                lastHintStatus = new StatusMessageItem(StatusMessageType.LAST_HINT_STATUS, "good");
-            move.getStatusMessageItemsToBeAdded().add(lastHintStatus);
-            statusMessageItemsToBeRemovedNextMove.add(lastHintStatus);
-        }
-
-        //testing
         StatusMessageItem lastHintStatus;
         switch (lastHintQuality) {
             case bad:
@@ -110,11 +98,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                 lastHintStatus = new StatusMessageItem(StatusMessageType.LAST_HINT_STATUS, "none");
                 break;
             default:
-                lastHintStatus = new StatusMessageItem(StatusMessageType.LAST_HINT_STATUS, "default");
+                throw new AssertionError("The hint before the previous hint has no quality value");
         }
         move.getStatusMessageItemsToBeAdded().add(lastHintStatus);
-        statusMessageItemsToBeRemovedNextMove.add(lastHintStatus);
-        //testen                    lastHintStatus = new StatusMessageItem(StatusMessageType.LAST_HINT_STATUS, "none");d
 
         move.addWayPoint(lastLocation);
         double width = searchAreaCornerB.getX() - searchAreaCornerA.getX();
@@ -156,9 +142,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         }
         // when none of this cases takes place, the hint is bad (as defined in the paper). This gets handled here:
         move.getStatusMessageItemsToBeAdded().remove(goodStatusMessage);
-        StatusMessageItem badStatusMessage = new StatusMessageItem(StatusMessageType.HINT_STATUS, "bad");
-        move.getStatusMessageItemsToBeAdded().add(badStatusMessage);
-        statusMessageItemsToBeRemovedNextMove.add(badStatusMessage);
+        move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.HINT_QUALITY, "bad"));
 
         Point destination = GEOMETRY_FACTORY.createPoint(twoStepsOrthogonal(hint,
                 centerOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD)));

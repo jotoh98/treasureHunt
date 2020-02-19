@@ -6,8 +6,8 @@ public enum StatusMessageType {
     ANGLE_HINT_DEGREE("Degree of last angle", true, true, "The degree of the last given hint in radians."),
     BASIC_TRANSFORMATION("Basic transformation of the current configuration", true, false,
             "The basic transformation of the current configuration"),
-    HINT_STATUS("This hint is", true, false, "The quality of the latest hint"),
-    LAST_HINT_STATUS("The last hint was", true, false, "The quality of the last hint"),
+    HINT_QUALITY("This hint's quality", true, false, "The quality of the latest hint"),
+    LAST_HINT_STATUS("The last hint's quality", true, false, "The quality of the last hint"),
     BASIC_TRANSFORMATION_INTERPRETATION("Interpretation of the basic transformation value",
             true, false, "The interpretation of the basic transformation value")
     ;
