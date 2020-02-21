@@ -33,6 +33,7 @@ public class HalfPlaneHint extends AngleHint {
      */
     private Direction direction;
 
+    @Getter
     private HalfPlaneHint lastHint; // if it is not null it also gets drawn by this HalfPlaneHint
 
     public HalfPlaneHint(Coordinate center, Coordinate right) {
@@ -184,7 +185,6 @@ public class HalfPlaneHint extends AngleHint {
         if (lastHint != null && lastHint.getHalfPlaneLine() != null) {
             output.add(new GeometryItem(lastHint.getHalfPlaneLine(), GeometryType.HALF_PLANE_LINE_BLUE));
         }
-
         return output;
     }
 
