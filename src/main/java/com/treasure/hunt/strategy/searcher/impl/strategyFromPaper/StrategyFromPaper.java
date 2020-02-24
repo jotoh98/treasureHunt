@@ -44,6 +44,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * This rectangle always lies in the rectangle of the current phase.
      * The rectangle has the same function like the rectangle Ri in Algorithm2 (TreasureHunt1)
      * in the paper.
+     * It is referred to as current search rectangle throughout the implementation.
      */
     searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD;
     HalfPlaneHint lastBadHint; //only used when last hint was bad
@@ -153,34 +154,38 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     }
 
     /**
-     * This method is used to visualize the current phases rectangle and ABCD.
+     * This method is used to visualize the current phases rectangle and the current search rectangle.
      * Adds their values to move
      *
      * @param move
-     * @return the input with the rectangles of the current phase and ABCD added
+     * @return the input with the visualisations of the current phase and the search rectangle added
      */
-    private Movement addState(Movement move) {
+    Movement addState(Movement move, Coordinate[] currentRectanglePoints, Coordinate[] phaseRectanglePoints) {
         // add current rectangle which the strategy is working on
-        Coordinate[] cur_coords = new Coordinate[5];
-        cur_coords[0] = searchAreaCornerA.getCoordinate();
-        cur_coords[1] = searchAreaCornerB.getCoordinate();
-        cur_coords[2] = searchAreaCornerC.getCoordinate();
-        cur_coords[3] = searchAreaCornerD.getCoordinate();
-        cur_coords[4] = searchAreaCornerA.getCoordinate();
-
-        Polygon cur_rect = GEOMETRY_FACTORY.createPolygon(cur_coords);
-        GeometryItem<Polygon> cur = new GeometryItem<Polygon>(cur_rect, CURRENT_RECTANGLE);
-        move.addAdditionalItem(cur);
+        Coordinate[] curCoords = new Coordinate[5];
+        for (int i = 0; i < 4; i++) {
+            curCoords[i] = currentRectanglePoints[i];
+        }
+        curCoords[4] = currentRectanglePoints[0];
+        GeometryItem<Polygon> curPoly = new GeometryItem<>(GEOMETRY_FACTORY.createPolygon(curCoords), CURRENT_RECTANGLE);
+        move.addAdditionalItem(curPoly);
 
         // add the rectangle of the current phase
-        Coordinate[] phaseRect = phaseRectangle();
         Coordinate[] phasePolygon = new Coordinate[5];
         for (int i = 0; i < 4; i++)
-            phasePolygon[i] = phaseRect[i];
-        phasePolygon[4] = phaseRect[0];
-        Polygon rect_phase = GEOMETRY_FACTORY.createPolygon(phasePolygon);
-        GeometryItem<Polygon> phase = new GeometryItem<Polygon>(rect_phase, CURRENT_PHASE);
+            phasePolygon[i] = phaseRectanglePoints[i];
+        phasePolygon[4] = phaseRectanglePoints[0];
+        GeometryItem<Polygon> phase = new GeometryItem<>(GEOMETRY_FACTORY.createPolygon(phasePolygon), CURRENT_PHASE);
         move.addAdditionalItem(phase);
+        return move;
+    }
+
+    private Movement addState(Movement move) {
+        Coordinate[] curCoords = new Coordinate[4];
+        curCoords[0] = searchAreaCornerA.getCoordinate();
+        curCoords[1] = searchAreaCornerB.getCoordinate();
+        curCoords[2] = searchAreaCornerC.getCoordinate();
+        curCoords[3] = searchAreaCornerD.getCoordinate();
 
         // assert if the current rectangle ABCD lies in the rectangle of the current phase
         Coordinate[] rect = phaseRectangle();
@@ -234,7 +239,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                             + Arrays.toString(searchAreaCornerD.getCoordinates())
             );
         }
-        return move;
+        return addState(move, curCoords, phaseRectangle());
     }
 
     /**
@@ -244,7 +249,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * @param move the move to be returned by one of the two move-methods
      * @return move with lines added to the additionalGeometryItems
      */
-    private Movement moveReturn(Movement move) {
+    Movement moveReturn(Movement move) {
         List<GeometryItem<Point>> points = move.getPoints();
         Point lastPoint = null;
         for (GeometryItem g : points) {
