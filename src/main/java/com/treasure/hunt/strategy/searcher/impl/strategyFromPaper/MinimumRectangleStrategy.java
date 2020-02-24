@@ -1,5 +1,7 @@
 package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 
+import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
@@ -82,31 +84,27 @@ public class MinimumRectangleStrategy implements Searcher<HalfPlaneHint> {
         HalfPlaneHint lastHint = null;
         if (hint.getLastHint() != null) {
             lastHint = new HalfPlaneHint(
-                    forPaper.transform(
-                            transformForPaper(hint.getLastHint().getCenter()),
-                            new Coordinate()
-                    ),
-                    forPaper.transform(
-                            transformForPaper(hint.getLastHint().getRight()),
-                            new Coordinate())
+                    forPaper.transform(transformForPaper(hint.getLastHint().getCenter()), new Coordinate()),
+                    forPaper.transform(transformForPaper(hint.getLastHint().getRight()), new Coordinate())
             );
         }
-
-        HalfPlaneHint outputHint = new HalfPlaneHint(
-                forPaper.transform(
-                        transformForPaper(hint.getCenter()),
-                        new Coordinate()
-                ),
-                forPaper.transform(
-                        transformForPaper(hint.getRight()),
-                        new Coordinate()),
+        return new HalfPlaneHint(
+                forPaper.transform(transformForPaper(hint.getCenter()), new Coordinate()),
+                forPaper.transform(transformForPaper(hint.getRight()), new Coordinate()),
                 lastHint
         );
+    }
 
-        return outputHint;
+    private Point transformFromPaper(Point point) {
+        return (Point) fromPaper.transform(point);
     }
 
     private Movement transformFromPaper(Movement move) {
-
+        Movement outputMove = new Movement();
+        for (GeometryItem<Point> wayPoint : move.getPoints()) {
+            outputMove.addWayPoint(transformFromPaper(wayPoint.getObject()));
+        }
+        //addState was  not called yet
+        return strategyFromPaper.moveReturn(outputMove);
     }
 }
