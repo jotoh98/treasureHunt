@@ -37,6 +37,7 @@ public enum GeometryType {
     // StrategyFromPaper
     CURRENT_PHASE(false, "current phase", true),
     CURRENT_RECTANGLE(true, "current rectangle", true),
+    CURRENT_POLYGON(true, "current polygon", true),
 
     STANDARD(true, ""),
     CURRENT_WAY_POINT(true, "Current way point", true),

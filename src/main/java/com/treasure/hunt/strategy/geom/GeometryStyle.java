@@ -19,7 +19,7 @@ public class GeometryStyle {
     public static EnumMap<GeometryType, GeometryStyle> defaultsMap = new EnumMap<>(GeometryType.class);
 
     static {
-        defaultsMap.putAll(Map.of(
+        Map defaultsMapAdd = Map.of(
                 GeometryType.WAY_POINT, new GeometryStyle(true, new Color(0xFFFFFF)),
                 GeometryType.TREASURE, new GeometryStyle(true, new Color(0xFFD700)),
                 GeometryType.HINT_ANGLE, new GeometryStyle(true, new Color(0x575757)),
@@ -30,7 +30,9 @@ public class GeometryStyle {
                 GeometryType.HALF_PLANE, new GeometryStyle(true, new Color(0x505050), new Color(0x505050)),
                 GeometryType.HALF_PLANE_LINE, new GeometryStyle(true, new Color(0x000000)),
                 GeometryType.HALF_PLANE_LINE_BLUE, new GeometryStyle(true, Color.BLUE)
-        ));
+        );
+        defaultsMapAdd.put(GeometryType.CURRENT_POLYGON, new GeometryStyle(true, new Color(0x00ff00)));
+        defaultsMap.putAll(defaultsMapAdd);
     }
 
     private boolean visible;
@@ -59,12 +61,12 @@ public class GeometryStyle {
         return new GeometryStyle(true, Color.lightGray);
     }
 
-    public Stroke getStroke() {
-        return new BasicStroke(1);
-    }
-
     public static void registerDefault(GeometryType type, GeometryStyle style) {
         defaultsMap.put(type, style);
+    }
+
+    public Stroke getStroke() {
+        return new BasicStroke(1);
     }
 
     protected GeometryStyle clone() {
