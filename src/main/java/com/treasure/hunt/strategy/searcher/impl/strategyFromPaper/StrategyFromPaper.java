@@ -104,9 +104,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         move.getStatusMessageItemsToBeAdded().add(lastHintQualityStatus);
 
         move.addWayPoint(lastLocation);
-        double width = searchAreaCornerB.getX() - searchAreaCornerA.getX();
-        double height = searchAreaCornerA.getY() - searchAreaCornerD.getY();
-        if (width < 4 || height < 4) {
+        if (rectangleNotLargeEnough()) {
             return moveReturn(addState(incrementPhase(move)));
         }
         //now analyse the hint:
@@ -153,6 +151,12 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return moveReturn(addState(move));
     }
 
+    boolean rectangleNotLargeEnough() {
+        double width = searchAreaCornerB.getX() - searchAreaCornerA.getX();
+        double height = searchAreaCornerA.getY() - searchAreaCornerD.getY();
+        return (!(width >= 4) || !(height >= 4));
+    }
+
     /**
      * This method is used to visualize the current phases rectangle and the current search rectangle.
      * Adds their values to move
@@ -188,7 +192,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         curCoords[3] = searchAreaCornerD.getCoordinate();
 
         // assert if the current rectangle ABCD lies in the rectangle of the current phase
-        Coordinate[] rect = phaseRectangle();
+        Coordinate[] rect = currentPhaseRectangle();
         if (
                 !doubleEqual(searchAreaCornerA.getX(), rect[0].getX()) && searchAreaCornerA.getX() < rect[0].getX() ||
                         !doubleEqual(searchAreaCornerA.getX(), rect[1].getX())
@@ -239,7 +243,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                             + Arrays.toString(searchAreaCornerD.getCoordinates())
             );
         }
-        return addState(move, curCoords, phaseRectangle());
+        return addState(move, curCoords, currentPhaseRectangle());
     }
 
     /**
@@ -425,7 +429,17 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      *
      * @return
      */
-    private Coordinate[] phaseRectangle() {
+    private Coordinate[] currentPhaseRectangle() {
+        return phaseRectangle(phase);
+    }
+
+    /**
+     * Returnes the rectangle of the current phase, by using a specified phase index
+     *
+     * @param phase the phase to which the phase's rectangle should be returned
+     * @return the points of the phase's rectangle
+     */
+    Coordinate[] phaseRectangle(int phase) {
         double halfDiff = Math.pow(2, phase - 1);
         double startX = start.getX();
         double startY = start.getY();
@@ -441,7 +455,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * Sets the rectangle ABCD to the rectangle of the current phase (determined by phaseRectangle())
      */
     private void setRectToPhase() {
-        Coordinate[] rect = phaseRectangle();
+        Coordinate[] rect = currentPhaseRectangle();
         searchAreaCornerA = GEOMETRY_FACTORY.createPoint(rect[0]);
         searchAreaCornerB = GEOMETRY_FACTORY.createPoint(rect[1]);
         searchAreaCornerC = GEOMETRY_FACTORY.createPoint(rect[2]);
