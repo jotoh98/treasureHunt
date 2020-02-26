@@ -3,7 +3,9 @@ package com.treasure.hunt.strategy.hint.impl;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import lombok.Getter;
+import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.math.Vector2D;
 
@@ -151,7 +153,7 @@ public class HalfPlaneHint extends AngleHint {
         return geometryAngle.getRight();
     }
 
-    public LineString getHalfPlaneLine() {
+    public LineString getHalfPlaneLineGeometry() {
         if (halfPlaneLine == null) {
             Vector2D l_to_r = new Vector2D(getCenter(), getRight());
             Vector2D r_to_l = new Vector2D(getRight(), getCenter());
@@ -173,6 +175,16 @@ public class HalfPlaneHint extends AngleHint {
         return halfPlaneLine;
     }
 
+    public LineSegment getHalfPlaneLine() {
+        return new LineSegment(getCenter(), getRight());
+    }
+
+    public boolean inHalfPlane(Coordinate P) {
+        double angleHintLine = new LineSegment(getCenter(), getRight()).angle();
+        double angleCenterP = new LineSegment(getCenter(), P).angle();
+        return Angle.normalizePositive((angleCenterP - angleHintLine)) <= Math.PI;
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -181,9 +193,9 @@ public class HalfPlaneHint extends AngleHint {
     @Override
     public List<GeometryItem<?>> getGeometryItems() {
         List<GeometryItem<?>> output = new ArrayList<>();
-        output.add(new GeometryItem(getHalfPlaneLine(), GeometryType.HALF_PLANE_LINE));
-        if (lastHint != null && lastHint.getHalfPlaneLine() != null) {
-            output.add(new GeometryItem(lastHint.getHalfPlaneLine(), GeometryType.HALF_PLANE_LINE_BLUE));
+        output.add(new GeometryItem(getHalfPlaneLineGeometry(), GeometryType.HALF_PLANE_LINE));
+        if (lastHint != null && lastHint.getHalfPlaneLineGeometry() != null) {
+            output.add(new GeometryItem(lastHint.getHalfPlaneLineGeometry(), GeometryType.HALF_PLANE_LINE_BLUE));
         }
         return output;
     }
