@@ -454,25 +454,37 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     }
 
     /**
+     * If the rotation of the strategy is not 0 this method is used to reduce the current search rectangle when
+     * the hint is good.
+     * If the horizontal parameter is true, this method must be called as following:
+     *  aOne := searchRectanglePointA
+     *  aTwo := searchRectanglePointD
+     *  bOne := searchRectanglePointB
+     *  bTwo := searchRectanglePointC
+     *  and then it returns the reduced rectangle if the hint goes through the lines
+     *  (searchRectanglePointA, searchRectanglePointD) and
+     *  (searchRectanglePointB, searchRectanglePointC)
+     *  if it does not go through this lines (and horizontal equals true), the method returns null
+     *
+     * If the horizontal parameter is false, this method must be called as following:
+     *  aOne := searchRectanglePointA
+     *  aTwo := searchRectanglePointB
+     *  bOne := searchRectanglePointD
+     *  bTwo := searchRectanglePointC
+     *  and then it returns the reduced rectangle if the hint goes through the lines
+     *  (searchRectanglePointA, searchRectanglePointB) and
+     *  (searchRectanglePointC, searchRectanglePointD)
+     *  if it does not go through this lines (and horizontal equals false), the method returns null
+     *
      * aOne and bOne must have one side of the rectangle (aOne,bOne,bTwo,aTwo) in common.
-     * If horizontal is set, this method has to be called as following:
-     * aOne := searchRectanglePointA
-     * aTwo := searchRectanglePointD
-     * bOne := searchRectanglePointB
-     * bTwo := searchRectanglePointC
-     * <p>
-     * Otherwise this method has to be called as following:
-     * aOne := searchRectanglePointA
-     * aTwo := searchRectanglePointB
-     * bOne := searchRectanglePointD
-     * bTwo := searchRectanglePointC
      *
      * @param aOne
      * @param aTwo
      * @param bOne
      * @param bTwo
      * @param hint
-     * @return
+     * @param horizontal
+     * @return the corners of the reduced rectangle if this kind of split is valid, null otherwise
      */
     private Point[] splitWithRotation(Point aOne, Point aTwo, Point bOne, Point bTwo, HalfPlaneHint hint,
                                       boolean horizontal) {
