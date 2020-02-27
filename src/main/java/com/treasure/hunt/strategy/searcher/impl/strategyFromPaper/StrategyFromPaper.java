@@ -11,6 +11,7 @@ import com.treasure.hunt.utils.JTSUtils;
 import lombok.Getter;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.geom.util.AffineTransformation;
+import org.locationtech.jts.math.Vector2D;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -143,11 +144,23 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         }
         lastHintQuality = HintQuality.good; //If the current hint isn't good, the hint quality is set below again
 
-        LineSegment hintLine = new LineSegment(hint.getCenter(),
-                hint.getRight());
+        Point[] horizontalSplit;
+        Point[] verticalSplit;
+        LineSegment hintLine = hint.getHalfPlaneLine();
+        if (rotation == 0) {
+            horizontalSplit = splitRectangleHorizontally(searchAreaCornerA, searchAreaCornerB,
+                    searchAreaCornerC, searchAreaCornerD, hint, hintLine);
+            verticalSplit = splitRectangleVertically(searchAreaCornerA, searchAreaCornerB,
+                    searchAreaCornerC, searchAreaCornerD, hint, hintLine);
+        } else {
+            horizontalSplit = splitWithRotation(
+                    searchAreaCornerA, searchAreaCornerD, searchAreaCornerB, searchAreaCornerC, hint, true
+            );
+            verticalSplit = splitWithRotation(
+                    searchAreaCornerA, searchAreaCornerB, searchAreaCornerD, searchAreaCornerC, hint, false
+            );
+        }
 
-        Point[] horizontalSplit = splitRectangleHorizontally(searchAreaCornerA, searchAreaCornerB,
-                searchAreaCornerC, searchAreaCornerD, hint, hintLine);
         if (horizontalSplit != null) {
             searchAreaCornerA = horizontalSplit[0];
             searchAreaCornerB = horizontalSplit[1];
@@ -157,8 +170,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             return moveReturn(addState(moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB,
                     searchAreaCornerC, searchAreaCornerD, move)));
         }
-        Point[] verticalSplit = splitRectangleVertically(searchAreaCornerA, searchAreaCornerB,
-                searchAreaCornerC, searchAreaCornerD, hint, hintLine);
         if (verticalSplit != null) {
             searchAreaCornerA = verticalSplit[0];
             searchAreaCornerB = verticalSplit[1];
@@ -181,8 +192,15 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     }
 
     boolean rectangleNotLargeEnough() {
-        double width = searchAreaCornerB.getX() - searchAreaCornerA.getX();
-        double height = searchAreaCornerA.getY() - searchAreaCornerD.getY();
+        double width, height;
+        if (rotation == 0) {
+            width = searchAreaCornerB.getX() - searchAreaCornerA.getX();
+            height = searchAreaCornerA.getY() - searchAreaCornerD.getY();
+        } else {
+            width = searchAreaCornerA.distance(searchAreaCornerB);
+            height = searchAreaCornerC.distance(searchAreaCornerD);
+        }
+
         return (!(width >= 4) || !(height >= 4));
     }
 
@@ -433,6 +451,129 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             }
         }
         return null;
+    }
+
+    /**
+     * aOne and bOne must have one side of the rectangle (aOne,bOne,bTwo,aTwo) in common.
+     * If horizontal is set, this method has to be called as following:
+     * aOne := searchRectanglePointA
+     * aTwo := searchRectanglePointD
+     * bOne := searchRectanglePointB
+     * bTwo := searchRectanglePointC
+     * <p>
+     * Otherwise this method has to be called as following:
+     * aOne := searchRectanglePointA
+     * aTwo := searchRectanglePointB
+     * bOne := searchRectanglePointD
+     * bTwo := searchRectanglePointC
+     *
+     * @param aOne
+     * @param aTwo
+     * @param bOne
+     * @param bTwo
+     * @param hint
+     * @return
+     */
+    private Point[] splitWithRotation(Point aOne, Point aTwo, Point bOne, Point bTwo, HalfPlaneHint hint,
+                                      boolean horizontal) {
+        LineSegment hintLine = hint.getHalfPlaneLine();
+        LineSegment aLine = new LineSegment(aOne.getCoordinate(), aTwo.getCoordinate());
+        LineSegment bLine = new LineSegment(bOne.getCoordinate(), bTwo.getCoordinate());
+        Coordinate intersectionAHint = JTSUtils.lineWayIntersection(hintLine, aLine);
+        Coordinate intersectionBHint = JTSUtils.lineWayIntersection(hintLine, bLine);
+        if (intersectionAHint == null || intersectionBHint == null)
+            return null;
+        boolean aOneInHint = hint.inHalfPlane(aOne.getCoordinate());
+        boolean aTwoInHint = hint.inHalfPlane(aTwo.getCoordinate());
+        boolean bOneInHint = hint.inHalfPlane(bOne.getCoordinate());
+        boolean bTwoInHint = hint.inHalfPlane(bTwo.getCoordinate());
+        if ((aOneInHint && (aTwoInHint || bTwoInHint)) || (bOneInHint && (aTwoInHint || bTwoInHint)))
+            throw new RuntimeException("Somehow two opposing points are in the hint");
+        if (aOneInHint || bOneInHint) {
+            double distanceAOneHintIntersection = aOne.getCoordinate().distance(intersectionAHint);
+            double distanceBOneHintIntersection = bOne.getCoordinate().distance(intersectionBHint);
+            if (distanceAOneHintIntersection < distanceBOneHintIntersection) {
+                Vector2D bOneToAOne = new Vector2D(bOne.getCoordinate(), aOne.getCoordinate());
+                if (horizontal) {
+                    return new Point[]{
+                            aOne, bOne,
+                            GEOMETRY_FACTORY.createPoint(intersectionBHint),
+                            JTSUtils.createPoint(intersectionBHint.x + bOneToAOne.getX(),
+                                    intersectionBHint.y + bOneToAOne.getY())
+                    };
+                } else {
+                    return new Point[]{
+                            aOne,
+                            JTSUtils.createPoint(intersectionBHint.x + bOneToAOne.getX(),
+                                    intersectionBHint.y + bOneToAOne.getY()),
+                            GEOMETRY_FACTORY.createPoint(intersectionBHint),
+                            bOne
+                    };
+                }
+            } else {
+                Vector2D aOneToBOne = new Vector2D(aOne.getCoordinate(), bOne.getCoordinate());
+                if (horizontal) {
+                    return new Point[]{
+                            aOne, bOne,
+                            JTSUtils.createPoint(intersectionAHint.x + aOneToBOne.getX(),
+                                    intersectionAHint.y + aOneToBOne.getY()),
+                            GEOMETRY_FACTORY.createPoint(intersectionAHint)
+                    };
+                } else {
+                    return new Point[]{
+                            aOne,
+                            GEOMETRY_FACTORY.createPoint(intersectionAHint),
+                            JTSUtils.createPoint(intersectionAHint.x + aOneToBOne.getX(),
+                                    intersectionAHint.y + aOneToBOne.getY()),
+                            bOne
+                    };
+                }
+            }
+        }
+        if (aTwoInHint || bTwoInHint) {
+            double distanceATwoHintIntersection = aTwo.getCoordinate().distance(intersectionAHint);
+            double distanceBTwoHintIntersection = bTwo.getCoordinate().distance(intersectionBHint);
+            if (distanceATwoHintIntersection < distanceBTwoHintIntersection) {
+                Vector2D bTwoToATwo = new Vector2D(bTwo.getCoordinate(), aTwo.getCoordinate());
+                if (horizontal) {
+                    return new Point[]{
+                            JTSUtils.createPoint(intersectionBHint.x + bTwoToATwo.getX(),
+                                    intersectionBHint.y + bTwoToATwo.getY()),
+                            GEOMETRY_FACTORY.createPoint(intersectionBHint),
+                            bTwo,
+                            aTwo
+                    };
+                } else {
+                    return new Point[]{
+                            JTSUtils.createPoint(intersectionBHint.x + bTwoToATwo.getX(),
+                                    intersectionBHint.y + bTwoToATwo.getY()),
+                            aTwo,
+                            bTwo,
+                            GEOMETRY_FACTORY.createPoint(intersectionBHint)
+                    };
+                }
+            } else {
+                Vector2D aTwoToBTwo = new Vector2D(aTwo.getCoordinate(), bTwo.getCoordinate());
+                if (horizontal) {
+                    return new Point[]{
+                            GEOMETRY_FACTORY.createPoint(intersectionAHint),
+                            JTSUtils.createPoint(intersectionAHint.x + aTwoToBTwo.getX(),
+                                    intersectionAHint.y + aTwoToBTwo.getY()),
+                            bTwo,
+                            aTwo
+                    };
+                } else {
+                    return new Point[]{
+                            GEOMETRY_FACTORY.createPoint(intersectionAHint),
+                            aTwo,
+                            bTwo,
+                            JTSUtils.createPoint(intersectionAHint.x + aTwoToBTwo.getX(),
+                                    intersectionAHint.y + aTwoToBTwo.getY())
+                    };
+                }
+            }
+        }
+        throw new RuntimeException("The hint-line does not touch the current rectangle.");
     }
 
     /**
