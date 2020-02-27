@@ -289,7 +289,7 @@ class LastHintBadSubroutine {
     Movement lastHintBadSubroutine(StrategyFromPaper strategy, HalfPlaneHint curHint,
                                    HalfPlaneHint lastBadHint, Movement move) {
 
-        try {
+        //try {
             initializeVariables(strategy, curHint, lastBadHint);
             int caseIndex = -1;
 
@@ -300,16 +300,16 @@ class LastHintBadSubroutine {
                     lineBetweenClockwise(L2Apos, L1DoubleApos, ppApos)
             ) {
                 caseIndex = 1;
-                newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
-                        new Coordinate[]{f, B, C, t});
+                newRectangle = phiOtherRectangleInverse(basicTransformation, rect, new Coordinate[]{f, B, C, t},
+                        strategy.getFromAxisParallel(), strategy.getToAxisParallel());
             }
             if (x2Apos == right &&
                     lineBetweenClockwise(L2Apos, ppApos, mAposKApos)
             ) {
                 caseIndex = 2;
                 move = rectangleScanPhiReverse(basicTransformation, rect, mApos, kApos, k, m, move);
-                newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
-                        new Coordinate[]{g, B, C, h});
+                newRectangle = phiOtherRectangleInverse(basicTransformation, rect, new Coordinate[]{g, B, C, h},
+                        strategy.getFromAxisParallel(), strategy.getToAxisParallel());
             }
             if ((x2Apos == left || x2Apos == down) &&
                     lineBetweenClockwise(L2Apos, mAposKApos, L1DoubleApos)
@@ -320,8 +320,8 @@ class LastHintBadSubroutine {
                 // rectangleScan(phi_reverse(k, (m', k', k, m))
                 move = rectangleScanPhiReverse(basicTransformation, rect, mApos, kApos, k, m, move);
                 // newRectangle := pkCh
-                newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
-                        new Coordinate[]{p, k, C, h});
+                newRectangle = phiOtherRectangleInverse(basicTransformation, rect, new Coordinate[]{p, k, C, h},
+                        strategy.getFromAxisParallel(), strategy.getToAxisParallel());
             }
             if (x2Apos == left &&
                     lineBetweenClockwise(L2Apos, L1DoubleApos, hAposGApos)
@@ -332,8 +332,8 @@ class LastHintBadSubroutine {
                 // rectangleScan(phi_reverse(k, (g, g', h', h))
                 move = rectangleScanPhiReverse(basicTransformation, rect, g, gApos, h, hApos, move);
                 // newRectangle := Agpm
-                newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
-                        new Coordinate[]{A, g, p, m});
+                newRectangle = phiOtherRectangleInverse(basicTransformation, rect, new Coordinate[]{A, g, p, m},
+                        strategy.getFromAxisParallel(), strategy.getToAxisParallel());
             }
             if ((x2Apos == left &&
                     lineBetweenClockwise(L2Apos, hAposGApos, ppApos)) ||
@@ -344,21 +344,23 @@ class LastHintBadSubroutine {
                     )
             ) {
                 caseIndex = 5;
-                // rectangleScan(phireverse(k, (g, g', h', h))
+                // rectangleScan(phi_reverse(k, (g, g', h', h))
                 move = rectangleScanPhiReverse(basicTransformation, rect, g, gApos, hApos, h, move);
                 // newRectangle := ABkm
-                newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
-                        new Coordinate[]{A, B, k, m});
+                newRectangle = phiOtherRectangleInverse(basicTransformation, rect, new Coordinate[]{A, B, k, m},
+                        strategy.getFromAxisParallel(), strategy.getToAxisParallel());
             }
             if (x2Apos == right &&
                     lineBetweenClockwise(L2Apos, pAposK, L1DoubleApos)
             ) {
                 caseIndex = 6;
                 // newRectangle := ABjj'
-                newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
-                        new Coordinate[]{A, B, j, jApos});
+                newRectangle = phiOtherRectangleInverse(basicTransformation, rect, new Coordinate[]{A, B, j, jApos},
+                        strategy.getFromAxisParallel(), strategy.getToAxisParallel());
             }
-            addCaseDescriptionToStatus(move, basicTransformation, caseIndex, strategy);
+
+            if (strategy.getRotation() == 0) // otherwise, the descriptions aren't appropriate
+                addCaseDescriptionToStatus(move, basicTransformation, caseIndex, strategy);
 
             strategy.searchAreaCornerA = GEOMETRY_FACTORY.createPoint(newRectangle[0]);
             strategy.searchAreaCornerB = GEOMETRY_FACTORY.createPoint(newRectangle[1]);
@@ -367,9 +369,9 @@ class LastHintBadSubroutine {
             strategy.lastHintQuality = none;
             return moveToCenterOfRectangle(strategy.searchAreaCornerA, strategy.searchAreaCornerB,
                     strategy.searchAreaCornerC, strategy.searchAreaCornerD, move);
-        } catch (Exception ee) {
-            throw processError(ee, strategy, rect, lastBadHint, curHint);
-        }
+        //} catch (Exception ee) {
+            //throw processError(ee, strategy, rect, lastBadHint, curHint);
+        //}
     }
 
     /**

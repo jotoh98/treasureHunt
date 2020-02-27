@@ -334,7 +334,9 @@ class RoutinesFromPaper {
      * @param toTransform
      * @return
      */
-    static Coordinate[] phiOtherRectangleInverse(int i, Coordinate[] rect, Coordinate[] toTransform) {
+    static Coordinate[] phiOtherRectangleInverse(int i, Coordinate[] rect, Coordinate[] toTransform,
+                                                 AffineTransformation fromAxisParallel,
+                                                 AffineTransformation toAxisParallel) {
         assertRectangle(rect);
         assertRectangle(toTransform);
         Coordinate[] ret = new Coordinate[]{
@@ -343,7 +345,7 @@ class RoutinesFromPaper {
                 phiPointInverse(i, rect, toTransform[2]),
                 phiPointInverse(i, rect, toTransform[3])
         };
-        return arrangeRectangle(ret);
+        return arrangeRectangle(ret, fromAxisParallel, toAxisParallel);
     }
 
 }

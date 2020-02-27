@@ -8,7 +8,9 @@ import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
+import lombok.Getter;
 import org.locationtech.jts.geom.*;
+import org.locationtech.jts.geom.util.AffineTransformation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +54,33 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     //boolean lastHintWasBad = false;
     List<StatusMessageItem> statusMessageItemsToBeRemovedNextMove = new ArrayList<>();
     private Point lastLocation;
+    @Getter
+    private double rotation;
+    @Getter
+    private AffineTransformation fromAxisParallel;
+    @Getter
+    private AffineTransformation toAxisParallel;
+
+
+    public StrategyFromPaper() {
+        rotation = 0;
+        // no rotation given so both transformations are the identity:
+        toAxisParallel = new AffineTransformation();
+        fromAxisParallel = new AffineTransformation();
+    }
+
+    /**
+     * This is only used when the caller wants to get the strategy from the paper, but does not want that the
+     * used rectangles are axis parallel but when rotated by -rotation they should be axis parallel.
+     * (This is not useful for this particular strategy but the constructor is used in the MinimumRectangleStrategy)
+     *
+     * @param rotation the rotation by which the rectangles get rotated
+     */
+    public StrategyFromPaper(double rotation) {
+        this.rotation = rotation;
+        fromAxisParallel = AffineTransformation.rotationInstance(rotation);
+        toAxisParallel = AffineTransformation.rotationInstance(2 * Math.PI - rotation);
+    }
 
     /**
      * {@inheritDoc}
@@ -192,56 +221,58 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         curCoords[3] = searchAreaCornerD.getCoordinate();
 
         // assert if the current rectangle ABCD lies in the rectangle of the current phase
-        Coordinate[] rect = currentPhaseRectangle();
-        if (
-                !doubleEqual(searchAreaCornerA.getX(), rect[0].getX()) && searchAreaCornerA.getX() < rect[0].getX() ||
-                        !doubleEqual(searchAreaCornerA.getX(), rect[1].getX())
-                                && searchAreaCornerA.getX() > rect[1].getX() ||
-                        !doubleEqual(searchAreaCornerA.getY(), rect[0].getY())
-                                && searchAreaCornerA.getY() > rect[0].getY() ||
-                        !doubleEqual(searchAreaCornerA.getY(), rect[2].getY())
-                                && searchAreaCornerA.getY() < rect[2].getY() ||
+        if (rotation == 0) {
+            Coordinate[] rect = currentPhaseRectangle();
+            if (
+                    !doubleEqual(searchAreaCornerA.getX(), rect[0].getX()) && searchAreaCornerA.getX() < rect[0].getX() ||
+                            !doubleEqual(searchAreaCornerA.getX(), rect[1].getX())
+                                    && searchAreaCornerA.getX() > rect[1].getX() ||
+                            !doubleEqual(searchAreaCornerA.getY(), rect[0].getY())
+                                    && searchAreaCornerA.getY() > rect[0].getY() ||
+                            !doubleEqual(searchAreaCornerA.getY(), rect[2].getY())
+                                    && searchAreaCornerA.getY() < rect[2].getY() ||
 
 
-                        !doubleEqual(searchAreaCornerB.getX(), rect[0].getX())
-                                && searchAreaCornerB.getX() < rect[0].getX() ||
-                        !doubleEqual(searchAreaCornerB.getX(), rect[1].getX())
-                                && searchAreaCornerB.getX() > rect[1].getX() ||
-                        !doubleEqual(searchAreaCornerB.getY(), rect[0].getY())
-                                && searchAreaCornerB.getY() > rect[0].getY() ||
-                        !doubleEqual(searchAreaCornerB.getY(), rect[2].getY())
-                                && searchAreaCornerB.getY() < rect[2].getY() ||
+                            !doubleEqual(searchAreaCornerB.getX(), rect[0].getX())
+                                    && searchAreaCornerB.getX() < rect[0].getX() ||
+                            !doubleEqual(searchAreaCornerB.getX(), rect[1].getX())
+                                    && searchAreaCornerB.getX() > rect[1].getX() ||
+                            !doubleEqual(searchAreaCornerB.getY(), rect[0].getY())
+                                    && searchAreaCornerB.getY() > rect[0].getY() ||
+                            !doubleEqual(searchAreaCornerB.getY(), rect[2].getY())
+                                    && searchAreaCornerB.getY() < rect[2].getY() ||
 
-                        !doubleEqual(searchAreaCornerC.getX(), rect[0].getX())
-                                && searchAreaCornerC.getX() < rect[0].getX() ||
-                        !doubleEqual(searchAreaCornerC.getX(), rect[1].getX())
-                                && searchAreaCornerC.getX() > rect[1].getX() ||
-                        !doubleEqual(searchAreaCornerC.getY(), rect[0].getY())
-                                && searchAreaCornerC.getY() > rect[0].getY() ||
-                        !doubleEqual(searchAreaCornerC.getY(), rect[2].getY())
-                                && searchAreaCornerC.getY() < rect[2].getY() ||
+                            !doubleEqual(searchAreaCornerC.getX(), rect[0].getX())
+                                    && searchAreaCornerC.getX() < rect[0].getX() ||
+                            !doubleEqual(searchAreaCornerC.getX(), rect[1].getX())
+                                    && searchAreaCornerC.getX() > rect[1].getX() ||
+                            !doubleEqual(searchAreaCornerC.getY(), rect[0].getY())
+                                    && searchAreaCornerC.getY() > rect[0].getY() ||
+                            !doubleEqual(searchAreaCornerC.getY(), rect[2].getY())
+                                    && searchAreaCornerC.getY() < rect[2].getY() ||
 
-                        !doubleEqual(searchAreaCornerD.getX(), rect[0].getX())
-                                && searchAreaCornerD.getX() < rect[0].getX() ||
-                        !doubleEqual(searchAreaCornerD.getX(), rect[1].getX())
-                                && searchAreaCornerD.getX() > rect[1].getX() ||
-                        !doubleEqual(searchAreaCornerD.getY(), rect[0].getY())
-                                && searchAreaCornerD.getY() > rect[0].getY() ||
-                        !doubleEqual(searchAreaCornerD.getY(), rect[2].getY())
-                                && searchAreaCornerD.getY() < rect[2].getY()
-        ) {
-            throw new AssertionError(
-                    "phaseRect:\n" +
-                            rect[0].toString() + "\n" +
-                            rect[1].toString() + "\n" +
-                            rect[2].toString() + "\n" +
-                            rect[3].toString() + "\n" +
-                            "ABCD:\n"
-                            + Arrays.toString(searchAreaCornerA.getCoordinates()) + "\n"
-                            + Arrays.toString(searchAreaCornerB.getCoordinates()) + "\n"
-                            + Arrays.toString(searchAreaCornerC.getCoordinates()) + "\n"
-                            + Arrays.toString(searchAreaCornerD.getCoordinates())
-            );
+                            !doubleEqual(searchAreaCornerD.getX(), rect[0].getX())
+                                    && searchAreaCornerD.getX() < rect[0].getX() ||
+                            !doubleEqual(searchAreaCornerD.getX(), rect[1].getX())
+                                    && searchAreaCornerD.getX() > rect[1].getX() ||
+                            !doubleEqual(searchAreaCornerD.getY(), rect[0].getY())
+                                    && searchAreaCornerD.getY() > rect[0].getY() ||
+                            !doubleEqual(searchAreaCornerD.getY(), rect[2].getY())
+                                    && searchAreaCornerD.getY() < rect[2].getY()
+            ) {
+                throw new AssertionError(
+                        "phaseRect:\n" +
+                                rect[0].toString() + "\n" +
+                                rect[1].toString() + "\n" +
+                                rect[2].toString() + "\n" +
+                                rect[3].toString() + "\n" +
+                                "ABCD:\n"
+                                + Arrays.toString(searchAreaCornerA.getCoordinates()) + "\n"
+                                + Arrays.toString(searchAreaCornerB.getCoordinates()) + "\n"
+                                + Arrays.toString(searchAreaCornerC.getCoordinates()) + "\n"
+                                + Arrays.toString(searchAreaCornerD.getCoordinates())
+                );
+            }
         }
         return addState(move, curCoords, currentPhaseRectangle());
     }
@@ -379,7 +410,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         if (hint.getDirection() == left) {
             // determine which intersection-point has to be used to calculate the rectangle-points:
             if (intersectionABHint.distance(B.getCoordinate()) >= intersectionCDHint.distance(C.getCoordinate())) {
-                Coordinate newB = new Coordinate(intersectionCDHint.getX(), B.getY());
+                Coordinate newB = new Coordinate(intersectionCDHint.getX(), B.getY()); // TODO change this
                 Coordinate newC = intersectionCDHint;
                 return new Point[]{A, GEOMETRY_FACTORY.createPoint(newB), GEOMETRY_FACTORY.createPoint(newC), D};
             } else {
@@ -444,10 +475,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         double startX = start.getX();
         double startY = start.getY();
         Coordinate[] rect = new Coordinate[4];
-        rect[0] = new Coordinate(startX - halfDiff, startY + halfDiff);
-        rect[1] = new Coordinate(startX + halfDiff, startY + halfDiff);
-        rect[2] = new Coordinate(startX + halfDiff, startY - halfDiff);
-        rect[3] = new Coordinate(startX - halfDiff, startY - halfDiff);
+        rect[0] = fromAxisParallel.transform(new Coordinate(startX - halfDiff, startY + halfDiff), new Coordinate());
+        rect[1] = fromAxisParallel.transform(new Coordinate(startX + halfDiff, startY + halfDiff), new Coordinate());
+        rect[2] = fromAxisParallel.transform(new Coordinate(startX + halfDiff, startY - halfDiff), new Coordinate());
+        rect[3] = fromAxisParallel.transform(new Coordinate(startX - halfDiff, startY - halfDiff), new Coordinate());
         return rect;
     }
 

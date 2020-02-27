@@ -2,6 +2,7 @@ package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.util.AffineTransformation;
 
 import java.util.Arrays;
 
@@ -90,7 +91,8 @@ public class Tester {
         for (int i = 0; i <= 7; i++) {
             Coordinate[] transformedRect = phiRectangle(i, toTransform);
 
-            Coordinate[] transformationUndo = phiOtherRectangleInverse(i, toTransform, transformedRect);
+            Coordinate[] transformationUndo = phiOtherRectangleInverse(i, toTransform, transformedRect,
+                    new AffineTransformation(), new AffineTransformation());
 
             for (int j = 0; j < 4; j++) {
                 if (
