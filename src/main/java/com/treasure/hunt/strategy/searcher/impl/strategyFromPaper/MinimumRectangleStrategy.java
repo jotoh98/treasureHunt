@@ -19,6 +19,9 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author bsen
+ */
 public class MinimumRectangleStrategy implements Searcher<HalfPlaneHint> {
     Point searcherStartPosition;
     private StrategyFromPaper strategyFromPaper;
