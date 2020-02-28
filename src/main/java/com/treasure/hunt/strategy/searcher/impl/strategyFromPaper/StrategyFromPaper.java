@@ -37,8 +37,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * In phase k, the algorithm checks, if the treasure is located in a rectangle
      * with a side length of 2^k, centered at the initial position of the searcher.
      */
-    int phase;
-    Point start, // the initial position of the player
+    protected int phase;
+    Point start; // the initial position of the player
     /**
      * searchCornerPointA, -B, -C and -D are the corners of the rectangle where the treasure is currently searched.
      * This rectangle always lies in the rectangle of the current phase.
@@ -46,7 +46,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * in the paper.
      * It is referred to as current search rectangle throughout the implementation.
      */
-    searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD;
+    protected Point searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD;
     HalfPlaneHint lastBadHint; //only used when last hint was bad
     HintQuality lastHintQuality = HintQuality.none;
     //boolean lastHintWasBad = false;
@@ -63,7 +63,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         setRectToPhase();
     }
 
-    public void init(Point startPosition, int w, int h) {
+    protected void init(Point startPosition, int w, int h) {
         init(startPosition);
     }
 
@@ -151,7 +151,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return moveReturn(addState(move));
     }
 
-    boolean rectangleNotLargeEnough() {
+    protected boolean rectangleNotLargeEnough() {
         double width = searchAreaCornerB.getX() - searchAreaCornerA.getX();
         double height = searchAreaCornerA.getY() - searchAreaCornerD.getY();
         return (!(width >= 4) || !(height >= 4));
@@ -253,7 +253,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * @param move the move to be returned by one of the two move-methods
      * @return move with lines added to the additionalGeometryItems
      */
-    Movement moveReturn(Movement move) {
+    protected Movement moveReturn(Movement move) {
         List<GeometryItem<Point>> points = move.getPoints();
         Point lastPoint = null;
         for (GeometryItem g : points) {
@@ -439,7 +439,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * @param phase the phase to which the phase's rectangle should be returned
      * @return the points of the phase's rectangle
      */
-    Coordinate[] phaseRectangle(int phase) {
+    protected Coordinate[] phaseRectangle(int phase) {
         double halfDiff = Math.pow(2, phase - 1);
         double startX = start.getX();
         double startY = start.getY();

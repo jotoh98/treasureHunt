@@ -20,11 +20,11 @@ import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
  *
  * @author bsen
  */
-class RoutinesFromPaper {
+public class RoutinesFromPaper {
     private RoutinesFromPaper() {
     }
 
-    static Movement rectangleScan(Point A, Point B, Point C, Point D, Movement move) {
+    public static Movement rectangleScan(Point A, Point B, Point C, Point D, Movement move) {
         return rectangleScan(A.getCoordinate(), B.getCoordinate(), C.getCoordinate(), D.getCoordinate(), move);
     }
 
@@ -58,7 +58,7 @@ class RoutinesFromPaper {
      * @param move
      * @return
      */
-    static Movement rectangleScan(Coordinate A, Coordinate B, Coordinate C, Coordinate D, Movement move) {
+    public static Movement rectangleScan(Coordinate A, Coordinate B, Coordinate C, Coordinate D, Movement move) {
         int k = (int) A.distance(B);
         Point[] a = lineOfPointsWithDistanceOne(k, A, B);
         Point[] b = lineOfPointsWithDistanceOne(k, D, C);

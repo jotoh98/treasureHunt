@@ -14,7 +14,7 @@ import static com.treasure.hunt.utils.JTSUtils.doubleEqual;
 /**
  * @author bsen
  */
-class GeometricUtils {
+public class GeometricUtils {
     private GeometricUtils() {
     }
 
@@ -33,7 +33,7 @@ class GeometricUtils {
         return lineAC.midPoint();
     }
 
-    static Movement moveToCenterOfRectangle(Point P1, Point P2, Point P3, Point P4, Movement move) {
+    public static Movement moveToCenterOfRectangle(Point P1, Point P2, Point P3, Point P4, Movement move) {
         move.addWayPoint(centerOfRectangle(P1, P2, P3, P4));
         return move;
     }

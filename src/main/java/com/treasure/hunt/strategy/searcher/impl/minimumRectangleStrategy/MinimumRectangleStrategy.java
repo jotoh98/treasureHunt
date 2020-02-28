@@ -1,4 +1,4 @@
-package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
+package com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
@@ -6,6 +6,9 @@ import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.strategy.searcher.Searcher;
+import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils;
+import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper;
+import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StrategyFromPaper;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.Value;
 import org.locationtech.jts.geom.Coordinate;
@@ -19,11 +22,11 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MinimumRectangleStrategy implements Searcher<HalfPlaneHint> {
+import static com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.TransformStrategyFromPaper.*;
+
+public class MinimumRectangleStrategy extends StrategyFromPaper implements Searcher<HalfPlaneHint> {
     Point searcherStartPosition;
-    private StrategyFromPaper strategyFromPaper;
     private boolean firstMoveWithHint = true;
-    private int phase;
     private AffineTransformation fromPaper;
     private AffineTransformation forPaper;
     private List<HalfPlaneHint> oldObtainedHints;// received before the last update of the phase's rectangle //TODO init
@@ -48,8 +51,7 @@ public class MinimumRectangleStrategy implements Searcher<HalfPlaneHint> {
      */
     @Override
     public void init(Point searcherStartPosition) {
-        strategyFromPaper = new StrategyFromPaper();
-        strategyFromPaper.init(JTSUtils.createPoint(0, 0));
+        super.init(JTSUtils.createPoint(0, 0));
         this.searcherStartPosition = searcherStartPosition;
         phase = 1;
         phaseHints = new ArrayList<>(4);
@@ -65,7 +67,7 @@ public class MinimumRectangleStrategy implements Searcher<HalfPlaneHint> {
      */
     @Override
     public Movement move() {
-        return strategyFromPaper.move();
+        return super.move();// todo
     }
 
     /**
@@ -87,29 +89,27 @@ public class MinimumRectangleStrategy implements Searcher<HalfPlaneHint> {
                 throw new RuntimeException("Matrix was not invertible " + Arrays.toString(fromPaper.getMatrixEntries()),
                         e);
             }
-            return transformFromPaper(strategyFromPaper.move(
+            return transformFromPaper(move(
                     new HalfPlaneHint(new Coordinate(0, 0), new Coordinate(1, 0))
             )); // the initial input hint for the strategy from the paper by definition shows upwards (in this strategy)
         }
 
-        if (strategyFromPaper.rectangleNotLargeEnough()) {
+        if (rectangleNotLargeEnough()) {
             Movement move = new Movement();
             scanCurrentRectangle(move);
             ArrayList<HalfPlaneHint> oldPhaseHints = phaseHints;
             phase++;
-            strategyFromPaper.phase++;
             updatePhaseHints();
             updatePolygonPoints(oldPhaseHints);
             setABCDinStrategy();
             addPolygonVisualization(move);
-            GeometricUtils.moveToCenterOfRectangle(strategyFromPaper.searchAreaCornerA,
-                    strategyFromPaper.searchAreaCornerB, strategyFromPaper.searchAreaCornerC,
-                    strategyFromPaper.searchAreaCornerD, move);
+            GeometricUtils.moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC,
+                    searchAreaCornerD, move);
             oldObtainedHints.addAll(newObtainedHints);
             newObtainedHints.clear();
             return move;
         } else
-            return transformFromPaper(strategyFromPaper.move(transformForPaper(hint)));
+            return transformFromPaper(super.move(transformForPaper(hint)));
     }
 
     /**
@@ -239,8 +239,9 @@ public class MinimumRectangleStrategy implements Searcher<HalfPlaneHint> {
         phaseHints.set(3, new HalfPlaneHint(phaseRectangle[0], phaseRectangle[3]));
     }
 
-    private Coordinate[] phaseRectangle(int phase) {
-        Coordinate[] rectangle = strategyFromPaper.phaseRectangle(phase);
+    @Override
+    protected Coordinate[] phaseRectangle(int phase) {
+        Coordinate[] rectangle = super.phaseRectangle(phase);
         for (int i = 0; i < 4; i++) {
             rectangle[i] = transformForPaper(rectangle[i]);
         }
@@ -248,8 +249,8 @@ public class MinimumRectangleStrategy implements Searcher<HalfPlaneHint> {
     }
 
     private void scanCurrentRectangle(Movement move) {
-        RoutinesFromPaper.rectangleScan(strategyFromPaper.searchAreaCornerA, strategyFromPaper.searchAreaCornerB,
-                strategyFromPaper.searchAreaCornerC, strategyFromPaper.searchAreaCornerD, move);
+        RoutinesFromPaper.rectangleScan(searchAreaCornerA, searchAreaCornerB,
+                searchAreaCornerC, searchAreaCornerD, move);
     }
 
     private Coordinate transformForPaper(double x, double y) {
@@ -291,7 +292,7 @@ public class MinimumRectangleStrategy implements Searcher<HalfPlaneHint> {
             outputMove.addWayPoint(transformFromPaper(wayPoint.getObject()));
         }
         //addState was  not called yet
-        return strategyFromPaper.moveReturn(outputMove);
+        return moveReturn(outputMove);
     }
 
     private void setABCDinStrategy() {// FIXME fehler da diese berechnung der maxima minima in den strategyFromPaper
@@ -308,13 +309,13 @@ public class MinimumRectangleStrategy implements Searcher<HalfPlaneHint> {
             minX = Math.min(minX, x);
             minY = Math.min(minY, y);
         }
-        strategyFromPaper.searchAreaCornerA = JTSUtils.GEOMETRY_FACTORY.createPoint(transformForPaper(
+        searchAreaCornerA = JTSUtils.GEOMETRY_FACTORY.createPoint(transformForPaper(
                 new Coordinate(minX, maxY)));
-        strategyFromPaper.searchAreaCornerB = JTSUtils.GEOMETRY_FACTORY.createPoint(transformForPaper(
+        searchAreaCornerB = JTSUtils.GEOMETRY_FACTORY.createPoint(transformForPaper(
                 new Coordinate(maxX, maxY)));
-        strategyFromPaper.searchAreaCornerC = JTSUtils.GEOMETRY_FACTORY.createPoint(transformForPaper(
+        searchAreaCornerC = JTSUtils.GEOMETRY_FACTORY.createPoint(transformForPaper(
                 new Coordinate(maxX, minY)));
-        strategyFromPaper.searchAreaCornerD = JTSUtils.GEOMETRY_FACTORY.createPoint(transformForPaper(
+        searchAreaCornerD = JTSUtils.GEOMETRY_FACTORY.createPoint(transformForPaper(
                 new Coordinate(minX, minY)));
     }
 
