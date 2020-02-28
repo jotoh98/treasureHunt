@@ -22,13 +22,13 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.TransformStrategyFromPaper.*;
-
 public class MinimumRectangleStrategy extends StrategyFromPaper implements Searcher<HalfPlaneHint> {
     Point searcherStartPosition;
     private boolean firstMoveWithHint = true;
     private AffineTransformation fromPaper;
     private AffineTransformation forPaper;
+    private TransformStrategyFromPaper transformer;
+
     private List<HalfPlaneHint> oldObtainedHints;// received before the last update of the phase's rectangle //TODO init
     private List<HalfPlaneHint> newObtainedHints;// received after the last update of the phase's rectangle //TODO init
     /**
@@ -89,7 +89,8 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
                 throw new RuntimeException("Matrix was not invertible " + Arrays.toString(fromPaper.getMatrixEntries()),
                         e);
             }
-            return transformFromPaper(move(
+            transformer = new TransformStrategyFromPaper(fromPaper, forPaper, searcherStartPosition, this);
+            return transformer.transformFromPaper(move(
                     new HalfPlaneHint(new Coordinate(0, 0), new Coordinate(1, 0))
             )); // the initial input hint for the strategy from the paper by definition shows upwards (in this strategy)
         }
@@ -109,7 +110,12 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
             newObtainedHints.clear();
             return move;
         } else
-            return transformFromPaper(super.move(transformForPaper(hint)));
+            return transformer.transformFromPaper(super.move(transformer.transformForPaper(hint)));
+    }
+
+    @Override
+    public Movement moveReturn(Movement move) {
+        return super.moveReturn(move);
     }
 
     /**
@@ -243,7 +249,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
     protected Coordinate[] phaseRectangle(int phase) {
         Coordinate[] rectangle = super.phaseRectangle(phase);
         for (int i = 0; i < 4; i++) {
-            rectangle[i] = transformForPaper(rectangle[i]);
+            rectangle[i] = transformer.transformForPaper(rectangle[i]);
         }
         return rectangle;
     }
@@ -253,47 +259,6 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
                 searchAreaCornerC, searchAreaCornerD, move);
     }
 
-    private Coordinate transformForPaper(double x, double y) {
-        return forPaper.transform(new Coordinate(
-                x - searcherStartPosition.getX(),
-                y - searcherStartPosition.getY()), new Coordinate());
-    }
-
-    private Coordinate transformForPaper(Coordinate c) {
-        return transformForPaper(c.x, c.y);
-    }
-
-    private Point transformForPaper(Point p) {
-        return JTSUtils.GEOMETRY_FACTORY.createPoint(transformForPaper(p.getCoordinate()));
-    }
-
-    private HalfPlaneHint transformForPaper(HalfPlaneHint hint) {
-        HalfPlaneHint lastHint = null;
-        if (hint.getLastHint() != null) {
-            lastHint = new HalfPlaneHint(
-                    forPaper.transform(transformForPaper(hint.getLastHint().getCenter()), new Coordinate()),
-                    forPaper.transform(transformForPaper(hint.getLastHint().getRight()), new Coordinate())
-            );
-        }
-        return new HalfPlaneHint(
-                forPaper.transform(transformForPaper(hint.getCenter()), new Coordinate()),
-                forPaper.transform(transformForPaper(hint.getRight()), new Coordinate()),
-                lastHint
-        );
-    }
-
-    private Point transformFromPaper(Point point) {
-        return (Point) fromPaper.transform(point);
-    }
-
-    private Movement transformFromPaper(Movement move) {
-        Movement outputMove = new Movement();
-        for (GeometryItem<Point> wayPoint : move.getPoints()) {
-            outputMove.addWayPoint(transformFromPaper(wayPoint.getObject()));
-        }
-        //addState was  not called yet
-        return moveReturn(outputMove);
-    }
 
     private void setABCDinStrategy() {// FIXME fehler da diese berechnung der maxima minima in den strategyFromPaper
         //                                      koordinaten passieren müsste
@@ -309,13 +274,13 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
             minX = Math.min(minX, x);
             minY = Math.min(minY, y);
         }
-        searchAreaCornerA = JTSUtils.GEOMETRY_FACTORY.createPoint(transformForPaper(
+        searchAreaCornerA = JTSUtils.GEOMETRY_FACTORY.createPoint(transformer.transformForPaper(
                 new Coordinate(minX, maxY)));
-        searchAreaCornerB = JTSUtils.GEOMETRY_FACTORY.createPoint(transformForPaper(
+        searchAreaCornerB = JTSUtils.GEOMETRY_FACTORY.createPoint(transformer.transformForPaper(
                 new Coordinate(maxX, maxY)));
-        searchAreaCornerC = JTSUtils.GEOMETRY_FACTORY.createPoint(transformForPaper(
+        searchAreaCornerC = JTSUtils.GEOMETRY_FACTORY.createPoint(transformer.transformForPaper(
                 new Coordinate(maxX, minY)));
-        searchAreaCornerD = JTSUtils.GEOMETRY_FACTORY.createPoint(transformForPaper(
+        searchAreaCornerD = JTSUtils.GEOMETRY_FACTORY.createPoint(transformer.transformForPaper(
                 new Coordinate(minX, minY)));
     }
 
