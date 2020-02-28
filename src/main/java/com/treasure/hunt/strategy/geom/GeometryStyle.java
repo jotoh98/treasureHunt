@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.awt.*;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -19,7 +20,7 @@ public class GeometryStyle {
     public static EnumMap<GeometryType, GeometryStyle> defaultsMap = new EnumMap<>(GeometryType.class);
 
     static {
-        Map defaultsMapAdd = Map.of(
+        HashMap defaultsMapAdd = new HashMap(Map.of(
                 GeometryType.WAY_POINT, new GeometryStyle(true, new Color(0xFFFFFF)),
                 GeometryType.TREASURE, new GeometryStyle(true, new Color(0xFFD700)),
                 GeometryType.HINT_ANGLE, new GeometryStyle(true, new Color(0x575757)),
@@ -30,7 +31,7 @@ public class GeometryStyle {
                 GeometryType.HALF_PLANE, new GeometryStyle(true, new Color(0x505050), new Color(0x505050)),
                 GeometryType.HALF_PLANE_LINE, new GeometryStyle(true, new Color(0x000000)),
                 GeometryType.HALF_PLANE_LINE_BLUE, new GeometryStyle(true, Color.BLUE)
-        );
+        ));
         defaultsMapAdd.put(GeometryType.CURRENT_POLYGON, new GeometryStyle(true, new Color(0x00ff00)));
         defaultsMap.putAll(defaultsMapAdd);
     }

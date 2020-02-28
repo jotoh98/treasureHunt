@@ -138,14 +138,13 @@ public class MinimumRectangleStrategy implements Searcher<HalfPlaneHint> {
     /**
      * Tests if the intersection of hintOne and hintTwo lies in all other half-planes of the hints in otherHintsOne,
      * otherHintsTwo and otherHintsThree.
-     * If this is the case the intersection is returned, otherwise null is returned.
+     * If this is the case the intersection gets added to intersectionList, otherwise nothing is done.
      *
      * @param hintOne
      * @param hintTwo
      * @param otherHintsOne
      * @param otherHintsTwo
      * @param otherHintsThree
-     * @return
      */
     private void addIntersectionIfInPoly(HalfPlaneHint hintOne, HalfPlaneHint hintTwo,
                                          List<HalfPlaneHint> otherHintsOne, List<HalfPlaneHint> otherHintsTwo,
