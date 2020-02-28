@@ -14,8 +14,8 @@ import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
 /**
  * Methods used to reduce the rectangle in the strategy of the paper, when the hint was good.
  * //TODO explain whats a good hint
- // checks if the hint is good (i.e. if the hint divides one side of the rectangles in into two parts such that
- // the smaller one is bigger or equal to 1)
+ * // checks if the hint is good (i.e. if the hint divides one side of the rectangles in into two parts such that
+ * // the smaller one is bigger or equal to 1)
  *
  * @author bsen
  */
@@ -44,59 +44,56 @@ public class ReduceRectangle {
         Coordinate intersectionADHint = JTSUtils.lineWayIntersection(hintLine, AD);
         Coordinate intersectionBCHint = JTSUtils.lineWayIntersection(hintLine, BC);
 
-        if (intersectionADHint == null || intersectionBCHint == null) {//FIXME check if hint is good
+        // checks if the hint is good (i.e. if the hint divides one side of the rectangles in into two parts such that
+        // the smaller one is bigger or equal to 1)
+        if (intersectionADHint == null || intersectionBCHint == null ||
+                intersectionADHint.distance(searchAreaCornerA.getCoordinate()) < 1 ||
+                intersectionADHint.distance(searchAreaCornerD.getCoordinate()) < 1 ||
+                intersectionBCHint.distance(searchAreaCornerB.getCoordinate()) < 1 ||
+                intersectionBCHint.distance(searchAreaCornerC.getCoordinate()) < 1
+        ) {
             return null;
         }
 
         if (hint.getDirection() == up) {
-            if ((intersectionADHint.getY() - searchAreaCornerD.getY()) >= 1) {
+            Coordinate newC = intersectionBCHint;
+            Coordinate newD = intersectionADHint;
+            return new Point[]{searchAreaCornerA, searchAreaCornerB, GEOMETRY_FACTORY.createPoint(newC),
+                    GEOMETRY_FACTORY.createPoint(newD)};
+        }
+        if (hint.getDirection() == down) {
+            Coordinate newA = intersectionADHint;
+            Coordinate newB = intersectionBCHint;
+            return new Point[]{GEOMETRY_FACTORY.createPoint(newA), GEOMETRY_FACTORY.createPoint(newB),
+                    searchAreaCornerC, searchAreaCornerD};
+        }
+
+        if (hint.pointsUpwards()) {
+            if (intersectionADHint.distance(searchAreaCornerD.getCoordinate())
+                    >= intersectionBCHint.distance(searchAreaCornerC.getCoordinate())) {
+                Coordinate newD = new Coordinate(searchAreaCornerD.getX(), intersectionBCHint.getY());
                 Coordinate newC = intersectionBCHint;
+                return new Point[]{searchAreaCornerA, searchAreaCornerB, GEOMETRY_FACTORY.createPoint(newC),
+                        GEOMETRY_FACTORY.createPoint(newD)};
+            } else {
+                Coordinate newC = new Coordinate(searchAreaCornerC.getX(), intersectionADHint.getY());
                 Coordinate newD = intersectionADHint;
                 return new Point[]{searchAreaCornerA, searchAreaCornerB, GEOMETRY_FACTORY.createPoint(newC),
                         GEOMETRY_FACTORY.createPoint(newD)};
             }
         }
-        if (hint.getDirection() == down) {
-            if ((searchAreaCornerA.getY() - intersectionADHint.getY()) >= 1) {
-                Coordinate newA = intersectionADHint;
+        if (hint.pointsDownwards()) {
+            if (intersectionADHint.distance(searchAreaCornerA.getCoordinate()) >= intersectionBCHint.distance(
+                    searchAreaCornerB.getCoordinate())) {
+                Coordinate newA = new Coordinate(searchAreaCornerA.getX(), intersectionBCHint.getY());
                 Coordinate newB = intersectionBCHint;
                 return new Point[]{GEOMETRY_FACTORY.createPoint(newA), GEOMETRY_FACTORY.createPoint(newB),
                         searchAreaCornerC, searchAreaCornerD};
-            }
-        }
-
-        if (hint.pointsUpwards()) {
-            if (intersectionADHint.distance(searchAreaCornerD.getCoordinate()) >= 1
-                    && intersectionBCHint.distance(searchAreaCornerC.getCoordinate()) >= 1) {
-                if (intersectionADHint.distance(searchAreaCornerD.getCoordinate())
-                        >= intersectionBCHint.distance(searchAreaCornerC.getCoordinate())) {
-                    Coordinate newD = new Coordinate(searchAreaCornerD.getX(), intersectionBCHint.getY());
-                    Coordinate newC = intersectionBCHint;
-                    return new Point[]{searchAreaCornerA, searchAreaCornerB, GEOMETRY_FACTORY.createPoint(newC),
-                            GEOMETRY_FACTORY.createPoint(newD)};
-                } else {
-                    Coordinate newC = new Coordinate(searchAreaCornerC.getX(), intersectionADHint.getY());
-                    Coordinate newD = intersectionADHint;
-                    return new Point[]{searchAreaCornerA, searchAreaCornerB, GEOMETRY_FACTORY.createPoint(newC),
-                            GEOMETRY_FACTORY.createPoint(newD)};
-                }
-            }
-        }
-        if (hint.pointsDownwards()) {
-            if (intersectionADHint.distance(searchAreaCornerA.getCoordinate()) >= 1
-                    && intersectionBCHint.distance(searchAreaCornerB.getCoordinate()) >= 1) {
-                if (intersectionADHint.distance(searchAreaCornerA.getCoordinate()) >= intersectionBCHint.distance(
-                        searchAreaCornerB.getCoordinate())) {
-                    Coordinate newA = new Coordinate(searchAreaCornerA.getX(), intersectionBCHint.getY());
-                    Coordinate newB = intersectionBCHint;
-                    return new Point[]{GEOMETRY_FACTORY.createPoint(newA), GEOMETRY_FACTORY.createPoint(newB),
-                            searchAreaCornerC, searchAreaCornerD};
-                } else {
-                    Coordinate newB = new Coordinate(searchAreaCornerB.getX(), intersectionADHint.getY());
-                    Coordinate newA = intersectionADHint;
-                    return new Point[]{GEOMETRY_FACTORY.createPoint(newA), GEOMETRY_FACTORY.createPoint(newB),
-                            searchAreaCornerC, searchAreaCornerD};
-                }
+            } else {
+                Coordinate newB = new Coordinate(searchAreaCornerB.getX(), intersectionADHint.getY());
+                Coordinate newA = intersectionADHint;
+                return new Point[]{GEOMETRY_FACTORY.createPoint(newA), GEOMETRY_FACTORY.createPoint(newB),
+                        searchAreaCornerC, searchAreaCornerD};
             }
         }
         return null;
@@ -172,7 +169,7 @@ public class ReduceRectangle {
     }
 
     /**
-     * If the rotation of a instance of StrategyFromPaper is not 0 this method is used to reduce the current search
+     * When the rotation of a instance of StrategyFromPaper is not 0 this method is used to reduce the current search
      * rectangle when the hint is good.
      * If the hint is bad (defined in the paper and explained above), null is returned otherwise there are two cases:
      * <p>
@@ -195,8 +192,6 @@ public class ReduceRectangle {
      * (searchAreaCornerA, searchAreaCornerB) and
      * (searchAreaCornerC, searchAreaCornerD)
      * if it does not go through this lines (and the horizontal-parameter equals false), the method returns null.
-     * <p>
-     * aOne and bOne must have one side of the rectangle (aOne,bOne,bTwo,aTwo) in common.
      *
      * @param aOne
      * @param aTwo
@@ -207,14 +202,22 @@ public class ReduceRectangle {
      * @return the corners of the reduced rectangle if this kind of split is valid, null otherwise
      */
     static Point[] splitWithRotation(Point aOne, Point aTwo, Point bOne, Point bTwo, HalfPlaneHint hint,
-                                     boolean horizontal) {//TODO check if the hint is good
+                                     boolean horizontal) {
         LineSegment hintLine = hint.getHalfPlaneLine();
         LineSegment aLine = new LineSegment(aOne.getCoordinate(), aTwo.getCoordinate());
         LineSegment bLine = new LineSegment(bOne.getCoordinate(), bTwo.getCoordinate());
         Coordinate intersectionAHint = JTSUtils.lineWayIntersection(hintLine, aLine);
         Coordinate intersectionBHint = JTSUtils.lineWayIntersection(hintLine, bLine);
-        if (intersectionAHint == null || intersectionBHint == null)
+
+        if (intersectionAHint == null || intersectionBHint == null ||
+                intersectionAHint.distance(aOne.getCoordinate()) < 1 ||
+                intersectionAHint.distance(aTwo.getCoordinate()) < 1 ||
+                intersectionBHint.distance(bOne.getCoordinate()) < 1 ||
+                intersectionBHint.distance(bTwo.getCoordinate()) < 1
+        ) {
             return null;
+        }
+
         boolean aOneInHint = hint.inHalfPlane(aOne.getCoordinate());
         boolean aTwoInHint = hint.inHalfPlane(aTwo.getCoordinate());
         boolean bOneInHint = hint.inHalfPlane(bOne.getCoordinate());

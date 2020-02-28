@@ -310,19 +310,18 @@ class RoutinesFromPaper {
         for (int i = 0; i <= 7; i++) {
             Coordinate[] testRect = phiRectangle(i, rect);
             HalfPlaneHint testHint = phiHint(i, rect, hint);
-            LineSegment hintLine = new LineSegment(testHint.getCenter(),
-                    testHint.getRight());
+            LineSegment hintLine = testHint.getHalfPlaneLine();
             LineSegment testAD = new LineSegment(testRect[0], testRect[3]);
-            Coordinate AD_hint = lineWayIntersection(hintLine, testAD);
+            Coordinate intersectionHintAD = lineWayIntersection(hintLine, testAD);
             if (testHint.getDirection() == up)
                 return i;
             if (testHint.getDirection() == right &&
                     testHint.getUpperHintPoint().getX() < testHint.getLowerHintPoint().getX() &&
-                    AD_hint != null)
+                    intersectionHintAD != null)
                 return i;
         }
         throw new IllegalArgumentException("Somehow there was no basic transformation found for this " +
-                "rectangle and hint. This is impossible.\n" + "rect: " + Arrays.toString(rect) + " anglepoints: "
+                "rectangle and hint. This is impossible.\n rectangle: " + Arrays.toString(rect) + "\n anglepoints: "
                 + hint.getRight() + hint.getCenter());
     }
 
