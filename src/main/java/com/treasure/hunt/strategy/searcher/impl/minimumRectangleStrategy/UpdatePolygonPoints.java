@@ -79,48 +79,54 @@ public class UpdatePolygonPoints {
         for (Intersection intersection : polygonPoints) {
             if (!(oldPhaseHints.contains(intersection.getHintOne()) ||
                     oldPhaseHints.contains(intersection.getHintTwo()))) {
+                boolean isInNewPolygon = true;
                 for (HalfPlaneHint testHintHP : newObtainedHints) {
-                    if (testHintHP.inHalfPlane(intersection.getCoordinate())) {
-                        newPolygonPoints.add(intersection);
-                        newPolygonCorners.add(intersection.getCoordinate());
+                    if (!testHintHP.inHalfPlane(intersection.getCoordinate())) {
+                        isInNewPolygon = false;
                     }
                 }
-                for (HalfPlaneHint testHintHP : oldPhaseHints) {
-                    if (testHintHP.inHalfPlane(intersection.getCoordinate())) {
-                        newPolygonPoints.add(intersection);
-                        newPolygonCorners.add(intersection.getCoordinate());
+                for (HalfPlaneHint testHintHP : newPhaseHints) {
+                    if (!testHintHP.inHalfPlane(intersection.getCoordinate())) {
+                        isInNewPolygon = false;
                     }
                 }
+                if (isInNewPolygon) {
+                    newPolygonCorners.add(intersection.getCoordinate());
+                }
+            } else {
+                polygonPoints.remove(intersection);
             }
         }
 
         // calculate new intersections and look if they are inside the polygon
-        for (HalfPlaneHint currentHint : oldObtainedHints) {
-            for (HalfPlaneHint testIntersectionHint : newObtainedHints) {
-                addIntersectionIfInPoly(currentHint, testIntersectionHint, oldObtainedHints,
+        for (HalfPlaneHint hintOne : oldObtainedHints) {
+            for (HalfPlaneHint hintTwo : newObtainedHints) {
+                addIntersectionIfInPoly(hintOne, hintTwo, oldObtainedHints,
                         newObtainedHints, newPhaseHints, newPolygonPoints, newPolygonCorners);
             }
-            for (HalfPlaneHint testIntersectionHint : newPhaseHints) {
-                addIntersectionIfInPoly(currentHint, testIntersectionHint, oldObtainedHints,
-                        newObtainedHints, newPhaseHints, newPolygonPoints, newPolygonCorners);
-            }
-        }
-        for (HalfPlaneHint currentHint : newObtainedHints) {
-            for (HalfPlaneHint testIntersectionHint : newObtainedHints) {
-                addIntersectionIfInPoly(currentHint, testIntersectionHint, oldObtainedHints,
-                        newObtainedHints, newPhaseHints, newPolygonPoints, newPolygonCorners);
-            }
-            for (HalfPlaneHint testIntersectionHint : newPhaseHints) {
-                addIntersectionIfInPoly(currentHint, testIntersectionHint, oldObtainedHints,
+            for (HalfPlaneHint hintTwo : newPhaseHints) {
+                addIntersectionIfInPoly(hintOne, hintTwo, oldObtainedHints,
                         newObtainedHints, newPhaseHints, newPolygonPoints, newPolygonCorners);
             }
         }
-        for (HalfPlaneHint currentHint : newPhaseHints) {
-            for (HalfPlaneHint testIntersectionHint : newPhaseHints) {
-                addIntersectionIfInPoly(currentHint, testIntersectionHint, oldObtainedHints,
+        for (HalfPlaneHint hintOne : newObtainedHints) {
+            for (HalfPlaneHint hintTwo : newObtainedHints) {
+                addIntersectionIfInPoly(hintOne, hintTwo, oldObtainedHints,
+                        newObtainedHints, newPhaseHints, newPolygonPoints, newPolygonCorners);
+            }
+            for (HalfPlaneHint hintTwo : newPhaseHints) {
+                addIntersectionIfInPoly(hintOne, hintTwo, oldObtainedHints,
                         newObtainedHints, newPhaseHints, newPolygonPoints, newPolygonCorners);
             }
         }
+        for (HalfPlaneHint hintOne : newPhaseHints) {
+            for (HalfPlaneHint hintTwo : newPhaseHints) {
+                addIntersectionIfInPoly(hintOne, hintTwo, oldObtainedHints,
+                        newObtainedHints, newPhaseHints, newPolygonPoints, newPolygonCorners);
+            }
+        }
+        polygonPoints.addAll(newPolygonPoints);
+
         Geometry newPolygon = JTSUtils.GEOMETRY_FACTORY.createMultiPointFromCoords(
                 newPolygonCorners.toArray(new Coordinate[]{}));
         newPolygon = newPolygon.convexHull();
