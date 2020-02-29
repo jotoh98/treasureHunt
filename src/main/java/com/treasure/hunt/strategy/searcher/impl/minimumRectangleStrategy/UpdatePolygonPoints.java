@@ -76,6 +76,7 @@ public class UpdatePolygonPoints {
         }
 
         // iterate over the old intersections, and look if they can be reused:
+        List<Intersection> removeFromPolygonPoints = new LinkedList<>();
         for (Intersection intersection : polygonPoints) {
             if (!(oldPhaseHints.contains(intersection.getHintOne()) ||
                     oldPhaseHints.contains(intersection.getHintTwo()))) {
@@ -94,9 +95,11 @@ public class UpdatePolygonPoints {
                     newPolygonCorners.add(intersection.getCoordinate());
                 }
             } else {
-                polygonPoints.remove(intersection);
+                removeFromPolygonPoints.add(intersection);
+                //polygonPoints.remove(intersection);
             }
         }
+        polygonPoints.removeAll(removeFromPolygonPoints);
 
         // calculate new intersections and look if they are inside the polygon
         for (HalfPlaneHint hintOne : oldObtainedHints) {
