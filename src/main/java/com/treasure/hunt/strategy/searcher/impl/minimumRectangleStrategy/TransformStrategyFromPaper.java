@@ -11,15 +11,12 @@ import org.locationtech.jts.geom.util.AffineTransformation;
 
 public class TransformStrategyFromPaper {
     private Point searcherStartPosition;
-    private MinimumRectangleStrategy minimumRectangleStrategy;
     private AffineTransformation fromPaper;
     private AffineTransformation forPaper;
     private AffineTransformation fromPaperWithStartPointMovement;
 
-    public TransformStrategyFromPaper(HalfPlaneHint hint, Point searcherStartPosition,
-                                      MinimumRectangleStrategy minimumRectangleStrategy) {
+    public TransformStrategyFromPaper(HalfPlaneHint hint, Point searcherStartPosition) {
         this.searcherStartPosition = searcherStartPosition;
-        this.minimumRectangleStrategy = minimumRectangleStrategy;
 
         double radius = hint.getCenter().distance(hint.getRight());
         double sinHintAngle = (hint.getRight().y - hint.getCenter().y) / radius;
@@ -27,7 +24,7 @@ public class TransformStrategyFromPaper {
         fromPaper = AffineTransformation.rotationInstance(sinHintAngle, cosHintAngle);
 
         double sinHintAngleReverse = (hint.getCenter().y - hint.getRight().y) / radius;
-        double cosHintAngleReverse = (hint.getCenter().x - hint.getRight().x) / radius;
+        double cosHintAngleReverse = (hint.getRight().x - hint.getCenter().x) / radius;
         forPaper = AffineTransformation.rotationInstance(sinHintAngleReverse, cosHintAngleReverse);
 
         AffineTransformation displacementFromPaper = AffineTransformation.shearInstance(searcherStartPosition.getX(),
@@ -37,16 +34,11 @@ public class TransformStrategyFromPaper {
 
     }
 
-    Coordinate transformForPaper(double x, double y) {
-        return forPaper.transform(new Coordinate(
-                x - searcherStartPosition.getX(),
-                y - searcherStartPosition.getY()), new Coordinate());
-    }
-
     Coordinate transformForPaper(Coordinate c) {
-        return transformForPaper(c.x, c.y);
+        return forPaper.transform(new Coordinate(
+                c.x - searcherStartPosition.getX(),
+                c.y - searcherStartPosition.getY()), new Coordinate());
     }
-
 
     Point transformForPaper(Point p) {
         return JTSUtils.GEOMETRY_FACTORY.createPoint(transformForPaper(p.getCoordinate()));
@@ -56,15 +48,11 @@ public class TransformStrategyFromPaper {
         HalfPlaneHint lastHint = null;
         if (hint.getLastHint() != null) {
             lastHint = new HalfPlaneHint(
-                    forPaper.transform(transformForPaper(hint.getLastHint().getCenter()), new Coordinate()),
-                    forPaper.transform(transformForPaper(hint.getLastHint().getRight()), new Coordinate())
+                    transformForPaper(hint.getLastHint().getCenter()),
+                    transformForPaper(hint.getLastHint().getRight())
             );
         }
-        return new HalfPlaneHint(
-                forPaper.transform(transformForPaper(hint.getCenter()), new Coordinate()),
-                forPaper.transform(transformForPaper(hint.getRight()), new Coordinate()),
-                lastHint
-        );
+        return new HalfPlaneHint(transformForPaper(hint.getCenter()), transformForPaper(hint.getRight()), lastHint);
     }
 
     Polygon transformFromPaper(Polygon polygon) {
@@ -72,7 +60,7 @@ public class TransformStrategyFromPaper {
     }
 
     Point transformFromPaper(Point point) {
-        return JTSUtils.GEOMETRY_FACTORY.createPoint(transformForPaper(point.getCoordinate()));
+        return JTSUtils.GEOMETRY_FACTORY.createPoint(transformFromPaper(point.getCoordinate()));
     }
 
     Coordinate transformFromPaper(Coordinate c) {
@@ -95,7 +83,6 @@ public class TransformStrategyFromPaper {
         for (GeometryItem<Point> wayPoint : move.getPoints()) {
             outputMove.addWayPoint(transformFromPaper(wayPoint.getObject()));
         }
-        //addState was  not called yet
         return outputMove;
     }
 }
