@@ -12,31 +12,33 @@ import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StrategyFromPa
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.Value;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.util.AffineTransformation;
-import org.locationtech.jts.geom.util.NoninvertibleTransformationException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.UpdatePolygonPoints.updatePolygonPoints;
+
 public class MinimumRectangleStrategy extends StrategyFromPaper implements Searcher<HalfPlaneHint> {
-    Point searcherStartPosition;
+    Point realSearcherStartPosition;
     private boolean firstMoveWithHint = true;
     private AffineTransformation fromPaper;
     private AffineTransformation forPaper;
     private TransformStrategyFromPaper transformer;
 
-    private List<HalfPlaneHint> oldObtainedHints;// received before the last update of the phase's rectangle //TODO init
-    private List<HalfPlaneHint> newObtainedHints;// received after the last update of the phase's rectangle //TODO init
+    private List<HalfPlaneHint> oldObtainedHints;// received before the last update of the phase's rectangle
+    private List<HalfPlaneHint> newObtainedHints;// received after the last update of the phase's rectangle
     /**
      * This points represent the polygon where the treasure must lie in if it is in the current search rectangle,
      * according to all obtained hints.
      * If this List is empty, the treasure is not in the current search rectangle.
      */
-    private List<Intersection> polygonPoints; // TODO init
+    private List<Intersection> polygonPoints;
+    private Polygon currentPolygon;
+    private Polygon phaseRectangle;
     /**
      * This are not real obtained hints.
      * This hints are just the borders of the current phase rectangle interpreted as hints.
@@ -52,11 +54,29 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
     @Override
     public void init(Point searcherStartPosition) {
         super.init(JTSUtils.createPoint(0, 0));
-        this.searcherStartPosition = searcherStartPosition;
+        this.realSearcherStartPosition = searcherStartPosition;
         phase = 1;
         phaseHints = new ArrayList<>(4);
+        {
+            phaseHints.add(null);
+            phaseHints.add(null);
+            phaseHints.add(null);
+            phaseHints.add(null);
+        }
         oldObtainedHints = new ArrayList<>();
         newObtainedHints = new ArrayList<>();
+        updatePhaseRectangle();
+        polygonPoints = new LinkedList<>();
+        currentPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon();
+    }
+
+    private void updatePhaseRectangle() {
+        Coordinate[] phaseRectangleCorners = currentPhaseRectangle();
+        Coordinate[] tmpCornersCurrentPhaseRectangle = new Coordinate[phaseRectangleCorners.length + 1];
+        System.arraycopy(phaseRectangleCorners, 0, tmpCornersCurrentPhaseRectangle, 0,
+                phaseRectangleCorners.length);
+        tmpCornersCurrentPhaseRectangle[phaseRectangleCorners.length] = phaseRectangleCorners[0];
+        phaseRectangle = JTSUtils.GEOMETRY_FACTORY.createPolygon(tmpCornersCurrentPhaseRectangle);
     }
 
     /**
@@ -67,7 +87,21 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
      */
     @Override
     public Movement move() {
-        return super.move();// todo
+        Movement strategyFromPaperMovement = super.move();
+        Movement transformedMove = new Movement();
+        for (GeometryItem<Point> wayPoint : strategyFromPaperMovement.getPoints()) {
+            transformedMove.addWayPoint(JTSUtils.createPoint(
+                    wayPoint.getObject().getX() + realSearcherStartPosition.getX(),
+                    wayPoint.getObject().getY() + realSearcherStartPosition.getY()
+            ));
+        }
+        Coordinate[] currentPhaseRectangle = currentPhaseRectangle();
+        for (int i = 0; i < currentPhaseRectangle.length; i++) {
+            currentPhaseRectangle[i].setX(currentPhaseRectangle[i].x + realSearcherStartPosition.getX());
+            currentPhaseRectangle[i].setY(currentPhaseRectangle[i].y + realSearcherStartPosition.getY());
+        }
+        super.addState(transformedMove, currentPhaseRectangle, currentPhaseRectangle);
+        return moveReturn(transformedMove);
     }
 
     /**
@@ -76,41 +110,64 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
      */
     @Override
     public Movement move(HalfPlaneHint hint) {
-        newObtainedHints.add(hint);
         if (firstMoveWithHint) {
             firstMoveWithHint = false;
-
-            double sinHintAngle = hint.getRight().y - hint.getCenter().y;
-            double cosHintAngle = hint.getRight().x - hint.getCenter().x;
-            fromPaper = AffineTransformation.rotationInstance(sinHintAngle, cosHintAngle);
-            try {
-                forPaper = fromPaper.getInverse();
-            } catch (NoninvertibleTransformationException e) {
-                throw new RuntimeException("Matrix was not invertible " + Arrays.toString(fromPaper.getMatrixEntries()),
-                        e);
-            }
-            transformer = new TransformStrategyFromPaper(fromPaper, forPaper, searcherStartPosition, this);
-            return transformer.transformFromPaper(move(
-                    new HalfPlaneHint(new Coordinate(0, 0), new Coordinate(1, 0))
-            )); // the initial input hint for the strategy from the paper by definition shows upwards (in this strategy)
+            transformer = new TransformStrategyFromPaper(hint, realSearcherStartPosition, this);
+            HalfPlaneHint transformedHint = new HalfPlaneHint(new Coordinate(0, 0), new Coordinate(1, 0));
+            newObtainedHints.add(transformedHint);
+            Movement move = move(transformedHint);
+            lastLocation = (move.getEndPoint()); // set last location accoringly
+            return moveReturnMinimumRectangleStrategy(transformer.transformFromPaper(move));
+            // the initial input hint for the strategy from the paper by definition shows upwards (in this strategy)
         }
 
+        newObtainedHints.add(transformer.transformForPaper(hint));
+
+        Polygon newPolygon;
         if (rectangleNotLargeEnough()) {
             Movement move = new Movement();
+            move.addWayPoint(transformer.transformFromPaper(lastLocation)); // the first point has to be the last location of the player
             scanCurrentRectangle(move);
             ArrayList<HalfPlaneHint> oldPhaseHints = phaseHints;
-            phase++;
-            updatePhaseHints();
-            updatePolygonPoints(oldPhaseHints);
+            Polygon oldPhaseRectangle = phaseRectangle;
+            do {
+                phase++;
+                updatePhaseHints();
+                updatePhaseRectangle();
+                newPolygon = updatePolygonPoints(polygonPoints, oldObtainedHints, newObtainedHints, oldPhaseHints,
+                        phaseHints, oldPhaseRectangle);
+            }
+            while (newPolygon == null);
+            currentPolygon = newPolygon;
+
             setABCDinStrategy();
-            addPolygonVisualization(move);
             GeometricUtils.moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC,
                     searchAreaCornerD, move);
             oldObtainedHints.addAll(newObtainedHints);
             newObtainedHints.clear();
-            return move;
+            lastLocation = transformer.transformForPaper(move.getEndPoint()); // set last location accoringly
+            return moveReturnMinimumRectangleStrategy(addState(move));
         } else
-            return transformer.transformFromPaper(super.move(transformer.transformForPaper(hint)));
+            return moveReturnMinimumRectangleStrategy(addState(transformer.transformFromPaper(
+                    super.move(transformer.transformForPaper(hint)))));
+    }
+
+    private Movement moveReturnMinimumRectangleStrategy(Movement move) {
+        Point strategyLastLocation = lastLocation;
+        Movement ret = moveReturn(move);
+        lastLocation = strategyLastLocation;
+        return ret;
+    }
+
+    @Override
+    protected Movement addState(Movement move) {
+        if (transformer == null)
+            return super.addState(move);
+        // add polygon
+        move.addAdditionalItem(new GeometryItem<>(currentPolygon, GeometryType.CURRENT_POLYGON));
+        // add search rectangle and phase rectangle
+        return super.addState(move, transformer.transformFromPaper(searchRectangle()),
+                transformer.transformFromPaper(phaseRectangle(phase)));
     }
 
     @Override
@@ -118,123 +175,9 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         return super.moveReturn(move);
     }
 
-    /**
-     * Tests if the intersection of hintOne and hintTwo lies in all other half-planes of the hints in otherHints.
-     * If this is the case the intersection is returned, otherwise null is returned.
-     *
-     * @param hintOne
-     * @param hintTwo
-     * @param otherHints
-     * @return
-     */
-    private Intersection intersectionInPolygon(HalfPlaneHint hintOne, HalfPlaneHint hintTwo,
-                                               List<HalfPlaneHint> otherHints) {
-        Coordinate intersection = hintOne.getHalfPlaneLine().intersection(hintTwo.getHalfPlaneLine());
-        if (intersection == null)
-            return null;
-
-        for (HalfPlaneHint hint : otherHints) {
-            if (hint != hintOne && hint != hintTwo) {
-                // determine whether intersection is in hint or not if it isen't, return null otherwise do nothing
-            }
-        }
-        return new Intersection(intersection, hintOne, hintTwo);
-    }
-
-    /**
-     * Tests if the intersection of hintOne and hintTwo lies in all other half-planes of the hints in otherHintsOne,
-     * otherHintsTwo and otherHintsThree.
-     * If this is the case the intersection gets added to intersectionList, otherwise nothing is done.
-     *
-     * @param hintOne
-     * @param hintTwo
-     * @param otherHintsOne
-     * @param otherHintsTwo
-     * @param otherHintsThree
-     */
-    private void addIntersectionIfInPoly(HalfPlaneHint hintOne, HalfPlaneHint hintTwo,
-                                         List<HalfPlaneHint> otherHintsOne, List<HalfPlaneHint> otherHintsTwo,
-                                         List<HalfPlaneHint> otherHintsThree,
-                                         List<Intersection> intersectionList) {
-        Coordinate intersection = hintOne.getHalfPlaneLine().intersection(hintTwo.getHalfPlaneLine());
-        if (intersection == null)
-            return;
-
-        for (HalfPlaneHint hint : otherHintsOne) {
-            if (hint != hintOne && hint != hintTwo) {
-                if (!hint.inHalfPlane(intersection))
-                    return;
-            }
-        }
-
-        for (HalfPlaneHint hint : otherHintsTwo) {
-            if (hint != hintOne && hint != hintTwo) {
-                if (!hint.inHalfPlane(intersection))
-                    return;
-            }
-        }
-        for (HalfPlaneHint hint : otherHintsThree) {
-            if (hint != hintOne && hint != hintTwo) {
-                if (!hint.inHalfPlane(intersection))
-                    return;
-            }
-        }
-        intersectionList.add(new Intersection(intersection, hintOne, hintTwo));
-    }
-
-    /**
-     * When the phase has changed, this method can be called and the polygon points are set accordingly.
-     *
-     * @param oldPhaseHints The phase hints of the previous phase
-     */
-    private void updatePolygonPoints(ArrayList<HalfPlaneHint> oldPhaseHints) {
-        List<Intersection> newPolygonPoints = new LinkedList<>();
-
-        // iterate over the old intersections, and look if they can be reused:
-        for (Intersection intersection : polygonPoints) {
-            if (!(oldPhaseHints.contains(intersection.getHintOne()) ||
-                    oldPhaseHints.contains(intersection.getHintTwo()))) {
-                for (HalfPlaneHint testHintHP : newObtainedHints) {
-                    if (testHintHP.inHalfPlane(intersection.getCoordinate())) {
-                        newPolygonPoints.add(intersection);
-                    }
-                }
-                for (HalfPlaneHint testHintHP : oldPhaseHints) {
-                    if (testHintHP.inHalfPlane(intersection.getCoordinate())) {
-                        newPolygonPoints.add(intersection);
-                    }
-                }
-            }
-        }
-
-        // calculate new intersections and look if they are inside the polygon
-        for (HalfPlaneHint currentHint : oldObtainedHints) {
-            for (HalfPlaneHint testIntersectionHint : newObtainedHints) {
-                addIntersectionIfInPoly(currentHint, testIntersectionHint, oldObtainedHints,
-                        newObtainedHints, phaseHints, newPolygonPoints);
-            }
-            for (HalfPlaneHint testIntersectionHint : phaseHints) {
-                addIntersectionIfInPoly(currentHint, testIntersectionHint, oldObtainedHints,
-                        newObtainedHints, phaseHints, newPolygonPoints);
-            }
-        }
-        for (HalfPlaneHint currentHint : newObtainedHints) {
-            for (HalfPlaneHint testIntersectionHint : newObtainedHints) {
-                addIntersectionIfInPoly(currentHint, testIntersectionHint, oldObtainedHints,
-                        newObtainedHints, phaseHints, newPolygonPoints);
-            }
-            for (HalfPlaneHint testIntersectionHint : phaseHints) {
-                addIntersectionIfInPoly(currentHint, testIntersectionHint, oldObtainedHints,
-                        newObtainedHints, phaseHints, newPolygonPoints);
-            }
-        }
-        for (HalfPlaneHint currentHint : phaseHints) {
-            for (HalfPlaneHint testIntersectionHint : phaseHints) {
-                addIntersectionIfInPoly(currentHint, testIntersectionHint, oldObtainedHints,
-                        newObtainedHints, phaseHints, newPolygonPoints);
-            }
-        }
-        polygonPoints = newPolygonPoints;
+    private Coordinate[] searchRectangle() {
+        return new Coordinate[]{searchAreaCornerA.getCoordinate(), searchAreaCornerB.getCoordinate(),
+                searchAreaCornerC.getCoordinate(), searchAreaCornerD.getCoordinate()};
     }
 
     private void updatePhaseHints() {
@@ -245,60 +188,22 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         phaseHints.set(3, new HalfPlaneHint(phaseRectangle[0], phaseRectangle[3]));
     }
 
-    @Override
-    protected Coordinate[] phaseRectangle(int phase) {
-        Coordinate[] rectangle = super.phaseRectangle(phase);
-        for (int i = 0; i < 4; i++) {
-            rectangle[i] = transformer.transformForPaper(rectangle[i]);
-        }
-        return rectangle;
-    }
-
     private void scanCurrentRectangle(Movement move) {
         RoutinesFromPaper.rectangleScan(searchAreaCornerA, searchAreaCornerB,
                 searchAreaCornerC, searchAreaCornerD, move);
     }
 
-
-    private void setABCDinStrategy() {// FIXME fehler da diese berechnung der maxima minima in den strategyFromPaper
-        //                                      koordinaten passieren müsste
-        double maxX = -Double.MAX_VALUE;
-        double maxY = -Double.MAX_VALUE;
-        double minX = Double.MAX_VALUE;
-        double minY = Double.MAX_VALUE;
-        for (Intersection intersection : polygonPoints) {
-            double x = intersection.getCoordinate().getX();
-            double y = intersection.getCoordinate().getY();
-            maxX = Math.max(maxX, x);
-            maxY = Math.max(maxY, y);
-            minX = Math.min(minX, x);
-            minY = Math.min(minY, y);
-        }
-        searchAreaCornerA = JTSUtils.GEOMETRY_FACTORY.createPoint(transformer.transformForPaper(
-                new Coordinate(minX, maxY)));
-        searchAreaCornerB = JTSUtils.GEOMETRY_FACTORY.createPoint(transformer.transformForPaper(
-                new Coordinate(maxX, maxY)));
-        searchAreaCornerC = JTSUtils.GEOMETRY_FACTORY.createPoint(transformer.transformForPaper(
-                new Coordinate(maxX, minY)));
-        searchAreaCornerD = JTSUtils.GEOMETRY_FACTORY.createPoint(transformer.transformForPaper(
-                new Coordinate(minX, minY)));
-    }
-
-    private void addPolygonVisualization(Movement move) {
-        Coordinate[] polygonCoords = new Coordinate[polygonPoints.size() + 4];
-        Coordinate[] phaseRectangle = phaseRectangle(phase);
-        for (int i = 0; i < 4; i++) {
-            polygonCoords[i] = phaseRectangle[i];
-        }
-        for (int i = 0; i < polygonPoints.size(); i++) {
-            polygonCoords[i + 4] = polygonPoints.get(i + 4).getCoordinate();
-        }
-        Geometry convexHull = (JTSUtils.GEOMETRY_FACTORY.createMultiPointFromCoords(polygonCoords)).convexHull();
-        move.addAdditionalItem(new GeometryItem<>(convexHull, GeometryType.CURRENT_POLYGON));
+    private void setABCDinStrategy() {
+        Coordinate[] coordinatesABCD = currentPolygon.getEnvelope().getCoordinates();
+        searchAreaCornerA = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[3]);
+        searchAreaCornerB = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[2]);
+        searchAreaCornerC = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[1]);
+        searchAreaCornerD = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[0]);
     }
 
     @Value
-    private class Intersection {
+    static
+    class Intersection {
         Coordinate coordinate;
         HalfPlaneHint hintOne;
         HalfPlaneHint hintTwo;

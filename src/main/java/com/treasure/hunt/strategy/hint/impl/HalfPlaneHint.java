@@ -153,6 +153,10 @@ public class HalfPlaneHint extends AngleHint {
         return geometryAngle.getRight();
     }
 
+    public Coordinate getLeft() {
+        return geometryAngle.getLeft();
+    }
+
     public LineString getHalfPlaneLineGeometry() {
         if (halfPlaneLine == null) {
             Vector2D l_to_r = new Vector2D(getCenter(), getRight());

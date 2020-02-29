@@ -38,7 +38,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * with a side length of 2^k, centered at the initial position of the searcher.
      */
     protected int phase;
-    Point start; // the initial position of the player
     /**
      * searchCornerPointA, -B, -C and -D are the corners of the rectangle where the treasure is currently searched.
      * This rectangle always lies in the rectangle of the current phase.
@@ -47,11 +46,12 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * It is referred to as current search rectangle throughout the implementation.
      */
     protected Point searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD;
+    Point start; // the initial position of the player
     HalfPlaneHint lastBadHint; //only used when last hint was bad
     HintQuality lastHintQuality = HintQuality.none;
     //boolean lastHintWasBad = false;
     List<StatusMessageItem> statusMessageItemsToBeRemovedNextMove = new ArrayList<>();
-    private Point lastLocation;
+    protected Point lastLocation;
 
     /**
      * {@inheritDoc}
@@ -164,7 +164,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * @param move
      * @return the input with the visualisations of the current phase and the search rectangle added
      */
-    Movement addState(Movement move, Coordinate[] currentRectanglePoints, Coordinate[] phaseRectanglePoints) {
+    protected Movement addState(Movement move, Coordinate[] currentRectanglePoints, Coordinate[] phaseRectanglePoints) {
         // add current rectangle which the strategy is working on
         Coordinate[] curCoords = new Coordinate[5];
         for (int i = 0; i < 4; i++) {
@@ -184,7 +184,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return move;
     }
 
-    private Movement addState(Movement move) {
+    protected Movement addState(Movement move) {
         Coordinate[] curCoords = new Coordinate[4];
         curCoords[0] = searchAreaCornerA.getCoordinate();
         curCoords[1] = searchAreaCornerB.getCoordinate();
@@ -429,7 +429,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      *
      * @return
      */
-    private Coordinate[] currentPhaseRectangle() {
+    protected Coordinate[] currentPhaseRectangle() {
         return phaseRectangle(phase);
     }
 
