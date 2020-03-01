@@ -14,7 +14,8 @@ public enum GeometryType {
     HINT_CENTER(false, "hint-center"),
 
     // treasure/no-treasure (areas)
-    TREASURE(true, "no treasure"),
+    TREASURE(true, "treasure"),
+    TREASURE_FLAG(true, "treasure flag", true),
     NO_TREASURE(false, "no treasure"),
     POSSIBLE_TREASURE(false, "possible treasure"),
 
@@ -26,9 +27,9 @@ public enum GeometryType {
 
     HIGHLIGHTER(true, "highlighter"),
 
-    STANDARD(true, "")
-    // TODO add more..
-    ;
+    STANDARD(true, ""),
+    CURRENT_WAY_POINT(true, "Current way point", true),
+    GRID(true, "Grid", false);
 
     @Getter
     private final String displayName;
@@ -36,11 +37,18 @@ public enum GeometryType {
     private boolean enabled;
     @Getter
     private boolean override;
+    @Getter
+    private boolean multiStyle = false;
 
     GeometryType(boolean enabled, String displayName, boolean override) {
         this.displayName = displayName;
         this.enabled = enabled;
         this.override = override;
+    }
+
+    GeometryType(boolean enabled, String displayName, boolean override, boolean multiStyle) {
+        this(enabled, displayName, override);
+        this.multiStyle = multiStyle;
     }
 
     GeometryType(boolean enabledByDefault, String displayName) {

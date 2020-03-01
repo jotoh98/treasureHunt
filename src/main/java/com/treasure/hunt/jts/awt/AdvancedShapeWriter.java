@@ -1,7 +1,9 @@
 package com.treasure.hunt.jts.awt;
 
+import com.treasure.hunt.jts.geom.Shapeable;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.awt.ShapeWriter;
 import org.locationtech.jts.geom.Coordinate;
@@ -29,6 +31,14 @@ public class AdvancedShapeWriter extends ShapeWriter {
      */
     @Getter
     private PointTransformation pointTransformation;
+
+    /**
+     * The boundary of the associated {@link javafx.scene.canvas.Canvas}.
+     * Enables boundary specific shapes like endless lines, grids etc.
+     */
+    @Setter
+    @Getter
+    private CanvasBoundary boundary;
 
     /**
      * Constructor for AdvancedShapeWriter.

@@ -1,8 +1,11 @@
 package com.treasure.hunt.view;
 
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
 import com.treasure.hunt.jts.awt.PointTransformation;
+import com.treasure.hunt.jts.geom.Grid;
+import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.geom.GeometryType;
+import com.treasure.hunt.utils.Renderer;
 import com.treasure.hunt.jts.geom.CircleHighlighter;
 import com.treasure.hunt.jts.geom.RectangleVariableHighlighter;
 import com.treasure.hunt.strategy.geom.GeometryItem;
@@ -11,6 +14,7 @@ import com.treasure.hunt.utils.EventBusUtils;
 import com.treasure.hunt.utils.JTSUtils;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -49,23 +53,21 @@ public class CanvasController {
     @Getter
     public Canvas canvas;
     public Pane canvasPane;
-    private ObjectProperty<GameManager> gameManager;
+    private ObjectProperty<GameManager> gameManager = new SimpleObjectProperty<>();
 
     @Getter
     private PointTransformation transformation = new PointTransformation();
-    private AdvancedShapeWriter shapeWriter = new AdvancedShapeWriter(transformation);
-
-    private FXGraphics2D graphics2D;
+    private Renderer renderer;
 
     private Vector2D dragStart = new Vector2D();
     private Vector2D offsetBackup = new Vector2D();
 
     public void initialize() {
         makeCanvasResizable();
-        graphics2D = new FXGraphics2D(canvas.getGraphicsContext2D());
+        renderer = new Renderer(canvas.getGraphicsContext2D(), transformation);
 
+        renderer.addAdditional("grid", new GeometryItem<>(new Grid(), GeometryType.GRID));
         transformation.getScaleProperty().addListener(invalidation -> drawShapes());
-
         transformation.getOffsetProperty().addListener(invalidation -> drawShapes());
 
         subscribeToGeometryItem();
@@ -103,16 +105,8 @@ public class CanvasController {
     }
 
     public void makeCanvasResizable() {
-        canvas.widthProperty().addListener((observable, oldValue, newValue) -> {
-            transformation.updateCanvasWidth((double) newValue);
-            drawShapes();
-        });
-
-        canvas.heightProperty().addListener((observable, oldValue, newValue) -> {
-            transformation.updateCanvasHeight((double) newValue);
-            drawShapes();
-        });
-
+        canvas.widthProperty().addListener((observable, oldValue, newValue) -> drawShapes());
+        canvas.heightProperty().addListener((observable, oldValue, newValue) -> drawShapes());
         canvas.heightProperty().bind(canvasPane.heightProperty());
         canvas.widthProperty().bind(canvasPane.widthProperty());
     }
@@ -123,28 +117,13 @@ public class CanvasController {
     void drawShapes() {
         Platform.runLater(() -> {
             if (gameManager == null) {
+                throw new IllegalStateException("GameManager must not be null!");
+            }
+            if (gameManager.isNull().get()) {
                 return;
             }
-            if (gameManager.isNotNull().get()) {
-                deleteShapes();
-                gameManager.get().getGeometryItems(true).forEach(geometryItem ->
-                        geometryItem.draw(graphics2D, shapeWriter)
-                );
-                if (this.highlighter != null) {
-                    this.highlighter.draw(graphics2D, shapeWriter);
-                }
-            }
+            renderer.render(gameManager.get());
         });
-    }
-
-    /**
-     * This clears the {@link GeometryItem}'s from the canvas.
-     */
-    private void deleteShapes() {
-        if (gameManager == null) {
-            return;
-        }
-        canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
     /**
@@ -156,7 +135,7 @@ public class CanvasController {
      * @param mouseEvent corresponding {@link MouseEvent}
      */
     public void onCanvasClicked(MouseEvent mouseEvent) {
-        if (gameManager == null) {
+        if (gameManager.isNull().get()) {
             return;
         }
         offsetBackup = transformation.getOffsetProperty().get();
@@ -225,7 +204,7 @@ public class CanvasController {
      */
     public void onCanvasDragged(MouseEvent mouseEvent) {
         dragged = true;
-        if (gameManager == null) {
+        if (gameManager.isNull().get()) {
             return;
         }
 
@@ -234,7 +213,7 @@ public class CanvasController {
     }
 
     public void onCanvasZoom(ScrollEvent scrollEvent) {
-        if (gameManager == null) {
+        if (gameManager.isNull().get()) {
             return;
         }
         Vector2D mouse = new Vector2D(scrollEvent.getX(), scrollEvent.getY());
@@ -245,7 +224,7 @@ public class CanvasController {
     public void setGameManager(ObjectProperty<GameManager> gameManager) {
         this.gameManager = gameManager;
         gameManager.addListener(observable -> {
-            if (this.gameManager.get() == null) {
+            if (this.gameManager.isNull().get()) {
                 return;
             }
             this.gameManager.get().getViewIndex()

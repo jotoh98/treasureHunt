@@ -13,6 +13,20 @@ repositories {
     }
 }
 
+if (javafxPlatform == "unspecified") {
+    switch (org.gradle.internal.os.OperatingSystem.current()) {
+        case org.gradle.internal.os.OperatingSystem.LINUX:
+            project.ext.javafxPlatform = "linux"
+            break
+        case org.gradle.internal.os.OperatingSystem.MAC_OS:
+            project.ext.javafxPlatform = "mac"
+            break
+        case org.gradle.internal.os.OperatingSystem.WINDOWS:
+            project.ext.javafxPlatform = "win"
+            break
+    }
+}
+println "Platform is: ${javafxPlatform}"
 
 dependencies {
 
@@ -29,11 +43,27 @@ dependencies {
     implementation 'org.reflections:reflections:0.9.11'
     implementation 'com.esotericsoftware:kryo:4.0.2'
     implementation 'com.github.Fylipp:easy-events:v1.1.0'
+    implementation 'info.picocli:picocli:4.1.4'
+    implementation 'me.tongfei:progressbar:0.8.0'
     testCompile 'org.mockito:mockito-core:3.0.0'
     testCompile group: 'org.testfx', name: 'testfx-junit', version: '4.0.8-alpha'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
 
+    compile("org.openjfx:javafx-base:${javafxVersion}:${javafxPlatform}")
+    compile("org.openjfx:javafx-controls:${javafxVersion}:${javafxPlatform}")
+    compile("org.openjfx:javafx-graphics:${javafxVersion}:${javafxPlatform}")
+    compile("org.openjfx:javafx-fxml:${javafxVersion}:${javafxPlatform}")
+}
+
+project.version = project.projVersion.replace('v','')
+
+distZip {
+    archiveName "${project.name}-v${project.version}-${javafxPlatform}.zip"
+}
+
+distTar {
+    archiveName "${project.name}-v${project.version}-${javafxPlatform}.tar"
 }
 
 test {
@@ -41,7 +71,7 @@ test {
 }
 
 javafx {
-    version = "11"
+    version = "${javafxVersion}"
     modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.graphics']
     /**
      * https://github.com/openjfx/javafx-gradle-plugin
@@ -49,13 +79,12 @@ javafx {
      * running the build. By declaring the dependency configuration compileOnly, the native binaries will not be
      * included. You will need to provide those separately during deployment for each target platform.
      */
-    // configuration = 'compileOnly'
+     configuration = 'compileOnly'
 }
 
-mainClassName = 'com.treasure.hunt.JavaFXLauncher'
+mainClassName = 'com.treasure.hunt.Main'
 
 group = 'com.treasure'
-version = '0.8.2'
 description = 'hunt'
 sourceCompatibility = '11'
 
@@ -63,10 +92,10 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-
 jar {
     manifest {
-        attributes 'Main-Class': 'com.treasure.hunt.JavaFXLauncher'
+        attributes 'Main-Class': 'com.treasure.hunt.Main',
+                                 'Implementation-Version': project.version
     }
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }

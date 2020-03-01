@@ -1,4 +1,4 @@
-package com.treasure.hunt.service;
+package com.treasure.hunt.service.io;
 
 import com.treasure.hunt.analysis.StatisticsWithIdsAndPath;
 import com.treasure.hunt.game.GameEngine;
@@ -32,7 +32,7 @@ public class SeriesServiceTest extends AbstractPlainJavaFxTest {
         File file = testFolder.newFile("save.hunts");
         GameManager gameManager = new GameManager(NaiveAngleSearcher.class, RandomAngleHintHider.class, GameEngine.class);
         SeriesService.getInstance().runSeriesAndSaveToFile(100, gameManager, aDouble -> {
-        }, file);
+        }, file, false, true);
         CountDownLatch loadLatch = new CountDownLatch(1);
         AtomicReference<StatisticsWithIdsAndPath> statisticsWithIdsAndPath = new AtomicReference<>();
         EventBusUtils.STATISTICS_LOADED_EVENT.addListener(data -> {

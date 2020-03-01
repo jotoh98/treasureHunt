@@ -1,4 +1,4 @@
-package com.treasure.hunt.io;
+package com.treasure.hunt.service.io;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -29,7 +29,6 @@ import java.util.function.Consumer;
 @Slf4j
 public class FileService {
     private static FileService instance;
-    private final Kryo kryo;
     private final FileChooser fileChooser;
 
     private FileService() {
@@ -37,34 +36,37 @@ public class FileService {
         fileChooser.setInitialFileName("saved.hunt");
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("hunt instance files (*.hunt)", "*.hunt");
         fileChooser.getExtensionFilters().add(extFilter);
-
-        kryo = new Kryo();
-        kryo.setRegistrationRequired(false);
-        kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
     }
 
-    public static FileService getInstance() {
-        if (FileService.instance == null) {
-            FileService.instance = new FileService();
+    private Kryo newKryo() {
+        Kryo kryo = new Kryo();
+        kryo.setRegistrationRequired(false);
+        kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
+        return kryo;
+    }
+
+    public synchronized static FileService getInstance() {
+        if (instance == null) {
+            instance = new FileService();
         }
-        return FileService.instance;
+        return instance;
     }
 
     public void writeGameDataToFile(GameManager gameManager, Path filePath) throws IOException {
         Output output = new Output(new FileOutputStream(filePath.toFile()));
-        kryo.writeObject(output, new DataWithVersion(GameManager.class.getPackage().getImplementationVersion(), gameManager));
+        newKryo().writeObject(output, new DataWithVersion(GameManager.class.getPackage().getImplementationVersion(), gameManager));
         output.close();
     }
 
     public void writeGameDataToOutputStream(GameManager gameManager, OutputStream outputStream) throws IOException {
         Output output = new Output(outputStream);
-        kryo.writeObject(output, new DataWithVersion(GameManager.class.getPackage().getImplementationVersion(), gameManager));
+        newKryo().writeObject(output, new DataWithVersion(GameManager.class.getPackage().getImplementationVersion(), gameManager));
         output.flush();
     }
 
     public void writeStatisticsWithId(List<StatisticsWithId> statisticsWithIds, OutputStream outputStream) throws IOException {
         Output output = new Output(outputStream);
-        kryo.writeObject(output, new DataWithVersion(StatisticsWithId.class.getPackage().getImplementationVersion(), statisticsWithIds));
+        newKryo().writeObject(output, new DataWithVersion(StatisticsWithId.class.getPackage().getImplementationVersion(), statisticsWithIds));
         output.flush();
     }
 
@@ -85,7 +87,7 @@ public class FileService {
     @SneakyThrows
     public void readDataFromStream(InputStream inputStream, Consumer<DataWithVersion> finishedCallBack) {
         Input input = new Input(inputStream);
-        DataWithVersion dataWithVersion = kryo.readObject(input, DataWithVersion.class);
+        DataWithVersion dataWithVersion = newKryo().readObject(input, DataWithVersion.class);
         input.close();
         if (correctVersion(dataWithVersion)) {
             Platform.runLater(() -> {
@@ -118,17 +120,21 @@ public class FileService {
     }
 
     private boolean correctVersion(DataWithVersion dataWithVersion) {
-        boolean divergentVersion = dataWithVersion.getVersion() != null && !dataWithVersion.getVersion().equals(GameManager.class.getPackage().getImplementationVersion());
-        boolean loadingDevelopmentVersion = dataWithVersion.getVersion() == null && GameManager.class.getPackage().getImplementationVersion() != null;
+        boolean divergentVersion = !isDevelopmentVersion(dataWithVersion.getVersion()) && !dataWithVersion.getVersion().equals(GameManager.class.getPackage().getImplementationVersion());
+        boolean loadingDevelopmentVersion = isDevelopmentVersion(dataWithVersion.getVersion()) && isDevelopmentVersion(GameManager.class.getPackage().getImplementationVersion());
 
         return divergentVersion || loadingDevelopmentVersion;
+    }
+
+    private boolean isDevelopmentVersion(String version) {
+        return version == null || version.equalsIgnoreCase("snapshot") || version.equalsIgnoreCase("undefined");
     }
 
     private boolean askUserWhetherToLoadWrongVersion(String oldVersion) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Proceed loading wrong version");
         alert.setHeaderText("The file was record with a different version than your program is running. Loading it might cause unexpected behaviour.");
-        alert.setContentText("Version of file was " + (oldVersion == null ? "development" : oldVersion));
+        alert.setContentText("Version of file was " + (oldVersion));
 
         Optional<ButtonType> option = alert.showAndWait();
 
