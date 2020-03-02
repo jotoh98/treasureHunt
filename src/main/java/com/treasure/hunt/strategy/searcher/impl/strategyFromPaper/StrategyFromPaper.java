@@ -24,9 +24,6 @@ import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.Geometr
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.rectangleScan;
 import static com.treasure.hunt.utils.JTSUtils.*;
 
-enum HintQuality {
-    good, bad, none
-}
 
 /**
  * This implements the strategy from the paper:
@@ -51,10 +48,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     protected Point searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD;
     protected HalfPlaneHint previousHint;
     protected HalfPlaneHint currentHint;
+    protected HintQuality lastHintQuality = HintQuality.none;
     Point start; // the initial position of the player
-    HintQuality lastHintQuality = HintQuality.none;
     List<StatusMessageItem> statusMessageItemsToBeRemovedNextMove = new ArrayList<>();
-
 
     /**
      * {@inheritDoc}
@@ -280,7 +276,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Coordinate intersectionADHint = JTSUtils.lineWayIntersection(hintLine, AD);
         Coordinate intersectionBCHint = JTSUtils.lineWayIntersection(hintLine, BC);
 
-        if (intersectionADHint == null || intersectionBCHint == null) {
+        if (intersectionADHint == null || intersectionBCHint == null) { //todo impl like in splitVertical
             return null;
         }
 
@@ -447,6 +443,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         searchAreaCornerB = GEOMETRY_FACTORY.createPoint(rect[1]);
         searchAreaCornerC = GEOMETRY_FACTORY.createPoint(rect[2]);
         searchAreaCornerD = GEOMETRY_FACTORY.createPoint(rect[3]);
+    }
+
+    public enum HintQuality {
+        good, bad, none
     }
 
 }

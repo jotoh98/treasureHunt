@@ -15,7 +15,7 @@ public class TransformStrategyFromPaper {
     private Point searcherStartPosition;
     private AffineTransformation fromPaper;
     private AffineTransformation forPaper;
-    private AffineTransformation fromPaperWithStartPointSearchPath;
+    private AffineTransformation fromPaperWithStartPointDisplacement;
 
     public TransformStrategyFromPaper(HalfPlaneHint hint, Point searcherStartPosition) {
         this.searcherStartPosition = searcherStartPosition;
@@ -31,8 +31,8 @@ public class TransformStrategyFromPaper {
 
         AffineTransformation displacementFromPaper = AffineTransformation.shearInstance(searcherStartPosition.getX(),
                 searcherStartPosition.getY());
-        fromPaperWithStartPointSearchPath = new AffineTransformation(fromPaper);
-        fromPaperWithStartPointSearchPath.compose(displacementFromPaper);
+        fromPaperWithStartPointDisplacement = new AffineTransformation(fromPaper);
+        fromPaperWithStartPointDisplacement.compose(displacementFromPaper);
 
     }
 
@@ -50,24 +50,24 @@ public class TransformStrategyFromPaper {
         return new HalfPlaneHint(transformForPaper(hint.getCenter()), transformForPaper(hint.getRight()));
     }
 
-    HalfPlaneHint transformFromPaper(HalfPlaneHint hint) {
-        return new HalfPlaneHint(transformFromPaper(hint.getCenter()), transformFromPaper(hint.getRight()));
-    }
-
-    Polygon transformFromPaper(Polygon polygon) {
-        return (Polygon) fromPaperWithStartPointSearchPath.transform(polygon);
-    }
-
-    Point transformFromPaper(Point point) {
-        return JTSUtils.GEOMETRY_FACTORY.createPoint(transformFromPaper(point.getCoordinate()));
-    }
-
     Coordinate transformFromPaper(Coordinate c) {
         Coordinate transformedC = new Coordinate();
         fromPaper.transform(c, transformedC);
         transformedC.setX(transformedC.getX() + searcherStartPosition.getX());
         transformedC.setY(transformedC.getY() + searcherStartPosition.getY());
         return transformedC;
+    }
+
+    HalfPlaneHint transformFromPaper(HalfPlaneHint hint) {
+        return new HalfPlaneHint(transformFromPaper(hint.getCenter()), transformFromPaper(hint.getRight()));
+    }
+
+    Polygon transformFromPaper(Polygon polygon) {
+        return (Polygon) fromPaperWithStartPointDisplacement.transform(polygon);
+    }
+
+    Point transformFromPaper(Point point) {
+        return JTSUtils.GEOMETRY_FACTORY.createPoint(transformFromPaper(point.getCoordinate()));
     }
 
     Coordinate[] transformFromPaper(Coordinate[] coordinates) {

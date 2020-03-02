@@ -137,7 +137,6 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
                 ArrayList<HalfPlaneHint> oldPhaseHints = phaseHints;
                 Polygon oldPhaseRectangle = phaseRectangle;
                 phase++;
-                System.out.println("phase " + phase); // todo rm
                 updatePhaseHints();
                 updatePhaseRectangle();
                 newPolygon = updatePolygonPoints(polygonPoints, oldObtainedHints, newObtainedHints, oldPhaseHints,
@@ -163,8 +162,9 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         if (transformer == null)
             return super.addState(move);
         // add polygon
-        move.addAdditionalItem(new GeometryItem<>(transformer.transformFromPaper(currentPolygon),
-                GeometryType.CURRENT_POLYGON));
+        if (currentPolygon != null)
+            move.addAdditionalItem(new GeometryItem<>(transformer.transformFromPaper(currentPolygon),
+                    GeometryType.CURRENT_POLYGON));
 
         //add current and previous hint
         if (currentHint != null)
@@ -201,13 +201,11 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
 
     private void setABCDinStrategy() {
         Coordinate[] coordinatesABCD = currentPolygon.getEnvelope().getCoordinates();
-        searchAreaCornerA = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[3]);
+        searchAreaCornerA = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[1]);
         searchAreaCornerB = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[2]);
-        searchAreaCornerC = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[1]);
+        searchAreaCornerC = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[3]);
         searchAreaCornerD = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[0]);
-        System.out.println("In setABCDinStrategy ABCD = " + searchAreaCornerA.getCoordinate() + "\n" +
-                searchAreaCornerB.getCoordinate() + "\n" + searchAreaCornerC.getCoordinate() + "\n" +
-                searchAreaCornerD.getCoordinate());// todo rm
+        lastHintQuality = StrategyFromPaper.HintQuality.none;
     }
 
     @Value

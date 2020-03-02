@@ -11,7 +11,6 @@ import org.locationtech.jts.geom.Point;
 
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.*;
-import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.HintQuality.none;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.*;
 import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
 import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
@@ -364,7 +363,7 @@ class LastHintBadSubroutine {
             strategy.searchAreaCornerB = GEOMETRY_FACTORY.createPoint(newRectangle[1]);
             strategy.searchAreaCornerC = GEOMETRY_FACTORY.createPoint(newRectangle[2]);
             strategy.searchAreaCornerD = GEOMETRY_FACTORY.createPoint(newRectangle[3]);
-            strategy.lastHintQuality = none;
+            strategy.lastHintQuality = StrategyFromPaper.HintQuality.none;
 
             //move.addAdditionalItem(new GeometryItem<>(strategy.hintBeforePreviousHint.getHalfPlaneLineGeometry(),
             //GeometryType.HALF_PLANE_LINE_BROWN));

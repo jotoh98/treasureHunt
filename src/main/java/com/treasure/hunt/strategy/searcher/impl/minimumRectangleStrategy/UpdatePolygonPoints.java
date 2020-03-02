@@ -28,7 +28,7 @@ public class UpdatePolygonPoints {
                                         List<HalfPlaneHint> otherHintsThree,
                                         List<Intersection> intersectionList,
                                         ArrayList<Coordinate> newPolygonCorners) {
-        Coordinate intersection = hintOne.getHalfPlaneLine().intersection(hintTwo.getHalfPlaneLine());
+        Coordinate intersection = hintOne.getHalfPlaneLine().lineIntersection(hintTwo.getHalfPlaneLine());
         if (intersection == null)
             return;
 
