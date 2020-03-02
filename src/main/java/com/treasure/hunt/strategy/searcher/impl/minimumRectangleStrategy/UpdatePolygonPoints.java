@@ -134,7 +134,8 @@ public class UpdatePolygonPoints {
         }
         polygonPoints.addAll(newPolygonPoints);
 
-        Geometry newPolygon = JTSUtils.GEOMETRY_FACTORY.createMultiPointFromCoords(
+        newPolygonCorners.add(newPolygonCorners.get(0));
+        Geometry newPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon(
                 newPolygonCorners.toArray(new Coordinate[]{}));
         newPolygon = newPolygon.convexHull();
         newPolygon = newPolygon.difference(oldPhaseRectangle);
