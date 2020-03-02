@@ -365,6 +365,10 @@ class LastHintBadSubroutine {
             strategy.searchAreaCornerC = GEOMETRY_FACTORY.createPoint(newRectangle[2]);
             strategy.searchAreaCornerD = GEOMETRY_FACTORY.createPoint(newRectangle[3]);
             strategy.lastHintQuality = none;
+
+            //move.addAdditionalItem(new GeometryItem<>(strategy.hintBeforePreviousHint.getHalfPlaneLineGeometry(),
+            //GeometryType.HALF_PLANE_LINE_BROWN));
+
             return moveToCenterOfRectangle(strategy.searchAreaCornerA, strategy.searchAreaCornerB,
                     strategy.searchAreaCornerC, strategy.searchAreaCornerD, move);
         } catch (Exception ee) {

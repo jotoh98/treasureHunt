@@ -154,6 +154,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
 
     @Override
     protected SearchPath addState(SearchPath move) {
+        //TODO alte hints einfügen
         if (transformer == null)
             return super.addState(move);
         // add polygon

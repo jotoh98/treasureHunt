@@ -45,8 +45,7 @@ public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
         double rightX = searcherPos.getX() + Math.cos(rightAngle);
         double rightY = searcherPos.getY() + Math.sin(rightAngle);
 
-        HalfPlaneHint newHint = new HalfPlaneHint(searcherPos.getCoordinate(), new Coordinate(rightX, rightY),
-                lastHint);
+        HalfPlaneHint newHint = new HalfPlaneHint(searcherPos.getCoordinate(), new Coordinate(rightX, rightY));
         lastHint = newHint;
         return newHint;
     }

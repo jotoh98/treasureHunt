@@ -47,14 +47,7 @@ public class TransformStrategyFromPaper {
     }
 
     HalfPlaneHint transformForPaper(HalfPlaneHint hint) {
-        HalfPlaneHint lastHint = null;
-        if (hint.getLastHint() != null) {
-            lastHint = new HalfPlaneHint(
-                    transformForPaper(hint.getLastHint().getCenter()),
-                    transformForPaper(hint.getLastHint().getRight())
-            );
-        }
-        return new HalfPlaneHint(transformForPaper(hint.getCenter()), transformForPaper(hint.getRight()), lastHint);
+        return new HalfPlaneHint(transformForPaper(hint.getCenter()), transformForPaper(hint.getRight()));
     }
 
     Polygon transformFromPaper(Polygon polygon) {

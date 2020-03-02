@@ -34,6 +34,8 @@ public class GeometryStyle {
         ));
         defaultsMapAdd.put(GeometryType.CURRENT_POLYGON, new GeometryStyle(true, new Color(0x00ff00)));
         defaultsMap.putAll(defaultsMapAdd);
+        defaultsMapAdd.put(GeometryType.HALF_PLANE_LINE_BROWN, new GeometryStyle(true, new Color(0x8B4513)));
+        defaultsMap.putAll(defaultsMapAdd);
     }
 
     private boolean visible;

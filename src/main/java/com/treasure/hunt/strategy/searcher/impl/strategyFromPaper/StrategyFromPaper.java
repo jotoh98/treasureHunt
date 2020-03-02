@@ -1,6 +1,7 @@
 package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.geom.StatusMessageItem;
 import com.treasure.hunt.strategy.geom.StatusMessageType;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
@@ -49,9 +50,11 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      */
     protected Point searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD;
     Point start; // the initial position of the player
-    HalfPlaneHint lastBadHint; //only used when last hint was bad
+    HalfPlaneHint previousHint;
+    HalfPlaneHint currentHint;
     HintQuality lastHintQuality = HintQuality.none;
     List<StatusMessageItem> statusMessageItemsToBeRemovedNextMove = new ArrayList<>();
+
 
     /**
      * {@inheritDoc}
@@ -75,6 +78,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
 
     @Override
     public SearchPath move(HalfPlaneHint hint) {
+        previousHint = currentHint;
+        currentHint = hint;
+
         SearchPath move = new SearchPath();
 
         // remove old status messages
@@ -107,7 +113,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         //now analyse the hint:
         if (lastHintQuality == HintQuality.bad) {
             return addState(LastHintBadSubroutine.getInstance().
-                    lastHintBadSubroutine(this, hint, lastBadHint, move));
+                    lastHintBadSubroutine(this, hint, previousHint, move));
         }
         lastHintQuality = HintQuality.good; //If the current hint isn't good, the hint quality is set below again
 
@@ -144,7 +150,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                 centerOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD)));
         move.addPoint(destination);
         lastHintQuality = HintQuality.bad;
-        lastBadHint = hint;
+        previousHint = hint;
         return addState(move);
     }
 
@@ -178,6 +184,15 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         phasePolygon[4] = phaseRectanglePoints[0];
         GeometryItem<Polygon> phase = new GeometryItem<>(GEOMETRY_FACTORY.createPolygon(phasePolygon), CURRENT_PHASE);
         move.addAdditionalItem(phase);
+
+        //add hints
+        if (currentHint != null)
+            move.addAdditionalItem(new GeometryItem<>(currentHint.getHalfPlaneLineGeometry(),
+                    GeometryType.HALF_PLANE_LINE_BLUE));
+        if (previousHint != null)
+            move.addAdditionalItem(new GeometryItem<>(previousHint.getHalfPlaneLineGeometry(),
+                    GeometryType.HALF_PLANE_LINE_BROWN));
+
         return move;
     }
 
