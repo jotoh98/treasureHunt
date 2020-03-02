@@ -62,6 +62,12 @@ public class StatisticTableController {
                 log.error("Could not load statistics window layout", e);
             }
         }));
+
+        instanceStatisticsTableView.managedProperty().bind(instanceStatisticsTableView.visibleProperty());
+        instanceStatisticsTableView.visibleProperty().bind(Bindings.createBooleanBinding(() -> !instanceStatisticsTableView.getItems().isEmpty(), instanceStatisticsTableView.itemsProperty()));
+
+        statisticsMeasuresTable.managedProperty().bind(statisticsMeasuresTable.visibleProperty());
+        statisticsMeasuresTable.visibleProperty().bind(Bindings.createBooleanBinding(() -> !statisticsMeasuresTable.getItems().isEmpty(), statisticsMeasuresTable.itemsProperty()));
     }
 
     private void statisticsMeasuresTableInit() {
@@ -102,11 +108,6 @@ public class StatisticTableController {
     }
 
     private void instanceTableInit() {
-        TableColumn<StatisticsWithId, Integer> idColumn = new TableColumn<>();
-        idColumn.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getId()));
-        instanceStatisticsTableView.getColumns().add(idColumn);
-        idColumn.setText("id");
-
         instanceStatisticsTableView.setRowFactory(tv -> {
             TableRow<StatisticsWithId> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
@@ -128,6 +129,11 @@ public class StatisticTableController {
     }
 
     private void addColumns() {
+        TableColumn<StatisticsWithId, Integer> idColumn = new TableColumn<>();
+        idColumn.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getId()));
+        instanceStatisticsTableView.getColumns().add(idColumn);
+        idColumn.setText("id");
+
         statisticsMeasureHashMap.keySet()
                 .forEach(statisticInfo -> {
                     TableColumn statisticColumnWithOutType;

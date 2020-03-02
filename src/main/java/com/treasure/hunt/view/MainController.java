@@ -113,7 +113,7 @@ public class MainController {
     }
 
     private void addGameIndependentWidgets() {
-        Widget<StatisticTableController, ?> statisticsTableWidget = new Widget<>("/layout/statistics.fxml");
+        Widget<StatisticTableController, ?> statisticsTableWidget = new Widget<>("/layout/statisticsTable.fxml");
         statisticsTableWidget.getController().init(gameManager, searcherList, hiderList, gameEngineList);
         insertWidget(BorderLayout.SOUTH, "Statistics", statisticsTableWidget.getComponent(), false);
 

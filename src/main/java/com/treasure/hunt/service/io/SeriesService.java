@@ -119,7 +119,7 @@ public class SeriesService {
     private Consumer<GameManager> writeGameManagerAndSaveStats(boolean writeGameManger, Consumer<Double> progressConsumer, int totalWorkLoad, AtomicInteger workLoadDone, ZipOutputStream zipOutputStream, List<StatisticsWithId> statisticsWithIds) {
         return gameManagerCopy -> {
             synchronized (zipOutputStream) {
-                int id = statisticsWithIds.size() - 1;
+                int id = statisticsWithIds.size();
                 statisticsWithIds.add(new StatisticsWithId(id, gameManagerCopy.getStatistics().get()));
                 try {
                     if (writeGameManger) {
