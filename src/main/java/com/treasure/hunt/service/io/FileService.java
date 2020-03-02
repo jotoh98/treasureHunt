@@ -89,7 +89,7 @@ public class FileService {
         Input input = new Input(inputStream);
         DataWithVersion dataWithVersion = newKryo().readObject(input, DataWithVersion.class);
         input.close();
-        if (correctVersion(dataWithVersion)) {
+        if (!correctVersion(dataWithVersion)) {
             Platform.runLater(() -> {
                 if (askUserWhetherToLoadWrongVersion(dataWithVersion.getVersion())) {
                     finishedCallBack.accept(dataWithVersion);
@@ -133,7 +133,7 @@ public class FileService {
     private boolean askUserWhetherToLoadWrongVersion(String oldVersion) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Proceed loading wrong version");
-        alert.setHeaderText("The file was record with a different version than your program is running. Loading it might cause unexpected behaviour.");
+        alert.setHeaderText("The file was recorded with a different version than your program is running. Loading it might cause unexpected behaviour.");
         alert.setContentText("Version of file was " + (oldVersion));
 
         Optional<ButtonType> option = alert.showAndWait();
