@@ -49,9 +49,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * It is referred to as current search rectangle throughout the implementation.
      */
     protected Point searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD;
+    protected HalfPlaneHint previousHint;
+    protected HalfPlaneHint currentHint;
     Point start; // the initial position of the player
-    HalfPlaneHint previousHint;
-    HalfPlaneHint currentHint;
     HintQuality lastHintQuality = HintQuality.none;
     List<StatusMessageItem> statusMessageItemsToBeRemovedNextMove = new ArrayList<>();
 
@@ -63,6 +63,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         start = startPosition;
         phase = 1;
         setRectToPhase();
+        currentHint = null;
+        previousHint = null;
     }
 
     protected void init(Point startPosition, int w, int h) {
@@ -185,14 +187,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         GeometryItem<Polygon> phase = new GeometryItem<>(GEOMETRY_FACTORY.createPolygon(phasePolygon), CURRENT_PHASE);
         move.addAdditionalItem(phase);
 
-        //add hints
-        if (currentHint != null)
-            move.addAdditionalItem(new GeometryItem<>(currentHint.getHalfPlaneLineGeometry(),
-                    GeometryType.HALF_PLANE_LINE_BLUE));
-        if (previousHint != null)
-            move.addAdditionalItem(new GeometryItem<>(previousHint.getHalfPlaneLineGeometry(),
-                    GeometryType.HALF_PLANE_LINE_BROWN));
-
         return move;
     }
 
@@ -255,6 +249,13 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                             + Arrays.toString(searchAreaCornerD.getCoordinates())
             );
         }
+        //add hints
+        if (currentHint != null)
+            move.addAdditionalItem(new GeometryItem<>(currentHint.getHalfPlaneLineGeometry(),
+                    GeometryType.HALF_PLANE_LINE_BLUE));
+        if (previousHint != null)
+            move.addAdditionalItem(new GeometryItem<>(previousHint.getHalfPlaneLineGeometry(),
+                    GeometryType.HALF_PLANE_LINE_BROWN));
         return addState(move, curCoords, currentPhaseRectangle());
     }
 

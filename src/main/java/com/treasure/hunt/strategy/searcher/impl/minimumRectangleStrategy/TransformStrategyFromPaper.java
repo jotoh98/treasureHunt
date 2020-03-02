@@ -50,6 +50,10 @@ public class TransformStrategyFromPaper {
         return new HalfPlaneHint(transformForPaper(hint.getCenter()), transformForPaper(hint.getRight()));
     }
 
+    HalfPlaneHint transformFromPaper(HalfPlaneHint hint) {
+        return new HalfPlaneHint(transformFromPaper(hint.getCenter()), transformFromPaper(hint.getRight()));
+    }
+
     Polygon transformFromPaper(Polygon polygon) {
         return (Polygon) fromPaperWithStartPointSearchPath.transform(polygon);
     }
