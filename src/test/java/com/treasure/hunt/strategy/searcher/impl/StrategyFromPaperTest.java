@@ -24,11 +24,11 @@ public class StrategyFromPaperTest {
         strat.init(JTSUtils.createPoint(0, 0));
     }
 
-    void assertPoints(List<Point> stratPoints, Point[] truePoints) {
-        assertEquals(stratPoints.size(), truePoints.length, "Length of moves equals " + stratPoints.size() + " and should equal " + truePoints.length);
+    void assertPoints(List<Point> strategyPoints, Point[] truePoints) {
+        assertEquals(strategyPoints.size(), truePoints.length, "Length of moves equals " + strategyPoints.size() + " and should equal " + truePoints.length);
         for (int i = 0; i < truePoints.length; i++) {
-            assertTrue(truePoints[i].equalsExact(stratPoints.get(i), 0.000000000000001),
-                    "Point " + i + " equals " + stratPoints.get(i).toString() + " and should equal " +
+            assertTrue(truePoints[i].equalsExact(strategyPoints.get(i), 0.000000000000001),
+                    "Point " + i + " equals " + strategyPoints.get(i).toString() + " and should equal " +
                             truePoints[i].toString());
         }
     }
@@ -38,7 +38,7 @@ public class StrategyFromPaperTest {
         SearchPath move = strat.move();
         List<Point> movePoints = move.getPoints();
         Point[] correctMovePoints = new Point[]{
-                createPoint(0, 0), createPoint(-1, 1), createPoint(-1, -1), createPoint(0, -1),
+                createPoint(-1, 1), createPoint(-1, -1), createPoint(0, -1),
                 createPoint(0, 1), createPoint(1, 1), createPoint(1, -1), createPoint(0, 0)
         };
         assertPoints(movePoints, correctMovePoints);
@@ -49,12 +49,11 @@ public class StrategyFromPaperTest {
         moveOnce();
         HalfPlaneHint testedHint = new HalfPlaneHint(new Coordinate(-2, 1), new Coordinate(2, -1), right);
         List<Point> movePoints = strat.move(testedHint).getPoints();
-        assertPoints(movePoints, new Point[]{createPoint(0, 0), createPoint(0, 0.5)});
+        assertPoints(movePoints, new Point[]{createPoint(0, 0.5)});
 
         testedHint = new HalfPlaneHint(new Coordinate(-2, 0.5), new Coordinate(2, 0.5), down);
         movePoints = strat.move(testedHint).getPoints();
         Point[] correctMovePoints = new Point[]{
-                createPoint(0, 0.5),
                 createPoint(-2, 2), createPoint(-2, -1), createPoint(-1, -1), createPoint(-1, 2),
                 createPoint(0, 2), createPoint(0, -1), createPoint(1, -1), createPoint(1, 2),
                 createPoint(2, 2), createPoint(2, -1), createPoint(0, 0)
@@ -67,17 +66,17 @@ public class StrategyFromPaperTest {
         moveTwice();
         HalfPlaneHint testHint = new HalfPlaneHint(new Coordinate(-4, 3), new Coordinate(4, -3), left);
         List<Point> movePoints = strat.move(testHint).getPoints();
-        Point[] correctMovePoints = new Point[]{createPoint(0, 0), createPoint(0, -0.5)};
+        Point[] correctMovePoints = new Point[]{createPoint(0, -0.5)};
         assertPoints(movePoints, correctMovePoints);
 
         testHint = new HalfPlaneHint(new Coordinate(2.5, 3), new Coordinate(-2.5, -4), right);
         movePoints = strat.move(testHint).getPoints();
-        correctMovePoints = new Point[]{createPoint(0, -0.5), createPoint(0.75, -0.5)};
+        correctMovePoints = new Point[]{createPoint(0.75, -0.5)};
         assertPoints(movePoints, correctMovePoints);
 
         testHint = new HalfPlaneHint(new Coordinate(-4, -0.5), new Coordinate(4, -0.5), up);
         movePoints = strat.move(testHint).getPoints();
-        correctMovePoints = new Point[]{createPoint(0.75, -0.5), createPoint(0.75, 1.25)};
+        correctMovePoints = new Point[]{createPoint(0.75, 1.25)};
         assertPoints(movePoints, correctMovePoints);
     }
 
