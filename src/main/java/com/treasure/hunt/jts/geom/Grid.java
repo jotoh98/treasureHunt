@@ -25,38 +25,33 @@ import java.text.DecimalFormat;
 @Slf4j
 public class Grid implements Shapeable {
     /**
+     * Minimal rendering distance between two grid lines.
+     */
+    private static final double MIN_DISTANCE = 40d;
+    /**
+     * Maximal rendering distance between two grid lines.
+     */
+    private static final double MAX_DISTANCE = 80d;
+    /**
+     * Font for grid line identification number.
+     */
+    private static final Font FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 11);
+    /**
+     * Formatter for grid line identification numbers.
+     */
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("###.###");
+    /**
      * Whether or not horizontal grid lines are rendered.
      */
     @Getter
     @Setter
     private boolean horizontalVisible = true;
-
     /**
      * Whether or not vertical grid lines are rendered.
      */
     @Getter
     @Setter
     private boolean verticalVisible = true;
-
-    /**
-     * Minimal rendering distance between two grid lines.
-     */
-    private static final double MIN_DISTANCE = 40d;
-
-    /**
-     * Maximal rendering distance between two grid lines.
-     */
-    private static final double MAX_DISTANCE = 80d;
-
-    /**
-     * Font for grid line identification number.
-     */
-    private static final Font FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 11);
-
-    /**
-     * Formatter for grid line identification numbers.
-     */
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("###.###");
 
     /**
      * Get a shape of the grid.

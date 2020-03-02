@@ -35,13 +35,11 @@ public class StatisticTableController {
     public Button runMultipleButton;
     public ProgressIndicator progressIndicator;
     public Spinner<Integer> roundSpinner;
-    HashMap<StatisticObject.StatisticInfo, List<StatisticObject>> statisticsMeasureHashMap = new HashMap<>();
-    private Path path;
-
-
     public ComboBox<Class<? extends Searcher>> searcherList;
     public ComboBox<Class<? extends Hider>> hiderList;
     public ComboBox<Class<? extends GameEngine>> gameEngineList;
+    HashMap<StatisticObject.StatisticInfo, List<StatisticObject>> statisticsMeasureHashMap = new HashMap<>();
+    private Path path;
     private ObjectProperty<GameManager> gameManager;
 
     public void initialize() {
@@ -49,7 +47,7 @@ public class StatisticTableController {
         instanceTableInit();
 
         SpinnerValueFactory<Integer> valueFactory =
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(10, 100000, 1000, 100);
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100000, 1000, 100);
         roundSpinner.setEditable(true);
         roundSpinner.setValueFactory(valueFactory);
         progressIndicator.managedProperty().bind(progressIndicator.visibleProperty());

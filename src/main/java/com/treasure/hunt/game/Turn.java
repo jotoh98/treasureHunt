@@ -83,6 +83,8 @@ public class Turn {
                     JTSUtils.createLineString(lastPoint, searchPath.getFirstPoint()),
                     GeometryType.WAY_POINT
             ));
+
+            items.add(new GeometryItem<>(new ImageItem(searchPath.getLastPoint().getCoordinate(), 20, 20, "/images/pin.png", ImageItem.Alignment.BOTTOM_CENTER), GeometryType.SEARCHER_LAST_MOVE));
         }
 
         return items;

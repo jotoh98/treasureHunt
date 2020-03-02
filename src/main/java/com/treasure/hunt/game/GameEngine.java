@@ -21,13 +21,12 @@ import org.locationtech.jts.geom.Point;
 @Requires(hider = Hider.class, searcher = Searcher.class)
 public class GameEngine {
     @Getter
-    private final Statistic statistics = new Statistic();
-    @Getter
     protected final Searcher searcher;
     @Getter
     protected final Hider hider;
-
     protected final Coordinate initialSearcherCoordinate;
+    @Getter
+    private final Statistic statistics = new Statistic();
     /**
      * Tells, whether the game is done or not.
      */
@@ -114,7 +113,6 @@ public class GameEngine {
         } else {
             hiderMove();
         }
-
 
         return new Turn(lastHint, lastSearchPath, treasurePos);
     }
