@@ -14,6 +14,8 @@ com.treasure.hunt.strategy.hint
 com.treasure.hunt.strategy.hint.impl
 com.treasure.hunt.strategy.searcher
 com.treasure.hunt.strategy.searcher.impl
+com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy
+com.treasure.hunt.strategy.searcher.impl.strategyFromPaper
 com.treasure.hunt.utils
 com.treasure.hunt.view
 com.treasure.hunt.view.widget

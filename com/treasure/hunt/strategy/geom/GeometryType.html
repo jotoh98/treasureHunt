@@ -168,35 +168,67 @@ extends java.lang.Enum&lt;<a href="GeometryType.html" title="enum in com.treasur
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#CURRENT_PHASE">CURRENT_PHASE</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#CURRENT_POLYGON">CURRENT_POLYGON</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#CURRENT_RECTANGLE">CURRENT_RECTANGLE</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#CURRENT_WAY_POINT">CURRENT_WAY_POINT</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#FALSE_HINT">FALSE_HINT</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#GRID">GRID</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr class="rowColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#HALF_PLANE">HALF_PLANE</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 <tr class="altColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#HALF_PLANE_LINE">HALF_PLANE_LINE</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#HALF_PLANE_LINE_BLUE">HALF_PLANE_LINE_BLUE</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#HALF_PLANE_LINE_BROWN">HALF_PLANE_LINE_BROWN</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#HINT_ANGLE">HINT_ANGLE</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#HINT_CENTER">HINT_CENTER</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#HINT_RADIUS">HINT_RADIUS</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#NO_TREASURE">NO_TREASURE</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#POSSIBLE_TREASURE">POSSIBLE_TREASURE</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#SEARCHER_LAST_MOVE">SEARCHER_LAST_MOVE</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
@@ -323,6 +355,42 @@ the order they are declared.</div>
 <pre>public static final&nbsp;<a href="GeometryType.html" title="enum in com.treasure.hunt.strategy.geom">GeometryType</a> TRUE_HINT</pre>
 </li>
 </ul>
+<a id="HALF_PLANE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>HALF_PLANE</h4>
+<pre>public static final&nbsp;<a href="GeometryType.html" title="enum in com.treasure.hunt.strategy.geom">GeometryType</a> HALF_PLANE</pre>
+</li>
+</ul>
+<a id="HALF_PLANE_LINE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>HALF_PLANE_LINE</h4>
+<pre>public static final&nbsp;<a href="GeometryType.html" title="enum in com.treasure.hunt.strategy.geom">GeometryType</a> HALF_PLANE_LINE</pre>
+</li>
+</ul>
+<a id="HALF_PLANE_LINE_BLUE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>HALF_PLANE_LINE_BLUE</h4>
+<pre>public static final&nbsp;<a href="GeometryType.html" title="enum in com.treasure.hunt.strategy.geom">GeometryType</a> HALF_PLANE_LINE_BLUE</pre>
+</li>
+</ul>
+<a id="HALF_PLANE_LINE_BROWN">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>HALF_PLANE_LINE_BROWN</h4>
+<pre>public static final&nbsp;<a href="GeometryType.html" title="enum in com.treasure.hunt.strategy.geom">GeometryType</a> HALF_PLANE_LINE_BROWN</pre>
+</li>
+</ul>
 <a id="TREASURE">
 <!--   -->
 </a>
@@ -386,6 +454,15 @@ the order they are declared.</div>
 <pre>public static final&nbsp;<a href="GeometryType.html" title="enum in com.treasure.hunt.strategy.geom">GeometryType</a> SEARCHER_MOVEMENT</pre>
 </li>
 </ul>
+<a id="SEARCHER_LAST_MOVE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>SEARCHER_LAST_MOVE</h4>
+<pre>public static final&nbsp;<a href="GeometryType.html" title="enum in com.treasure.hunt.strategy.geom">GeometryType</a> SEARCHER_LAST_MOVE</pre>
+</li>
+</ul>
 <a id="BOUNDING_CIRCE">
 <!--   -->
 </a>
@@ -393,6 +470,33 @@ the order they are declared.</div>
 <li class="blockList">
 <h4>BOUNDING_CIRCE</h4>
 <pre>public static final&nbsp;<a href="GeometryType.html" title="enum in com.treasure.hunt.strategy.geom">GeometryType</a> BOUNDING_CIRCE</pre>
+</li>
+</ul>
+<a id="CURRENT_PHASE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>CURRENT_PHASE</h4>
+<pre>public static final&nbsp;<a href="GeometryType.html" title="enum in com.treasure.hunt.strategy.geom">GeometryType</a> CURRENT_PHASE</pre>
+</li>
+</ul>
+<a id="CURRENT_RECTANGLE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>CURRENT_RECTANGLE</h4>
+<pre>public static final&nbsp;<a href="GeometryType.html" title="enum in com.treasure.hunt.strategy.geom">GeometryType</a> CURRENT_RECTANGLE</pre>
+</li>
+</ul>
+<a id="CURRENT_POLYGON">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>CURRENT_POLYGON</h4>
+<pre>public static final&nbsp;<a href="GeometryType.html" title="enum in com.treasure.hunt.strategy.geom">GeometryType</a> CURRENT_POLYGON</pre>
 </li>
 </ul>
 <a id="STANDARD">
