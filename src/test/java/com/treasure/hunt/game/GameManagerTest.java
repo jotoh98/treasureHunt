@@ -5,7 +5,7 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.impl.RandomAngleHintHider;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
-import com.treasure.hunt.strategy.searcher.Movement;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import org.junit.jupiter.api.Test;
@@ -53,23 +53,23 @@ class GameManagerTest {
         }
 
         @Override
-        public Movement move() {
+        public SearchPath move() {
             Point point = JTSUtils.createPoint(0, 0);
             lastMove = point;
-            return new Movement(point);
+            return new SearchPath(point);
         }
 
         @Override
-        public Movement move(AngleHint hint) {
-            Movement movement = new Movement(lastMove, lastMove);
+        public SearchPath move(AngleHint hint) {
+            SearchPath searchPath = new SearchPath(lastMove, lastMove);
             if (toBeRemovedLater != null) {
-                movement.getGeometryItemsToBeRemoved().add(toBeRemovedLater);
-                return movement;
+                searchPath.getGeometryItemsToBeRemoved().add(toBeRemovedLater);
+                return searchPath;
             }
             toBeRemovedLater = new GeometryItem<>(new Circle(new Coordinate(0, 0), 20, 20, JTSUtils.GEOMETRY_FACTORY), GeometryType.STANDARD);
-            movement.addAdditionalItem(toBeRemovedLater);
+            searchPath.addAdditionalItem(toBeRemovedLater);
 
-            return movement;
+            return searchPath;
         }
     }
 
