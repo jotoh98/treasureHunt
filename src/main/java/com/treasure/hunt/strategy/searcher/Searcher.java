@@ -12,6 +12,9 @@ import org.locationtech.jts.geom.Point;
  * @author dorianreineccius
  */
 public interface Searcher<T extends Hint> {
+
+    double SCANNING_DISTANCE = 1.0;
+
     /**
      * @param searcherStartPosition the {@link com.treasure.hunt.strategy.searcher.Searcher} starting position,
      *                              he will initialized on.
@@ -22,13 +25,13 @@ public interface Searcher<T extends Hint> {
      * Use this to perform a initial move, without a hint given.
      * This is for the case, the searcher starts. (as he does normally)
      *
-     * @return {@link Movement} the {@link Movement} the searcher did
+     * @return {@link SearchPath} the {@link SearchPath} the searcher did
      */
-    Movement move();
+    SearchPath move();
 
     /**
      * @param hint the hint, the {@link Hider} gave last.
-     * @return {@link Movement} the {@link Movement}, this searcher chose.
+     * @return {@link SearchPath} the {@link SearchPath}, this searcher chose.
      */
-    Movement move(T hint);
+    SearchPath move(T hint);
 }

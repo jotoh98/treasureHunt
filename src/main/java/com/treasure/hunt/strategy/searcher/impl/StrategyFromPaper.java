@@ -2,7 +2,7 @@ package com.treasure.hunt.strategy.searcher.impl;
 
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction;
-import com.treasure.hunt.strategy.searcher.Movement;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
@@ -35,12 +35,12 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     }
 
     @Override
-    public Movement move() {
+    public SearchPath move() {
         return incrementPhase();
     }
 
     @Override
-    public Movement move(HalfPlaneHint hint) {
+    public SearchPath move(HalfPlaneHint hint) {
         double width = B.getX() - A.getX();
         double height = A.getY() - D.getY();
         if (width * height <= 4) {
@@ -187,11 +187,11 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return null;
     }
 
-    private Movement badHintSubroutine(HalfPlaneHint hint) {
+    private SearchPath badHintSubroutine(HalfPlaneHint hint) {
         return null;
     }
 
-    private Movement twoHintsSubroutine(HalfPlaneHint firstHint, HalfPlaneHint secondHint) {
+    private SearchPath twoHintsSubroutine(HalfPlaneHint firstHint, HalfPlaneHint secondHint) {
         return null;
     }
 
@@ -206,13 +206,13 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return null;
     }
 
-    private Movement movesToCenterOfRectangle(Point P1, Point P2, Point P3, Point P4) {
+    private SearchPath movesToCenterOfRectangle(Point P1, Point P2, Point P3, Point P4) {
         LineString line13 = JTSUtils.createLineString(P1, P3);
-        Movement ret = new Movement(line13.getCentroid());
+        SearchPath ret = new SearchPath(line13.getCentroid());
         return ret;
     }
 
-    private Movement incrementPhase() {
+    private SearchPath incrementPhase() {
         phase++;
         Point oldA = A;
         Point oldB = B;
@@ -232,8 +232,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         D = JTSUtils.createPoint(startX - halfDiff, startY - halfDiff);
     }
 
-    private Movement rectangleScan(Point A, Point B, Point C, Point D) {
-        Movement movements = new Movement();
+    private SearchPath rectangleScan(Point A, Point B, Point C, Point D) {
+        SearchPath movements = new SearchPath();
 
         int k = (int) A.distance(B);
         Point[] a = new Point[k];
@@ -257,20 +257,20 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         if (k % 2 == 1) //code like in paper
         {
             for (int i = 0; i <= k - 1; k += 2) {
-                movements.addWayPoint(a[i]);
-                movements.addWayPoint(b[i]);
-                movements.addWayPoint(b[i + 1]);
-                movements.addWayPoint(a[i + 1]);
+                movements.addPoint(a[i]);
+                movements.addPoint(b[i]);
+                movements.addPoint(b[i + 1]);
+                movements.addPoint(a[i + 1]);
             }
         } else {
             for (int i = 0; i <= k - 2; k += 2) {
-                movements.addWayPoint(a[i]);
-                movements.addWayPoint(b[i]);
-                movements.addWayPoint(b[i + 1]);
-                movements.addWayPoint(a[i + 1]);
+                movements.addPoint(a[i]);
+                movements.addPoint(b[i]);
+                movements.addPoint(b[i + 1]);
+                movements.addPoint(a[i + 1]);
             }
-            movements.addWayPoint(a[k]);
-            movements.addWayPoint(b[k]);
+            movements.addPoint(a[k]);
+            movements.addPoint(b[k]);
             //moves.addWayPoint(a); // go to a
         }
         return movements;

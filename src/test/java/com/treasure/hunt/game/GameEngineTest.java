@@ -5,14 +5,12 @@ import com.treasure.hunt.strategy.hider.impl.InstantWinHider;
 import com.treasure.hunt.strategy.hider.impl.RevealingHider;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.hint.impl.CircleHint;
-import com.treasure.hunt.strategy.searcher.Movement;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.impl.*;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -55,7 +53,7 @@ class GameEngineTest {
     }
 
     /**
-     * This tests the {@link GameEngine#located(List, Point)} method.
+     * This tests the {@link SearchPath#located(Point, Point)} method.
      */
     @Test
     void bruteForceTest1() {
@@ -69,7 +67,7 @@ class GameEngineTest {
 
     /**
      * The {@link RevealingHider} places the treasure.
-     * The searcher, in one {@link Movement},
+     * The searcher, in one {@link SearchPath},
      * walks first ON the treasure,
      * the leaves it with a distance > 1.
      */
@@ -83,7 +81,7 @@ class GameEngineTest {
 
     /**
      * The {@link RevealingHider} places the treasure.
-     * The searcher, in one {@link Movement},
+     * The searcher, in one {@link SearchPath},
      * walks OVER the treasure, but stops
      * at a distance > 1.
      */
@@ -107,7 +105,7 @@ class GameEngineTest {
     }
 
     /**
-     * {@link GameEngine#located(List, Point)} )} test.
+     * {@link SearchPath#located(Point, Point)} test.
      * In this test, the searcher moves <b>past</b> the treasure
      * with a minimum distance of 1.
      * searcher starts at (0,0) as usual.
@@ -128,11 +126,10 @@ class GameEngineTest {
 
             @Override
             public void init(Point searcherStartPosition) {
-
             }
 
             @Override
-            public Hint move(Movement moves) {
+            public Hint move(SearchPath moves) {
                 return new CircleHint(gf.createPoint(new Coordinate(0, 2)), 2);
             }
         });

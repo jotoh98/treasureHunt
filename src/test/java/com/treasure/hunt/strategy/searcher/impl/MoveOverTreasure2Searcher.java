@@ -1,7 +1,7 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
 import com.treasure.hunt.strategy.hint.impl.CircleHint;
-import com.treasure.hunt.strategy.searcher.Movement;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Point;
@@ -21,18 +21,18 @@ public class MoveOverTreasure2Searcher implements Searcher<CircleHint> {
     }
 
     @Override
-    public Movement move() {
-        return new Movement(startPosition);
+    public SearchPath move() {
+        return new SearchPath(startPosition);
     }
 
     @Override
-    public Movement move(CircleHint hint) {
-        Movement movement = new Movement(startPosition);
-        movement.addWayPoint(JTSUtils.createPoint(
+    public SearchPath move(CircleHint hint) {
+        SearchPath searchPath = new SearchPath(startPosition);
+        searchPath.addPoint(JTSUtils.createPoint(
                 hint.getCenter().getX() * 2,
                 hint.getCenter().getY() * 2
 
         ));
-        return movement;
+        return searchPath;
     }
 }

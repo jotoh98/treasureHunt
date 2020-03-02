@@ -2,7 +2,7 @@ package com.treasure.hunt.strategy.hider.impl;
 
 import com.treasure.hunt.game.mods.hideandseek.HideAndSeekHider;
 import com.treasure.hunt.strategy.hint.impl.CircleHint;
-import com.treasure.hunt.strategy.searcher.Movement;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -26,7 +26,7 @@ public class RevealingHider implements HideAndSeekHider<CircleHint> {
      * @return A {@link CircleHint} telling the exact treasure position
      */
     @Override
-    public CircleHint move(Movement movement) {
+    public CircleHint move(SearchPath searchPath) {
         return new CircleHint(treasurePos, 0);
     }
 
