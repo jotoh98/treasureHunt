@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -176,7 +176,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="StatisticObject.html" title="class in com.treasure.hunt.analysis">StatisticObject</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#calculate(java.util.List)">calculate</a></span>&#8203;(java.util.List&lt;<a href="../game/Move.html" title="class in com.treasure.hunt.game">Move</a>&gt;&nbsp;moves)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#calculate(java.util.List)">calculate</a></span>&#8203;(java.util.List&lt;<a href="../game/Turn.html" title="class in com.treasure.hunt.game">Turn</a>&gt;&nbsp;turns)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
@@ -190,41 +190,36 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>java.util.List&lt;org.locationtech.jts.geom.Point&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getListPoints()">getListPoints</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i4" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getOptimumSolution()">getOptimumSolution</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getQuadraticRunningTimeFactor()">getQuadraticRunningTimeFactor</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRunningTimeFactor(java.util.function.Function)">getRunningTimeFactor</a></span>&#8203;(java.util.function.Function&lt;java.lang.Double,&#8203;java.lang.Double&gt;&nbsp;method)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSolutionQuotient()">getSolutionQuotient</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Point</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStartPoint()">getStartPoint</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTraceLength()">getTraceLength</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Point</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTreasureLocation()">getTreasureLocation</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -279,15 +274,6 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getTraceLength</h4>
 <pre class="methodSignature">public&nbsp;double&nbsp;getTraceLength()</pre>
-</li>
-</ul>
-<a id="getListPoints()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getListPoints</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;org.locationtech.jts.geom.Point&gt;&nbsp;getListPoints()</pre>
 </li>
 </ul>
 <a id="getStartPoint()">
@@ -368,7 +354,7 @@ extends java.lang.Object</pre>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>calculate</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="StatisticObject.html" title="class in com.treasure.hunt.analysis">StatisticObject</a>&gt;&nbsp;calculate&#8203;(java.util.List&lt;<a href="../game/Move.html" title="class in com.treasure.hunt.game">Move</a>&gt;&nbsp;moves)</pre>
+<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="StatisticObject.html" title="class in com.treasure.hunt.analysis">StatisticObject</a>&gt;&nbsp;calculate&#8203;(java.util.List&lt;<a href="../game/Turn.html" title="class in com.treasure.hunt.game">Turn</a>&gt;&nbsp;turns)</pre>
 </li>
 </ul>
 </li>

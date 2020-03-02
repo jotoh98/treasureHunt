@@ -89,7 +89,7 @@ loadScripts(document, 'script');</script>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
@@ -146,6 +146,23 @@ implements <a href="../../../game/mods/hideandseek/HideAndSeekSearcher.html" tit
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- =========== FIELD SUMMARY =========== -->
+<section role="region">
+<ul class="blockList">
+<li class="blockList"><a id="field.summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<ul class="blockList">
+<li class="blockList"><a id="fields.inherited.from.class.com.treasure.hunt.strategy.searcher.Searcher">
+<!--   -->
+</a>
+<h3>Fields inherited from interface&nbsp;com.treasure.hunt.strategy.searcher.<a href="../Searcher.html" title="interface in com.treasure.hunt.strategy.searcher">Searcher</a></h3>
+<code><a href="../Searcher.html#SCANNING_DISTANCE">SCANNING_DISTANCE</a></code></li>
+</ul>
+</li>
+</ul>
+</section>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <section role="region">
 <ul class="blockList">
@@ -186,14 +203,14 @@ implements <a href="../../../game/mods/hideandseek/HideAndSeekSearcher.html" tit
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#init(org.locationtech.jts.geom.Point)">init</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;startPosition)</code></th>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="../Movement.html" title="class in com.treasure.hunt.strategy.searcher">Movement</a></code></td>
+<td class="colFirst"><code><a href="../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#move()">move</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Use this to perform a initial move, without a hint given.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code><a href="../Movement.html" title="class in com.treasure.hunt.strategy.searcher">Movement</a></code></td>
+<td class="colFirst"><code><a href="../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#move(com.treasure.hunt.strategy.hint.Hint)">move</a></span>&#8203;(<a href="../../hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;hint)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -262,7 +279,7 @@ implements <a href="../../../game/mods/hideandseek/HideAndSeekSearcher.html" tit
 <ul class="blockList">
 <li class="blockList">
 <h4>move</h4>
-<pre class="methodSignature">public&nbsp;<a href="../Movement.html" title="class in com.treasure.hunt.strategy.searcher">Movement</a>&nbsp;move()</pre>
+<pre class="methodSignature">public&nbsp;<a href="../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../Searcher.html#move()">Searcher</a></code></span></div>
 <div class="block">Use this to perform a initial move, without a hint given.
  This is for the case, the searcher starts. (as he does normally)</div>
@@ -270,7 +287,7 @@ implements <a href="../../../game/mods/hideandseek/HideAndSeekSearcher.html" tit
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../Searcher.html#move()">move</a></code>&nbsp;in interface&nbsp;<code><a href="../Searcher.html" title="interface in com.treasure.hunt.strategy.searcher">Searcher</a>&lt;<a href="../../hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&gt;</code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>A <a href="../Movement.html" title="class in com.treasure.hunt.strategy.searcher"><code>Movement</code></a> to the point, the user gave.</dd>
+<dd>A <a href="../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a> to the point, the user gave.</dd>
 </dl>
 </li>
 </ul>
@@ -280,14 +297,14 @@ implements <a href="../../../game/mods/hideandseek/HideAndSeekSearcher.html" tit
 <ul class="blockListLast">
 <li class="blockList">
 <h4>move</h4>
-<pre class="methodSignature">public&nbsp;<a href="../Movement.html" title="class in com.treasure.hunt.strategy.searcher">Movement</a>&nbsp;move&#8203;(<a href="../../hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;hint)</pre>
+<pre class="methodSignature">public&nbsp;<a href="../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move&#8203;(<a href="../../hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;hint)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../Searcher.html#move(T)">move</a></code>&nbsp;in interface&nbsp;<code><a href="../Searcher.html" title="interface in com.treasure.hunt.strategy.searcher">Searcher</a>&lt;<a href="../../hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&gt;</code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>hint</code> - the hint, the <a href="../../hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> gave last.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>A <a href="../Movement.html" title="class in com.treasure.hunt.strategy.searcher"><code>Movement</code></a> to the point, the user gave.</dd>
+<dd>A <a href="../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a> to the point, the user gave.</dd>
 </dl>
 </li>
 </ul>
@@ -343,7 +360,7 @@ implements <a href="../../../game/mods/hideandseek/HideAndSeekSearcher.html" tit
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>

@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":2,"i1":2,"i2":2,"i3":2,"i4":2,"i5":2,"i6":2,"i7":2,"i8":2,"i9":2,"i10":2,"i11":2,"i12":2,"i13":2,"i14":2,"i15":2,"i16":2,"i17":2,"i18":2,"i19":2,"i20":2,"i21":4,"i22":2,"i23":2,"i24":2,"i25":4,"i26":2,"i27":1,"i28":1,"i29":1,"i30":2,"i31":2,"i32":2,"i33":4,"i34":2,"i35":2,"i36":1,"i37":2,"i38":2,"i39":2,"i40":2,"i41":2,"i42":2,"i43":2,"i44":2,"i45":2,"i46":2,"i47":2,"i48":2,"i49":2,"i50":2,"i51":2,"i52":2,"i53":2,"i54":32,"i55":2,"i56":2,"i57":1,"i58":2,"i59":1,"i60":2,"i61":2,"i62":4,"i63":2,"i64":2,"i65":2,"i66":2,"i67":2,"i68":4,"i69":2,"i70":2,"i71":2,"i72":2,"i73":2,"i74":2,"i75":2,"i76":2,"i77":2,"i78":2,"i79":2,"i80":2};
+var data = {"i0":2,"i1":2,"i2":2,"i3":2,"i4":2,"i5":2,"i6":2,"i7":2,"i8":2,"i9":2,"i10":2,"i11":2,"i12":2,"i13":2,"i14":2,"i15":2,"i16":2,"i17":2,"i18":2,"i19":2,"i20":2,"i21":4,"i22":2,"i23":2,"i24":2,"i25":4,"i26":2,"i27":1,"i28":1,"i29":1,"i30":2,"i31":2,"i32":2,"i33":4,"i34":2,"i35":2,"i36":1,"i37":2,"i38":2,"i39":2,"i40":2,"i41":2,"i42":2,"i43":2,"i44":2,"i45":2,"i46":2,"i47":2,"i48":2,"i49":2,"i50":2,"i51":2,"i52":2,"i53":32,"i54":2,"i55":2,"i56":1,"i57":2,"i58":2,"i59":1,"i60":2,"i61":2,"i62":4,"i63":2,"i64":2,"i65":2,"i66":2,"i67":2,"i68":4,"i69":2,"i70":2,"i71":2,"i72":2,"i73":2,"i74":2,"i75":2,"i76":2,"i77":2,"i78":2,"i79":2,"i80":2,"i81":2};
 var tabs = {65535:["t0","All Classes"],1:["t1","Interface Summary"],2:["t2","Class Summary"],4:["t3","Enum Summary"],32:["t6","Annotation Types Summary"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -192,7 +192,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tr id="i16" class="altColor">
 <td class="colFirst"><a href="com/treasure/hunt/game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a></td>
 <th class="colLast" scope="row">
-<div class="block">The GameManager stores every <a href="com/treasure/hunt/game/Move.html" title="class in com.treasure.hunt.game"><code>Move</code></a>-objects, happened in the game,
+<div class="block">The GameManager stores every <a href="com/treasure/hunt/game/Turn.html" title="class in com.treasure.hunt.game"><code>Turn</code></a>-objects, happened in the game,
  the binds the views to update them for every move and
  runs the GameEngine step for step.</div>
 </th>
@@ -247,7 +247,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <th class="colLast" scope="row">
 <div class="block">In this modification, the hider may reset the
  treasure location in each move,
- after the <a href="com/treasure/hunt/strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> did his <a href="com/treasure/hunt/strategy/searcher/Movement.html" title="class in com.treasure.hunt.strategy.searcher"><code>Movement</code></a>.</div>
+ after the <a href="com/treasure/hunt/strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> did his <a href="com/treasure/hunt/strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a>.</div>
 </th>
 </tr>
 <tr id="i27" class="rowColor">
@@ -311,99 +311,97 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <th class="colLast" scope="row">&nbsp;</th>
 </tr>
 <tr id="i39" class="rowColor">
-<td class="colFirst"><a href="com/treasure/hunt/Main.html" title="class in com.treasure.hunt">Main</a></td>
+<td class="colFirst"><a href="com/treasure/hunt/utils/ListUtils.html" title="class in com.treasure.hunt.utils">ListUtils</a></td>
 <th class="colLast" scope="row">&nbsp;</th>
 </tr>
 <tr id="i40" class="altColor">
-<td class="colFirst"><a href="com/treasure/hunt/view/MainController.html" title="class in com.treasure.hunt.view">MainController</a></td>
+<td class="colFirst"><a href="com/treasure/hunt/Main.html" title="class in com.treasure.hunt">Main</a></td>
 <th class="colLast" scope="row">&nbsp;</th>
 </tr>
 <tr id="i41" class="rowColor">
-<td class="colFirst"><a href="com/treasure/hunt/strategy/hider/impl/MaxAreaAngularHintStrategy.html" title="class in com.treasure.hunt.strategy.hider.impl">MaxAreaAngularHintStrategy</a></td>
+<td class="colFirst"><a href="com/treasure/hunt/view/MainController.html" title="class in com.treasure.hunt.view">MainController</a></td>
 <th class="colLast" scope="row">&nbsp;</th>
 </tr>
 <tr id="i42" class="altColor">
-<td class="colFirst"><a href="com/treasure/hunt/game/Move.html" title="class in com.treasure.hunt.game">Move</a></td>
-<th class="colLast" scope="row">
-<div class="block">This contains every essential data, produced in each move.</div>
-</th>
+<td class="colFirst"><a href="com/treasure/hunt/strategy/hider/impl/MaxAreaAngularHintStrategy.html" title="class in com.treasure.hunt.strategy.hider.impl">MaxAreaAngularHintStrategy</a></td>
+<th class="colLast" scope="row">&nbsp;</th>
 </tr>
 <tr id="i43" class="rowColor">
-<td class="colFirst"><a href="com/treasure/hunt/strategy/searcher/Movement.html" title="class in com.treasure.hunt.strategy.searcher">Movement</a></td>
-<th class="colLast" scope="row">
-<div class="block">This is a movement of the searcher in the plain,
- stored as a list of <code>Point</code> objects.</div>
-</th>
-</tr>
-<tr id="i44" class="altColor">
 <td class="colFirst"><a href="com/treasure/hunt/strategy/searcher/impl/NaiveAngleSearcher.html" title="class in com.treasure.hunt.strategy.searcher.impl">NaiveAngleSearcher</a></td>
 <th class="colLast" scope="row">
 <div class="block">This type of <a href="com/treasure/hunt/strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> just always passes the middle of a given <a href="com/treasure/hunt/strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a>,
  by a distance of 1.</div>
 </th>
 </tr>
-<tr id="i45" class="rowColor">
+<tr id="i44" class="altColor">
 <td class="colFirst"><a href="com/treasure/hunt/strategy/searcher/impl/NaiveCircleSearcher.html" title="class in com.treasure.hunt.strategy.searcher.impl">NaiveCircleSearcher</a></td>
 <th class="colLast" scope="row">
 <div class="block">This type of <a href="com/treasure/hunt/strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> always goes to the center of an <a href="com/treasure/hunt/strategy/hint/impl/CircleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>CircleHint</code></a>.</div>
 </th>
 </tr>
-<tr id="i46" class="altColor">
+<tr id="i45" class="rowColor">
 <td class="colFirst"><a href="com/treasure/hunt/view/widget/NavigationController.html" title="class in com.treasure.hunt.view.widget">NavigationController</a></td>
 <th class="colLast" scope="row">&nbsp;</th>
 </tr>
-<tr id="i47" class="rowColor">
+<tr id="i46" class="altColor">
 <td class="colFirst"><a href="com/treasure/hunt/view/widget/PointInspectorController.html" title="class in com.treasure.hunt.view.widget">PointInspectorController</a></td>
 <th class="colLast" scope="row">&nbsp;</th>
 </tr>
-<tr id="i48" class="altColor">
+<tr id="i47" class="rowColor">
 <td class="colFirst"><a href="com/treasure/hunt/jts/awt/PointTransformation.html" title="class in com.treasure.hunt.jts.awt">PointTransformation</a></td>
 <th class="colLast" scope="row">
 <div class="block">Transforms a source <code>Coordinate</code> from a strategy to a AWT <code>Point2D</code> considering a canvas offset
  <code>Vector2D</code> and a viewport scale.</div>
 </th>
 </tr>
-<tr id="i49" class="rowColor">
+<tr id="i48" class="altColor">
 <td class="colFirst"><a href="com/treasure/hunt/strategy/hider/impl/RandomAngleHintHider.html" title="class in com.treasure.hunt.strategy.hider.impl">RandomAngleHintHider</a></td>
 <th class="colLast" scope="row">
 <div class="block">A type of <a href="com/treasure/hunt/strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a>, generating randomly chosen <a href="com/treasure/hunt/strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a>'s</div>
 </th>
 </tr>
-<tr id="i50" class="altColor">
+<tr id="i49" class="rowColor">
 <td class="colFirst"><a href="com/treasure/hunt/jts/geom/Ray.html" title="class in com.treasure.hunt.jts.geom">Ray</a></td>
 <th class="colLast" scope="row">&nbsp;</th>
 </tr>
-<tr id="i51" class="rowColor">
+<tr id="i50" class="altColor">
 <td class="colFirst"><a href="com/treasure/hunt/utils/ReflectionUtils.html" title="class in com.treasure.hunt.utils">ReflectionUtils</a></td>
 <th class="colLast" scope="row">&nbsp;</th>
 </tr>
-<tr id="i52" class="altColor">
+<tr id="i51" class="rowColor">
 <td class="colFirst"><a href="com/treasure/hunt/utils/Renderer.html" title="class in com.treasure.hunt.utils">Renderer</a></td>
 <th class="colLast" scope="row">
 <div class="block">The renderer responsible for drawing <a href="com/treasure/hunt/strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryItem</code></a>s on the <code>Canvas</code>.</div>
 </th>
 </tr>
-<tr id="i53" class="rowColor">
+<tr id="i52" class="altColor">
 <td class="colFirst"><a href="com/treasure/hunt/utils/RenderUtils.html" title="class in com.treasure.hunt.utils">RenderUtils</a></td>
 <th class="colLast" scope="row">&nbsp;</th>
 </tr>
-<tr id="i54" class="altColor">
+<tr id="i53" class="rowColor">
 <td class="colFirst"><a href="com/treasure/hunt/utils/Requires.html" title="annotation in com.treasure.hunt.utils">Requires</a></td>
 <th class="colLast" scope="row">&nbsp;</th>
 </tr>
-<tr id="i55" class="rowColor">
+<tr id="i54" class="altColor">
 <td class="colFirst"><a href="com/treasure/hunt/view/widget/SaveAndLoadController.html" title="class in com.treasure.hunt.view.widget">SaveAndLoadController</a></td>
 <th class="colLast" scope="row">&nbsp;</th>
 </tr>
-<tr id="i56" class="altColor">
+<tr id="i55" class="rowColor">
 <td class="colFirst"><a href="com/treasure/hunt/view/widget/ScaleController.html" title="class in com.treasure.hunt.view.widget">ScaleController</a></td>
 <th class="colLast" scope="row">&nbsp;</th>
 </tr>
-<tr id="i57" class="rowColor">
+<tr id="i56" class="altColor">
 <td class="colFirst"><a href="com/treasure/hunt/strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher">Searcher</a>&lt;<a href="com/treasure/hunt/strategy/searcher/Searcher.html" title="type parameter in Searcher">T</a> extends <a href="com/treasure/hunt/strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&gt;</td>
 <th class="colLast" scope="row">
 <div class="block">An algorithm, trying to find a treasure in the plain,
  given <a href="com/treasure/hunt/strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a>-objects by a <a href="com/treasure/hunt/strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a>.</div>
+</th>
+</tr>
+<tr id="i57" class="rowColor">
+<td class="colFirst"><a href="com/treasure/hunt/strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></td>
+<th class="colLast" scope="row">
+<div class="block">This is the path of the searcher in the plain searching the treasure,
+ stored as a list of <code>Point</code>s.</div>
 </th>
 </tr>
 <tr id="i58" class="altColor">
@@ -488,21 +486,27 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <th class="colLast" scope="row">&nbsp;</th>
 </tr>
 <tr id="i77" class="rowColor">
+<td class="colFirst"><a href="com/treasure/hunt/game/Turn.html" title="class in com.treasure.hunt.game">Turn</a></td>
+<th class="colLast" scope="row">
+<div class="block">A turn contains every essential data, produced in each game turn.</div>
+</th>
+</tr>
+<tr id="i78" class="altColor">
 <td class="colFirst"><a href="com/treasure/hunt/strategy/hider/impl/UserControlledAngleHintHider.html" title="class in com.treasure.hunt.strategy.hider.impl">UserControlledAngleHintHider</a></td>
 <th class="colLast" scope="row">&nbsp;</th>
 </tr>
-<tr id="i78" class="altColor">
+<tr id="i79" class="rowColor">
 <td class="colFirst"><a href="com/treasure/hunt/strategy/searcher/impl/UserControlledHintSearcher.html" title="class in com.treasure.hunt.strategy.searcher.impl">UserControlledHintSearcher</a></td>
 <th class="colLast" scope="row">
 <div class="block">This is a type of <a href="com/treasure/hunt/game/mods/hideandseek/HideAndSeekSearcher.html" title="interface in com.treasure.hunt.game.mods.hideandseek"><code>HideAndSeekSearcher</code></a>,
  which is controlled by the user.</div>
 </th>
 </tr>
-<tr id="i79" class="rowColor">
+<tr id="i80" class="altColor">
 <td class="colFirst"><a href="com/treasure/hunt/view/widget/Widget.html" title="class in com.treasure.hunt.view.widget">Widget</a>&lt;<a href="com/treasure/hunt/view/widget/Widget.html" title="type parameter in Widget">C</a>,&#8203;<a href="com/treasure/hunt/view/widget/Widget.html" title="type parameter in Widget">P</a> extends javafx.scene.layout.Pane&gt;</td>
 <th class="colLast" scope="row">&nbsp;</th>
 </tr>
-<tr id="i80" class="altColor">
+<tr id="i81" class="rowColor">
 <td class="colFirst"><a href="com/treasure/hunt/view/WidgetBarController.html" title="class in com.treasure.hunt.view">WidgetBarController</a></td>
 <th class="colLast" scope="row">&nbsp;</th>
 </tr>

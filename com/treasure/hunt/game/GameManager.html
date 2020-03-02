@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -138,7 +138,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">GameManager</span>
 extends java.lang.Object
 implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo.KryoCopyable&lt;<a href="GameManager.html" title="class in com.treasure.hunt.game">GameManager</a>&gt;</pre>
-<div class="block">The GameManager stores every <a href="Move.html" title="class in com.treasure.hunt.game"><code>Move</code></a>-objects, happened in the game,
+<div class="block">The GameManager stores every <a href="Turn.html" title="class in com.treasure.hunt.game"><code>Turn</code></a>-objects, happened in the game,
  the binds the views to update them for every move and
  runs the GameEngine step for step.</div>
 </li>
@@ -218,73 +218,68 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGeometryItems()">getGeometryItems</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>java.util.List&lt;<a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGeometryItems(java.lang.Boolean)">getGeometryItems</a></span>&#8203;(java.lang.Boolean&nbsp;excludeOverrideItems)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>java.lang.Class&lt;? extends <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider">Hider</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHiderClass()">getHiderClass</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code>java.util.List&lt;<a href="Move.html" title="class in com.treasure.hunt.game">Move</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMovesViewed()">getMovesViewed</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i9" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.lang.Class&lt;? extends <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher">Searcher</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSearcherClass()">getSearcherClass</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>java.util.List&lt;<a href="Turn.html" title="class in com.treasure.hunt.game">Turn</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getVisibleTurns()">getVisibleTurns</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#init()">init</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#latestStepViewed()">latestStepViewed</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#move(int)">move</a></span>&#8203;(int&nbsp;steps)</code></th>
 <td class="colLast">
 <div class="block">Simulates a fixed number of moves.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#next()">next</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Works only for stepSim &le; stepView </div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#previous()">previous</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Works only for stepView &gt; 0</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#read(com.esotericsoftware.kryo.Kryo,com.esotericsoftware.kryo.io.Input)">read</a></span>&#8203;(com.esotericsoftware.kryo.Kryo&nbsp;kryo,
     com.esotericsoftware.kryo.io.Input&nbsp;input)</code></th>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stopBeat()">stopBeat</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Stops the Thread from beating.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#write(com.esotericsoftware.kryo.Kryo,com.esotericsoftware.kryo.io.Output)">write</a></span>&#8203;(com.esotericsoftware.kryo.Kryo&nbsp;kryo,
      com.esotericsoftware.kryo.io.Output&nbsp;output)</code></th>
@@ -432,7 +427,7 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <ul class="blockList">
 <li class="blockList">
 <h4>getGeometryItems</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&gt;&nbsp;getGeometryItems&#8203;(java.lang.Boolean&nbsp;excludeOverrideItems)</pre>
+<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt;&nbsp;getGeometryItems&#8203;(java.lang.Boolean&nbsp;excludeOverrideItems)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>excludeOverrideItems</code> - if true Geometry items that are set to be overridable only the last item is returned and later deleted items are removed</dd>
@@ -441,22 +436,13 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 </dl>
 </li>
 </ul>
-<a id="getGeometryItems()">
+<a id="getVisibleTurns()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getGeometryItems</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt;&nbsp;getGeometryItems()</pre>
-</li>
-</ul>
-<a id="getMovesViewed()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getMovesViewed</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="Move.html" title="class in com.treasure.hunt.game">Move</a>&gt;&nbsp;getMovesViewed()</pre>
+<h4>getVisibleTurns</h4>
+<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="Turn.html" title="class in com.treasure.hunt.game">Turn</a>&gt;&nbsp;getVisibleTurns()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>only viewed moves</dd>

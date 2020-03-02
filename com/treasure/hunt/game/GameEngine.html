@@ -27,8 +27,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":9,"i3":10,"i4":10,"i5":10,"i6":10};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -188,8 +188,8 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>protected <a href="../strategy/searcher/Movement.html" title="class in com.treasure.hunt.strategy.searcher">Movement</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lastMovement">lastMovement</a></span></code></th>
+<td class="colFirst"><code>protected <a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lastSearchPath">lastSearchPath</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
@@ -251,7 +251,7 @@ extends java.lang.Object</pre>
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -265,33 +265,27 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="Move.html" title="class in com.treasure.hunt.game">Move</a></code></td>
+<td class="colFirst"><code><a href="Turn.html" title="class in com.treasure.hunt.game">Turn</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#init()">init</a></span>()</code></th>
 <td class="colLast">
 <div class="block">initialize searcher and treasure positions.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>protected static boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#located(java.util.List,org.locationtech.jts.geom.Point)">located</a></span>&#8203;(java.util.List&lt;<a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;org.locationtech.jts.geom.Point&gt;&gt;&nbsp;geometryItemsList,
-       org.locationtech.jts.geom.Point&nbsp;treasurePosition)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code><a href="Move.html" title="class in com.treasure.hunt.game">Move</a></code></td>
+<td class="colFirst"><code><a href="Turn.html" title="class in com.treasure.hunt.game">Turn</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#move()">move</a></span>()</code></th>
 <td class="colLast">
 <div class="block">This simulates just one step of the simulation.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#searcherMove()">searcherMove</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Let the <a href="#searcher"><code>searcher</code></a> make <a href="../strategy/searcher/Movement.html" title="class in com.treasure.hunt.strategy.searcher"><code>Movement</code></a>.</div>
+<div class="block">Let the <a href="#searcher"><code>searcher</code></a> make <a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a>.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#verifyHint(com.treasure.hunt.strategy.hint.Hint,org.locationtech.jts.geom.Point)">verifyHint</a></span>&#8203;(<a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;hint,
           org.locationtech.jts.geom.Point&nbsp;treasurePosition)</code></th>
@@ -300,14 +294,6 @@ extends java.lang.Object</pre>
  AngleHints must be of angle [0, 180] !?
  CircleHints must contain each other !?
  Verifies whether the <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a> <code>hint</code> given by the <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> followed the rules.</div>
-</td>
-</tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>protected void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#verifyMovement(com.treasure.hunt.strategy.searcher.Movement,org.locationtech.jts.geom.Point)">verifyMovement</a></span>&#8203;(<a href="../strategy/searcher/Movement.html" title="class in com.treasure.hunt.strategy.searcher">Movement</a>&nbsp;movement,
-              org.locationtech.jts.geom.Point&nbsp;initialSearcherPosition)</code></th>
-<td class="colLast">
-<div class="block">Verifies whether the performed <a href="../strategy/searcher/Movement.html" title="class in com.treasure.hunt.strategy.searcher"><code>Movement</code></a> <code>movement</code> by the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> followed the rules.</div>
 </td>
 </tr>
 </table>
@@ -390,13 +376,13 @@ extends java.lang.Object</pre>
 <pre>protected&nbsp;<a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a> lastHint</pre>
 </li>
 </ul>
-<a id="lastMovement">
+<a id="lastSearchPath">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>lastMovement</h4>
-<pre>protected&nbsp;<a href="../strategy/searcher/Movement.html" title="class in com.treasure.hunt.strategy.searcher">Movement</a> lastMovement</pre>
+<h4>lastSearchPath</h4>
+<pre>protected&nbsp;<a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a> lastSearchPath</pre>
 </li>
 </ul>
 <a id="searcherPos">
@@ -471,34 +457,17 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="located(java.util.List,org.locationtech.jts.geom.Point)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>located</h4>
-<pre class="methodSignature">protected static&nbsp;boolean&nbsp;located&#8203;(java.util.List&lt;<a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;org.locationtech.jts.geom.Point&gt;&gt;&nbsp;geometryItemsList,
-                                 org.locationtech.jts.geom.Point&nbsp;treasurePosition)</pre>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>geometryItemsList</code> - searcher path</dd>
-<dd><code>treasurePosition</code> - the position of the treasure</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd><code>true</code> if the searcher located the treasure successfully. <code>false</code>, otherwise.</dd>
-</dl>
-</li>
-</ul>
 <a id="init()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>init</h4>
-<pre class="methodSignature">public&nbsp;<a href="Move.html" title="class in com.treasure.hunt.game">Move</a>&nbsp;init()</pre>
+<pre class="methodSignature">public&nbsp;<a href="Turn.html" title="class in com.treasure.hunt.game">Turn</a>&nbsp;init()</pre>
 <div class="block">initialize searcher and treasure positions.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a <a href="Move.html" title="class in com.treasure.hunt.game"><code>Move</code></a>, since the initialization must be displayed.</dd>
+<dd>a <a href="Turn.html" title="class in com.treasure.hunt.game"><code>Turn</code></a>, since the initialization must be displayed.</dd>
 </dl>
 </li>
 </ul>
@@ -508,14 +477,14 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>move</h4>
-<pre class="methodSignature">public&nbsp;<a href="Move.html" title="class in com.treasure.hunt.game">Move</a>&nbsp;move()</pre>
+<pre class="methodSignature">public&nbsp;<a href="Turn.html" title="class in com.treasure.hunt.game">Turn</a>&nbsp;move()</pre>
 <div class="block">This simulates just one step of the simulation.
  The searcher begins since we want not force him,
  to take a initial hint, he eventually do not need,
  f.e. if he works randomized!</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the <a href="Move.html" title="class in com.treasure.hunt.game"><code>Move</code></a>, happened in this step.</dd>
+<dd>the <a href="Turn.html" title="class in com.treasure.hunt.game"><code>Turn</code></a>, happened in this step.</dd>
 </dl>
 </li>
 </ul>
@@ -536,25 +505,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>searcherMove</h4>
 <pre class="methodSignature">protected&nbsp;void&nbsp;searcherMove()</pre>
-<div class="block">Let the <a href="#searcher"><code>searcher</code></a> make <a href="../strategy/searcher/Movement.html" title="class in com.treasure.hunt.strategy.searcher"><code>Movement</code></a>.</div>
-</li>
-</ul>
-<a id="verifyMovement(com.treasure.hunt.strategy.searcher.Movement,org.locationtech.jts.geom.Point)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>verifyMovement</h4>
-<pre class="methodSignature">protected&nbsp;void&nbsp;verifyMovement&#8203;(<a href="../strategy/searcher/Movement.html" title="class in com.treasure.hunt.strategy.searcher">Movement</a>&nbsp;movement,
-                              org.locationtech.jts.geom.Point&nbsp;initialSearcherPosition)</pre>
-<div class="block">Verifies whether the performed <a href="../strategy/searcher/Movement.html" title="class in com.treasure.hunt.strategy.searcher"><code>Movement</code></a> <code>movement</code> by the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> followed the rules.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>movement</code> - which gets verified</dd>
-<dd><code>initialSearcherPosition</code> - initial searcher position</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.IllegalArgumentException</code> - when the <a href="../strategy/searcher/Movement.html" title="class in com.treasure.hunt.strategy.searcher"><code>Movement</code></a> is not valid.</dd>
-</dl>
+<div class="block">Let the <a href="#searcher"><code>searcher</code></a> make <a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a>.</div>
 </li>
 </ul>
 <a id="verifyHint(com.treasure.hunt.strategy.hint.Hint,org.locationtech.jts.geom.Point)">

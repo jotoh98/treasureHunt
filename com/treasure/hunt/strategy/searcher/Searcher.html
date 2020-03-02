@@ -89,13 +89,13 @@ loadScripts(document, 'script');</script>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -144,6 +144,29 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- =========== FIELD SUMMARY =========== -->
+<section role="region">
+<ul class="blockList">
+<li class="blockList"><a id="field.summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<table class="memberSummary">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Field</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SCANNING_DISTANCE">SCANNING_DISTANCE</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</table>
+</li>
+</ul>
+</section>
 <!-- ========== METHOD SUMMARY =========== -->
 <section role="region">
 <ul class="blockList">
@@ -164,14 +187,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="Movement.html" title="class in com.treasure.hunt.strategy.searcher">Movement</a></code></td>
+<td class="colFirst"><code><a href="SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#move()">move</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Use this to perform a initial move, without a hint given.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code><a href="Movement.html" title="class in com.treasure.hunt.strategy.searcher">Movement</a></code></td>
+<td class="colFirst"><code><a href="SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#move(T)">move</a></span>&#8203;(<a href="Searcher.html" title="type parameter in Searcher">T</a>&nbsp;hint)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -185,6 +208,29 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
+<!-- ============ FIELD DETAIL =========== -->
+<section role="region">
+<ul class="blockList">
+<li class="blockList"><a id="field.detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a id="SCANNING_DISTANCE">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>SCANNING_DISTANCE</h4>
+<pre>static final&nbsp;double SCANNING_DISTANCE</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../constant-values.html#com.treasure.hunt.strategy.searcher.Searcher.SCANNING_DISTANCE">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</section>
 <!-- ============ METHOD DETAIL ========== -->
 <section role="region">
 <ul class="blockList">
@@ -212,12 +258,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <h4>move</h4>
-<pre class="methodSignature"><a href="Movement.html" title="class in com.treasure.hunt.strategy.searcher">Movement</a>&nbsp;move()</pre>
+<pre class="methodSignature"><a href="SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move()</pre>
 <div class="block">Use this to perform a initial move, without a hint given.
  This is for the case, the searcher starts. (as he does normally)</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd><a href="Movement.html" title="class in com.treasure.hunt.strategy.searcher"><code>Movement</code></a> the <a href="Movement.html" title="class in com.treasure.hunt.strategy.searcher"><code>Movement</code></a> the searcher did</dd>
+<dd><a href="SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a> the <a href="SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a> the searcher did</dd>
 </dl>
 </li>
 </ul>
@@ -229,12 +275,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockListLast">
 <li class="blockList">
 <h4>move</h4>
-<pre class="methodSignature"><a href="Movement.html" title="class in com.treasure.hunt.strategy.searcher">Movement</a>&nbsp;move&#8203;(<a href="Searcher.html" title="type parameter in Searcher">T</a>&nbsp;hint)</pre>
+<pre class="methodSignature"><a href="SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move&#8203;(<a href="Searcher.html" title="type parameter in Searcher">T</a>&nbsp;hint)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>hint</code> - the hint, the <a href="../hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> gave last.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd><a href="Movement.html" title="class in com.treasure.hunt.strategy.searcher"><code>Movement</code></a> the <a href="Movement.html" title="class in com.treasure.hunt.strategy.searcher"><code>Movement</code></a>, this searcher chose.</dd>
+<dd><a href="SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a> the <a href="SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a>, this searcher chose.</dd>
 </dl>
 </li>
 </ul>
@@ -290,13 +336,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
