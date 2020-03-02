@@ -8,24 +8,27 @@
             minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1080.0"
             xmlns="http://javafx.com/javafx/11" fx:controller="com.treasure.hunt.view.MainController">
     <bottom>
-        <HBox BorderPane.alignment="CENTER">
-            <children>
-                <HBox alignment="CENTER_LEFT" spacing="5.0" HBox.hgrow="ALWAYS">
-                    <children>
-                        <Label id="logLabel" fx:id="logLabel" text="Info">
-                            <HBox.margin>
-                                <Insets left="10.0"/>
-                            </HBox.margin>
-                        </Label>
-                    </children>
-                </HBox>
-                <fx:include source="navigator.fxml" fx:id="stepViewNavigator"/>
-            </children>
-            <styleClass>
-                <String fx:value="toolbar"/>
-                <String fx:value="bottom"/>
-            </styleClass>
-        </HBox>
+        <VBox>
+            <fx:include fx:id="bottomToolbar" source="toolbarHorizontal.fxml"/>
+            <HBox BorderPane.alignment="CENTER">
+                <children>
+                    <HBox alignment="CENTER_LEFT" spacing="5.0" HBox.hgrow="ALWAYS">
+                        <children>
+                            <Label id="logLabel" fx:id="logLabel" text="Info">
+                                <HBox.margin>
+                                    <Insets left="10.0"/>
+                                </HBox.margin>
+                            </Label>
+                        </children>
+                    </HBox>
+                    <fx:include source="navigator.fxml" fx:id="stepViewNavigator"/>
+                </children>
+                <styleClass>
+                    <String fx:value="toolbar"/>
+                    <String fx:value="bottom"/>
+                </styleClass>
+            </HBox>
+        </VBox>
     </bottom>
     <top>
         <HBox BorderPane.alignment="CENTER">
@@ -56,14 +59,18 @@
         </HBox>
     </top>
     <center>
-        <SplitPane id="main-splitpane" fx:id="mainSplitPane" dividerPositions="0.2, 0.8" BorderPane.alignment="CENTER">
-            <items>
-                <fx:include fx:id="leftWidgetBar" maxHeight="1.7976931348623157E308" source="widgetBar.fxml"
-                            styleClass="widget-pane"/>
-                <fx:include fx:id="canvas" source="canvas.fxml"/>
-                <fx:include fx:id="rightWidgetBar" maxHeight="1.7976931348623157E308" source="widgetBar.fxml"
-                            styleClass="widget-pane"/>
-            </items>
+        <SplitPane fx:id="mainVerticalSplitPane" orientation="VERTICAL" dividerPositions="1.0">
+            <SplitPane fx:id="mainSplitPane" dividerPositions="0.2, 0.8"
+                       BorderPane.alignment="CENTER">
+                <items>
+                    <fx:include fx:id="leftWidgetBar" maxHeight="1.7976931348623157E308" source="widgetBar.fxml"
+                                styleClass="widget-pane"/>
+                    <fx:include fx:id="canvas" source="canvas.fxml"/>
+                    <fx:include fx:id="rightWidgetBar" maxHeight="1.7976931348623157E308" source="widgetBar.fxml"
+                                styleClass="widget-pane"/>
+                </items>
+            </SplitPane>
+            <fx:include fx:id="bottomWidgetBar" source="widgetBar.fxml" maxWidth="Infinity"/>
         </SplitPane>
     </center>
     <right>

@@ -130,12 +130,12 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         lastTreasureBindings = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()).getTreasureLocation(), viewIndex, turns);
         lastPointBinding = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()).getSearchPath().getLastPoint(), viewIndex, turns);
         moveSizeBinding = Bindings.size(turns);
-        statusMessageItemsBinding = Bindings.createObjectBinding(this::getStatusMessageItems, turns);
+        statusMessageItemsBinding = Bindings.createObjectBinding(this::getStatusMessageItems, viewIndex);
     }
 
     @NotNull
     private List<StatusMessageItem> getStatusMessageItems() {
-        Map<StatusMessageType, List<StatusMessageItem>> statusByType = turns.stream()
+        Map<StatusMessageType, List<StatusMessageItem>> statusByType = getVisibleTurns().stream()
                 .flatMap(turn -> Stream.of(turn.getHint(), turn.getSearchPath()))
                 .flatMap(hintAndMovement -> hintAndMovement == null ? Stream.empty() : hintAndMovement.getStatusMessageItemsToBeAdded().stream())
                 .collect(Collectors.groupingBy(StatusMessageItem::getStatusMessageType));

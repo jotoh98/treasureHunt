@@ -38,7 +38,11 @@ public class SearchPath extends HintAndMovement {
     private List<Point> points = new ArrayList<>();
 
     public SearchPath(Point... points) {
-        this.points.addAll(Arrays.asList(points));
+        this(new ArrayList<>(Arrays.asList(points)));
+    }
+
+    public SearchPath(List<Point> points) {
+        this.points = points;
     }
 
     public SearchPath(double x, double y) {

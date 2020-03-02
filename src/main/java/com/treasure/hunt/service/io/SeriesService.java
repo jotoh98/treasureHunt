@@ -74,7 +74,8 @@ public class SeriesService {
         if (selectedFile.get() == null) {
             return;
         }
-        runSeriesAndSaveToFile(rounds, gameManager, progressConsumer, selectedFile.get(), false, true);
+        StatisticsWithIdsAndPath statisticsWithIdsAndPath = runSeriesAndSaveToFile(rounds, gameManager, progressConsumer, selectedFile.get(), false, true);
+        EventBusUtils.STATISTICS_LOADED_EVENT.trigger(statisticsWithIdsAndPath);
     }
 
     /**
@@ -82,9 +83,10 @@ public class SeriesService {
      * @param gameManager      gameManager to be copied (preserves state for multiple starts with same states)
      * @param progressConsumer consumer for working progress, We have 4 workload points per run 1 for copying GameManager, 6 for the actual run and 2 for writing the file
      * @param selectedFile     the file the runs are written to
+     * @return
      */
     @SneakyThrows
-    public void runSeriesAndSaveToFile(Integer rounds, GameManager gameManager, Consumer<Double> progressConsumer, File selectedFile, boolean alreadyInitialed, boolean writeGameManger) {
+    public StatisticsWithIdsAndPath runSeriesAndSaveToFile(Integer rounds, GameManager gameManager, Consumer<Double> progressConsumer, File selectedFile, boolean alreadyInitialed, boolean writeGameManger) {
         int totalWorkLoad = rounds * (writeGameManger ? 9 : 6);
 
         AtomicInteger workLoadDone = new AtomicInteger();
@@ -110,13 +112,14 @@ public class SeriesService {
         writeStatisticsFile(statisticsWithIds, zipOutputStream);
 
         zipOutputStream.close();
+        return new StatisticsWithIdsAndPath(selectedFile.toPath(), statisticsWithIds);
     }
 
     @NotNull
     private Consumer<GameManager> writeGameManagerAndSaveStats(boolean writeGameManger, Consumer<Double> progressConsumer, int totalWorkLoad, AtomicInteger workLoadDone, ZipOutputStream zipOutputStream, List<StatisticsWithId> statisticsWithIds) {
         return gameManagerCopy -> {
             synchronized (zipOutputStream) {
-                int id = statisticsWithIds.size() - 1;
+                int id = statisticsWithIds.size();
                 statisticsWithIds.add(new StatisticsWithId(id, gameManagerCopy.getStatistics().get()));
                 try {
                     if (writeGameManger) {
