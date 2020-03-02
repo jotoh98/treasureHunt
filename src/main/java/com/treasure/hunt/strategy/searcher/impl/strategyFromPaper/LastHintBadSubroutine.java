@@ -4,7 +4,6 @@ import com.treasure.hunt.strategy.geom.StatusMessageItem;
 import com.treasure.hunt.strategy.geom.StatusMessageType;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
-import lombok.Getter;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Point;
@@ -20,16 +19,12 @@ import static org.locationtech.jts.algorithm.Angle.normalizePositive;
  * @author bsen
  */
 class LastHintBadSubroutine {
-
-    @Getter
-    static private LastHintBadSubroutine instance = new LastHintBadSubroutine();
-
     /**
      * Variable names are equivalent to the paper, but since a', d', etc. is not a valid variable name in Java,
      * Apos gets added to the variable name in such cases (apos for apostrophe).
      * E.g. pApos in this implementation equates to p' in the paper and pDoubleApos equates to p''.
      */
-    HalfPlaneHint.Direction x2Apos;
+    private HalfPlaneHint.Direction x2Apos;
     private int basicTransformation;
     private Coordinate[] rect;
     private LineSegment AB, AD, BC, CD, L1Apos, L1DoubleApos, L2Apos, AsApos, ppApos, mAposKApos, hAposGApos, pAposK;
@@ -42,7 +37,7 @@ class LastHintBadSubroutine {
      */
     private HalfPlaneHint lastHintT;
 
-    private LastHintBadSubroutine() {
+    public LastHintBadSubroutine() {
     }
 
     /**

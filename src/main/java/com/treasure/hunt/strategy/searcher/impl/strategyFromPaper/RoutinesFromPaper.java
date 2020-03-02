@@ -60,6 +60,13 @@ public class RoutinesFromPaper {
      */
     public static SearchPath rectangleScan(Coordinate A, Coordinate B, Coordinate C, Coordinate D, SearchPath move) {
         int k = (int) A.distance(B);
+
+        if (k == 0) {
+            move.addPoint(JTSUtils.GEOMETRY_FACTORY.createPoint(A));
+            move.addPoint(JTSUtils.GEOMETRY_FACTORY.createPoint(C));
+            return move;
+        }
+
         Point[] a = lineOfPointsWithDistanceOne(k, A, B);
         Point[] b = lineOfPointsWithDistanceOne(k, D, C);
 

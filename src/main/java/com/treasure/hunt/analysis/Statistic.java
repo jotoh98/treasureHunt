@@ -16,10 +16,14 @@ public class Statistic {
     private List<Turn> turns;
 
     public double getTraceLength() {
-        return ListUtils
+        double length = ListUtils
                 .consecutive(turns, (turn, turn2) -> turn2.getSearchPath().getLength(turn.getSearchPath().getLastPoint()))
                 .reduce(Double::sum)
                 .orElse(0d);
+        if (turns.size() > 0) {
+            length += turns.get(0).getSearchPath().getLength(null);
+        }
+        return length;
     }
 
     public Point getStartPoint() {

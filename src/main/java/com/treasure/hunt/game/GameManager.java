@@ -311,7 +311,11 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
                         throw new RuntimeException(e);
                     }
                 } else {
-                    next();
+                    try {
+                        next();
+                    } catch (Exception e) {
+                        completableFuture.completeExceptionally(e);
+                    }
                 }
             }
             log.trace("Terminating beating thread");

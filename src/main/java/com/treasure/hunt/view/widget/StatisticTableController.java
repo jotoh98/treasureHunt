@@ -49,7 +49,7 @@ public class StatisticTableController {
         instanceTableInit();
 
         SpinnerValueFactory<Integer> valueFactory =
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(10, 100000, 1000, 100);
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100000, 1000, 100);
         roundSpinner.setEditable(true);
         roundSpinner.setValueFactory(valueFactory);
         progressIndicator.managedProperty().bind(progressIndicator.visibleProperty());

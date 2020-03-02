@@ -49,6 +49,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     protected HalfPlaneHint previousHint;
     protected HalfPlaneHint currentHint;
     protected HintQuality lastHintQuality = HintQuality.none;
+    protected LastHintBadSubroutine lastHintBadSubroutine = new LastHintBadSubroutine();
     Point start; // the initial position of the player
     List<StatusMessageItem> statusMessageItemsToBeRemovedNextMove = new ArrayList<>();
 
@@ -110,7 +111,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         }
         //now analyse the hint:
         if (lastHintQuality == HintQuality.bad) {
-            return addState(LastHintBadSubroutine.getInstance().
+            return addState(lastHintBadSubroutine.
                     lastHintBadSubroutine(this, hint, previousHint, move));
         }
         lastHintQuality = HintQuality.good; //If the current hint isn't good, the hint quality is set below again

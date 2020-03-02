@@ -80,15 +80,14 @@ public class SearchPath extends HintAndMovement {
      * @param point The next point, visited in this movement.
      */
     public void addPoint(Point point) {
+        if (Double.isNaN(point.getX()) || Double.isNaN(point.getY())) {
+            throw new IllegalArgumentException("Point with NAN as coordinate is invalid");
+        }
         points.add(point);
     }
 
     public void addPoint(double x, double y) {
-        points.add(JTSUtils.createPoint(x, y));
-    }
-
-    public void addPoint(Coordinate coordinate) {
-        addPoint(JTSUtils.GEOMETRY_FACTORY.createPoint(coordinate));
+        addPoint(JTSUtils.createPoint(x, y));
     }
 
     /**
@@ -115,14 +114,6 @@ public class SearchPath extends HintAndMovement {
                         )
                 )
                 .collect(Collectors.toList());
-    }
-
-    public GeometryItem<LineString> getLineString() {
-        Coordinate[] coordinates = JTSUtils.getCoordinateList(points).toArray(Coordinate[]::new);
-
-        LineString lineString = JTSUtils.GEOMETRY_FACTORY.createLineString(coordinates);
-
-        return new GeometryItem<>(lineString, GeometryType.WAY_POINT);
     }
 
     public List<GeometryItem<?>> getAdditional() {

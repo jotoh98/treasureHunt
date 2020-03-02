@@ -97,7 +97,11 @@ public class SeriesService {
         for (int i = 0; i < rounds; i++) {
             CompletableFuture<Void> future = CompletableFuture.supplyAsync(duplicateGameManager(gameManager, progressConsumer, alreadyInitialed, totalWorkLoad, workLoadDone), executorService)
                     .thenApplyAsync(runGame(progressConsumer, totalWorkLoad, workLoadDone), executorService)
-                    .thenAcceptAsync(writeGameManagerAndSaveStats(writeGameManger, progressConsumer, totalWorkLoad, workLoadDone, zipOutputStream, statisticsWithIds), executorService);
+                    .thenAcceptAsync(writeGameManagerAndSaveStats(writeGameManger, progressConsumer, totalWorkLoad, workLoadDone, zipOutputStream, statisticsWithIds), executorService)
+                    .exceptionally(throwable -> {
+                        log.error("A run failed", throwable);
+                        return null;
+                    });
             runFutures.add(future);
             if (i % SMALL_ROUND_SIZE == 0 && i != 0) {
                 CompletableFuture<Void> allRunsFinished = CompletableFuture.allOf(runFutures.toArray(new CompletableFuture[runFutures.size()]));

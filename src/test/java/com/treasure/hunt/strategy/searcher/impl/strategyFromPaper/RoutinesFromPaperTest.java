@@ -1,6 +1,7 @@
 package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
+import org.junit.Test;
 import org.locationtech.jts.geom.Coordinate;
 
 import java.util.Arrays;
@@ -8,18 +9,9 @@ import java.util.Arrays;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.*;
 import static com.treasure.hunt.utils.JTSUtils.doubleEqual;
 
+public class RoutinesFromPaperTest {
 
-/**
- * @author bsen
- */
-public class Tester {
-    StrategyFromPaper strategy;
-
-    public Tester(StrategyFromPaper strategy) {
-        this.strategy = strategy;
-    }
-
-    public void testRectHint(Coordinate[] rect, HalfPlaneHint hint, int basicTrans) {
+    private void testRectHint(Coordinate[] rect, HalfPlaneHint hint, int basicTrans) {
         int testBasicTrans = getBasicTransformation(rect, hint);
         if (basicTrans != testBasicTrans) {
             throw new IllegalArgumentException("The basic transformation should equal " + basicTrans +
@@ -27,8 +19,8 @@ public class Tester {
         }
     }
 
+    @Test
     public void testBasicTransformation() {
-
         Coordinate[] rect = new Coordinate[]{new Coordinate(-4, 4), new Coordinate(4, 4),
                 new Coordinate(4, -4), new Coordinate(-4, -4)};
         HalfPlaneHint lastBadHint = new HalfPlaneHint(new Coordinate(0, 0),
@@ -55,6 +47,7 @@ public class Tester {
         testRectHint(rect, lastBadHint, 3);
     }
 
+    @Test
     public void testPhiRectangle() {
         Coordinate[] rect = new Coordinate[]{new Coordinate(-4, 4), new Coordinate(4, 4),
                 new Coordinate(4, -4), new Coordinate(-4, -4)};
@@ -85,7 +78,6 @@ public class Tester {
         }
     }
 
-
     private void testOneRectanglePhiReverse(Coordinate[] toTransform) {
         for (int i = 0; i <= 7; i++) {
             Coordinate[] transformedRect = phiRectangle(i, toTransform);
@@ -107,6 +99,7 @@ public class Tester {
         }
     }
 
+    @Test
     public void testPhiRectangleRectangleReverse() {
         testOneRectanglePhiReverse(
                 new Coordinate[]{
@@ -125,4 +118,3 @@ public class Tester {
         );
     }
 }
-
