@@ -19,8 +19,9 @@ public class GeometricUtils {
     }
 
     static void assertRectangle(Coordinate[] rectangle) {
-        if (rectangle.length != 4)
+        if (rectangle.length != 4) {
             throw new IllegalArgumentException("The rectangle has " + rectangle.length + " points. It should have 4.");
+        }
     }
 
     static Point centerOfRectangle(Point P1, Point P2, Point P3, Point P4) {
@@ -71,17 +72,22 @@ public class GeometricUtils {
             minX = Math.min(minX, x);
             minY = Math.min(minY, y);
 
-            if (doubleEqual(minX, x) && doubleEqual(maxY, y))
+            if (doubleEqual(minX, x) && doubleEqual(maxY, y)) {
                 newA = rect[i];
-            if (doubleEqual(maxX, x) && doubleEqual(maxY, y))
+            }
+            if (doubleEqual(maxX, x) && doubleEqual(maxY, y)) {
                 newB = rect[i];
-            if (doubleEqual(maxX, x) && doubleEqual(minY, y))
+            }
+            if (doubleEqual(maxX, x) && doubleEqual(minY, y)) {
                 newC = rect[i];
-            if (doubleEqual(minX, x) && doubleEqual(minY, y))
+            }
+            if (doubleEqual(minX, x) && doubleEqual(minY, y)) {
                 newD = rect[i];
+            }
         }
-        if (newA == null || newB == null || newC == null || newD == null)
+        if (newA == null || newB == null || newC == null || newD == null) {
             throw new IllegalArgumentException("rect is malformed. It equals " + rect[0] + rect[1] + rect[2] + rect[3]);
+        }
 
         if (newA.equals2D(newB) || newA.equals2D(newC) || newA.equals2D(newD) || newB.equals2D(newC) || newB.equals2D(newD) || newC.equals2D(newD)) {
             throw new IllegalArgumentException("rect is malformed. It equals " + rect[0] + rect[1] + rect[2] + rect[3]);

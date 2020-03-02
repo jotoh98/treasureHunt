@@ -26,8 +26,14 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
     private boolean firstMoveWithHint = true;
     private TransformStrategyFromPaper transformer;
 
-    private List<HalfPlaneHint> oldObtainedHints;// received before the last update of the phase's rectangle
-    private List<HalfPlaneHint> newObtainedHints;// received after the last update of the phase's rectangle
+    /**
+     * received before the last update of the phase's rectangle
+     */
+    private List<HalfPlaneHint> oldObtainedHints;
+    /**
+     * received after the last update of the phase's rectangle
+     */
+    private List<HalfPlaneHint> newObtainedHints;
     /**
      * This points represent the polygon where the treasure must lie in if it is in the current search rectangle,
      * according to all obtained hints.
@@ -76,25 +82,6 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         phaseRectangle = JTSUtils.GEOMETRY_FACTORY.createPolygon(tmpCornersCurrentPhaseRectangle);
     }
 
-
-    public SearchPath move1() {
-        SearchPath strategyFromPaperSearchPath = super.move();
-        SearchPath transformedMove = new SearchPath();
-        for (Point wayPoint : strategyFromPaperSearchPath.getPoints()) {
-            transformedMove.addPoint(JTSUtils.createPoint(
-                    wayPoint.getX() + realSearcherStartPosition.getX(),
-                    wayPoint.getY() + realSearcherStartPosition.getY()
-            ));
-        }
-        Coordinate[] currentPhaseRectangle = currentPhaseRectangle();
-        for (int i = 0; i < currentPhaseRectangle.length; i++) {
-            currentPhaseRectangle[i].setX(currentPhaseRectangle[i].x + realSearcherStartPosition.getX());
-            currentPhaseRectangle[i].setY(currentPhaseRectangle[i].y + realSearcherStartPosition.getY());
-        }
-        super.addState(transformedMove, currentPhaseRectangle, currentPhaseRectangle);
-        return transformedMove;
-    }
-
     /**
      * Use this to perform a initial move, without a hint given.
      * In this case, the searcher does nothing and receives a hint.
@@ -117,18 +104,14 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         if (firstMoveWithHint) {
             firstMoveWithHint = false;
             transformer = new TransformStrategyFromPaper(hint, realSearcherStartPosition);
-            //HalfPlaneHint transformedHint = new HalfPlaneHint(new Coordinate(0, 0), new Coordinate(1, 0));
-            //newObtainedHints.add(transformedHint);
-            //SearchPath move = move(transformedHint);
-            //return addState(transformer.transformFromPaper(move));
-            // the initial input hint for the strategy from the paper by definition shows upwards (in this strategy)
         }
 
         newObtainedHints.add(transformer.transformForPaper(hint));
 
         if (rectangleNotLargeEnough()) {
-            if (currentHint != null)
+            if (currentHint != null) {
                 previousHint = transformer.transformForPaper(currentHint);
+            }
             currentHint = transformer.transformForPaper(hint);
             SearchPath move = new SearchPath();
             scanCurrentRectangle(move);
@@ -151,30 +134,35 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
             oldObtainedHints.addAll(newObtainedHints);
             newObtainedHints.clear();
             return addState(transformer.transformFromPaper(move));
-        } else
+        } else {
             return addState(transformer.transformFromPaper(
                     super.move(transformer.transformForPaper(hint))));
+        }
     }
 
     @Override
     protected SearchPath addState(SearchPath move) {
         //TODO alte hints einfügen
-        if (transformer == null)
+        if (transformer == null) {
             return super.addState(move);
+        }
         // add polygon
-        if (currentPolygon != null)
+        if (currentPolygon != null) {
             move.addAdditionalItem(new GeometryItem<>(transformer.transformFromPaper(currentPolygon),
                     GeometryType.CURRENT_POLYGON));
+        }
 
         //add current and previous hint
-        if (currentHint != null)
+        if (currentHint != null) {
             move.addAdditionalItem(new GeometryItem<>(
                     transformer.transformFromPaper(currentHint).getHalfPlaneLineGeometry(),
                     GeometryType.HALF_PLANE_LINE_BLUE));
-        if (previousHint != null)
+        }
+        if (previousHint != null) {
             move.addAdditionalItem(new GeometryItem<>(
                     transformer.transformFromPaper(previousHint).getHalfPlaneLineGeometry(),
                     GeometryType.HALF_PLANE_LINE_BROWN));
+        }
 
         // add search rectangle and phase rectangle
         return super.addState(move, transformer.transformFromPaper(searchRectangle()),

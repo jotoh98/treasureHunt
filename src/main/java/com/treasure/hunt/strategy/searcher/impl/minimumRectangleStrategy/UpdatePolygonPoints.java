@@ -29,26 +29,30 @@ public class UpdatePolygonPoints {
                                         List<Intersection> intersectionList,
                                         ArrayList<Coordinate> newPolygonCorners) {
         Coordinate intersection = hintOne.getHalfPlaneLine().lineIntersection(hintTwo.getHalfPlaneLine());
-        if (intersection == null)
+        if (intersection == null) {
             return;
+        }
 
         for (HalfPlaneHint hint : otherHintsOne) {
             if (hint != hintOne && hint != hintTwo) {
-                if (!hint.inHalfPlane(intersection))
+                if (!hint.inHalfPlane(intersection)) {
                     return;
+                }
             }
         }
 
         for (HalfPlaneHint hint : otherHintsTwo) {
             if (hint != hintOne && hint != hintTwo) {
-                if (!hint.inHalfPlane(intersection))
+                if (!hint.inHalfPlane(intersection)) {
                     return;
+                }
             }
         }
         for (HalfPlaneHint hint : otherHintsThree) {
             if (hint != hintOne && hint != hintTwo) {
-                if (!hint.inHalfPlane(intersection))
+                if (!hint.inHalfPlane(intersection)) {
                     return;
+                }
             }
         }
         intersectionList.add(new Intersection(intersection, hintOne, hintTwo));
@@ -135,8 +139,9 @@ public class UpdatePolygonPoints {
         newPolygon = newPolygon.convexHull();
         newPolygon = newPolygon.difference(oldPhaseRectangle);
 
-        if (newPolygon.getArea() == 0)
+        if (newPolygon.getArea() == 0) {
             return null;
+        }
 
         return (Polygon) newPolygon;
     }

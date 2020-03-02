@@ -38,18 +38,18 @@ public class FileService {
         fileChooser.getExtensionFilters().add(extFilter);
     }
 
-    private Kryo newKryo() {
-        Kryo kryo = new Kryo();
-        kryo.setRegistrationRequired(false);
-        kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
-        return kryo;
-    }
-
     public synchronized static FileService getInstance() {
         if (instance == null) {
             instance = new FileService();
         }
         return instance;
+    }
+
+    private Kryo newKryo() {
+        Kryo kryo = new Kryo();
+        kryo.setRegistrationRequired(false);
+        kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
+        return kryo;
     }
 
     public void writeGameDataToFile(GameManager gameManager, Path filePath) throws IOException {

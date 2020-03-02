@@ -72,8 +72,9 @@ public class TransformStrategyFromPaper {
 
     Coordinate[] transformFromPaper(Coordinate[] coordinates) {
         Coordinate[] result = new Coordinate[coordinates.length];
-        for (int i = 0; i < coordinates.length; i++)
+        for (int i = 0; i < coordinates.length; i++) {
             result[i] = transformFromPaper(coordinates[i]);
+        }
         return result;
     }
 

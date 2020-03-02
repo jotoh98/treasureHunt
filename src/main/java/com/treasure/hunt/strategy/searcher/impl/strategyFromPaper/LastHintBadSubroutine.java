@@ -84,18 +84,21 @@ class LastHintBadSubroutine {
         a = lineWayIntersection(L1Apos, AD);
         d = lineWayIntersection(L1Apos, BC);
         e = null;
-        if (d != null)
+        if (d != null) {
             e = new Coordinate(D.getX(), d.getY());
+        }
         dApos = null;
-        if (d != null)
+        if (d != null) {
             dApos = twoStepsOrthogonal(lastBadHint, d);
+        }
 
         f = lineWayIntersection(L1DoubleApos, AB);
         j = lineWayIntersection(L1DoubleApos, BC);
 
         jApos = null;
-        if (j != null)
+        if (j != null) {
             jApos = new Coordinate(D.getX(), j.getY());
+        }
         t = new Coordinate(f.getX(), D.getY());
 
         m = new Coordinate(A.getX(), p.getY());
@@ -119,7 +122,6 @@ class LastHintBadSubroutine {
         x2Apos = curHintT.getDirection();
         L2Apos = new LineSegment(curHintT.getCenter(),
                 curHintT.getRight());
-
 
         ppApos = new LineSegment(p, pApos);
         mAposKApos = new LineSegment(mApos, kApos);
@@ -387,8 +389,9 @@ class LastHintBadSubroutine {
                 normalizePositive(lineReverse.angle() - angleBetween1));
         double maxAngleBetween2and1 = Math.max(normalizePositive(between2.angle() - angleBetween1),
                 normalizePositive(between2reverse.angle() - angleBetween1));
-        if (maxAngleLineBetween1 == 0)
+        if (maxAngleLineBetween1 == 0) {
             return true;
+        }
         return maxAngleBetween2and1 < maxAngleLineBetween1;
     }
 
@@ -402,8 +405,9 @@ class LastHintBadSubroutine {
                 + " B= (" + B.getX() + ", " + B.getY() + ")\n"
                 + " C= (" + C.getX() + ", " + C.getY() + ")\n"
                 + " D= (" + D.getX() + ", " + D.getY() + ")";
-        for (int i = 0; i < rect.length; i++)
+        for (int i = 0; i < rect.length; i++) {
             message.concat("rect[" + i + "]= " + rect[i] + "\n");
+        }
         message.concat("lastBadHint p1= " + lastBadHint.getCenter() + "lastHint p2= " +
                 lastBadHint.getRight() + "\n");
         message.concat("curHint p1= " + curHint.getCenter() + "curHint p2= " +

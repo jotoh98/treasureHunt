@@ -9,8 +9,7 @@ public enum StatusMessageType {
     BEFORE_PREVIOUS_QUALITY("The quality of the hint received before the previous hint", true,
             false, "The quality of the hint received before the previous hint"),
     EXPLANATION_MOVEMENT("An explanation for the movement of the searcher", true, false,
-            "An explanation for the movement of the searcher")
-    ;
+            "An explanation for the movement of the searcher");
 
     @Getter
     private final String name;

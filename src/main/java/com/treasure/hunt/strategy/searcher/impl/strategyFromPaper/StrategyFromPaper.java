@@ -178,8 +178,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
 
         // add the rectangle of the current phase
         Coordinate[] phasePolygon = new Coordinate[5];
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++) {
             phasePolygon[i] = phaseRectanglePoints[i];
+        }
         phasePolygon[4] = phaseRectanglePoints[0];
         GeometryItem<Polygon> phase = new GeometryItem<>(GEOMETRY_FACTORY.createPolygon(phasePolygon), CURRENT_PHASE);
         move.addAdditionalItem(phase);
@@ -204,7 +205,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                                 && searchAreaCornerA.getY() > rect[0].getY() ||
                         !doubleEqual(searchAreaCornerA.getY(), rect[2].getY())
                                 && searchAreaCornerA.getY() < rect[2].getY() ||
-
 
                         !doubleEqual(searchAreaCornerB.getX(), rect[0].getX())
                                 && searchAreaCornerB.getX() < rect[0].getX() ||
@@ -247,12 +247,14 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             );
         }
         //add hints
-        if (currentHint != null)
+        if (currentHint != null) {
             move.addAdditionalItem(new GeometryItem<>(currentHint.getHalfPlaneLineGeometry(),
                     GeometryType.HALF_PLANE_LINE_BLUE));
-        if (previousHint != null)
+        }
+        if (previousHint != null) {
             move.addAdditionalItem(new GeometryItem<>(previousHint.getHalfPlaneLineGeometry(),
                     GeometryType.HALF_PLANE_LINE_BROWN));
+        }
         return addState(move, curCoords, currentPhaseRectangle());
     }
 

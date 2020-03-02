@@ -151,19 +151,19 @@ public class HalfPlaneHint extends AngleHint {
 
     public LineString getHalfPlaneLineGeometry() {
         if (halfPlaneLine == null) {
-            Vector2D l_to_r = new Vector2D(getCenter(), getRight());
-            Vector2D r_to_l = new Vector2D(getRight(), getCenter());
+            Vector2D leftToRight = new Vector2D(getCenter(), getRight());
+            Vector2D rightToLeft = new Vector2D(getRight(), getCenter());
 
-            l_to_r = l_to_r.multiply(visual_extent / l_to_r.length());
-            r_to_l = r_to_l.multiply(visual_extent / r_to_l.length());
+            leftToRight = leftToRight.multiply(visual_extent / leftToRight.length());
+            rightToLeft = rightToLeft.multiply(visual_extent / rightToLeft.length());
 
             Coordinate extendedL = new Coordinate(
-                    getRight().x + r_to_l.getX(),
-                    getRight().y + r_to_l.getY()
+                    getRight().x + rightToLeft.getX(),
+                    getRight().y + rightToLeft.getY()
             );
             Coordinate extendedR = new Coordinate(
-                    getCenter().x + l_to_r.getX(),
-                    getCenter().y + l_to_r.getY()
+                    getCenter().x + leftToRight.getX(),
+                    getCenter().y + leftToRight.getY()
             );
             Coordinate[] line = new Coordinate[]{extendedL, extendedR};
             halfPlaneLine = GEOMETRY_FACTORY.createLineString(line);
@@ -175,9 +175,9 @@ public class HalfPlaneHint extends AngleHint {
         return new LineSegment(getCenter(), getRight());
     }
 
-    public boolean inHalfPlane(Coordinate P) {
+    public boolean inHalfPlane(Coordinate coordinate) {
         double angleHintLine = new LineSegment(getCenter(), getRight()).angle();
-        double angleCenterP = new LineSegment(getCenter(), P).angle();
+        double angleCenterP = new LineSegment(getCenter(), coordinate).angle();
         return Angle.normalizePositive((angleCenterP - angleHintLine)) <= Math.PI;
     }
 

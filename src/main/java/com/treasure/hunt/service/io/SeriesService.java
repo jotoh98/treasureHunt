@@ -35,9 +35,8 @@ import java.util.zip.ZipOutputStream;
 public class SeriesService {
     public static final String STATS_FILE_NAME = "stats.huntstats";
     public static final String HUNT_FILE_EXTENSION = ".hunt";
-    private static SeriesService instance;
     private static final int SMALL_ROUND_SIZE = 10000;
-
+    private static SeriesService instance;
     private final FileChooser fileChooser;
 
     private SeriesService() {
@@ -47,19 +46,18 @@ public class SeriesService {
         fileChooser.getExtensionFilters().add(extFilter);
     }
 
-    private Kryo newKryo() {
-        Kryo kryo = new Kryo();
-        kryo.setRegistrationRequired(false);
-        kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
-        return kryo;
-    }
-
-
     public synchronized static SeriesService getInstance() {
         if (instance == null) {
             instance = new SeriesService();
         }
         return instance;
+    }
+
+    private Kryo newKryo() {
+        Kryo kryo = new Kryo();
+        kryo.setRegistrationRequired(false);
+        kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
+        return kryo;
     }
 
     @SneakyThrows

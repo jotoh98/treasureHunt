@@ -35,13 +35,11 @@ public class StatisticTableController {
     public Button runMultipleButton;
     public ProgressIndicator progressIndicator;
     public Spinner<Integer> roundSpinner;
-    HashMap<StatisticObject.StatisticInfo, List<StatisticObject>> statisticsMeasureHashMap = new HashMap<>();
-    private Path path;
-
-
     public ComboBox<Class<? extends Searcher>> searcherList;
     public ComboBox<Class<? extends Hider>> hiderList;
     public ComboBox<Class<? extends GameEngine>> gameEngineList;
+    HashMap<StatisticObject.StatisticInfo, List<StatisticObject>> statisticsMeasureHashMap = new HashMap<>();
+    private Path path;
     private ObjectProperty<GameManager> gameManager;
 
     public void initialize() {

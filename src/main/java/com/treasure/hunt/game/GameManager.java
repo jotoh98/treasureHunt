@@ -51,15 +51,14 @@ import java.util.stream.Stream;
 @Slf4j
 public class GameManager implements KryoSerializable, KryoCopyable<GameManager> {
 
-    @Getter
-    private volatile BooleanProperty beatThreadRunning = new SimpleBooleanProperty(false);
     /**
      * Contains the "gameHistory".
      */
     @VisibleForTesting
     @Getter
     ObservableList<Turn> turns = FXCollections.observableArrayList();
-
+    @Getter
+    private volatile BooleanProperty beatThreadRunning = new SimpleBooleanProperty(false);
     private GameEngine gameEngine;
     @Getter
     private BooleanProperty finishedProperty;

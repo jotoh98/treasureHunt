@@ -53,11 +53,13 @@ public final class JTSUtils {
      */
     public static Coordinate lineWayIntersection(LineSegment line, LineSegment segment) {
         Coordinate intersection = line.lineIntersection(segment);
-        if (intersection == null)
+        if (intersection == null) {
             return null;
+        }
         double distance = GEOMETRY_FACTORY.getPrecisionModel().makePrecise(segment.distance(intersection));
-        if (distance != 0)
+        if (distance != 0) {
             return null;
+        }
         return intersection;
     }
 

@@ -44,16 +44,6 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
     @Getter
     private Vector2D boundarySize = new Vector2D(0, 0);
 
-    public void setScale(double scale) {
-        if (scale != 0) {
-            scaleProperty.set(scale);
-        }
-    }
-
-    public void setOffset(Vector2D offset) {
-        offsetProperty.set(offset);
-    }
-
     /**
      * Main transform method necessary for extending {@link org.locationtech.jts.awt.PointTransformation}.
      *
@@ -73,8 +63,18 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
         return INITIAL_SCALE * scaleProperty.get();
     }
 
+    public void setScale(double scale) {
+        if (scale != 0) {
+            scaleProperty.set(scale);
+        }
+    }
+
     public Vector2D getOffset() {
         return offsetProperty.get();
+    }
+
+    public void setOffset(Vector2D offset) {
+        offsetProperty.set(offset);
     }
 
     /**

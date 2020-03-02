@@ -11,6 +11,6 @@ import picocli.CommandLine;
         }
 )
 public class TreasureHuntCommand {
-        @CommandLine.Option(names = {"-h", "--help"}, usageHelp = true, description = "display a help message")
-        private boolean helpRequested = false;
+    @CommandLine.Option(names = {"-h", "--help"}, usageHelp = true, description = "display a help message")
+    private boolean helpRequested = false;
 }

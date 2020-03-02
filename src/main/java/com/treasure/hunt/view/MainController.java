@@ -39,61 +39,45 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 public class MainController {
 
+    @Getter
+    private final ObjectProperty<GameManager> gameManager = new SimpleObjectProperty<>();
     public SplitPane mainSplitPane;
-
     public Pane leftWidgetBar;
     public Pane rightWidgetBar;
     public Pane bottomWidgetBar;
-
     public VBox rightToolbar;
     public VBox leftToolbar;
     public HBox bottomToolbar;
-
     public Pane canvas;
-
     @FXML
     public CanvasController canvasController;
-
     /**
      * Navigator for the view.
      * Changes the step view.
      */
     public HBox stepViewNavigator;
     public SplitPane mainVerticalSplitPane;
-
-
-    @FXML
-    private NavigationController stepViewNavigatorController;
-
-    @FXML
-    private Label versionLabel;
-
-    @FXML
-    private WidgetBarController leftWidgetBarController;
-
-    @FXML
-    private WidgetBarController rightWidgetBarController;
-
-    @FXML
-    private WidgetBarController bottomWidgetBarController;
-
-    @FXML
-    private ToolbarController leftToolbarController;
-
-    @FXML
-    private ToolbarController rightToolbarController;
-
-    @FXML
-    private ToolbarController bottomToolbarController;
-
     public ComboBox<Class<? extends Searcher>> searcherList;
     public ComboBox<Class<? extends Hider>> hiderList;
     public ComboBox<Class<? extends GameEngine>> gameEngineList;
     public Button startGameButton;
     public Label logLabel;
-
-    @Getter
-    private final ObjectProperty<GameManager> gameManager = new SimpleObjectProperty<>();
+    @FXML
+    private NavigationController stepViewNavigatorController;
+    @FXML
+    private Label versionLabel;
+    @FXML
+    private WidgetBarController leftWidgetBarController;
+    @FXML
+    private WidgetBarController rightWidgetBarController;
+    @FXML
+    private WidgetBarController bottomWidgetBarController;
+    @FXML
+    private ToolbarController leftToolbarController;
+    @FXML
+    private ToolbarController rightToolbarController;
+    @FXML
+    private ToolbarController bottomToolbarController;
 
     public void initialize() {
         canvasController.setGameManager(gameManager);

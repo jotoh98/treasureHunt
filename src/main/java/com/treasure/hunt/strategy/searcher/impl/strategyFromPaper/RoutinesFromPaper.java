@@ -143,25 +143,25 @@ public class RoutinesFromPaper {
      * @return
      */
     static Coordinate sigmaPoint(int i, Coordinate r, Coordinate P) {
-        AffineTransformation rot_i;
+        AffineTransformation rotationI; //rot_i
         switch (i) {
             case 0:
-                rot_i = new AffineTransformation(new double[]{1, 0, 0, 0, 1, 0});
+                rotationI = new AffineTransformation(new double[]{1, 0, 0, 0, 1, 0});
                 break;
             case 1:
-                rot_i = new AffineTransformation(new double[]{0, -1, 0, 1, 0, 0});
+                rotationI = new AffineTransformation(new double[]{0, -1, 0, 1, 0, 0});
                 break;
             case 2:
-                rot_i = new AffineTransformation(new double[]{-1, 0, 0, 0, -1, 0});
+                rotationI = new AffineTransformation(new double[]{-1, 0, 0, 0, -1, 0});
                 break;
             case 3:
-                rot_i = new AffineTransformation(new double[]{0, 1, 0, -1, 0, 0});
+                rotationI = new AffineTransformation(new double[]{0, 1, 0, -1, 0, 0});
                 break;
             default:
                 throw new IllegalArgumentException("i should be in [0,3] but equals " + i);
         }
         Coordinate ret = new Coordinate(P.x - r.x, P.y - r.y);
-        rot_i.transform(ret, ret);
+        rotationI.transform(ret, ret);
         ret.x = ret.x + r.x;
         ret.y = ret.y + r.y;
         return ret;
@@ -169,8 +169,9 @@ public class RoutinesFromPaper {
     }
 
     static Coordinate sigmaPointReverse(int i, Coordinate r, Coordinate P) {
-        if (i < 0 || i > 3)
+        if (i < 0 || i > 3) {
             throw new IllegalArgumentException("i should be in [0,3] but is equal to " + i);
+        }
         return sigmaPoint((4 - i) % 4, r, P);
     }
 
@@ -223,19 +224,22 @@ public class RoutinesFromPaper {
      */
     static Coordinate[] phiRectangle(int i, Coordinate[] rect) {
         assertRectangle(rect);
-        if (i < 0 || i > 7)
+        if (i < 0 || i > 7) {
             throw new IllegalArgumentException("i must be in [0,7] but is " + i);
+        }
         return sigmaRectangle(i % 4, rect);
     }
 
 
     static Coordinate phiPoint(int i, Coordinate[] rect, Coordinate P) {
         assertRectangle(rect);
-        if (i < 0 || i > 7)
+        if (i < 0 || i > 7) {
             throw new IllegalArgumentException("i must be in [0,7] but is " + i);
+        }
         Coordinate r = centerOfRectangle(rect);
-        if (i < 4)
+        if (i < 4) {
             return sigmaPoint(i, r, P);
+        }
         return rhoPoint(rect, sigmaPoint(i, r, P));
     }
 
@@ -249,15 +253,17 @@ public class RoutinesFromPaper {
      */
     static HalfPlaneHint phiHint(int i, Coordinate[] rect, HalfPlaneHint hint) {
         assertRectangle(rect);
-        if (i < 0 || i > 7)
+        if (i < 0 || i > 7) {
             throw new IllegalArgumentException("i must be in [0,7] but is " + i);
+        }
         Coordinate r = centerOfRectangle(rect);
         HalfPlaneHint transformedHint = new HalfPlaneHint(
                 sigmaPoint(i % 4, r, hint.getCenter()),
                 sigmaPoint(i % 4, r, hint.getRight())
         );
-        if (i < 4)
+        if (i < 4) {
             return transformedHint;
+        }
         return rhoHint(rect, transformedHint);
     }
 
@@ -271,8 +277,9 @@ public class RoutinesFromPaper {
      */
     static Coordinate phiPointInverse(int i, Coordinate[] rect, Coordinate P) {
         assertRectangle(rect);
-        if (i < 0 || i > 7)
+        if (i < 0 || i > 7) {
             throw new IllegalArgumentException("i must be in [0,7] but is " + i);
+        }
 
         Coordinate r = centerOfRectangle(rect);
         if (i < 4) {
@@ -321,12 +328,14 @@ public class RoutinesFromPaper {
                     testHint.getRight());
             LineSegment testAD = new LineSegment(testRect[0], testRect[3]);
             Coordinate AD_hint = lineWayIntersection(hintLine, testAD);
-            if (testHint.getDirection() == up)
+            if (testHint.getDirection() == up) {
                 return i;
+            }
             if (testHint.getDirection() == right &&
                     testHint.getUpperHintPoint().getX() < testHint.getLowerHintPoint().getX() &&
-                    AD_hint != null)
+                    AD_hint != null) {
                 return i;
+            }
         }
         throw new IllegalArgumentException("Somehow there was no basic transformation found for this " +
                 "rectangle and hint. This is impossible.\n" + "rect: " + Arrays.toString(rect) + " anglepoints: "
