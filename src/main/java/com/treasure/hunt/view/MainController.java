@@ -30,7 +30,6 @@ import javafx.util.StringConverter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.awt.*;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -115,11 +114,11 @@ public class MainController {
     private void addGameIndependentWidgets() {
         Widget<StatisticTableController, ?> statisticsTableWidget = new Widget<>("/layout/statisticsTable.fxml");
         statisticsTableWidget.getController().init(gameManager, searcherList, hiderList, gameEngineList);
-        insertWidget(BorderLayout.SOUTH, "Statistics", statisticsTableWidget.getComponent(), false);
+        insertWidget(SplitPaneLocation.SOUTH, "Statistics", statisticsTableWidget.getComponent(), false);
 
         Widget<SaveAndLoadController, ?> saveAndLoadWidget = new Widget<>("/layout/saveAndLoad.fxml");
         saveAndLoadWidget.getController().init(gameManager);
-        insertWidget(BorderLayout.WEST, "Save & Load", saveAndLoadWidget.getComponent(), true);
+        insertWidget(SplitPaneLocation.WEST, "Save & Load", saveAndLoadWidget.getComponent(), true);
     }
 
     private void listenToLogLabelEvent() {
@@ -218,23 +217,23 @@ public class MainController {
     private void addWidgets() {
         Widget<PointInspectorController, ?> pointInspectorWidget = new Widget<>("/layout/pointInspector.fxml");
         pointInspectorWidget.getController().init(gameManager);
-        insertWidget(BorderLayout.WEST, "Inspector", pointInspectorWidget.getComponent());
+        insertWidget(SplitPaneLocation.WEST, "Inspector", pointInspectorWidget.getComponent());
 
         Widget<BeatWidgetController, ?> beatWidget = new Widget<>("/layout/beatWidget.fxml");
         beatWidget.getController().init(gameManager);
-        insertWidget(BorderLayout.WEST, "Game controls", beatWidget.getComponent());
+        insertWidget(SplitPaneLocation.WEST, "Game controls", beatWidget.getComponent());
 
         Widget<StatisticsWidgetController, ?> statisticsWidget = new Widget<>("/layout/statisticsWidget.fxml");
         statisticsWidget.getController().init(gameManager);
-        insertWidget(BorderLayout.WEST, "Statistics", statisticsWidget.getComponent());
+        insertWidget(SplitPaneLocation.WEST, "Statistics", statisticsWidget.getComponent());
 
         Widget<StatusMessageWidgetController, ?> statusWidget = new Widget<>("/layout/statusMessageWidget.fxml");
         statusWidget.getController().init(gameManager);
-        insertWidget(BorderLayout.EAST, "Status", statusWidget.getComponent());
+        insertWidget(SplitPaneLocation.EAST, "Status", statusWidget.getComponent());
 
         Widget<ScaleController, ?> scaleWidget = new Widget<>("/layout/scaling.fxml");
         scaleWidget.getController().init(canvasController);
-        insertWidget(BorderLayout.EAST, "Navigator", scaleWidget.getComponent());
+        insertWidget(SplitPaneLocation.EAST, "Navigator", scaleWidget.getComponent());
     }
 
     private void setListStringConverters() {
@@ -350,22 +349,22 @@ public class MainController {
         );
     }
 
-    private void insertWidget(String toolbar, String buttonText, Pane widgetBox) {
+    private void insertWidget(SplitPaneLocation toolbar, String buttonText, Pane widgetBox) {
         insertWidget(toolbar, buttonText, widgetBox, false);
     }
 
-    private void insertWidget(String toolbar, String buttonText, Pane widgetBox, boolean selected) {
+    private void insertWidget(SplitPaneLocation toolbar, String buttonText, Pane widgetBox, boolean selected) {
 
         switch (toolbar) {
-            case BorderLayout.WEST:
+            case WEST:
                 leftToolbarController.addButton(buttonText, selected, widgetBox);
                 leftWidgetBarController.addWidget(widgetBox);
                 break;
-            case BorderLayout.EAST:
+            case EAST:
                 rightToolbarController.addButton(buttonText, selected, widgetBox);
                 rightWidgetBarController.addWidget(widgetBox);
                 break;
-            case BorderLayout.SOUTH:
+            case SOUTH:
                 bottomToolbarController.addButton(buttonText, selected, widgetBox);
                 bottomWidgetBarController.addWidget(widgetBox);
         }
@@ -407,5 +406,11 @@ public class MainController {
 
     public void onLoadGame(ActionEvent actionEvent) {
         FileService.getInstance().loadGameManager();
+    }
+
+    private enum SplitPaneLocation {
+        EAST,
+        SOUTH,
+        WEST
     }
 }
