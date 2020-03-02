@@ -2,7 +2,7 @@ package com.treasure.hunt.strategy.hider.impl;
 
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
-import com.treasure.hunt.strategy.searcher.Movement;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.algorithm.Angle;
@@ -32,12 +32,12 @@ public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
 
 
     /**
-     * @param movement the {@link Movement}, the {@link com.treasure.hunt.strategy.searcher.Searcher} did last
+     * @param movement the {@link SearchPath}, the {@link com.treasure.hunt.strategy.searcher.Searcher} did last
      * @return T a (new) hint.
      */
     @Override
-    public HalfPlaneHint move(Movement movement) {
-        Point searcherPos = movement.getEndPoint();
+    public HalfPlaneHint move(SearchPath movement) {
+        Point searcherPos = movement.getLastPoint();
 
         double randomAngle = Math.random() * -Math.PI; // Angle between treasurePosition searcherPosition and
         // AnglePointRight

@@ -1,7 +1,7 @@
 package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
-import com.treasure.hunt.strategy.searcher.Movement;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
@@ -33,8 +33,8 @@ public class GeometricUtils {
         return lineAC.midPoint();
     }
 
-    public static Movement moveToCenterOfRectangle(Point P1, Point P2, Point P3, Point P4, Movement move) {
-        move.addWayPoint(centerOfRectangle(P1, P2, P3, P4));
+    public static SearchPath moveToCenterOfRectangle(Point P1, Point P2, Point P3, Point P4, SearchPath move) {
+        move.addPoint(centerOfRectangle(P1, P2, P3, P4));
         return move;
     }
 

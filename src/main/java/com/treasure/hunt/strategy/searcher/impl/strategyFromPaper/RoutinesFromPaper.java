@@ -1,7 +1,7 @@
 package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
-import com.treasure.hunt.strategy.searcher.Movement;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
@@ -24,7 +24,7 @@ public class RoutinesFromPaper {
     private RoutinesFromPaper() {
     }
 
-    public static Movement rectangleScan(Point A, Point B, Point C, Point D, Movement move) {
+    public static SearchPath rectangleScan(Point A, Point B, Point C, Point D, SearchPath move) {
         return rectangleScan(A.getCoordinate(), B.getCoordinate(), C.getCoordinate(), D.getCoordinate(), move);
     }
 
@@ -58,27 +58,27 @@ public class RoutinesFromPaper {
      * @param move
      * @return
      */
-    public static Movement rectangleScan(Coordinate A, Coordinate B, Coordinate C, Coordinate D, Movement move) {
+    public static SearchPath rectangleScan(Coordinate A, Coordinate B, Coordinate C, Coordinate D, SearchPath move) {
         int k = (int) A.distance(B);
         Point[] a = lineOfPointsWithDistanceOne(k, A, B);
         Point[] b = lineOfPointsWithDistanceOne(k, D, C);
 
         if (k % 2 == 1) {
             for (int i = 0; i <= k - 1; i += 2) {
-                move.addWayPoint(a[i]);
-                move.addWayPoint(b[i]);
-                move.addWayPoint(b[i + 1]);
-                move.addWayPoint(a[i + 1]);
+                move.addPoint(a[i]);
+                move.addPoint(b[i]);
+                move.addPoint(b[i + 1]);
+                move.addPoint(a[i + 1]);
             }
         } else {
             for (int i = 0; i <= k - 2; i += 2) {
-                move.addWayPoint(a[i]);
-                move.addWayPoint(b[i]);
-                move.addWayPoint(b[i + 1]);
-                move.addWayPoint(a[i + 1]);
+                move.addPoint(a[i]);
+                move.addPoint(b[i]);
+                move.addPoint(b[i + 1]);
+                move.addPoint(a[i + 1]);
             }
-            move.addWayPoint(a[k]);
-            move.addWayPoint(b[k]);
+            move.addPoint(a[k]);
+            move.addPoint(b[k]);
         }
         return move;
     }
@@ -287,8 +287,8 @@ public class RoutinesFromPaper {
      * @param move
      * @return
      */
-    static Movement rectangleScanPhiReverse(int basicTrans, Coordinate[] phiRect,
-                                            Coordinate A, Coordinate B, Coordinate C, Coordinate D, Movement move) {
+    static SearchPath rectangleScanPhiReverse(int basicTrans, Coordinate[] phiRect,
+                                              Coordinate A, Coordinate B, Coordinate C, Coordinate D, SearchPath move) {
         return rectangleScan(
                 phiPointInverse(basicTrans, phiRect, A),
                 phiPointInverse(basicTrans, phiRect, B),

@@ -1,19 +1,21 @@
 package com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy;
 
-import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
-import com.treasure.hunt.strategy.searcher.Movement;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.util.AffineTransformation;
 
+/**
+ * @author bsen
+ */
 public class TransformStrategyFromPaper {
     private Point searcherStartPosition;
     private AffineTransformation fromPaper;
     private AffineTransformation forPaper;
-    private AffineTransformation fromPaperWithStartPointMovement;
+    private AffineTransformation fromPaperWithStartPointSearchPath;
 
     public TransformStrategyFromPaper(HalfPlaneHint hint, Point searcherStartPosition) {
         this.searcherStartPosition = searcherStartPosition;
@@ -29,8 +31,8 @@ public class TransformStrategyFromPaper {
 
         AffineTransformation displacementFromPaper = AffineTransformation.shearInstance(searcherStartPosition.getX(),
                 searcherStartPosition.getY());
-        fromPaperWithStartPointMovement = new AffineTransformation(fromPaper);
-        fromPaperWithStartPointMovement.compose(displacementFromPaper);
+        fromPaperWithStartPointSearchPath = new AffineTransformation(fromPaper);
+        fromPaperWithStartPointSearchPath.compose(displacementFromPaper);
 
     }
 
@@ -56,7 +58,7 @@ public class TransformStrategyFromPaper {
     }
 
     Polygon transformFromPaper(Polygon polygon) {
-        return (Polygon) fromPaperWithStartPointMovement.transform(polygon);
+        return (Polygon) fromPaperWithStartPointSearchPath.transform(polygon);
     }
 
     Point transformFromPaper(Point point) {
@@ -78,10 +80,10 @@ public class TransformStrategyFromPaper {
         return result;
     }
 
-    Movement transformFromPaper(Movement move) {
-        Movement outputMove = new Movement();
-        for (GeometryItem<Point> wayPoint : move.getPoints()) {
-            outputMove.addWayPoint(transformFromPaper(wayPoint.getObject()));
+    SearchPath transformFromPaper(SearchPath move) {
+        SearchPath outputMove = new SearchPath();
+        for (Point wayPoint : move.getPoints()) {
+            outputMove.addPoint(transformFromPaper(wayPoint));
         }
         return outputMove;
     }

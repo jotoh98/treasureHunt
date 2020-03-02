@@ -4,7 +4,7 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
-import com.treasure.hunt.strategy.searcher.Movement;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils;
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper;
@@ -14,7 +14,6 @@ import lombok.Value;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
-import org.locationtech.jts.geom.util.AffineTransformation;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -25,8 +24,6 @@ import static com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.
 public class MinimumRectangleStrategy extends StrategyFromPaper implements Searcher<HalfPlaneHint> {
     Point realSearcherStartPosition;
     private boolean firstMoveWithHint = true;
-    private AffineTransformation fromPaper;
-    private AffineTransformation forPaper;
     private TransformStrategyFromPaper transformer;
 
     private List<HalfPlaneHint> oldObtainedHints;// received before the last update of the phase's rectangle
@@ -83,16 +80,15 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
      * Use this to perform a initial move, without a hint given.
      * This is for the case, the searcher starts. (as he does normally)
      *
-     * @return {@link Movement} the {@link Movement} the searcher did
+     * @return {@link SearchPath} the {@link SearchPath} the searcher did
      */
-    @Override
-    public Movement move() {
-        Movement strategyFromPaperMovement = super.move();
-        Movement transformedMove = new Movement();
-        for (GeometryItem<Point> wayPoint : strategyFromPaperMovement.getPoints()) {
-            transformedMove.addWayPoint(JTSUtils.createPoint(
-                    wayPoint.getObject().getX() + realSearcherStartPosition.getX(),
-                    wayPoint.getObject().getY() + realSearcherStartPosition.getY()
+    public SearchPath move1() {
+        SearchPath strategyFromPaperSearchPath = super.move();
+        SearchPath transformedMove = new SearchPath();
+        for (Point wayPoint : strategyFromPaperSearchPath.getPoints()) {
+            transformedMove.addPoint(JTSUtils.createPoint(
+                    wayPoint.getX() + realSearcherStartPosition.getX(),
+                    wayPoint.getY() + realSearcherStartPosition.getY()
             ));
         }
         Coordinate[] currentPhaseRectangle = currentPhaseRectangle();
@@ -101,36 +97,41 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
             currentPhaseRectangle[i].setY(currentPhaseRectangle[i].y + realSearcherStartPosition.getY());
         }
         super.addState(transformedMove, currentPhaseRectangle, currentPhaseRectangle);
-        return moveReturn(transformedMove);
+        return transformedMove;
+    }
+
+    @Override
+    public SearchPath move() {
+        SearchPath move = new SearchPath();
+        move.addPoint(realSearcherStartPosition);
+        return move;
     }
 
     /**
      * @param hint the hint, the {@link Hider} gave last.
-     * @return {@link Movement} the {@link Movement}, this searcher chose.
+     * @return {@link SearchPath} the {@link SearchPath}, this searcher chose.
      */
     @Override
-    public Movement move(HalfPlaneHint hint) {
+    public SearchPath move(HalfPlaneHint hint) {
         if (firstMoveWithHint) {
             firstMoveWithHint = false;
-            transformer = new TransformStrategyFromPaper(hint, realSearcherStartPosition, this);
+            transformer = new TransformStrategyFromPaper(hint, realSearcherStartPosition);
             HalfPlaneHint transformedHint = new HalfPlaneHint(new Coordinate(0, 0), new Coordinate(1, 0));
             newObtainedHints.add(transformedHint);
-            Movement move = move(transformedHint);
-            lastLocation = (move.getEndPoint()); // set last location accoringly
-            return moveReturnMinimumRectangleStrategy(transformer.transformFromPaper(move));
+            SearchPath move = move(transformedHint);
+            return addState(transformer.transformFromPaper(move));
             // the initial input hint for the strategy from the paper by definition shows upwards (in this strategy)
         }
 
         newObtainedHints.add(transformer.transformForPaper(hint));
 
-        Polygon newPolygon;
         if (rectangleNotLargeEnough()) {
-            Movement move = new Movement();
-            move.addWayPoint(transformer.transformFromPaper(lastLocation)); // the first point has to be the last location of the player
+            SearchPath move = new SearchPath();
             scanCurrentRectangle(move);
-            ArrayList<HalfPlaneHint> oldPhaseHints = phaseHints;
-            Polygon oldPhaseRectangle = phaseRectangle;
+            Polygon newPolygon;
             do {
+                ArrayList<HalfPlaneHint> oldPhaseHints = phaseHints;
+                Polygon oldPhaseRectangle = phaseRectangle;
                 phase++;
                 updatePhaseHints();
                 updatePhaseRectangle();
@@ -145,34 +146,22 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
                     searchAreaCornerD, move);
             oldObtainedHints.addAll(newObtainedHints);
             newObtainedHints.clear();
-            lastLocation = transformer.transformForPaper(move.getEndPoint()); // set last location accoringly
-            return moveReturnMinimumRectangleStrategy(addState(move));
+            return addState(move);
         } else
-            return moveReturnMinimumRectangleStrategy(addState(transformer.transformFromPaper(
-                    super.move(transformer.transformForPaper(hint)))));
-    }
-
-    private Movement moveReturnMinimumRectangleStrategy(Movement move) {
-        Point strategyLastLocation = lastLocation;
-        Movement ret = moveReturn(move);
-        lastLocation = strategyLastLocation;
-        return ret;
+            return addState(transformer.transformFromPaper(
+                    super.move(transformer.transformForPaper(hint))));
     }
 
     @Override
-    protected Movement addState(Movement move) {
+    protected SearchPath addState(SearchPath move) {
         if (transformer == null)
             return super.addState(move);
         // add polygon
-        move.addAdditionalItem(new GeometryItem<>(currentPolygon, GeometryType.CURRENT_POLYGON));
+        move.addAdditionalItem(new GeometryItem<>(transformer.transformFromPaper(currentPolygon),
+                GeometryType.CURRENT_POLYGON));
         // add search rectangle and phase rectangle
         return super.addState(move, transformer.transformFromPaper(searchRectangle()),
                 transformer.transformFromPaper(phaseRectangle(phase)));
-    }
-
-    @Override
-    public Movement moveReturn(Movement move) {
-        return super.moveReturn(move);
     }
 
     private Coordinate[] searchRectangle() {
@@ -188,7 +177,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         phaseHints.set(3, new HalfPlaneHint(phaseRectangle[0], phaseRectangle[3]));
     }
 
-    private void scanCurrentRectangle(Movement move) {
+    private void scanCurrentRectangle(SearchPath move) {
         RoutinesFromPaper.rectangleScan(searchAreaCornerA, searchAreaCornerB,
                 searchAreaCornerC, searchAreaCornerD, move);
     }
