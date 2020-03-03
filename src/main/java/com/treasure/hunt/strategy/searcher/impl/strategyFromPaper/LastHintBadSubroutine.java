@@ -16,7 +16,7 @@ import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
 import static org.locationtech.jts.algorithm.Angle.normalizePositive;
 
 /**
- * @author bsen
+ * @author Rank
  */
 class LastHintBadSubroutine {
     /**

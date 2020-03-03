@@ -29,7 +29,7 @@ import static com.treasure.hunt.utils.JTSUtils.*;
  * This implements the strategy from the paper:
  * {@literal Treasure Hunt in the Plane with Angular Hints}
  *
- * @author bsen
+ * @author Rank
  */
 public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     /**

@@ -9,7 +9,7 @@ import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.util.AffineTransformation;
 
 /**
- * @author bsen
+ * @author Rank
  */
 public class TransformStrategyFromPaper {
     private Point searcherStartPosition;

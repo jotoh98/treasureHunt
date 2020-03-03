@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author Rank
+ */
+
 public class UpdatePolygonPoints {
     /**
      * Tests if the intersection of hintOne and hintTwo lies in all other half-planes of the hints in otherHintsOne,

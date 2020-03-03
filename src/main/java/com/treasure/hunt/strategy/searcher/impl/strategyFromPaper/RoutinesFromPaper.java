@@ -18,7 +18,7 @@ import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
 /**
  * TODO explain what rho, sigma and phi do in the paper
  *
- * @author bsen
+ * @author Rank
  */
 public class RoutinesFromPaper {
     private RoutinesFromPaper() {

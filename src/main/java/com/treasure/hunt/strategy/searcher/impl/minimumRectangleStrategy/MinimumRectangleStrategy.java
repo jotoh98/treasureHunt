@@ -21,6 +21,10 @@ import java.util.List;
 
 import static com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.UpdatePolygonPoints.updatePolygonPoints;
 
+/**
+ * @author Rank
+ */
+
 public class MinimumRectangleStrategy extends StrategyFromPaper implements Searcher<HalfPlaneHint> {
     Point realSearcherStartPosition;
     private boolean firstMoveWithHint = true;
