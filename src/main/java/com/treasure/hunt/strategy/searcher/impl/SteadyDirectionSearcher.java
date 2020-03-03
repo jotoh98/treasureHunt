@@ -18,7 +18,8 @@ import java.util.List;
 import java.util.Queue;
 
 /**
- * This Strategy
+ * This Strategy follows normal Direction which will be nudged towards the current Hints normal Direction
+ *
  */
 @Slf4j
 public class SteadyDirectionSearcher implements Searcher<AngleHint> {
