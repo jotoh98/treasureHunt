@@ -10,16 +10,15 @@ import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper;
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StrategyFromPaper;
 import com.treasure.hunt.utils.JTSUtils;
-import lombok.Value;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
-import static com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.UpdatePolygonPoints.updatePolygonPoints;
+import static com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.UpdateMinimalPolygon.getNewPolygon;
 
 /**
  * @author Rank
@@ -43,9 +42,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
      * according to all obtained hints.
      * If this List is empty, the treasure is not in the current search rectangle.
      */
-    private List<Intersection> polygonPoints;
     private Polygon currentPolygon;
-    private Polygon phaseRectangle;
     /**
      * This are not real obtained hints.
      * This hints are just the borders of the current phase rectangle interpreted as hints.
@@ -72,18 +69,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         }
         oldObtainedHints = new ArrayList<>();
         newObtainedHints = new ArrayList<>();
-        updatePhaseRectangle();
-        polygonPoints = new LinkedList<>();
         currentPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon();
-    }
-
-    private void updatePhaseRectangle() {
-        Coordinate[] phaseRectangleCorners = currentPhaseRectangle();
-        Coordinate[] tmpCornersCurrentPhaseRectangle = new Coordinate[phaseRectangleCorners.length + 1];
-        System.arraycopy(phaseRectangleCorners, 0, tmpCornersCurrentPhaseRectangle, 0,
-                phaseRectangleCorners.length);
-        tmpCornersCurrentPhaseRectangle[phaseRectangleCorners.length] = phaseRectangleCorners[0];
-        phaseRectangle = JTSUtils.GEOMETRY_FACTORY.createPolygon(tmpCornersCurrentPhaseRectangle);
     }
 
     /**
@@ -118,16 +104,13 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
             }
             currentHint = transformer.transformForPaper(hint);
             SearchPath move = new SearchPath();
-            scanCurrentRectangle(move);
+            scanCurrentRectangle(move, currentHint);
             Polygon newPolygon;
             do {
-                ArrayList<HalfPlaneHint> oldPhaseHints = phaseHints;
-                Polygon oldPhaseRectangle = phaseRectangle;
+                System.out.println("phase : " + phase);
                 phase++;
                 updatePhaseHints();
-                updatePhaseRectangle();
-                newPolygon = updatePolygonPoints(polygonPoints, oldObtainedHints, newObtainedHints, oldPhaseHints,
-                        phaseHints, oldPhaseRectangle);
+                newPolygon = getNewPolygon(newObtainedHints, phaseHints);
             }
             while (newPolygon == null);
             currentPolygon = newPolygon;
@@ -135,8 +118,6 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
             setABCDinStrategy();
             GeometricUtils.moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC,
                     searchAreaCornerD, move);
-            oldObtainedHints.addAll(newObtainedHints);
-            newObtainedHints.clear();
             return addState(transformer.transformFromPaper(move));
         } else {
             return addState(transformer.transformFromPaper(
@@ -146,7 +127,6 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
 
     @Override
     protected SearchPath addState(SearchPath move) {
-        //TODO alte hints einfügen
         if (transformer == null) {
             return super.addState(move);
         }
@@ -180,13 +160,30 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
 
     private void updatePhaseHints() {
         Coordinate[] phaseRectangle = phaseRectangle(phase);
-        phaseHints.set(0, new HalfPlaneHint(phaseRectangle[1], phaseRectangle[0]));
-        phaseHints.set(1, new HalfPlaneHint(phaseRectangle[2], phaseRectangle[1]));
-        phaseHints.set(2, new HalfPlaneHint(phaseRectangle[3], phaseRectangle[2]));
-        phaseHints.set(3, new HalfPlaneHint(phaseRectangle[0], phaseRectangle[3]));
+        phaseHints = new ArrayList<>(4);
+        phaseHints.add(new HalfPlaneHint(phaseRectangle[1], phaseRectangle[0]));
+        phaseHints.add(new HalfPlaneHint(phaseRectangle[2], phaseRectangle[1]));
+        phaseHints.add(new HalfPlaneHint(phaseRectangle[3], phaseRectangle[2]));
+        phaseHints.add(new HalfPlaneHint(phaseRectangle[0], phaseRectangle[3]));
     }
 
-    private void scanCurrentRectangle(SearchPath move) { // todo improve scan so that hint gets used
+    private void scanCurrentRectangle(SearchPath move, HalfPlaneHint hint) {
+        LineSegment hintLine = hint.getHalfPlaneLine();
+        Point[] verticalSplitRectangle = splitRectangleVertically(searchAreaCornerA, searchAreaCornerB,
+                searchAreaCornerC, searchAreaCornerD, hint, hintLine, false);
+        Point[] horizontalSplitRectangle = splitRectangleHorizontally(searchAreaCornerA, searchAreaCornerB,
+                searchAreaCornerC, searchAreaCornerD, hint, hintLine, false);
+
+        if (verticalSplitRectangle != null) {
+            RoutinesFromPaper.rectangleScan(verticalSplitRectangle[0], verticalSplitRectangle[1],
+                    verticalSplitRectangle[2], verticalSplitRectangle[3], move);
+            return;
+        }
+        if (horizontalSplitRectangle != null) {
+            RoutinesFromPaper.rectangleScan(horizontalSplitRectangle[0], horizontalSplitRectangle[1],
+                    horizontalSplitRectangle[2], horizontalSplitRectangle[3], move);
+            return;
+        }
         RoutinesFromPaper.rectangleScan(searchAreaCornerA, searchAreaCornerB,
                 searchAreaCornerC, searchAreaCornerD, move);
     }
@@ -200,11 +197,6 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         lastHintQuality = StrategyFromPaper.HintQuality.none;
     }
 
-    @Value
-    static
-    class Intersection {
-        Coordinate coordinate;
-        HalfPlaneHint hintOne;
-        HalfPlaneHint hintTwo;
-    }
+
 }
+
