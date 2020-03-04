@@ -8,8 +8,10 @@ import org.locationtech.jts.geom.Coordinate;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class HintEvaluator {
@@ -17,12 +19,11 @@ public class HintEvaluator {
     private List<AngleHintStat> hints;
     private List<Pair<Coordinate, Pair<Double, Double>>> treasurePointsOfInterest; //Coordinate, Constant, Angle under PlayerPosition
     private Coordinate playerPosition;
-    private Coordinate origin;
+    private Coordinate origin = new Coordinate(0,0);
     private double currentArea;
 
     //algorithmic parameters
     double minTreasureDistFromOrigin;
-
 
     private HintEvaluator(Coordinate player, double currentArea) {
         playerPosition = player;
@@ -63,6 +64,16 @@ public class HintEvaluator {
      * @param distance
      */
     private void enforceMinTreasureDistanceConstraint(double distance){
+        treasurePointsOfInterest = new ArrayList<>();
+        List<Pair<Coordinate,Pair<Double,Double>>> validPoints = treasurePointsOfInterest.stream().filter( t -> t.getKey().distance(origin) >= distance).collect(Collectors.toList());
+        treasurePointsOfInterest.addAll(validPoints);
+
+        //in case the restriction limits the # of possible who conform the constraint to 0
+        if(validPoints.isEmpty()){
+            log.info("No Point with Distance > " + distance + " found. Addding Points with smaller distance, sorted by distance");
+            List<Pair<Coordinate, Pair<Double,Double>>> invalidPoints = treasurePointsOfInterest.stream().filter( t -> t.getKey().distance(origin) > distance).collect(Collectors.toList());
+            treasurePointsOfInterest.addAll(invalidPoints);
+        }
 
     }
 
@@ -70,15 +81,17 @@ public class HintEvaluator {
     public AngleHint evaluateRound() {
         log.info("Evaluating Round with " + treasurePointsOfInterest.size() + " points of interest and " + hints.size() + " possible hints");
 
+        // sort the Constants of each Point from highest Constant to lowest
         treasurePointsOfInterest.sort(new Comparator<Pair<Coordinate, Pair<Double, Double>>>() {
             @Override
             public int compare(Pair<Coordinate, Pair<Double, Double>> coordConstAngle1, Pair<Coordinate, Pair<Double, Double>> coordConstAngle2) {
-                return coordConstAngle1.getValue().getKey().compareTo( coordConstAngle2.getValue().getKey()) * -1 ; // negate the results
+                return coordConstAngle1.getValue().getKey().compareTo( coordConstAngle2.getValue().getKey());
             }
-        }); //compare the constants with each other
+        }.reversed()); //
 
         log.info("worst Coordinate is " + treasurePointsOfInterest.get(0));
 
+        //for each hint assign the best treasure in view
         for (AngleHintStat hintStat : hints) {
             for (Pair<Coordinate, Pair<Double, Double>> p : treasurePointsOfInterest) {
                 if (hintStat.getHint().getGeometryAngle().inView(p.getKey())) {
@@ -90,8 +103,7 @@ public class HintEvaluator {
 
         }
 
-        // now apply decision
-        double worstOverallConstant = treasurePointsOfInterest.get(0).getValue().getValue();
+        // now apply decision in reverse order of importance
 
         // sort for Area
         hints.sort(Comparator.comparingDouble(AngleHintStat::getRelativeAreaCutoff));
