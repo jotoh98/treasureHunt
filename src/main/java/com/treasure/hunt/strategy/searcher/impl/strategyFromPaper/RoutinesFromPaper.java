@@ -16,7 +16,9 @@ import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.Geometr
 import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
 
 /**
- * TODO explain what rho, sigma and phi do in the paper
+ * For an explanation what each method does, it is recommended to look in the paper (Deterministic Treasure Hunt in the
+ * Plane with Angular Hints from Bouchard et al.).
+ * There the same symbols are used.
  *
  * @author Rank
  */
@@ -59,6 +61,14 @@ public class RoutinesFromPaper {
      * @return
      */
     public static SearchPath rectangleScan(Coordinate A, Coordinate B, Coordinate C, Coordinate D, SearchPath move) {
+        if(A.distance(B)>A.distance(D)){
+            Coordinate temp = A;
+            A = D;
+            D = C;
+            C = B;
+            B = temp;
+        }
+
         int k = (int) A.distance(B);
 
         if (k == 0) {

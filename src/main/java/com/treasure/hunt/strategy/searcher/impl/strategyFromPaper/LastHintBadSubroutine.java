@@ -326,7 +326,7 @@ class LastHintBadSubroutine {
                 // rectangleScan(phi_reverse(k, (s, s', d', d))
                 move = rectangleScanPhiReverse(basicTransformation, rect, s, sApos, dApos, d, move);
                 // rectangleScan(phi_reverse(k, (g, g', h', h))
-                move = rectangleScanPhiReverse(basicTransformation, rect, g, gApos, h, hApos, move);
+                move = rectangleScanPhiReverse(basicTransformation, rect, g, gApos, hApos, h, move);
                 // newRectangle := Agpm
                 newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
                         new Coordinate[]{A, g, p, m});

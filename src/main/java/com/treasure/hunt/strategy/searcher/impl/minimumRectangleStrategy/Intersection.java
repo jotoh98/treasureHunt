@@ -5,7 +5,7 @@ import lombok.Value;
 import org.locationtech.jts.geom.Coordinate;
 
 @Value
-public class Intersection {
+public class Intersection {//todo probably rm
     Coordinate coordinate;
     HalfPlaneHint hintOne;
     HalfPlaneHint hintTwo;

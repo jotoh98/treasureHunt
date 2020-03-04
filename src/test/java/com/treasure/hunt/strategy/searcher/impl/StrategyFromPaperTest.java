@@ -88,4 +88,10 @@ public class StrategyFromPaperTest {
                 new Coordinate(1.2148090667719662, 0.6579443970751934));
         strat.move(hint);
     }
+
+    @Test
+    void lastHintBadCaseOneTest(){
+        moveTwice();
+
+    }
 }
