@@ -27,7 +27,6 @@ public class UpdateMinimalPolygon {
      */
     static void addIntersectionIfInPoly(HalfPlaneHint hintOne, HalfPlaneHint hintTwo,
                                         List<HalfPlaneHint> otherHintsOne, List<HalfPlaneHint> otherHintsTwo,
-                                        List<Intersection> intersectionList,
                                         ArrayList<Coordinate> newPolygonCorners) {
         Coordinate intersection = hintOne.getHalfPlaneLine().lineIntersection(hintTwo.getHalfPlaneLine());
         if (intersection == null) {
@@ -50,7 +49,6 @@ public class UpdateMinimalPolygon {
             }
         }
 
-        intersectionList.add(new Intersection(intersection, hintOne, hintTwo));
         newPolygonCorners.add(intersection);
     }
 
@@ -61,8 +59,6 @@ public class UpdateMinimalPolygon {
      * @return the new polygon if it isn't empty, null otherwise
      */
     static Polygon getNewPolygon(List<HalfPlaneHint> obtainedHints, ArrayList<HalfPlaneHint> phaseHints) {
-        List<Intersection> newPolygonPoints = new LinkedList<>();
-
         ArrayList<Coordinate> newPolygonCorners;
 
         newPolygonCorners = new ArrayList<>();
@@ -70,17 +66,17 @@ public class UpdateMinimalPolygon {
         for (HalfPlaneHint hintOne : obtainedHints) {
             for (HalfPlaneHint hintTwo : obtainedHints) {
                 addIntersectionIfInPoly(hintOne, hintTwo,
-                        obtainedHints, phaseHints, newPolygonPoints, newPolygonCorners);
+                        obtainedHints, phaseHints,  newPolygonCorners);
             }
             for (HalfPlaneHint hintTwo : phaseHints) {
                 addIntersectionIfInPoly(hintOne, hintTwo,
-                        obtainedHints, phaseHints, newPolygonPoints, newPolygonCorners);
+                        obtainedHints, phaseHints,  newPolygonCorners);
             }
         }
         for (HalfPlaneHint hintOne : phaseHints) {
             for (HalfPlaneHint hintTwo : phaseHints) {
                 addIntersectionIfInPoly(hintOne, hintTwo,
-                        obtainedHints, phaseHints, newPolygonPoints, newPolygonCorners);
+                        obtainedHints, phaseHints,  newPolygonCorners);
             }
         }
 
