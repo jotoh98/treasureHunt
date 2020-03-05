@@ -200,9 +200,9 @@ class JTSUtilsTest {
 
     @Test
     void randomAngleTest() {
+        final Coordinate searcher = new Coordinate(Math.random() * 100, Math.random() * 100);
+        final Coordinate treasure = new Coordinate(Math.random() * 100, Math.random() * 100);
         for (int i = 0; i < 100; i++) {
-            final Coordinate searcher = new Coordinate(Math.random() * 100, Math.random() * 100);
-            final Coordinate treasure = new Coordinate(Math.random() * 100, Math.random() * 100);
             final GeometryAngle angle = JTSUtils.validRandomAngle(searcher, treasure, 2 * Math.PI);
             assertInAngle(angle, treasure);
         }
@@ -212,8 +212,11 @@ class JTSUtilsTest {
     void invalidRandomAngles() {
         final Coordinate searcher = new Coordinate(Math.random() * 100, Math.random() * 100);
         final Coordinate treasure = new Coordinate(Math.random() * 100, Math.random() * 100);
-        final GeometryAngle invalidExtend = JTSUtils.validRandomAngle(searcher, treasure, 0);
-        assertNull(invalidExtend);
+        for (int i = 0; i < 1000; i++) {
+            final GeometryAngle invalidExtend = JTSUtils.validRandomAngle(searcher, treasure, 0);
+            assertNull(invalidExtend);
+        }
+
     }
 
     @Test

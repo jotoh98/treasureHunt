@@ -29,6 +29,10 @@ public class Line extends Ray {
         super(p0, p1);
     }
 
+    public Line() {
+        super();
+    }
+
     /**
      * Line constructor with a base {@link Coordinate} and a directional {@link Vector2D}.
      *
@@ -103,5 +107,9 @@ public class Line extends Ray {
         }
 
         return shapeWriter.createLine(intersections.get(0), intersections.get(1));
+    }
+
+    public LineSegment toLineSegment() {
+        return new LineSegment(p0, p1);
     }
 }

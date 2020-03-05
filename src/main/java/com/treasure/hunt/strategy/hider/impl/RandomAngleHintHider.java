@@ -25,7 +25,7 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
      */
     @Override
     public Point getTreasureLocation() {
-        treasurePosition = JTSUtils.createPoint(Math.random() * 100, Math.random() * 100);
+        treasurePosition = JTSUtils.createPoint(Math.random() * 200 - 100, Math.random() * 200 - 100);
         return treasurePosition;
     }
 
@@ -37,7 +37,7 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
     public AngleHint move(Movement movement) {
         Coordinate searcherPos = movement.getEndPoint().getCoordinate();
 
-        GeometryAngle angle = JTSUtils.validRandomAngle(searcherPos, treasurePosition.getCoordinate(), 2 * Math.PI);
+        GeometryAngle angle = JTSUtils.validRandomAngle(searcherPos, treasurePosition.getCoordinate(), Math.PI, .1 * Math.PI);
         double angleDegree = interiorAngle(angle.getRight(), angle.getCenter(), angle.getLeft());
 
         AngleHint angleHint = new AngleHint(

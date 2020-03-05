@@ -202,11 +202,15 @@ public final class JTSUtils {
     }
 
     public static GeometryAngle validRandomAngle(Coordinate searcher, Coordinate treasure, double maxExtend) {
+        return validRandomAngle(searcher, treasure, maxExtend, 2 * Math.PI);
+    }
+
+    public static GeometryAngle validRandomAngle(Coordinate searcher, Coordinate treasure, double maxExtend, double minExtend) {
         if (maxExtend <= 0) {
             return null;
         }
         double givenAngle = Angle.angle(searcher, treasure);
-        double extend = Math.random() * maxExtend;
+        double extend = Math.random() * (maxExtend - minExtend) + minExtend;
         double start = givenAngle - extend * Math.random();
         return new GeometryAngle(GEOMETRY_FACTORY, searcher, start, extend);
     }

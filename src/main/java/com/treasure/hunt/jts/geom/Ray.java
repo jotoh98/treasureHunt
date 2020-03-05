@@ -40,6 +40,10 @@ public class Ray extends LineSegment implements Shapeable {
         this(start, direction.translate(start));
     }
 
+    public Ray() {
+        super();
+    }
+
     /**
      * Checks, if a given {@link Coordinate} lays in the ray.
      *
