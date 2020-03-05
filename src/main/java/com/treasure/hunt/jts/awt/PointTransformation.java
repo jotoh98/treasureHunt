@@ -1,6 +1,5 @@
 package com.treasure.hunt.jts.awt;
 
-import com.treasure.hunt.utils.JTSUtils;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -28,6 +27,8 @@ import java.awt.geom.Point2D;
 @NoArgsConstructor
 public class PointTransformation implements org.locationtech.jts.awt.PointTransformation {
 
+    private static final double INITIAL_SCALE = 25.0;
+
     /**
      * The scale translates the source coordinates multiplicative in {@link PointTransformation#transform(Coordinate)}.
      */
@@ -42,16 +43,6 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
     @Setter
     @Getter
     private Vector2D boundarySize = new Vector2D(0, 0);
-
-    public void setScale(double scale) {
-        if (scale != 0) {
-            scaleProperty.set(scale);
-        }
-    }
-
-    public void setOffset(Vector2D offset) {
-        offsetProperty.set(offset);
-    }
 
     /**
      * Main transform method necessary for extending {@link org.locationtech.jts.awt.PointTransformation}.
@@ -68,106 +59,56 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
         );
     }
 
+    public double getScale() {
+        return INITIAL_SCALE * scaleProperty.get();
+    }
+
+    public void setScale(double scale) {
+        if (scale != 0) {
+            scaleProperty.set(scale);
+        }
+    }
+
+    public Vector2D getOffset() {
+        return offsetProperty.get();
+    }
+
+    public void setOffset(Vector2D offset) {
+        offsetProperty.set(offset);
+    }
+
     /**
-     * Transform method between {@link Coordinate}'s.
+     * Transform method between {@link Coordinate}s.
      *
      * @param src the coordinate we want to transform
      * @return transformed coordinate
      */
     public Coordinate transform(Coordinate src) {
-        return new Coordinate(scaleProperty.get() * src.x + offsetProperty.get().getX(), scaleProperty.get() * -src.y + offsetProperty.get().getY());
+        return new Coordinate(transformX(src.x), transformY(src.y));
     }
 
-    /**
-     * Method to retrieve the Vector from the upper left boundary point to the lower right boundary point.
-     *
-     * @return vector from upper left to lower right boundary point
-     */
-    private Vector2D getMainDiagonalVector() {
-        return getUpperLeftBoundary().subtract(getLowerRightBoundary());
+    public double transformX(double x) {
+        return getScale() * x + getOffset().getX();
     }
 
-    /**
-     * Get the length of the diagonal of the boundary rectangle
-     *
-     * @return length of main diagonal
-     */
-    public double diameter() {
-        return getMainDiagonalVector().length();
+    public double transformY(double y) {
+        return getScale() * -y + getOffset().getY();
     }
 
-    /**
-     * Retrieves the untransformed position vector of the upper left boundary point
-     *
-     * @return untransformed position vector of upper left boundary point
-     */
-    public Vector2D getUpperLeftBoundary() {
-        Vector2D normalisedOffset = offsetProperty.get().divide(scaleProperty.get());
-        return new Vector2D(-normalisedOffset.getX(), normalisedOffset.getY());
+    public Coordinate revert(Coordinate src) {
+        return revert(src.x, src.y);
     }
 
-    /**
-     * Retrieves the untransformed position vector of the lower right boundary point
-     *
-     * @return untransformed position vector of lower right boundary point
-     */
-    public Vector2D getLowerRightBoundary() {
-        return getUpperLeftBoundary().add(boundarySize);
+    public Coordinate revert(double x, double y) {
+        return new Coordinate(revertX(x), revertY(y));
     }
 
-    /**
-     * Update boundary size according to the width and height of the {@link java.awt.Canvas}.
-     *
-     * @param width  width of the {@link java.awt.Canvas}
-     * @param height height of the {@link java.awt.Canvas}
-     */
-    public void updateCanvasSize(double width, double height) {
-        setBoundarySize(Vector2D.create(width, height).divide(scaleProperty.get()));
+    public double revertX(double x) {
+        return (x - getOffset().getX()) / getScale();
     }
 
-    public void updateCanvasWidth(double width) {
-        setBoundarySize(Vector2D.create(width / scaleProperty.get(), boundarySize.getY()));
-    }
-
-    public void updateCanvasHeight(double height) {
-        setBoundarySize(Vector2D.create(boundarySize.getX(), height / scaleProperty.get()));
-    }
-
-    /**
-     * Utility function to set lower right boundary vector according to boundary rectangle diagonal.
-     *
-     * @param width  width of boundary rectangle
-     * @param height height of boundary rectangle
-     */
-    public void setBoundarySize(double width, double height) {
-        setBoundarySize(new Vector2D(width, height));
-    }
-
-    /**
-     * Set the offset based on the boundary representation.
-     *
-     * @param location upper left position vector of the boundary rectangle
-     */
-    private void setBoundaryLocation(Vector2D location) {
-        setOffset(JTSUtils.negateX(location).multiply(scaleProperty.get()));
-    }
-
-    /**
-     * Get the boundary rectangle width.
-     *
-     * @return boundary rectangle width
-     */
-    public double getBoundaryWidth() {
-        return Math.abs(boundarySize.getX());
-    }
-
-    /**
-     * Get the boundary rectangle height.
-     *
-     * @return boundary rectangle height
-     */
-    public double getBoundaryHeight() {
-        return Math.abs(boundarySize.getY());
+    public double revertY(double y) {
+        return (y - getOffset().getY()) / -getScale();
     }
 
 
@@ -178,9 +119,9 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
      * @param point scaling source point
      */
     public void scaleRelative(double gamma, Vector2D point) {
-        scaleOffset(gamma, point);
         double newScale = scaleProperty.get() * gamma;
-        if (newScale > 0) {
+        if (newScale > 1e-4 && newScale < 100) {
+            scaleOffset(gamma, point);
             setScale(newScale);
         }
     }
@@ -197,5 +138,4 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
 
         setOffset(point.add(direction.multiply(newScale / scaleProperty.get())));
     }
-
 }

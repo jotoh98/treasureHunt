@@ -2,7 +2,7 @@ package com.treasure.hunt.strategy.searcher.impl;
 
 import com.treasure.hunt.jts.geom.GeometryAngle;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
-import com.treasure.hunt.strategy.searcher.Movement;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -39,12 +39,12 @@ public class SteadyDirectionSearcher implements Searcher<AngleHint> {
     }
 
     @Override
-    public Movement move() {
-        return new Movement(startPosition);
+    public SearchPath move() {
+        return new SearchPath(startPosition);
     }
 
     @Override
-    public Movement move(AngleHint hint) {
+    public SearchPath move(AngleHint hint) {
         GeometryAngle geometryHint = hint.getGeometryAngle();
         Coordinate player = geometryHint.getCenter();
         log.info("player: " + hint.getGeometryAngle().getCenter().x + " " + hint.getGeometryAngle().getCenter().y);
@@ -76,17 +76,14 @@ public class SteadyDirectionSearcher implements Searcher<AngleHint> {
 
         this.currentOrientationByAngle = Angle.angle(player,directionPoint);
 
-
         log.info("normal Angle of angleCenter: " + Angle.toDegrees(normalizedHintAngle));
         log.info("new normal Angle of WalkingDirection: " + Angle.toDegrees(currentOrientationByAngle));
 
-
         Point movePoint = JTSUtils.GEOMETRY_FACTORY.createPoint(directionPoint);
 
-        Movement m = new Movement(currentPosition);
-        m.addWayPoint(movePoint);
+        SearchPath sP = new SearchPath(movePoint);
         currentPosition = movePoint;
 
-        return m;
+        return sP;
     }
 }

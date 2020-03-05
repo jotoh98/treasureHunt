@@ -6,7 +6,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import lombok.Getter;
 
 /**
@@ -14,7 +13,7 @@ import lombok.Getter;
  */
 public class ToolbarController {
     @FXML
-    private VBox toolbar;
+    private Pane toolbar;
     @Getter
     private ToggleGroup toggleGroup = new ToggleGroup();
 

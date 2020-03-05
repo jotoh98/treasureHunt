@@ -8,8 +8,9 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryStyle;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
-import com.treasure.hunt.strategy.searcher.Movement;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 
+import java.awt.*;
 import java.lang.Math;
 
 import com.treasure.hunt.utils.JTSUtils;
@@ -18,19 +19,19 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.algorithm.Angle;
+import org.locationtech.jts.algorithm.RobustLineIntersector;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.util.AffineTransformation;
 import org.locationtech.jts.geom.util.NoninvertibleTransformationException;
 import org.locationtech.jts.util.GeometricShapeFactory;
-
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /*
     There are 3 Structures to represent the state of Algorithm
@@ -49,9 +50,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
     private Point startingPoint;
     private Point currentPlayersPosition;
     private List<AngleHint> givenHints = new ArrayList<>();
-    ;
     private GeometryFactory gf = JTSUtils.GEOMETRY_FACTORY;
-    ;
     private double walkedPathLength = 0.0;
     private List<Point> visitedPoints = new ArrayList<>();
 
@@ -88,14 +87,16 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         log.info("MaxAreaAngularHintStrategy init");
 
         startingPoint = searcherStartPosition;
-
         currentPlayersPosition = startingPoint;
+
         Circle c = new Circle(startingPoint.getCoordinate(), boundingCircleSize, gf);
         boundingCircle = new GeometryItem<>(c, GeometryType.BOUNDING_CIRCE);
+
         possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{c}, gf), GeometryType.POSSIBLE_TREASURE);
+
         visitedPoints.add(startingPoint);
-        Movement startingMovement = new Movement(searcherStartPosition);
-        integrateMovementWithCheckedArea(startingMovement);
+        SearchPath startingPath = new SearchPath(startingPoint);
+        integrateMovementWithCheckedArea(startingPath);
 
         this.pointWithWorstConstant = new GeometryItem<>(gf.createPoint(new Coordinate(10.0, -10)), GeometryType.WORST_CONSTANT, new GeometryStyle(true, new Color(0x800080)));
     }
@@ -136,6 +137,14 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         return null;
     }
 
+     /**
+     * Computes the 2 intersections between the bounding circle and the current hint,
+     * then merges the resulting polygon and the remaining possible area
+     * to the new possible area
+     *
+     * @param hint The hint to integrate
+     * @return the resulting Geometry
+     */
     private Geometry integrateHint(AngleHint hint) {
         //log.debug("integrating Hint");
         GeometryAngle angle = hint.getGeometryAngle();
@@ -352,12 +361,10 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
                     log.info("area contains Worst Constant Point --> viable hint");
                     //log.debug("containment: " + resultingGeom.contains(this.pointWithWorstConstant.getObject()) + ", coverage: " + resultingGeom.covers(gf.createPoint(new Coordinate(99.87961816680493, 2.450428508239015))));
                     maxGeometry = resultingGeom;
-                    maxArea = features[(int) i][0];
+                    maxArea = features[i][0];
                     maxAngle = hint;
                     //log.info("current max angle hint with Containtment of Worst Point: " + hint.getGeometryAngle().getRight() + " , " + hint.getGeometryAngle().getCenter() + " " + hint.getGeometryAngle().getLeft());
                 }
-
-
             }
         }
 
@@ -404,8 +411,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
                 log.debug("new best Const " + bestCalc.getValue() + " at " + bestCalc.getKey() + " at line (" + edges[currentCoordinateIndex - 1] + ", " + edges[currentCoordinateIndex] + ")");
             }
         }
-        //calcMaxConstantPointOnSegment(new Coordinate(-6.0, 8.0), new Coordinate(8.0, 4.0), this.currentPlayersPosition.getCoordinate());
-        //calculatedPoint = calcMaxConstantPointOnSegment(edges[edges.length - 1], edges[0], this.currentPlayersPosition.getCoordinate());
+
         worstEdgePoints.sort(new Comparator<Pair<Coordinate, Double>>() {
             @Override
             public int compare(Pair<Coordinate, Double> coordinateDoublePair, Pair<Coordinate, Double> t1) {
@@ -605,17 +611,21 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         return this.pointWithWorstConstant.getObject();
     }
 
-    private void integrateMovementWithCheckedArea(Movement movement) {
-        List<Point> newMovementPoints = movement.getPoints().subList(1, movement.getPoints().size()).stream().map(p -> p.getObject()).collect(Collectors.toList());
+    private void integrateMovementWithCheckedArea(SearchPath searchPath) {
+        List<Point> newMovementPoints = searchPath.getPoints().subList(1, searchPath.getPoints().size());
+
+        //int prevNumberOfPoints = visitedPoints.size();
+        log.info("supplied searchpath " + searchPath.getPoints());
+        log.info("new points to add" + newMovementPoints);
         this.visitedPoints.addAll(newMovementPoints);
-        log.info("new Points " + newMovementPoints.toString());
+
         log.info("total Walked Path " + visitedPoints.toString());
         Polygon checkedPoly;
         if (visitedPoints.size() > 1) {
 
             Coordinate[] visitedCoords = visitedPoints.stream().map(p -> p.getCoordinate()).toArray(Coordinate[]::new);
             LineString walkedPath = gf.createLineString(visitedCoords);
-            checkedPoly = (Polygon) walkedPath.buffer(searcherScoutRadius + 0.1); //0.001 to just be outside the searchers radius
+            checkedPoly = (Polygon) walkedPath.buffer(searcherScoutRadius + 0.1); //0.1 to just be outside the searchers radius
             this.walkedPathLength = walkedPath.getLength();
         } else {
             log.info("1 point visited so far");
@@ -629,9 +639,9 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
     }
 
     @Override
-    public AngleHint move(Movement movement) {
-        currentPlayersPosition = movement.getEndPoint();
-        integrateMovementWithCheckedArea(movement);
+    public AngleHint move(SearchPath searchPath) {
+        currentPlayersPosition = searchPath.getLastPoint();
+        integrateMovementWithCheckedArea(searchPath);
         adaptBoundingCircle();
 
         AngleHint hint = generateHint(360, currentPlayersPosition); //compute by maximizing the remaining possible Area after the Hint over 360 sample points

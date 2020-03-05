@@ -1,7 +1,7 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
 import com.treasure.hunt.strategy.hint.Hint;
-import com.treasure.hunt.strategy.searcher.Movement;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import org.locationtech.jts.geom.Point;
 
@@ -19,12 +19,12 @@ public class StandingSearcher implements Searcher<Hint> {
     }
 
     @Override
-    public Movement move() {
-        return new Movement(startPosition);
+    public SearchPath move() {
+        return new SearchPath(startPosition);
     }
 
     @Override
-    public Movement move(Hint hint) {
-        return new Movement(startPosition);
+    public SearchPath move(Hint hint) {
+        return new SearchPath(startPosition);
     }
 }
