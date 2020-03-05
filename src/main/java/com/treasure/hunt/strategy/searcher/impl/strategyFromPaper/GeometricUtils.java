@@ -12,7 +12,7 @@ import org.locationtech.jts.math.Vector2D;
 import static com.treasure.hunt.utils.JTSUtils.doubleEqual;
 
 /**
- * @author bsen
+ * @author Rank
  */
 public class GeometricUtils {
     private GeometricUtils() {
