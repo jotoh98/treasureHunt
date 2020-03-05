@@ -94,7 +94,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
 
         if (rectangleNotLargeEnough()) {
             if (currentHint != null) {
-                previousHint = transformer.toInternal(currentHint);
+                previousHint = currentHint;
             }
             currentHint = transformer.toInternal(hint);
             SearchPath move = new SearchPath();
@@ -149,28 +149,6 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
     @Override
     protected SearchPath specificRectangleScan(Coordinate rectangleCorner1, Coordinate rectangleCorner2,
                                                Coordinate rectangleCorner3, Coordinate rectangleCorner4, SearchPath move) {
-        Point[] horizontalSplitRectangle = splitRectangleHorizontally(
-                JTSUtils.GEOMETRY_FACTORY.createPoint(rectangleCorner1),
-                JTSUtils.GEOMETRY_FACTORY.createPoint(rectangleCorner2),
-                JTSUtils.GEOMETRY_FACTORY.createPoint(rectangleCorner3),
-                JTSUtils.GEOMETRY_FACTORY.createPoint(rectangleCorner4),
-                currentHint, currentHint.getHalfPlaneLine(), false
-        );
-        Point[] verticalSplitRectangle = splitRectangleVertically(
-                JTSUtils.GEOMETRY_FACTORY.createPoint(rectangleCorner1),
-                JTSUtils.GEOMETRY_FACTORY.createPoint(rectangleCorner2),
-                JTSUtils.GEOMETRY_FACTORY.createPoint(rectangleCorner3),
-                JTSUtils.GEOMETRY_FACTORY.createPoint(rectangleCorner4),
-                currentHint, currentHint.getHalfPlaneLine(), false
-        );
-        if (horizontalSplitRectangle != null) {
-            return RoutinesFromPaper.rectangleScan(horizontalSplitRectangle[0],
-                    horizontalSplitRectangle[1], horizontalSplitRectangle[2], horizontalSplitRectangle[3], move);
-        }
-        if (verticalSplitRectangle != null) {
-            return RoutinesFromPaper.rectangleScan(verticalSplitRectangle[0],
-                    verticalSplitRectangle[1], verticalSplitRectangle[2], verticalSplitRectangle[3], move);
-        }
         return RoutinesFromPaper.rectangleScan(rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4,
                 move);
     }
