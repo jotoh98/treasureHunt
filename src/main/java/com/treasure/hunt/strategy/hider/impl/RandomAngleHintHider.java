@@ -1,6 +1,7 @@
 package com.treasure.hunt.strategy.hider.impl;
 
 import com.treasure.hunt.jts.geom.GeometryAngle;
+import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.geom.StatusMessageItem;
 import com.treasure.hunt.strategy.geom.StatusMessageType;
 import com.treasure.hunt.strategy.hider.Hider;
@@ -18,6 +19,7 @@ import static org.locationtech.jts.algorithm.Angle.interiorAngle;
  * @author dorianreineccius
  */
 public class RandomAngleHintHider implements Hider<AngleHint> {
+    public static final String TREASURE_DISTANCE = "TREASURE_DISTANCE";
     private Point treasurePosition;
 
     /**
@@ -25,7 +27,8 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
      */
     @Override
     public Point getTreasureLocation() {
-        treasurePosition = JTSUtils.createPoint(Math.random() * 100, Math.random() * 100);
+        Number treasureDistance = PreferenceService.getInstance().getPreference(TREASURE_DISTANCE, 100);
+        treasurePosition = JTSUtils.createPoint(Math.random() * treasureDistance.doubleValue(), Math.random() * treasureDistance.doubleValue());
         return treasurePosition;
     }
 
