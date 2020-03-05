@@ -106,7 +106,7 @@ public class MainController {
     }
 
     private void listenToLogLabelEvent() {
-        EventBusUtils.LOG_LABEL_EVENT.addListener(logLabelMessage -> Platform.runLater(() -> EventBusUtils.LOG_LABEL_EVENT.trigger(logLabelMessage)));
+        EventBusUtils.LOG_LABEL_EVENT.addListener(logLabelMessage -> Platform.runLater(() -> logLabel.setText(logLabelMessage)));
     }
 
     private void listenToGameMangerLoad() {
