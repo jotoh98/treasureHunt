@@ -3,6 +3,7 @@ package com.treasure.hunt.jts.geom;
 import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
 import com.treasure.hunt.jts.awt.CanvasBoundary;
 import com.treasure.hunt.utils.JTSUtils;
+import org.decimal4j.util.DoubleRounder;
 import org.locationtech.jts.algorithm.ConvexHull;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
@@ -36,6 +37,11 @@ public class HalfPlane extends Line {
         this(c1, c2, false);
     }
 
+    public HalfPlane(double x, double y, double u, double w) {
+        this(new Coordinate(x, y), new Coordinate(u, w));
+    }
+
+
     /**
      * Construct a HalfPlane
      *
@@ -58,18 +64,20 @@ public class HalfPlane extends Line {
     }
 
     public Vector2D getNormalVector() {
-        return getDirection().rotateByQuarterCircle(1);
+        return getDirection().rotateByQuarterCircle(-1);
     }
 
     public double getScalar() {
         final Vector2D vector = getNormalVector();
-        return -vector.getY() * p0.x + vector.getX() * p0.y;
+        double b = vector.getX() * p0.x + vector.getY() * p0.y;
+        return b;
 
     }
 
     public Vector2D getDirection() {
         return Vector2D.create(p0, p1);
     }
+
 
     public boolean covers(Geometry g) {
         for (Coordinate coordinate : g.getCoordinates()) {
@@ -86,8 +94,8 @@ public class HalfPlane extends Line {
     }
 
     public boolean inside(Vector2D v) {
-        final double dotProduct = v.dot(getNormalVector());
-        final double scalar = getScalar();
+        final double dotProduct = DoubleRounder.round(v.dot(getNormalVector()), 10);
+        final double scalar = DoubleRounder.round(getScalar(), 10);
         return strict ? dotProduct > scalar : dotProduct >= scalar;
     }
 

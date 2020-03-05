@@ -2,6 +2,7 @@ package com.treasure.hunt.jts.geom;
 
 import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
 import com.treasure.hunt.utils.JTSUtils;
+import org.decimal4j.util.DoubleRounder;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.math.Vector2D;
 
@@ -216,7 +217,7 @@ public class GeometryAngle extends LineString implements Shapeable {
         GeometryAngle testAngle = copy();
         testAngle.setRight(coordinate);
         double testExtend = testAngle.extend();
-        return testExtend >= 0 && testExtend <= extend();
+        return DoubleRounder.round(testExtend, 10) >= 0 && DoubleRounder.round(testExtend, 10) <= DoubleRounder.round(extend(), 10);
     }
 
     /**
