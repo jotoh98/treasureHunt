@@ -1,7 +1,7 @@
 package com.treasure.hunt.jts.geom;
 
 import com.treasure.hunt.utils.JTSUtils;
-import lombok.Value;
+import lombok.Getter;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Polygon;
@@ -17,10 +17,11 @@ import java.util.List;
  * @author jotoh
  * @see org.locationtech.jts.geom.Geometry
  */
-@Value
 public class Circle extends Coordinate {
 
+    @Getter
     private double radius;
+    @Getter
     private int numPoints;
 
     /**
