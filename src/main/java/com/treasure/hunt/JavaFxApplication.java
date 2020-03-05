@@ -19,9 +19,17 @@ public class JavaFxApplication extends Application {
     }
 
     public static void main(String[] args) {
-        Image image = Toolkit.getDefaultToolkit().getImage(JavaFxApplication.class.getResource("/images/icon.png"));
-        Taskbar.getTaskbar().setIconImage(image);
+        setTaskBarIcon();
         launch(args);
+    }
+
+    private static void setTaskBarIcon() {
+        Image image = Toolkit.getDefaultToolkit().getImage(JavaFxApplication.class.getResource("/images/icon.png"));
+        try {
+            Taskbar.getTaskbar().setIconImage(image);
+        } catch (Exception e) {
+            log.info("This platform seems to not support taskbar icon image");
+        }
     }
 
     @Override
@@ -30,9 +38,19 @@ public class JavaFxApplication extends Application {
         Scene scene = new Scene(fxmlLoader.load());
 
         stage.setTitle("TreasureHunt");
+
+        setStageIcon(stage);
         scene.getStylesheets().add(getClass().getResource("/layout/style.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
         stage.setOnCloseRequest(event -> Platform.exit());
+    }
+
+    private void setStageIcon(Stage stage) {
+        try {
+            stage.getIcons().add(new javafx.scene.image.Image(JavaFxApplication.class.getResourceAsStream("/images/icon.png")));
+        } catch (Exception e) {
+            log.info("This platform seems to not support stage icon image");
+        }
     }
 }
