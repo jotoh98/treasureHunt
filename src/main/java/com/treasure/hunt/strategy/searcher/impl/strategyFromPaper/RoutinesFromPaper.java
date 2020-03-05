@@ -26,6 +26,17 @@ public class RoutinesFromPaper {
     private RoutinesFromPaper() {
     }
 
+    /**
+     * Does the same as the routine rectangleScan in the paper.
+     * It adds the Points to move so that the player sees all points in the rectangle ABCD.
+     *
+     * @param A
+     * @param B
+     * @param C
+     * @param D
+     * @param move
+     * @return
+     */
     public static SearchPath rectangleScan(Point A, Point B, Point C, Point D, SearchPath move) {
         return rectangleScan(A.getCoordinate(), B.getCoordinate(), C.getCoordinate(), D.getCoordinate(), move);
     }
@@ -61,7 +72,7 @@ public class RoutinesFromPaper {
      * @return
      */
     public static SearchPath rectangleScan(Coordinate A, Coordinate B, Coordinate C, Coordinate D, SearchPath move) {
-        if(A.distance(B)>A.distance(D)){
+        if (A.distance(B) > A.distance(D)) {
             Coordinate temp = A;
             A = D;
             D = C;
@@ -308,12 +319,13 @@ public class RoutinesFromPaper {
      * @param B
      * @param C
      * @param D
+     * @param strategy the strategy whose specificRectangleScan should be used
      * @param move
      * @return
      */
-    static SearchPath rectangleScanPhiReverse(int basicTrans, Coordinate[] phiRect,
-                                              Coordinate A, Coordinate B, Coordinate C, Coordinate D, SearchPath move) {
-        return rectangleScan(
+    static SearchPath rectangleScanPhiReverse(int basicTrans, Coordinate[] phiRect, Coordinate A, Coordinate B,
+                                              Coordinate C, Coordinate D, SearchPath move, StrategyFromPaper strategy) {
+        return strategy.specificRectangleScan(
                 phiPointInverse(basicTrans, phiRect, A),
                 phiPointInverse(basicTrans, phiRect, B),
                 phiPointInverse(basicTrans, phiRect, C),

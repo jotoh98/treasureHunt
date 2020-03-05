@@ -6,7 +6,6 @@ import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
-import org.locationtech.jts.geom.Point;
 
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.*;
@@ -30,6 +29,7 @@ class LastHintBadSubroutine {
     private LineSegment AB, AD, BC, CD, L1Apos, L1DoubleApos, L2Apos, AsApos, ppApos, mAposKApos, hAposGApos, pAposK;
     private Coordinate p, pApos, a, d, e, dApos, f, j, jApos, t, m, mApos, k, kApos, g, gApos, h, hApos, s, sApos;
     private Coordinate A, B, C, D;
+    private StrategyFromPaper strategy;
 
     /**
      * The result of applying phi, defined by basicTransformation on the hint received before the current hint
@@ -37,7 +37,8 @@ class LastHintBadSubroutine {
      */
     private HalfPlaneHint lastHintT;
 
-    public LastHintBadSubroutine() {
+    public LastHintBadSubroutine(StrategyFromPaper strategy) {
+        this.strategy = strategy;
     }
 
     /**
@@ -45,12 +46,10 @@ class LastHintBadSubroutine {
      * T is added to variable-names where the variables got transformed to match a basicTransformation
      * (e.g. the current hint in its transformed state is called curHintT)
      *
-     * @param strategy
      * @param curHint
      * @param lastBadHint
      */
-    private void initializeVariables(StrategyFromPaper strategy, HalfPlaneHint curHint,
-                                     HalfPlaneHint lastBadHint) {
+    private void initializeVariables(HalfPlaneHint curHint, HalfPlaneHint lastBadHint) {
         rect = new Coordinate[]{strategy.searchAreaCornerA.getCoordinate(), strategy.searchAreaCornerB.getCoordinate(),
                 strategy.searchAreaCornerC.getCoordinate(), strategy.searchAreaCornerD.getCoordinate()};
 
@@ -275,101 +274,93 @@ class LastHintBadSubroutine {
      * The function equals the "else"-part of the first if-condition in Algorithm 3 (Function ReduceRectangle(R))
      * in the paper.
      *
-     * @param strategy
      * @param curHint
      * @param lastBadHint
      * @param move
      * @return The move to scan various areas so that A,B,C and D can be updated to a smaller rectangle (or the treasure
      * is found)
      */
-    SearchPath lastHintBadSubroutine(StrategyFromPaper strategy, HalfPlaneHint curHint,
+    SearchPath lastHintBadSubroutine(HalfPlaneHint curHint,
                                      HalfPlaneHint lastBadHint, SearchPath move) {
 
-        try {
-            initializeVariables(strategy, curHint, lastBadHint);
-            int caseIndex = -1;
+        initializeVariables(curHint, lastBadHint);
+        int caseIndex = -1;
 
-            // here begins line 24 of the ReduceRectangle routine from the paper:
-            Coordinate[] newRectangle = null;
+        // here begins line 24 of the ReduceRectangle routine from the paper:
+        Coordinate[] newRectangle = null;
 
-            if (x2Apos == right &&
-                    lineBetweenClockwise(L2Apos, L1DoubleApos, ppApos)
-            ) {
-                caseIndex = 1;
-                newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
-                        new Coordinate[]{f, B, C, t});
-            }
-            if (x2Apos == right &&
-                    lineBetweenClockwise(L2Apos, ppApos, mAposKApos)
-            ) {
-                caseIndex = 2;
-                move = rectangleScanPhiReverse(basicTransformation, rect, mApos, kApos, k, m, move);
-                newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
-                        new Coordinate[]{g, B, C, h});
-            }
-            if ((x2Apos == left || x2Apos == down) &&
-                    lineBetweenClockwise(L2Apos, mAposKApos, L1DoubleApos)
-            ) {
-                caseIndex = 3;
-                // rectangleScan(phi_reverse(k, (s, s', d', d))
-                move = rectangleScanPhiReverse(basicTransformation, rect, s, sApos, dApos, d, move);
-                // rectangleScan(phi_reverse(k, (m', k', k, m))
-                move = rectangleScanPhiReverse(basicTransformation, rect, mApos, kApos, k, m, move);
-                // newRectangle := pkCh
-                newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
-                        new Coordinate[]{p, k, C, h});
-            }
-            if (x2Apos == left &&
-                    lineBetweenClockwise(L2Apos, L1DoubleApos, hAposGApos)
-            ) {
-                caseIndex = 4;
-                // rectangleScan(phi_reverse(k, (s, s', d', d))
-                move = rectangleScanPhiReverse(basicTransformation, rect, s, sApos, dApos, d, move);
-                // rectangleScan(phi_reverse(k, (g, g', h', h))
-                move = rectangleScanPhiReverse(basicTransformation, rect, g, gApos, hApos, h, move);
-                // newRectangle := Agpm
-                newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
-                        new Coordinate[]{A, g, p, m});
-            }
-            if ((x2Apos == left &&
-                    lineBetweenClockwise(L2Apos, hAposGApos, ppApos)) ||
-                    (x2Apos == left &&
-                            lineBetweenClockwise(L2Apos, ppApos, mAposKApos)) ||
-                    ((x2Apos == up || x2Apos == right) &&
-                            lineBetweenClockwise(L2Apos, mAposKApos, pAposK)
-                    )
-            ) {
-                caseIndex = 5;
-                // rectangleScan(phireverse(k, (g, g', h', h))
-                move = rectangleScanPhiReverse(basicTransformation, rect, g, gApos, hApos, h, move);
-                // newRectangle := ABkm
-                newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
-                        new Coordinate[]{A, B, k, m});
-            }
-            if (x2Apos == right &&
-                    lineBetweenClockwise(L2Apos, pAposK, L1DoubleApos)
-            ) {
-                caseIndex = 6;
-                // newRectangle := ABjj'
-                newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
-                        new Coordinate[]{A, B, j, jApos});
-            }
-            addCaseDescriptionToStatus(move, basicTransformation, caseIndex, strategy);
-
-            strategy.searchAreaCornerA = GEOMETRY_FACTORY.createPoint(newRectangle[0]);
-            strategy.searchAreaCornerB = GEOMETRY_FACTORY.createPoint(newRectangle[1]);
-            strategy.searchAreaCornerC = GEOMETRY_FACTORY.createPoint(newRectangle[2]);
-            strategy.searchAreaCornerD = GEOMETRY_FACTORY.createPoint(newRectangle[3]);
-            strategy.lastHintQuality = StrategyFromPaper.HintQuality.none;
-
-            //move.addAdditionalItem(new GeometryItem<>(strategy.hintBeforePreviousHint.getHalfPlaneLineGeometry(),
-            //GeometryType.HALF_PLANE_LINE_BROWN));
-
-            return moveToCenterOfRectangle(strategy.searchAreaCornerA, strategy.searchAreaCornerB,
-                    strategy.searchAreaCornerC, strategy.searchAreaCornerD, move);
-        } catch (Exception ee) {
-            throw processError(ee, strategy, rect, lastBadHint, curHint);
+        if (x2Apos == right &&
+                lineBetweenClockwise(L2Apos, L1DoubleApos, ppApos)
+        ) {
+            caseIndex = 1;
+            newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
+                    new Coordinate[]{f, B, C, t});
         }
+        if (x2Apos == right &&
+                lineBetweenClockwise(L2Apos, ppApos, mAposKApos)
+        ) {
+            caseIndex = 2;
+            move = rectangleScanPhiReverse(basicTransformation, rect, mApos, kApos, k, m, move, strategy);
+            newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
+                    new Coordinate[]{g, B, C, h});
+        }
+        if ((x2Apos == left || x2Apos == down) &&
+                lineBetweenClockwise(L2Apos, mAposKApos, L1DoubleApos)
+        ) {
+            caseIndex = 3;
+            // rectangleScan(phi_reverse(k, (s, s', d', d))
+            move = rectangleScanPhiReverse(basicTransformation, rect, s, sApos, dApos, d, move, strategy);
+            // rectangleScan(phi_reverse(k, (m', k', k, m))
+            move = rectangleScanPhiReverse(basicTransformation, rect, mApos, kApos, k, m, move, strategy);
+            // newRectangle := pkCh
+            newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
+                    new Coordinate[]{p, k, C, h});
+        }
+        if (x2Apos == left &&
+                lineBetweenClockwise(L2Apos, L1DoubleApos, hAposGApos)
+        ) {
+            caseIndex = 4;
+            // rectangleScan(phi_reverse(k, (s, s', d', d))
+            move = rectangleScanPhiReverse(basicTransformation, rect, s, sApos, dApos, d, move, strategy);
+            // rectangleScan(phi_reverse(k, (g, g', h', h))
+            move = rectangleScanPhiReverse(basicTransformation, rect, g, gApos, hApos, h, move, strategy);
+            // newRectangle := Agpm
+            newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
+                    new Coordinate[]{A, g, p, m});
+        }
+        if ((x2Apos == left &&
+                lineBetweenClockwise(L2Apos, hAposGApos, ppApos)) ||
+                (x2Apos == left &&
+                        lineBetweenClockwise(L2Apos, ppApos, mAposKApos)) ||
+                ((x2Apos == up || x2Apos == right) &&
+                        lineBetweenClockwise(L2Apos, mAposKApos, pAposK)
+                )
+        ) {
+            caseIndex = 5;
+            // rectangleScan(phireverse(k, (g, g', h', h))
+            move = rectangleScanPhiReverse(basicTransformation, rect, g, gApos, hApos, h, move, strategy);
+            // newRectangle := ABkm
+            newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
+                    new Coordinate[]{A, B, k, m});
+        }
+        if (x2Apos == right &&
+                lineBetweenClockwise(L2Apos, pAposK, L1DoubleApos)
+        ) {
+            caseIndex = 6;
+            // newRectangle := ABjj'
+            newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
+                    new Coordinate[]{A, B, j, jApos});
+        }
+        addCaseDescriptionToStatus(move, basicTransformation, caseIndex, strategy);
+
+        strategy.searchAreaCornerA = GEOMETRY_FACTORY.createPoint(newRectangle[0]);
+        strategy.searchAreaCornerB = GEOMETRY_FACTORY.createPoint(newRectangle[1]);
+        strategy.searchAreaCornerC = GEOMETRY_FACTORY.createPoint(newRectangle[2]);
+        strategy.searchAreaCornerD = GEOMETRY_FACTORY.createPoint(newRectangle[3]);
+        strategy.lastHintQuality = StrategyFromPaper.HintQuality.none;
+
+        return moveToCenterOfRectangle(strategy.searchAreaCornerA, strategy.searchAreaCornerB,
+                strategy.searchAreaCornerC, strategy.searchAreaCornerD, move);
     }
 
     /**
@@ -393,25 +384,5 @@ class LastHintBadSubroutine {
             return true;
         }
         return maxAngleBetween2and1 < maxAngleLineBetween1;
-    }
-
-    private RuntimeException processError(Exception e, StrategyFromPaper s, Coordinate[] rect,
-                                          HalfPlaneHint lastBadHint, HalfPlaneHint curHint) {
-        Point A = s.searchAreaCornerA;
-        Point B = s.searchAreaCornerB;
-        Point C = s.searchAreaCornerC;
-        Point D = s.searchAreaCornerD;
-        String message = "A= (" + A.getX() + ", " + A.getY() + ")\n"
-                + " B= (" + B.getX() + ", " + B.getY() + ")\n"
-                + " C= (" + C.getX() + ", " + C.getY() + ")\n"
-                + " D= (" + D.getX() + ", " + D.getY() + ")";
-        for (int i = 0; i < rect.length; i++) {
-            message.concat("rect[" + i + "]= " + rect[i] + "\n");
-        }
-        message.concat("lastBadHint p1= " + lastBadHint.getCenter() + "lastHint p2= " +
-                lastBadHint.getRight() + "\n");
-        message.concat("curHint p1= " + curHint.getCenter() + "curHint p2= " +
-                curHint.getRight());
-        return new RuntimeException(message, e);
     }
 }

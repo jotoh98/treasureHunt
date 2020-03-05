@@ -24,7 +24,6 @@ import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.Geometr
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.rectangleScan;
 import static com.treasure.hunt.utils.JTSUtils.*;
 
-
 /**
  * This implements the strategy from the paper:
  * {@literal Treasure Hunt in the Plane with Angular Hints}
@@ -49,7 +48,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     protected HalfPlaneHint previousHint;
     protected HalfPlaneHint currentHint;
     protected HintQuality lastHintQuality = HintQuality.none;
-    protected LastHintBadSubroutine lastHintBadSubroutine = new LastHintBadSubroutine();
+    protected LastHintBadSubroutine lastHintBadSubroutine = new LastHintBadSubroutine(this);
     Point start; // the initial position of the player
     List<StatusMessageItem> statusMessageItemsToBeRemovedNextMove = new ArrayList<>();
 
@@ -112,7 +111,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         //now analyse the hint:
         if (lastHintQuality == HintQuality.bad) {
             return addState(lastHintBadSubroutine.
-                    lastHintBadSubroutine(this, hint, previousHint, move));
+                    lastHintBadSubroutine(hint, previousHint, move));
         }
         lastHintQuality = HintQuality.good; //If the current hint isn't good, the hint quality is set below again
 
@@ -149,7 +148,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                 centerOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD)));
         move.addPoint(destination);
         lastHintQuality = HintQuality.bad;
-        previousHint = hint;
         return addState(move);
     }
 
@@ -330,6 +328,39 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     }
 
     /**
+     * A specific rectangle scanner for this strategy, in case of StrategyFromPaper, the standard rectangleScanSpecificForStrategy from
+     * RoutinesFromPaper is used (this method is required for the MinimumRectangleStrategy which inherits from this class.)
+     *
+     * @param rectangleCorner1
+     * @param rectangleCorner2
+     * @param rectangleCorner3
+     * @param rectangleCorner4
+     * @param move
+     * @return
+     */
+    protected SearchPath specificRectangleScan(Coordinate rectangleCorner1, Coordinate rectangleCorner2,
+                                               Coordinate rectangleCorner3, Coordinate rectangleCorner4, SearchPath move) {
+        return rectangleScan(rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4, move);
+    }
+
+    /**
+     * A specific rectangle scanner for this strategy, in case of StrategyFromPaper, the standard rectangleScanSpecificForStrategy from
+     * RoutinesFromPaper is used (this method is required for the MinimumRectangleStrategy which inherits from this class.)
+     *
+     * @param rectangleCorner1
+     * @param rectangleCorner2
+     * @param rectangleCorner3
+     * @param rectangleCorner4
+     * @param move
+     * @return
+     */
+    protected SearchPath specificRectangleScan(Point rectangleCorner1, Point rectangleCorner2,
+                                               Point rectangleCorner3, Point rectangleCorner4, SearchPath move) {
+        return specificRectangleScan(rectangleCorner1.getCoordinate(), rectangleCorner2.getCoordinate(),
+                rectangleCorner3.getCoordinate(), rectangleCorner4.getCoordinate(), move);
+    }
+
+    /**
      * If the checkIfHintGood is true and the hint is bad (i.e. does not divide one side of the rectangle ABCD
      * in two parts such that both are bigger or equal to 1), null is returned.
      * If the hint-line goes through AB and CD, the biggest axis-parallel rectangle which
@@ -405,7 +436,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Point oldC = searchAreaCornerC;
         Point oldD = searchAreaCornerD;
         setRectToPhase();
-        rectangleScan(oldA, oldB, oldC, oldD, move);
+        specificRectangleScan(oldA, oldB, oldC, oldD, move);
         move.addPoint(centerOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD));
         return move;
     }
