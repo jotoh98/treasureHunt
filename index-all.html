@@ -1232,7 +1232,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Does the same as the routine rectangleScan in the paper.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/RoutinesFromPaper.html#rectangleScan(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.searcher.SearchPath)">rectangleScan(Point, Point, Point, Point, SearchPath)</a></span> - Static method in class com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.<a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/RoutinesFromPaper.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">RoutinesFromPaper</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Does the same as the routine rectangleScan in the paper.</div>
+</dd>
 <dt><a href="com/treasure/hunt/utils/ReflectionUtils.html" title="class in com.treasure.hunt.utils"><span class="typeNameLink">ReflectionUtils</span></a> - Class in <a href="com/treasure/hunt/utils/package-summary.html">com.treasure.hunt.utils</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/ReflectionUtils.html#%3Cinit%3E()">ReflectionUtils()</a></span> - Constructor for class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/ReflectionUtils.html" title="class in com.treasure.hunt.utils">ReflectionUtils</a></dt>
@@ -1286,7 +1288,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/RoutinesFromPaper.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper"><span class="typeNameLink">RoutinesFromPaper</span></a> - Class in <a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/package-summary.html">com.treasure.hunt.strategy.searcher.impl.strategyFromPaper</a></dt>
 <dd>
-<div class="block">TODO explain what rho, sigma and phi do in the paper</div>
+<div class="block">For an explanation what each method does, it is recommended to look in the paper (Deterministic Treasure Hunt in the
+ Plane with Angular Hints from Bouchard et al.).</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/view/widget/StatisticTableController.html#runMultipleButton">runMultipleButton</a></span> - Variable in class com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/StatisticTableController.html" title="class in com.treasure.hunt.view.widget">StatisticTableController</a></dt>
 <dd>&nbsp;</dd>
@@ -1408,6 +1411,26 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/analysis/StatisticObject.StatisticInfo.html#SOLUTION_QUOTIENT">SOLUTION_QUOTIENT</a></span> - com.treasure.hunt.analysis.<a href="com/treasure/hunt/analysis/StatisticObject.StatisticInfo.html" title="enum in com.treasure.hunt.analysis">StatisticObject.StatisticInfo</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/MinimumRectangleStrategy.html#specificRectangleScan(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,com.treasure.hunt.strategy.searcher.SearchPath)">specificRectangleScan(Coordinate, Coordinate, Coordinate, Coordinate, SearchPath)</a></span> - Method in class com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.<a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/MinimumRectangleStrategy.html" title="class in com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy">MinimumRectangleStrategy</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/StrategyFromPaper.html#specificRectangleScan(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,com.treasure.hunt.strategy.searcher.SearchPath)">specificRectangleScan(Coordinate, Coordinate, Coordinate, Coordinate, SearchPath)</a></span> - Method in class com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.<a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/StrategyFromPaper.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">StrategyFromPaper</a></dt>
+<dd>
+<div class="block">A specific rectangle scanner for this strategy, in case of StrategyFromPaper, the standard rectangleScanSpecificForStrategy from
+ RoutinesFromPaper is used (this method is required for the MinimumRectangleStrategy which inherits from this class.)</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/StrategyFromPaper.html#specificRectangleScan(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.searcher.SearchPath)">specificRectangleScan(Point, Point, Point, Point, SearchPath)</a></span> - Method in class com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.<a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/StrategyFromPaper.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">StrategyFromPaper</a></dt>
+<dd>
+<div class="block">A specific rectangle scanner for this strategy, in case of StrategyFromPaper, the standard rectangleScanSpecificForStrategy from
+ RoutinesFromPaper is used (this method is required for the MinimumRectangleStrategy which inherits from this class.)</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/StrategyFromPaper.html#splitRectangleHorizontally(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,org.locationtech.jts.geom.LineSegment,boolean)">splitRectangleHorizontally(Point, Point, Point, Point, HalfPlaneHint, LineSegment, boolean)</a></span> - Method in class com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.<a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/StrategyFromPaper.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">StrategyFromPaper</a></dt>
+<dd>
+<div class="block">If the checkIfHintGood is true and the hint is bad (i.e.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/StrategyFromPaper.html#splitRectangleVertically(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,org.locationtech.jts.geom.LineSegment,boolean)">splitRectangleVertically(Point, Point, Point, Point, HalfPlaneHint, LineSegment, boolean)</a></span> - Method in class com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.<a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/StrategyFromPaper.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">StrategyFromPaper</a></dt>
+<dd>
+<div class="block">If the checkIfHintGood is true and the hint is bad (i.e.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/geom/GeometryType.html#STANDARD">STANDARD</a></span> - com.treasure.hunt.strategy.geom.<a href="com/treasure/hunt/strategy/geom/GeometryType.html" title="enum in com.treasure.hunt.strategy.geom">GeometryType</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/JavaFxApplication.html#start(javafx.stage.Stage)">start(Stage)</a></span> - Method in class com.treasure.hunt.<a href="com/treasure/hunt/JavaFxApplication.html" title="class in com.treasure.hunt">JavaFxApplication</a></dt>
@@ -1531,10 +1554,18 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Main transform method necessary for extending <code>PointTransformation</code>.</div>
 </dd>
-<dt><a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/TransformStrategyFromPaper.html" title="class in com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy"><span class="typeNameLink">TransformStrategyFromPaper</span></a> - Class in <a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/package-summary.html">com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy</a></dt>
+<dt><a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/TransformForAxisParallelism.html" title="class in com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy"><span class="typeNameLink">TransformForAxisParallelism</span></a> - Class in <a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/package-summary.html">com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/TransformStrategyFromPaper.html#%3Cinit%3E(com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,org.locationtech.jts.geom.Point)">TransformStrategyFromPaper(HalfPlaneHint, Point)</a></span> - Constructor for class com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.<a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/TransformStrategyFromPaper.html" title="class in com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy">TransformStrategyFromPaper</a></dt>
-<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/TransformForAxisParallelism.html#%3Cinit%3E(com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,org.locationtech.jts.geom.Point)">TransformForAxisParallelism(HalfPlaneHint, Point)</a></span> - Constructor for class com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.<a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/TransformForAxisParallelism.html" title="class in com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy">TransformForAxisParallelism</a></dt>
+<dd>
+<div class="block">Creates a transformer where the HalfPlaneHint hint in internal coordinates is parallel to the x-axis and shows
+ upwards and the internalCenterInExternalRepresentation is the point (0,0) in internal coordinates.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/TransformForAxisParallelism.html#%3Cinit%3E(org.locationtech.jts.geom.LineSegment)">TransformForAxisParallelism(LineSegment)</a></span> - Constructor for class com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.<a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/TransformForAxisParallelism.html" title="class in com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy">TransformForAxisParallelism</a></dt>
+<dd>
+<div class="block">Creates a transformer where the line line in internal coordinate is parallel to the x-axis and
+ the point line.p0 is (0,0) in internal coordinates.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/jts/awt/PointTransformation.html#transformX(double)">transformX(double)</a></span> - Method in class com.treasure.hunt.jts.awt.<a href="com/treasure/hunt/jts/awt/PointTransformation.html" title="class in com.treasure.hunt.jts.awt">PointTransformation</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/jts/awt/PointTransformation.html#transformY(double)">transformY(double)</a></span> - Method in class com.treasure.hunt.jts.awt.<a href="com/treasure/hunt/jts/awt/PointTransformation.html" title="class in com.treasure.hunt.jts.awt">PointTransformation</a></dt>
@@ -1573,9 +1604,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/hint/impl/HalfPlaneHint.Direction.html#up">up</a></span> - com.treasure.hunt.strategy.hint.impl.<a href="com/treasure/hunt/strategy/hint/impl/HalfPlaneHint.Direction.html" title="enum in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint.Direction</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/UpdatePolygonPoints.html" title="class in com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy"><span class="typeNameLink">UpdatePolygonPoints</span></a> - Class in <a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/package-summary.html">com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy</a></dt>
+<dt><a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/UpdateMinimalPolygon.html" title="class in com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy"><span class="typeNameLink">UpdateMinimalPolygon</span></a> - Class in <a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/package-summary.html">com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/UpdatePolygonPoints.html#%3Cinit%3E()">UpdatePolygonPoints()</a></span> - Constructor for class com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.<a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/UpdatePolygonPoints.html" title="class in com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy">UpdatePolygonPoints</a></dt>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/UpdateMinimalPolygon.html#%3Cinit%3E()">UpdateMinimalPolygon()</a></span> - Constructor for class com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.<a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/UpdateMinimalPolygon.html" title="class in com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy">UpdateMinimalPolygon</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/treasure/hunt/strategy/hider/impl/UserControlledAngleHintHider.html" title="class in com.treasure.hunt.strategy.hider.impl"><span class="typeNameLink">UserControlledAngleHintHider</span></a> - Class in <a href="com/treasure/hunt/strategy/hider/impl/package-summary.html">com.treasure.hunt.strategy.hider.impl</a></dt>
 <dd>&nbsp;</dd>

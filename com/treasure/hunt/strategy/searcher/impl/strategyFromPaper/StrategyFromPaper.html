@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -345,6 +345,56 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rectangleNotLargeEnough()">rectangleNotLargeEnough</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>protected <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#specificRectangleScan(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,com.treasure.hunt.strategy.searcher.SearchPath)">specificRectangleScan</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner1,
+                     org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner2,
+                     org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner3,
+                     org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner4,
+                     <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</code></th>
+<td class="colLast">
+<div class="block">A specific rectangle scanner for this strategy, in case of StrategyFromPaper, the standard rectangleScanSpecificForStrategy from
+ RoutinesFromPaper is used (this method is required for the MinimumRectangleStrategy which inherits from this class.)</div>
+</td>
+</tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>protected <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#specificRectangleScan(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.searcher.SearchPath)">specificRectangleScan</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;rectangleCorner1,
+                     org.locationtech.jts.geom.Point&nbsp;rectangleCorner2,
+                     org.locationtech.jts.geom.Point&nbsp;rectangleCorner3,
+                     org.locationtech.jts.geom.Point&nbsp;rectangleCorner4,
+                     <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</code></th>
+<td class="colLast">
+<div class="block">A specific rectangle scanner for this strategy, in case of StrategyFromPaper, the standard rectangleScanSpecificForStrategy from
+ RoutinesFromPaper is used (this method is required for the MinimumRectangleStrategy which inherits from this class.)</div>
+</td>
+</tr>
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>protected org.locationtech.jts.geom.Point[]</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#splitRectangleHorizontally(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,org.locationtech.jts.geom.LineSegment,boolean)">splitRectangleHorizontally</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;A,
+                          org.locationtech.jts.geom.Point&nbsp;B,
+                          org.locationtech.jts.geom.Point&nbsp;C,
+                          org.locationtech.jts.geom.Point&nbsp;D,
+                          <a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a>&nbsp;hint,
+                          org.locationtech.jts.geom.LineSegment&nbsp;hintLine,
+                          boolean&nbsp;checkIfHintGood)</code></th>
+<td class="colLast">
+<div class="block">If the checkIfHintGood is true and the hint is bad (i.e.</div>
+</td>
+</tr>
+<tr id="i12" class="altColor">
+<td class="colFirst"><code>protected org.locationtech.jts.geom.Point[]</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#splitRectangleVertically(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,org.locationtech.jts.geom.LineSegment,boolean)">splitRectangleVertically</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;A,
+                        org.locationtech.jts.geom.Point&nbsp;B,
+                        org.locationtech.jts.geom.Point&nbsp;C,
+                        org.locationtech.jts.geom.Point&nbsp;D,
+                        <a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a>&nbsp;hint,
+                        org.locationtech.jts.geom.LineSegment&nbsp;hintLine,
+                        boolean&nbsp;checkIfHintGood)</code></th>
+<td class="colLast">
+<div class="block">If the checkIfHintGood is true and the hint is bad (i.e.</div>
+</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -599,6 +649,114 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 <li class="blockList">
 <h4>addState</h4>
 <pre class="methodSignature">protected&nbsp;<a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;addState&#8203;(<a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</pre>
+</li>
+</ul>
+<a id="splitRectangleHorizontally(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,org.locationtech.jts.geom.LineSegment,boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>splitRectangleHorizontally</h4>
+<pre class="methodSignature">protected&nbsp;org.locationtech.jts.geom.Point[]&nbsp;splitRectangleHorizontally&#8203;(org.locationtech.jts.geom.Point&nbsp;A,
+                                                                       org.locationtech.jts.geom.Point&nbsp;B,
+                                                                       org.locationtech.jts.geom.Point&nbsp;C,
+                                                                       org.locationtech.jts.geom.Point&nbsp;D,
+                                                                       <a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a>&nbsp;hint,
+                                                                       org.locationtech.jts.geom.LineSegment&nbsp;hintLine,
+                                                                       boolean&nbsp;checkIfHintGood)</pre>
+<div class="block">If the checkIfHintGood is true and the hint is bad (i.e. does not divide one side of the rectangle ABCD
+ in two parts such that both are bigger or equal to 1), null is returned.
+ If the hint-line goes through AD and BC, the biggest axis parallel-rectangle which
+ lies in ABCD and where the treasure could be located due to the information gained by the hint, is returned.
+ Otherwise the return value is null.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>A</code> - </dd>
+<dd><code>B</code> - </dd>
+<dd><code>C</code> - </dd>
+<dd><code>D</code> - </dd>
+<dd><code>hint</code> - </dd>
+<dd><code>checkIfHintGood</code> - </dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
+</li>
+</ul>
+<a id="specificRectangleScan(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,com.treasure.hunt.strategy.searcher.SearchPath)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>specificRectangleScan</h4>
+<pre class="methodSignature">protected&nbsp;<a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;specificRectangleScan&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner1,
+                                           org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner2,
+                                           org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner3,
+                                           org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner4,
+                                           <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</pre>
+<div class="block">A specific rectangle scanner for this strategy, in case of StrategyFromPaper, the standard rectangleScanSpecificForStrategy from
+ RoutinesFromPaper is used (this method is required for the MinimumRectangleStrategy which inherits from this class.)</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>rectangleCorner1</code> - </dd>
+<dd><code>rectangleCorner2</code> - </dd>
+<dd><code>rectangleCorner3</code> - </dd>
+<dd><code>rectangleCorner4</code> - </dd>
+<dd><code>move</code> - </dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
+</li>
+</ul>
+<a id="specificRectangleScan(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.searcher.SearchPath)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>specificRectangleScan</h4>
+<pre class="methodSignature">protected&nbsp;<a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;specificRectangleScan&#8203;(org.locationtech.jts.geom.Point&nbsp;rectangleCorner1,
+                                           org.locationtech.jts.geom.Point&nbsp;rectangleCorner2,
+                                           org.locationtech.jts.geom.Point&nbsp;rectangleCorner3,
+                                           org.locationtech.jts.geom.Point&nbsp;rectangleCorner4,
+                                           <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</pre>
+<div class="block">A specific rectangle scanner for this strategy, in case of StrategyFromPaper, the standard rectangleScanSpecificForStrategy from
+ RoutinesFromPaper is used (this method is required for the MinimumRectangleStrategy which inherits from this class.)</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>rectangleCorner1</code> - </dd>
+<dd><code>rectangleCorner2</code> - </dd>
+<dd><code>rectangleCorner3</code> - </dd>
+<dd><code>rectangleCorner4</code> - </dd>
+<dd><code>move</code> - </dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
+</li>
+</ul>
+<a id="splitRectangleVertically(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,org.locationtech.jts.geom.LineSegment,boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>splitRectangleVertically</h4>
+<pre class="methodSignature">protected&nbsp;org.locationtech.jts.geom.Point[]&nbsp;splitRectangleVertically&#8203;(org.locationtech.jts.geom.Point&nbsp;A,
+                                                                     org.locationtech.jts.geom.Point&nbsp;B,
+                                                                     org.locationtech.jts.geom.Point&nbsp;C,
+                                                                     org.locationtech.jts.geom.Point&nbsp;D,
+                                                                     <a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a>&nbsp;hint,
+                                                                     org.locationtech.jts.geom.LineSegment&nbsp;hintLine,
+                                                                     boolean&nbsp;checkIfHintGood)</pre>
+<div class="block">If the checkIfHintGood is true and the hint is bad (i.e. does not divide one side of the rectangle ABCD
+ in two parts such that both are bigger or equal to 1), null is returned.
+ If the hint-line goes through AB and CD, the biggest axis-parallel rectangle which
+ lies in ABCD and where the treasure could be located due to the information gained by the hint, is returned.
+ Otherwise the return value is null.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>A</code> - </dd>
+<dd><code>B</code> - </dd>
+<dd><code>C</code> - </dd>
+<dd><code>D</code> - </dd>
+<dd><code>hint</code> - </dd>
+<dd><code>checkIfHintGood</code> - </dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="currentPhaseRectangle()">

@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -246,13 +246,25 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#move(com.treasure.hunt.strategy.hint.impl.HalfPlaneHint)">move</a></span>&#8203;(<a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a>&nbsp;hint)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>protected <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#specificRectangleScan(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,com.treasure.hunt.strategy.searcher.SearchPath)">specificRectangleScan</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner1,
+                     org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner2,
+                     org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner3,
+                     org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner4,
+                     <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</code></th>
+<td class="colLast">
+<div class="block">A specific rectangle scanner for this strategy, in case of StrategyFromPaper, the standard rectangleScanSpecificForStrategy from
+ RoutinesFromPaper is used (this method is required for the MinimumRectangleStrategy which inherits from this class.)</div>
+</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StrategyFromPaper">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.<a href="../strategyFromPaper/StrategyFromPaper.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">StrategyFromPaper</a></h3>
-<code><a href="../strategyFromPaper/StrategyFromPaper.html#addState(com.treasure.hunt.strategy.searcher.SearchPath,org.locationtech.jts.geom.Coordinate%5B%5D,org.locationtech.jts.geom.Coordinate%5B%5D)">addState</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#currentPhaseRectangle()">currentPhaseRectangle</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#init(org.locationtech.jts.geom.Point,int,int)">init</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#phaseRectangle(int)">phaseRectangle</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#rectangleNotLargeEnough()">rectangleNotLargeEnough</a></code></li>
+<code><a href="../strategyFromPaper/StrategyFromPaper.html#addState(com.treasure.hunt.strategy.searcher.SearchPath,org.locationtech.jts.geom.Coordinate%5B%5D,org.locationtech.jts.geom.Coordinate%5B%5D)">addState</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#currentPhaseRectangle()">currentPhaseRectangle</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#init(org.locationtech.jts.geom.Point,int,int)">init</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#phaseRectangle(int)">phaseRectangle</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#rectangleNotLargeEnough()">rectangleNotLargeEnough</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#specificRectangleScan(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.searcher.SearchPath)">specificRectangleScan</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#splitRectangleHorizontally(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,org.locationtech.jts.geom.LineSegment,boolean)">splitRectangleHorizontally</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#splitRectangleVertically(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,org.locationtech.jts.geom.LineSegment,boolean)">splitRectangleVertically</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -356,13 +368,34 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 <a id="addState(com.treasure.hunt.strategy.searcher.SearchPath)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>addState</h4>
 <pre class="methodSignature">protected&nbsp;<a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;addState&#8203;(<a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="../strategyFromPaper/StrategyFromPaper.html#addState(com.treasure.hunt.strategy.searcher.SearchPath)">addState</a></code>&nbsp;in class&nbsp;<code><a href="../strategyFromPaper/StrategyFromPaper.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">StrategyFromPaper</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="specificRectangleScan(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,com.treasure.hunt.strategy.searcher.SearchPath)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>specificRectangleScan</h4>
+<pre class="methodSignature">protected&nbsp;<a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;specificRectangleScan&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner1,
+                                           org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner2,
+                                           org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner3,
+                                           org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner4,
+                                           <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../strategyFromPaper/StrategyFromPaper.html#specificRectangleScan(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,com.treasure.hunt.strategy.searcher.SearchPath)">StrategyFromPaper</a></code></span></div>
+<div class="block">A specific rectangle scanner for this strategy, in case of StrategyFromPaper, the standard rectangleScanSpecificForStrategy from
+ RoutinesFromPaper is used (this method is required for the MinimumRectangleStrategy which inherits from this class.)</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../strategyFromPaper/StrategyFromPaper.html#specificRectangleScan(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,com.treasure.hunt.strategy.searcher.SearchPath)">specificRectangleScan</a></code>&nbsp;in class&nbsp;<code><a href="../strategyFromPaper/StrategyFromPaper.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">StrategyFromPaper</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
