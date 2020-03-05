@@ -39,7 +39,7 @@ import java.util.stream.Stream;
  * checkedArea:            the Area the player has visited and thus must not contain the target
  * AreaExcludedByHints:    the Area the previous hints have
  *
- * ==> those 3 structures are used to calculate the remaining possible area to place the treasure into
+ * these 3 structures are used to calculate the remaining possible area to place the treasure into
  * possibleArea:           BoundingCircle \ {checkedArea + AreaExcludedByHints)
  *
  */
