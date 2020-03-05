@@ -7,6 +7,7 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.google.common.annotations.VisibleForTesting;
 import com.treasure.hunt.analysis.StatisticObject;
+import com.treasure.hunt.jts.geom.Shapeable;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.geom.StatusMessageItem;
@@ -51,16 +52,24 @@ import java.util.stream.Stream;
  */
 @Slf4j
 public class GameManager implements KryoSerializable, KryoCopyable<GameManager> {
-
-    @Getter
-    private volatile BooleanProperty beatThreadRunning = new SimpleBooleanProperty(false);
+    /**
+     * The maximum distance on canvas between the mouse and a {@link GeometryItem},
+     * in which the mouse can select a {@link GeometryItem} on click.
+     */
+    public static final double MOUSE_RECOGNIZE_DISTANCE = .2;
     /**
      * Contains the "gameHistory".
      */
     @VisibleForTesting
     @Getter
     ObservableList<Move> moves = FXCollections.observableArrayList();
-
+    @Getter
+    ObservableList<Move> highlighter = FXCollections.observableArrayList();
+    @Getter
+    private volatile BooleanProperty beatThreadRunning = new SimpleBooleanProperty(false);
+    private Coordinate lastMouseClick;
+    private int geometryItemsListIndex;
+    private List<GeometryItem> geometryItemsList = new ArrayList<GeometryItem>();
     private GameEngine gameEngine;
     @Getter
     private BooleanProperty finishedProperty;
@@ -191,8 +200,17 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      * Works only for stepView &gt; 0
      */
     public void previous() {
-        if (viewIndex.get() > 0) {
-            viewIndex.set(viewIndex.get() - 1);
+        int viewIndexSnapshot = viewIndex.get();
+        if (viewIndexSnapshot > 0) {
+            for (int i = viewIndexSnapshot; i < moves.size(); i++) {
+                log.info("" + i + " of " + moves.size());
+                if (!moves.get(i).getGeometryItems().isEmpty()) {
+                    moves.get(i).getGeometryItems().forEach(geometryItem -> {
+                        geometryItem.setSelected(false);
+                    });
+                }
+            }
+            viewIndex.set(viewIndexSnapshot - 1);
         }
     }
 
@@ -380,7 +398,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      * @param distance   the maximum distance to a potential {@link GeometryItem}.
      * @return a sorted list, containing the nearest {@link GeometryItem}'s to {@code coordinate}, with a maximum distance of {@code distance}.
      */
-    public List<GeometryItem> pickGeometryItem(Coordinate coordinate, double distance) {
+    private List<GeometryItem> pickGeometryItem(Coordinate coordinate, double distance) {
         List<GeometryItem> geometryItems = getGeometryItems(true);
         if (geometryItems.size() < 1) {
             return new ArrayList<>();
@@ -388,9 +406,16 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
 
         Point mouse = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinate);
 
+        log.info("mouse: " + mouse.getCoordinate());
+
         geometryItems = geometryItems.stream()
+                .filter(geometryItem -> geometryItem.getObject() instanceof Geometry || geometryItem.getObject() instanceof Shapeable) // TODO also allow non-geometries
                 .filter(geometryItem ->
-                        mouse.distance((Geometry) geometryItem.getObject()) <= distance
+                        {
+                            //log.info(/*"mouse: " + mouse + ", geometryItem: " + geometryItem.getObject() + */
+                            //        ", distance: " + mouse.distance((Geometry) geometryItem.getObject()) + " / " + distance);
+                            return mouse.distance((Geometry) geometryItem.getObject()) <= distance;
+                        }
                 )
                 .filter(geometryItem -> geometryItem.getGeometryStyle().isVisible())
                 .sorted((geometryItem, secondGeometryItem) ->
@@ -400,5 +425,44 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
                 .collect(Collectors.toList());
 
         return geometryItems;
+    }
+
+    public void refreshHighlighter(Coordinate coordinate, double scale) {
+
+        double distance = MOUSE_RECOGNIZE_DISTANCE / scale;
+
+        // unselect all
+        for (GeometryItem geometryItem : geometryItemsList) {
+            geometryItem.setSelected(false);
+        }
+
+        if (lastMouseClick == null) {
+            lastMouseClick = coordinate;
+        }
+
+        // new mouse coordinate
+        if (lastMouseClick.getX() != coordinate.getX() ||
+                lastMouseClick.getY() != coordinate.getY()) {
+
+            geometryItemsListIndex = 0;
+            geometryItemsList = pickGeometryItem(coordinate, distance);
+
+            lastMouseClick = coordinate;
+
+            if (geometryItemsList.size() < 1) {
+                highlighter = null;
+                return;
+            }
+        } else { // same mouse coordinate
+            if (geometryItemsList.size() < 1) {
+                highlighter = null;
+                return;
+            }
+            geometryItemsListIndex = (geometryItemsListIndex + 1) % geometryItemsList.size();
+        }
+        geometryItemsList.get(geometryItemsListIndex).setSelected(true);
+
+        log.info("received: " + geometryItemsListIndex + "/" + geometryItemsList.size());
+        log.info("selected: " + geometryItemsList.get(geometryItemsListIndex).getObject());
     }
 }

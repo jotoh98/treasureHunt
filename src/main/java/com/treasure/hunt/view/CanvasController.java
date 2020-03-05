@@ -6,12 +6,6 @@ import com.treasure.hunt.jts.geom.Grid;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.utils.Renderer;
-import com.treasure.hunt.jts.geom.CircleHighlighter;
-import com.treasure.hunt.jts.geom.RectangleVariableHighlighter;
-import com.treasure.hunt.strategy.geom.GeometryItem;
-import com.treasure.hunt.strategy.geom.GeometryType;
-import com.treasure.hunt.utils.EventBusUtils;
-import com.treasure.hunt.utils.JTSUtils;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -21,30 +15,14 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.jfree.fx.FXGraphics2D;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.math.Vector2D;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author axel12, dorianreineccius
  */
 @Slf4j
 public class CanvasController {
-    /**
-     * The maximum distance on canvas between the mouse and a {@link GeometryItem},
-     * in which the mouse can select a {@link GeometryItem} on click.
-     */
-    public static final double MOUSE_RECOGNIZE_DISTANCE = 5;
-    private Coordinate lastMouseClick;
-    private GeometryItem highlighter;
-    private List<GeometryItem> geometryItemsList = new ArrayList<>();
-    private int geometryItemsListIndex = 0;
     /**
      * Determines, whether the mouse was dragged.
      */
@@ -70,38 +48,7 @@ public class CanvasController {
         transformation.getScaleProperty().addListener(invalidation -> drawShapes());
         transformation.getOffsetProperty().addListener(invalidation -> drawShapes());
 
-        subscribeToGeometryItem();
-    }
-
-    /**
-     * Subscribes to {@link EventBusUtils#GAME_MANAGER_LOADED_EVENT}
-     * in order to handle its {@link GeometryItem}s.
-     */
-    public void subscribeToGeometryItem() {
-        EventBusUtils.SELECTED_GEOMETRY_ITEMS_EVENT.addListener(geometryItem -> {
-            Platform.runLater(() -> {
-                log.trace("received: " + geometryItem);
-                Geometry geometry = (Geometry) geometryItem.getObject();
-                if (geometry instanceof Point) {
-                    this.highlighter = new GeometryItem(new CircleHighlighter(geometry.getCoordinate(),
-                            CanvasController.MOUSE_RECOGNIZE_DISTANCE, 64, JTSUtils.GEOMETRY_FACTORY), GeometryType.HIGHLIGHTER);
-                } else if (geometryItem.getObject() instanceof LineString) {
-                    double minX = geometry.getCoordinates()[0].x;
-                    double maxX = minX;
-                    double minY = geometry.getCoordinates()[0].y;
-                    double maxY = minY;
-                    for (Coordinate coordinate : geometry.getCoordinates()) {
-                        minX = Math.min(minX, coordinate.x);
-                        maxX = Math.max(maxX, coordinate.x);
-                        minY = Math.min(minY, coordinate.y);
-                        maxY = Math.max(maxY, coordinate.y);
-                    }
-                    this.highlighter = new GeometryItem(new RectangleVariableHighlighter(
-                            new Coordinate(minX, maxY), maxX - minX, maxY - minY, JTSUtils.GEOMETRY_FACTORY), GeometryType.HIGHLIGHTER);
-                }
-                drawShapes();
-            });
-        });
+        //subscribeToGeometryItem();
     }
 
     public void makeCanvasResizable() {
@@ -129,8 +76,7 @@ public class CanvasController {
     /**
      * Executed when the mouse was pressed and released.
      * TODO To much game logic in here!!11 maybe wrap into GameManager
-     * Executing this will select a {@link GeometryItem} nearest to the mouse position,
-     * with a maximum distance of {@link CanvasController#MOUSE_RECOGNIZE_DISTANCE}.
+     * Executing this will select a {@link GeometryItem} nearest to the mouse position.
      *
      * @param mouseEvent corresponding {@link MouseEvent}
      */
@@ -138,7 +84,6 @@ public class CanvasController {
         if (gameManager.isNull().get()) {
             return;
         }
-        offsetBackup = transformation.getOffsetProperty().get();
 
         if (dragged) {
             dragged = false;
@@ -146,35 +91,10 @@ public class CanvasController {
         }
         dragged = false;
 
-        Vector2D mousePositionInGameContext = dragStart.subtract(offsetBackup);
-        mousePositionInGameContext = mousePositionInGameContext.divide(transformation.getScaleProperty().get());
+        Coordinate c = transformation.revert(dragStart.toCoordinate());
 
-        if (lastMouseClick == null) {
-            lastMouseClick = new Coordinate(mousePositionInGameContext.getX(), mousePositionInGameContext.getY());
-        }
-        if (lastMouseClick.getX() != mousePositionInGameContext.getX() ||
-                lastMouseClick.getY() != mousePositionInGameContext.getY()) {
-
-            geometryItemsListIndex = 0;
-            geometryItemsList = gameManager.get().pickGeometryItem(
-                    new Coordinate(mousePositionInGameContext.getX(), -mousePositionInGameContext.getY()),
-                    MOUSE_RECOGNIZE_DISTANCE / transformation.getScaleProperty().get());
-
-            lastMouseClick = new Coordinate(mousePositionInGameContext.getX(), mousePositionInGameContext.getY());
-
-            if (geometryItemsList.size() < 1) {
-                highlighter = null;
-                return;
-            }
-        } else {
-            if (geometryItemsList.size() < 1) {
-                highlighter = null;
-                return;
-            }
-            geometryItemsListIndex = (geometryItemsListIndex + 1) % geometryItemsList.size();
-        }
-        log.info("received: " + geometryItemsListIndex + "/" + geometryItemsList.size());
-        EventBusUtils.SELECTED_GEOMETRY_ITEMS_EVENT.trigger(geometryItemsList.get(geometryItemsListIndex));
+        gameManager.get().refreshHighlighter(c, transformation.getScaleProperty().get());
+        renderer.render(gameManager.get());
     }
 
     /**

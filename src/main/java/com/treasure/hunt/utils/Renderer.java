@@ -1,5 +1,6 @@
 package com.treasure.hunt.utils;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.game.Move;
 import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
@@ -11,7 +12,9 @@ import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.geom.JavaFxDrawable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import lombok.extern.slf4j.Slf4j;
 import org.jfree.fx.FXGraphics2D;
+import org.locationtech.jts.geom.Geometry;
 
 import java.awt.*;
 import java.util.List;
@@ -25,6 +28,7 @@ import java.util.stream.Stream;
  * The renderer responsible for drawing {@link GeometryItem}s on the {@link Canvas}.
  * It holds an {@link AdvancedShapeWriter} for enhanced shape writing.
  */
+@Slf4j
 public class Renderer {
 
     private HashMap<String, GeometryItem<?>> additional = new HashMap<>();
@@ -147,25 +151,31 @@ public class Renderer {
     }
 
     /**
-     * Render a list of moves and additional items.
-     * Filters and sorts the assigned {@link GeometryItem}s.
-     *
-     * @param moves     all moves available
-     * @param viewIndex the current view index
+     * @param stream The {@link GeometryItem}, we want to apply an highlighter
+     * @return A {@link Stream} containing the highlighted {@link GeometryItem}'s.
      */
-    private void render(List<Move> moves, int viewIndex) {
-        clear();
+    private static Stream<GeometryItem<?>> applyHighlighter(Stream<GeometryItem<?>> stream) {
+        List<GeometryItem<?>> geometryItemList = stream.collect(Collectors.toList());
 
-        Stream<GeometryItem<?>> visible = visibleGeometries(moves.stream(), viewIndex);
-        Stream<GeometryItem<?>> additionalStream = additional.values().stream();
-        Stream<GeometryItem<?>> itemStream = Stream.concat(visible, additionalStream);
+        AtomicDouble atomicMinX = new AtomicDouble(0);
+        AtomicDouble atomicMinY = new AtomicDouble(0);
+        AtomicDouble atomicMaxX = new AtomicDouble(0);
+        AtomicDouble atomicMaxY = new AtomicDouble(0);
 
-        applyFilters(
-                itemStream,
-                Renderer::filterOverride,
-                Renderer::assignMultiStyles,
-                Renderer::sortZIndex
-        ).forEach(this::render);
+        geometryItemList.stream()
+                .filter(GeometryItem::isSelected)
+                .map(geometryItem -> ((Geometry) geometryItem.getObject()).getEnvelopeInternal()) //TODO: implement envelopes for non-geometry items
+                .reduce((envelope, envelope2) -> {
+                    envelope.expandToInclude(envelope2);
+                    return envelope;
+                })
+                .ifPresent(
+                        envelope -> geometryItemList.add(new GeometryItem<>(
+                                JTSUtils.toPolygon(envelope),
+                                GeometryType.HIGHLIGHTER))
+                );
+
+        return geometryItemList.stream();
     }
 
     /**
@@ -260,5 +270,28 @@ public class Renderer {
      */
     public void removeAdditional(String key) {
         additional.remove(key);
+    }
+
+    /**
+     * Render a list of moves and additional items.
+     * Filters and sorts the assigned {@link GeometryItem}s.
+     *
+     * @param moves     all moves available
+     * @param viewIndex the current view index
+     */
+    private void render(List<Move> moves, int viewIndex) {
+        clear();
+
+        Stream<GeometryItem<?>> visible = visibleGeometries(moves.stream(), viewIndex);
+        Stream<GeometryItem<?>> additionalStream = additional.values().stream();
+        Stream<GeometryItem<?>> itemStream = Stream.concat(visible, additionalStream);
+
+        applyFilters(
+                itemStream,
+                Renderer::filterOverride,
+                Renderer::assignMultiStyles,
+                Renderer::applyHighlighter,
+                Renderer::sortZIndex
+        ).forEach(this::render);
     }
 }

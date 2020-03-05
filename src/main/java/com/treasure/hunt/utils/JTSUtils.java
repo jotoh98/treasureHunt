@@ -194,4 +194,14 @@ public final class JTSUtils {
         double start = givenAngle - extend * Math.random();
         return new GeometryAngle(GEOMETRY_FACTORY, searcher, start, extend);
     }
+
+    public static Polygon toPolygon(Envelope envelope) {
+        return GEOMETRY_FACTORY.createPolygon(new Coordinate[]{
+                new Coordinate(envelope.getMinX(), envelope.getMinY()),
+                new Coordinate(envelope.getMaxX(), envelope.getMinY()),
+                new Coordinate(envelope.getMaxX(), envelope.getMaxY()),
+                new Coordinate(envelope.getMinX(), envelope.getMaxY()),
+                new Coordinate(envelope.getMinX(), envelope.getMinY()),
+        });
+    }
 }

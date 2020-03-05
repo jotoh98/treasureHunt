@@ -3,8 +3,7 @@ package com.treasure.hunt.strategy.geom;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import org.jfree.fx.FXGraphics2D;
-import org.locationtech.jts.geom.Geometry;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +25,9 @@ public class GeometryItem<T> {
     @Getter
     private List<GeometryStyle> geometryStyles = new ArrayList<>();
     private int preferredStyle = 0;
+    @Getter
+    @Setter
+    private boolean isSelected = false;
 
     /**
      * The constructor.
