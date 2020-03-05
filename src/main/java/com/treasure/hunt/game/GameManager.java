@@ -54,6 +54,10 @@ import java.util.stream.Stream;
 @Slf4j
 public class GameManager implements KryoSerializable, KryoCopyable<GameManager> {
 
+    public static final double MOUSE_RECOGNIZE_DISTANCE = 0.2;
+    private List<GeometryItem<?>> geometryItemsList = new ArrayList<>();
+    private int geometryItemsListIndex = 0;
+    private Coordinate lastMouseClick;
     /**
      * Contains the "gameHistory".
      */
@@ -194,12 +198,20 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     public void previous() {
         int viewIndexSnapshot = viewIndex.get();
         if (viewIndexSnapshot > 0) {
-            for (int i = viewIndexSnapshot; i < moves.size(); i++) {
-                log.info("" + i + " of " + moves.size());
-                if (!moves.get(i).getGeometryItems().isEmpty()) {
-                    moves.get(i).getGeometryItems().forEach(geometryItem -> {
-                        geometryItem.setSelected(false);
-                    });
+            for (int i = viewIndexSnapshot; i < turns.size(); i++) {
+                log.info("" + i + " of " + turns.size());
+                if (i == 0) {
+                    if (!turns.get(i).getGeometryItems(JTSUtils.createPoint(0, 0)).isEmpty()) {
+                        turns.get(i).getGeometryItems(JTSUtils.createPoint(0, 0)).forEach(geometryItem -> {
+                            geometryItem.setSelected(false);
+                        });
+                    }
+                } else {
+                    if (!turns.get(i).getGeometryItems(turns.get(i - 1).getSearchPath().getLastPoint()).isEmpty()) {
+                        turns.get(i).getGeometryItems(turns.get(i - 1).getSearchPath().getLastPoint()).forEach(geometryItem -> {
+                            geometryItem.setSelected(false);
+                        });
+                    }
                 }
             }
             viewIndex.set(viewIndexSnapshot - 1);
@@ -401,8 +413,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      * @param distance   the maximum distance to a potential {@link GeometryItem}.
      * @return a sorted list, containing the nearest {@link GeometryItem}'s to {@code coordinate}, with a maximum distance of {@code distance}.
      */
-    private List<GeometryItem> pickGeometryItem(Coordinate coordinate, double distance) {
-        List<GeometryItem> geometryItems = getGeometryItems(true);
+    private List<GeometryItem<?>> pickGeometryItem(Coordinate coordinate, double distance) {
+        List<GeometryItem<?>> geometryItems = getGeometryItems(true);
         if (geometryItems.size() < 1) {
             return new ArrayList<>();
         }
@@ -453,19 +465,17 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
             lastMouseClick = coordinate;
 
             if (geometryItemsList.size() < 1) {
-                highlighter = null;
                 return;
             }
         } else { // same mouse coordinate
             if (geometryItemsList.size() < 1) {
-                highlighter = null;
                 return;
             }
             geometryItemsListIndex = (geometryItemsListIndex + 1) % geometryItemsList.size();
         }
         geometryItemsList.get(geometryItemsListIndex).setSelected(true);
 
-        log.info("received: " + geometryItemsListIndex + "/" + geometryItemsList.size());
+        log.info("received: " + (geometryItemsListIndex + 1) + "/" + geometryItemsList.size());
         log.info("selected: " + geometryItemsList.get(geometryItemsListIndex).getObject());
     }
 }

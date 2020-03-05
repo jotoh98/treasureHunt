@@ -37,6 +37,8 @@ public enum GeometryType {
     CURRENT_RECTANGLE(true, "current rectangle", true),
     CURRENT_POLYGON(true, "current polygon", true),
 
+    HIGHLIGHTER(true, "highlighter", true),
+
     STANDARD(true, ""),
     CURRENT_WAY_POINT(true, "Current way point", true),
     GRID(true, "Grid", false);

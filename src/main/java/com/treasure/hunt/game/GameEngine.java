@@ -26,8 +26,6 @@ public class GameEngine {
     @Getter
     protected final Hider hider;
     protected final Coordinate initialSearcherCoordinate;
-    @Getter
-    private final Statistic statistics = new Statistic();
     /**
      * Tells, whether the game is done or not.
      */

@@ -1,6 +1,5 @@
 package com.treasure.hunt.utils;
 
-import com.google.common.util.concurrent.AtomicDouble;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.game.Turn;
 import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
@@ -158,11 +157,6 @@ public class Renderer {
     private static Stream<GeometryItem<?>> applyHighlighter(Stream<GeometryItem<?>> stream) {
         List<GeometryItem<?>> geometryItemList = stream.collect(Collectors.toList());
 
-        AtomicDouble atomicMinX = new AtomicDouble(0);
-        AtomicDouble atomicMinY = new AtomicDouble(0);
-        AtomicDouble atomicMaxX = new AtomicDouble(0);
-        AtomicDouble atomicMaxY = new AtomicDouble(0);
-
         geometryItemList.stream()
                 .filter(GeometryItem::isSelected)
                 .map(geometryItem -> ((Geometry) geometryItem.getObject()).getEnvelopeInternal()) //TODO: implement envelopes for non-geometry items
@@ -171,19 +165,21 @@ public class Renderer {
                     return envelope;
                 })
                 .ifPresent(
-                        envelope -> geometryItemList.add(new GeometryItem<>(
-                                JTSUtils.toPolygon(envelope),
-                                GeometryType.HIGHLIGHTER))
+                        envelope -> {
+                            geometryItemList.add(new GeometryItem<>(
+                                    JTSUtils.toPolygon(envelope),
+                                    GeometryType.HIGHLIGHTER));
+                        }
                 );
 
         return geometryItemList.stream();
     }
 
     /**
-     * Render a list of turns and additional items.
+     * Render a list of moves and additional items.
      * Filters and sorts the assigned {@link GeometryItem}s.
      *
-     * @param turns     all turns available
+     * @param turns     all moves available
      * @param viewIndex the current view index
      */
     private void render(List<Turn> turns, int viewIndex) {
@@ -193,20 +189,13 @@ public class Renderer {
         Stream<GeometryItem<?>> additionalStream = additional.values().stream();
         Stream<GeometryItem<?>> itemStream = Stream.concat(visible, additionalStream);
 
-        geometryItemList.stream()
-                .filter(GeometryItem::isSelected)
-                .map(geometryItem -> ((Geometry) geometryItem.getObject()).getEnvelopeInternal()) //TODO: implement envelopes for non-geometry items
-                .reduce((envelope, envelope2) -> {
-                    envelope.expandToInclude(envelope2);
-                    return envelope;
-                })
-                .ifPresent(
-                        envelope -> geometryItemList.add(new GeometryItem<>(
-                                JTSUtils.toPolygon(envelope),
-                                GeometryType.HIGHLIGHTER))
-                );
-
-        return geometryItemList.stream();
+        applyFilters(
+                itemStream,
+                Renderer::filterOverride,
+                Renderer::assignMultiStyles,
+                Renderer::applyHighlighter,
+                Renderer::sortZIndex
+        ).forEach(this::render);
     }
 
     /**
@@ -301,28 +290,5 @@ public class Renderer {
      */
     public void removeAdditional(String key) {
         additional.remove(key);
-    }
-
-    /**
-     * Render a list of moves and additional items.
-     * Filters and sorts the assigned {@link GeometryItem}s.
-     *
-     * @param moves     all moves available
-     * @param viewIndex the current view index
-     */
-    private void render(List<Move> moves, int viewIndex) {
-        clear();
-
-        Stream<GeometryItem<?>> visible = visibleGeometries(moves.stream(), viewIndex);
-        Stream<GeometryItem<?>> additionalStream = additional.values().stream();
-        Stream<GeometryItem<?>> itemStream = Stream.concat(visible, additionalStream);
-
-        applyFilters(
-                itemStream,
-                Renderer::filterOverride,
-                Renderer::assignMultiStyles,
-                Renderer::applyHighlighter,
-                Renderer::sortZIndex
-        ).forEach(this::render);
     }
 }
