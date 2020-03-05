@@ -9,6 +9,7 @@ import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.Movement;
 import com.treasure.hunt.utils.JTSUtils;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -355,14 +356,14 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
     }
 
     @Override
-    public AngleHint move(Movement movement) {
-        currentPlayersPosition = movement.getEndPoint();
+    public AngleHint move(SearchPath searchPath) {
+        currentPlayersPosition = searchPath.getLastPoint();
         adaptBoundingCircle();
 
         //calc the visited Area by the player TODO should be done incrementally from move to move or be globally accessible
-        Coordinate[] visitedCoordinates = new Coordinate[movement.getPoints().size()];
-        for (int coordinateIndex = 0; coordinateIndex < movement.getPoints().size(); coordinateIndex++) {
-            visitedCoordinates[coordinateIndex] = movement.getPoints().get(coordinateIndex).getObject().getCoordinate();
+        Coordinate[] visitedCoordinates = new Coordinate[searchPath.getPoints().size()];
+        for (int coordinateIndex = 0; coordinateIndex < searchPath.getPoints().size(); coordinateIndex++) {
+            visitedCoordinates[coordinateIndex] = searchPath.getPoints().get(coordinateIndex).getCoordinate();
         }
         LineString walkedPath = gf.createLineString(visitedCoordinates);
         this.walkedPathLength = walkedPath.getLength();

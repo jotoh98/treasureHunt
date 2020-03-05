@@ -6,6 +6,9 @@ import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.math.Vector2D;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * A utility class for the work with {@link org.locationtech.jts}.
  *
@@ -16,7 +19,7 @@ public final class JTSUtils {
      * A static final shared {@link GeometryFactory} we use, such that every usage
      * uses the same settings of the geometry factory.
      */
-    public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
+    public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(1000000000));
 
     private JTSUtils() {
     }
@@ -41,22 +44,28 @@ public final class JTSUtils {
     }
 
     /**
-     * @param infiniteLine {@link LineSegment}, representing an infinite line
-     * @param lineSegment  {@link LineSegment}, a line between two points
-     * @return intersection of infinite line and line segment. May be {@code null}.
+     * Tests whether the line line intersects with the linesegment segment and returns the intersecting Coordinate
+     * (if one exists).
+     *
+     * @param line    a {@link LineSegment}
+     * @param segment a {@link LineSegment}
+     * @return an intersection {@link Point} of the {@link LineSegment} objects {@code line} and {@code lineSegment}
      */
-    public static Point lineLineSegmentIntersection(LineSegment infiniteLine, LineSegment lineSegment) {
-        Point intersection = GEOMETRY_FACTORY.createPoint(infiniteLine.lineIntersection(lineSegment));
-        Point lineSegmentPointA = GEOMETRY_FACTORY.createPoint(lineSegment.p0);
-        Point lineSegmentPointB = GEOMETRY_FACTORY.createPoint(lineSegment.p1);
-        LineString lineSegString = createLineString(
-                lineSegmentPointA,
-                lineSegmentPointB
-        );
-        if (lineSegString.contains(intersection)) {
-            return intersection;
+    public static Coordinate lineWayIntersection(LineSegment line, LineSegment segment) {
+        Coordinate intersection = line.lineIntersection(segment);
+        if (intersection == null) {
+            return null;
         }
-        return null;
+        double distance = GEOMETRY_FACTORY.getPrecisionModel().makePrecise(segment.distance(intersection));
+        if (distance != 0) {
+            return null;
+        }
+        return intersection;
+    }
+
+    public static boolean doubleEqual(double a, double b) {
+        return (0 == GEOMETRY_FACTORY.getPrecisionModel().makePrecise(a - b));
+
     }
 
     /**
@@ -193,6 +202,12 @@ public final class JTSUtils {
         double extend = Math.random() * maxExtend;
         double start = givenAngle - extend * Math.random();
         return new GeometryAngle(GEOMETRY_FACTORY, searcher, start, extend);
+    }
+
+    public static List<Coordinate> getCoordinateList(List<? extends Geometry> geometries) {
+        return geometries.stream()
+                .map(Geometry::getCoordinate)
+                .collect(Collectors.toList());
     }
 
     public static Polygon toPolygon(Envelope envelope) {

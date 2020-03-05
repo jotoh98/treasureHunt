@@ -41,10 +41,11 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * The GameManager stores every {@link Move}-objects, happened in the game,
+ * The GameManager stores every {@link Turn}-objects, happened in the game,
  * the binds the views to update them for every move and
  * runs the GameEngine step for step.
  *
@@ -52,24 +53,15 @@ import java.util.stream.Stream;
  */
 @Slf4j
 public class GameManager implements KryoSerializable, KryoCopyable<GameManager> {
-    /**
-     * The maximum distance on canvas between the mouse and a {@link GeometryItem},
-     * in which the mouse can select a {@link GeometryItem} on click.
-     */
-    public static final double MOUSE_RECOGNIZE_DISTANCE = .2;
+
     /**
      * Contains the "gameHistory".
      */
     @VisibleForTesting
     @Getter
-    ObservableList<Move> moves = FXCollections.observableArrayList();
-    @Getter
-    ObservableList<Move> highlighter = FXCollections.observableArrayList();
+    ObservableList<Turn> turns = FXCollections.observableArrayList();
     @Getter
     private volatile BooleanProperty beatThreadRunning = new SimpleBooleanProperty(false);
-    private Coordinate lastMouseClick;
-    private int geometryItemsListIndex;
-    private List<GeometryItem> geometryItemsList = new ArrayList<GeometryItem>();
     private GameEngine gameEngine;
     @Getter
     private BooleanProperty finishedProperty;
@@ -78,7 +70,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     @Getter
     private BooleanBinding latestStepViewedBinding;
     @Getter
-    private ObjectBinding<Move> lastMoveBinding;
+    private ObjectBinding<Turn> lastMoveBinding;
     @Getter
     private ObjectBinding<Point> lastTreasureBindings;
     @Getter
@@ -119,7 +111,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
 
     public void init() {
         // Do initial move
-        moves.add(gameEngine.init());
+        turns.add(gameEngine.init());
         if (gameEngine.isFinished()) {
             finishedProperty.set(true);
         }
@@ -131,21 +123,21 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     private void setBindings() {
-        latestStepViewedBinding = Bindings.createBooleanBinding(() -> moves.size() - 1 == viewIndex.get(), viewIndex, moves);
+        latestStepViewedBinding = Bindings.createBooleanBinding(() -> turns.size() - 1 == viewIndex.get(), viewIndex, turns);
         stepForwardImpossibleBinding = finishedProperty.and(latestStepViewedBinding);
-        statistics = Bindings.createObjectBinding(() -> gameEngine.getStatistics().calculate(getMovesViewed()), viewIndex);
+        statistics = Bindings.createObjectBinding(() -> gameEngine.getStatistics().calculate(getVisibleTurns()), viewIndex);
         stepBackwardImpossibleBinding = viewIndex.isEqualTo(0);
-        lastMoveBinding = Bindings.createObjectBinding(() -> moves.get(viewIndex.get()), viewIndex, moves);
-        lastTreasureBindings = Bindings.createObjectBinding(() -> moves.get(viewIndex.get()).getTreasureLocation(), viewIndex, moves);
-        lastPointBinding = Bindings.createObjectBinding(() -> moves.get(viewIndex.get()).getMovement().getEndPoint(), viewIndex, moves);
-        moveSizeBinding = Bindings.size(moves);
-        statusMessageItemsBinding = Bindings.createObjectBinding(this::getStatusMessageItems, moves);
+        lastMoveBinding = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()), viewIndex, turns);
+        lastTreasureBindings = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()).getTreasureLocation(), viewIndex, turns);
+        lastPointBinding = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()).getSearchPath().getLastPoint(), viewIndex, turns);
+        moveSizeBinding = Bindings.size(turns);
+        statusMessageItemsBinding = Bindings.createObjectBinding(this::getStatusMessageItems, viewIndex);
     }
 
     @NotNull
     private List<StatusMessageItem> getStatusMessageItems() {
-        Map<StatusMessageType, List<StatusMessageItem>> statusByType = moves.stream()
-                .flatMap(move -> Stream.of(move.getHint(), move.getMovement()))
+        Map<StatusMessageType, List<StatusMessageItem>> statusByType = getVisibleTurns().stream()
+                .flatMap(turn -> Stream.of(turn.getHint(), turn.getSearchPath()))
                 .flatMap(hintAndMovement -> hintAndMovement == null ? Stream.empty() : hintAndMovement.getStatusMessageItemsToBeAdded().stream())
                 .collect(Collectors.groupingBy(StatusMessageItem::getStatusMessageType));
 
@@ -159,9 +151,9 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
                         return Stream.of(itemsOfType.get(itemsOfType.size() - 1));
                     }
                 })
-                .filter(statusMessageItem -> moves.stream().noneMatch(move ->
-                        move.getHint() != null && move.getHint().getStatusMessageItemsToBeRemoved().contains(statusMessageItem) ||
-                                move.getMovement() != null && move.getMovement().getStatusMessageItemsToBeRemoved().contains(statusMessageItem)
+                .filter(statusMessageItem -> turns.stream().noneMatch(turn ->
+                        turn.getHint() != null && turn.getHint().getStatusMessageItemsToBeRemoved().contains(statusMessageItem) ||
+                                turn.getSearchPath() != null && turn.getSearchPath().getStatusMessageItemsToBeRemoved().contains(statusMessageItem)
                 ))
                 .collect(Collectors.toList());
     }
@@ -170,9 +162,9 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      * Works only for stepSim &le; stepView 
      */
     public void next() {
-        if (viewIndex.get() < moves.size()) {
+        if (viewIndex.get() < turns.size()) {
             if (latestStepViewed()) {
-                moves.add(gameEngine.move());
+                turns.add(gameEngine.move());
             }
             viewIndex.set(viewIndex.get() + 1);
         }
@@ -233,51 +225,58 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      * @return {@code true}, if the shown step is the most up to date one. {@code false}, otherwise.
      */
     public boolean latestStepViewed() {
-        return moves.size() - 1 == viewIndex.get();
+        return turns.size() - 1 == viewIndex.get();
     }
 
     /**
      * @param excludeOverrideItems if true Geometry items that are set to be overridable only the last item is returned and later deleted items are removed
      * @return The whole List of geometryItems of the gameHistory
      */
-    public List<GeometryItem> getGeometryItems(Boolean excludeOverrideItems) {
-        ArrayList<GeometryItem> geometryItems = getMovesViewed().stream()
-                .flatMap(move -> move.getGeometryItems().stream())
+    public List<GeometryItem<?>> getGeometryItems(Boolean excludeOverrideItems) {
+
+        List<Turn> visible = getVisibleTurns();
+
+        //TODO: move to #151-rendering-pipeline
+        ArrayList<GeometryItem<?>> geometryItems = IntStream
+                .range(0, visible.size())
+                .boxed()
+                .flatMap(index -> {
+                    Point lastMove = null;
+                    if (index > 0) {
+                        lastMove = visible.get(index - 1).getSearchPath().getLastPoint();
+                    }
+                    return visible.get(index).getGeometryItems(lastMove).stream();
+                })
                 .collect(Collectors.toCollection(ArrayList::new));
+
         if (!excludeOverrideItems) {
             return geometryItems;
         }
-        Map<GeometryType, List<GeometryItem>> itemsByType = geometryItems.stream()
+        Map<GeometryType, List<GeometryItem<?>>> itemsByType = geometryItems.stream()
                 .collect(Collectors.groupingBy(GeometryItem::getGeometryType));
 
         return itemsByType.keySet()
                 .stream()
                 .flatMap(type -> {
-                    List<GeometryItem> itemsOfType = itemsByType.get(type);
+                    List<GeometryItem<?>> itemsOfType = itemsByType.get(type);
                     if (!type.isOverride()) {
                         return itemsOfType.stream();
                     } else {
                         return Stream.of(itemsOfType.get(itemsOfType.size() - 1));
                     }
                 })
-                .filter(geometryItem -> moves.stream().noneMatch(move ->
-                        move.getHint() != null && move.getHint().getGeometryItemsToBeRemoved().contains(geometryItem) ||
-                                move.getMovement() != null && move.getMovement().getGeometryItemsToBeRemoved().contains(geometryItem)
+                .filter(geometryItem -> turns.stream().noneMatch(turn ->
+                        turn.getHint() != null && turn.getHint().getGeometryItemsToBeRemoved().contains(geometryItem) ||
+                                turn.getSearchPath() != null && turn.getSearchPath().getGeometryItemsToBeRemoved().contains(geometryItem)
                 ))
-                .collect(Collectors.toList());
-    }
-
-    public List<GeometryItem<?>> getGeometryItems() {
-        return moves.stream()
-                .flatMap(move -> move.getGeometryItems().stream())
                 .collect(Collectors.toList());
     }
 
     /**
      * @return only viewed moves
      */
-    public List<Move> getMovesViewed() {
-        return moves.subList(0, viewIndex.get() + 1);
+    public List<Turn> getVisibleTurns() {
+        return turns.subList(0, viewIndex.get() + 1);
     }
 
     /**
@@ -322,7 +321,11 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
                         throw new RuntimeException(e);
                     }
                 } else {
-                    next();
+                    try {
+                        next();
+                    } catch (Exception e) {
+                        completableFuture.completeExceptionally(e);
+                    }
                 }
             }
             log.trace("Terminating beating thread");
@@ -344,7 +347,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     public void write(Kryo kryo, Output output) {
         kryo.writeObject(output, gameEngine);
         output.writeBoolean(beatThreadRunning.get());
-        kryo.writeObject(output, new ArrayList<>(moves));
+        kryo.writeObject(output, new ArrayList<>(turns));
         output.writeInt(viewIndex.get());
         output.writeBoolean(finishedProperty.get());
     }
@@ -356,7 +359,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     public void read(Kryo kryo, Input input) {
         gameEngine = kryo.readObject(input, GameEngine.class);
         beatThreadRunning = new SimpleBooleanProperty(input.readBoolean());
-        moves = FXCollections.observableArrayList(kryo.readObject(input, ArrayList.class));
+        turns = FXCollections.observableArrayList(kryo.readObject(input, ArrayList.class));
         viewIndex = new SimpleIntegerProperty(input.readInt());
         finishedProperty = new SimpleBooleanProperty(input.readBoolean());
         setBindings();
@@ -386,7 +389,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         GameManager gameManager = (GameManager) intConstr.newInstance();
         gameManager.gameEngine = kryo.copy(gameEngine);
         gameManager.beatThreadRunning = new SimpleBooleanProperty(beatThreadRunning.get());
-        gameManager.moves = FXCollections.observableArrayList(moves);
+        gameManager.turns = FXCollections.observableArrayList(turns);
         gameManager.viewIndex = new SimpleIntegerProperty(viewIndex.get());
         gameManager.finishedProperty = new SimpleBooleanProperty(finishedProperty.get());
         gameManager.setBindings();

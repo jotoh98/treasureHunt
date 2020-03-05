@@ -2,7 +2,7 @@ package com.treasure.hunt.strategy.searcher.impl;
 
 import com.treasure.hunt.game.mods.hideandseek.HideAndSeekSearcher;
 import com.treasure.hunt.strategy.hint.Hint;
-import com.treasure.hunt.strategy.searcher.Movement;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.SwingUtils;
 import org.locationtech.jts.geom.Point;
 
@@ -24,26 +24,26 @@ public class UserControlledHintSearcher implements HideAndSeekSearcher<Hint> {
     }
 
     /**
-     * @return A {@link Movement} to the point, the user gave.
+     * @return A {@link SearchPath} to the point, the user gave.
      */
     @Override
-    public Movement move() {
+    public SearchPath move() {
         Point moveTo = SwingUtils.promptForPoint("Please provide a initial move location", "");
-        Movement movement = new Movement(currentPosition);
+        SearchPath searchPath = new SearchPath(currentPosition);
         currentPosition = moveTo;
-        movement.addWayPoint(moveTo);
-        return movement;
+        searchPath.addPoint(moveTo);
+        return searchPath;
     }
 
     /**
-     * @return A {@link Movement} to the point, the user gave.
+     * @return A {@link SearchPath} to the point, the user gave.
      */
     @Override
-    public Movement move(Hint hint) {
+    public SearchPath move(Hint hint) {
         Point moveTo = SwingUtils.promptForPoint("Please provide a move location", "Hint is: " + hint);
-        Movement movement = new Movement(currentPosition);
+        SearchPath searchPath = new SearchPath(currentPosition);
         currentPosition = moveTo;
-        movement.addWayPoint(moveTo);
-        return movement;
+        searchPath.addPoint(moveTo);
+        return searchPath;
     }
 }

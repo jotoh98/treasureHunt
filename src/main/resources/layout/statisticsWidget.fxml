@@ -8,6 +8,9 @@
       xmlns="http://javafx.com/javafx/11" fx:controller="com.treasure.hunt.view.widget.StatisticsWidgetController">
     <children>
         <TableView fx:id="statisticsTable" maxHeight="1.7976931348623157E308" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
             <columns>
                 <TableColumn fx:id="nameColumn" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="-1.0"
                              text="Name"/>

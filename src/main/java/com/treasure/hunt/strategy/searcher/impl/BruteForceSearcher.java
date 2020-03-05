@@ -1,11 +1,8 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
-import com.treasure.hunt.strategy.geom.GeometryItem;
-import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.Hint;
-import com.treasure.hunt.strategy.searcher.Movement;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
-import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Point;
 
 /**
@@ -15,7 +12,7 @@ import org.locationtech.jts.geom.Point;
  * @author dorianreineccius
  */
 public class BruteForceSearcher implements Searcher<Hint> {
-    private int limit = 1;
+    private static final int limit = 1;
     private int lineSegmentDistance = 0;
     private int x = 0, y = 0;
 
@@ -26,45 +23,23 @@ public class BruteForceSearcher implements Searcher<Hint> {
     }
 
     @Override
-    public Movement move() {
-        Movement movement = new Movement(JTSUtils.createPoint(x, y));
+    public SearchPath move() {
+        SearchPath searchPath = new SearchPath();
         for (int i = 0; i < limit; i++) {
-            lineSegmentDistance++;
-            // up
-            y += lineSegmentDistance;
-            movement.addWayPoint(JTSUtils.createPoint(x, y));
-            // right
+            y += ++lineSegmentDistance;
+            searchPath.addPoint(x, y);
             x += lineSegmentDistance;
-            movement.addWayPoint(JTSUtils.createPoint(x, y));
-
-            lineSegmentDistance++;
-            //down
-            y -= lineSegmentDistance;
-            movement.addWayPoint(JTSUtils.createPoint(x, y));
-            //left
+            searchPath.addPoint(x, y);
+            y -= ++lineSegmentDistance;
+            searchPath.addPoint(x, y);
             x -= lineSegmentDistance;
-            movement.addWayPoint(JTSUtils.createPoint(x, y));
+            searchPath.addPoint(x, y);
         }
-        for (int i = 0; i < movement.getPoints().size() - 1; i++) {
-            movement.addAdditionalItem(
-                    new GeometryItem(
-                            JTSUtils.createLineString(
-                                    JTSUtils.createPoint(
-                                            movement.getPoints().get(i).getObject().getX(),
-                                            movement.getPoints().get(i).getObject().getY()
-                                    ),
-                                    JTSUtils.createPoint(
-                                            movement.getPoints().get(i + 1).getObject().getX(),
-                                            movement.getPoints().get(i + 1).getObject().getY()
-                                    )
-                            )
-                            , GeometryType.SEARCHER_MOVEMENT));
-        }
-        return movement;
+        return searchPath;
     }
 
     @Override
-    public Movement move(Hint hint) {
+    public SearchPath move(Hint hint) {
         return move();
     }
 }

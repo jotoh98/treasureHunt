@@ -2,7 +2,7 @@ package com.treasure.hunt.utils;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.game.Move;
+import com.treasure.hunt.game.Turn;
 import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
 import com.treasure.hunt.jts.awt.CanvasBoundary;
 import com.treasure.hunt.jts.awt.PointTransformation;
@@ -69,15 +69,16 @@ public class Renderer {
 
     /**
      * Get visible geometry items.
-     * The visible {@link Move}s determine which {@link GeometryItem} are visible.
+     * The visible {@link Turn}s determine which {@link GeometryItem} are visible.
      *
-     * @param stream    stream of moves
+     * @param turns     list of turns
      * @param viewIndex the current max index of visible moves
      * @return stream of visible geometry items
      */
-    private static Stream<GeometryItem<?>> visibleGeometries(Stream<Move> stream, int viewIndex) {
-        return stream.limit(viewIndex + 1)
-                .flatMap(move -> move.getGeometryItems().stream());
+    private static Stream<GeometryItem<?>> visibleGeometries(List<Turn> turns, int viewIndex) {
+        return ListUtils
+                .consecutive(turns.subList(0, viewIndex + 1), (prev, next) -> next.getGeometryItems(prev.getSearchPath().getLastPoint()))
+                .flatMap(Collection::stream);
     }
 
     /**
@@ -146,7 +147,7 @@ public class Renderer {
      */
     public void render(GameManager gameManager) {
         int viewIndex = gameManager.getViewIndex().get();
-        ArrayList<Move> moves = new ArrayList<>(gameManager.getMoves());
+        ArrayList<Turn> moves = new ArrayList<>(gameManager.getVisibleTurns());
         render(moves, viewIndex);
     }
 
@@ -161,6 +162,36 @@ public class Renderer {
         AtomicDouble atomicMinY = new AtomicDouble(0);
         AtomicDouble atomicMaxX = new AtomicDouble(0);
         AtomicDouble atomicMaxY = new AtomicDouble(0);
+
+        geometryItemList.stream()
+                .filter(GeometryItem::isSelected)
+                .map(geometryItem -> ((Geometry) geometryItem.getObject()).getEnvelopeInternal()) //TODO: implement envelopes for non-geometry items
+                .reduce((envelope, envelope2) -> {
+                    envelope.expandToInclude(envelope2);
+                    return envelope;
+                })
+                .ifPresent(
+                        envelope -> geometryItemList.add(new GeometryItem<>(
+                                JTSUtils.toPolygon(envelope),
+                                GeometryType.HIGHLIGHTER))
+                );
+
+        return geometryItemList.stream();
+    }
+
+    /**
+     * Render a list of turns and additional items.
+     * Filters and sorts the assigned {@link GeometryItem}s.
+     *
+     * @param turns     all turns available
+     * @param viewIndex the current view index
+     */
+    private void render(List<Turn> turns, int viewIndex) {
+        clear();
+
+        Stream<GeometryItem<?>> visible = visibleGeometries(turns, viewIndex);
+        Stream<GeometryItem<?>> additionalStream = additional.values().stream();
+        Stream<GeometryItem<?>> itemStream = Stream.concat(visible, additionalStream);
 
         geometryItemList.stream()
                 .filter(GeometryItem::isSelected)
