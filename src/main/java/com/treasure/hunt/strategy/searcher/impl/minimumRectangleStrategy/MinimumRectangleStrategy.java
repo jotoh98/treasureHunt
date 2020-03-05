@@ -10,7 +10,10 @@ import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper;
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StrategyFromPaper;
 import com.treasure.hunt.utils.JTSUtils;
-import org.locationtech.jts.geom.*;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.LineSegment;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +101,6 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
             scanCurrentRectangle(move, currentHint);
             Polygon newPolygon;
             do {
-                System.out.println("phase : " + phase);
                 phase++;
                 updatePhaseHints();
                 newPolygon = getNewPolygon(obtainedHints, phaseHints);
@@ -147,34 +149,30 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
     @Override
     protected SearchPath specificRectangleScan(Coordinate rectangleCorner1, Coordinate rectangleCorner2,
                                                Coordinate rectangleCorner3, Coordinate rectangleCorner4, SearchPath move) {
-        TransformForAxisParallelism transformerForRectangleAxisParallelism =
-                new TransformForAxisParallelism(new LineSegment(rectangleCorner1, rectangleCorner2));
-        Polygon currentPolygon = getNewPolygon(obtainedHints, phaseHints);
-        if (currentPolygon == null) {
-            return move;
-        }
-        Polygon currentPolygonTransformed = transformerForRectangleAxisParallelism.toInternal(currentPolygon);
-        Geometry envelopeOfCurrentPolygonTransformed = currentPolygonTransformed.getEnvelope();
-
-        if (envelopeOfCurrentPolygonTransformed.getArea() == 0) {
-            return move;
-        }
-        Coordinate[] coordinatesOfCurrentPolygonTransformed = envelopeOfCurrentPolygonTransformed.getCoordinates();
-
-        Coordinate rectangleTransformedCorner1 = transformerForRectangleAxisParallelism.toInternal(rectangleCorner1);
-        Coordinate rectangleTransformedCorner3 = transformerForRectangleAxisParallelism.toInternal(rectangleCorner3);
-
-        Coordinate[] reducedRectangleTransformed = intersectionOfTwoAxisParallelRectangles(
-                coordinatesOfCurrentPolygonTransformed[1], coordinatesOfCurrentPolygonTransformed[3],
-                rectangleTransformedCorner1, rectangleTransformedCorner3
+        Point[] horizontalSplitRectangle = splitRectangleHorizontally(
+                JTSUtils.GEOMETRY_FACTORY.createPoint(rectangleCorner1),
+                JTSUtils.GEOMETRY_FACTORY.createPoint(rectangleCorner2),
+                JTSUtils.GEOMETRY_FACTORY.createPoint(rectangleCorner3),
+                JTSUtils.GEOMETRY_FACTORY.createPoint(rectangleCorner4),
+                currentHint, currentHint.getHalfPlaneLine(), false
         );
-
-        RoutinesFromPaper.rectangleScan(
-                transformerForRectangleAxisParallelism.toExternal(reducedRectangleTransformed[0]),
-                transformerForRectangleAxisParallelism.toExternal(reducedRectangleTransformed[1]),
-                transformerForRectangleAxisParallelism.toExternal(reducedRectangleTransformed[2]),
-                transformerForRectangleAxisParallelism.toExternal(reducedRectangleTransformed[3]), move);
-        return move;
+        Point[] verticalSplitRectangle = splitRectangleVertically(
+                JTSUtils.GEOMETRY_FACTORY.createPoint(rectangleCorner1),
+                JTSUtils.GEOMETRY_FACTORY.createPoint(rectangleCorner2),
+                JTSUtils.GEOMETRY_FACTORY.createPoint(rectangleCorner3),
+                JTSUtils.GEOMETRY_FACTORY.createPoint(rectangleCorner4),
+                currentHint, currentHint.getHalfPlaneLine(), false
+        );
+        if (horizontalSplitRectangle != null) {
+            return RoutinesFromPaper.rectangleScan(horizontalSplitRectangle[0],
+                    horizontalSplitRectangle[1], horizontalSplitRectangle[2], horizontalSplitRectangle[3], move);
+        }
+        if (verticalSplitRectangle != null) {
+            return RoutinesFromPaper.rectangleScan(verticalSplitRectangle[0],
+                    verticalSplitRectangle[1], verticalSplitRectangle[2], verticalSplitRectangle[3], move);
+        }
+        return RoutinesFromPaper.rectangleScan(rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4,
+                move);
     }
 
     private Coordinate[] intersectionOfTwoAxisParallelRectangles(Coordinate firstRectangleCorner1,
