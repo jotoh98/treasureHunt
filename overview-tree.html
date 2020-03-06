@@ -105,6 +105,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li><a href="com/treasure/hunt/jts/geom/package-tree.html">com.treasure.hunt.jts.geom</a>, </li>
 <li><a href="com/treasure/hunt/jts/other/package-tree.html">com.treasure.hunt.jts.other</a>, </li>
 <li><a href="com/treasure/hunt/service/io/package-tree.html">com.treasure.hunt.service.io</a>, </li>
+<li><a href="com/treasure/hunt/service/preferences/package-tree.html">com.treasure.hunt.service.preferences</a>, </li>
 <li><a href="com/treasure/hunt/strategy/geom/package-tree.html">com.treasure.hunt.strategy.geom</a>, </li>
 <li><a href="com/treasure/hunt/strategy/hider/package-tree.html">com.treasure.hunt.strategy.hider</a>, </li>
 <li><a href="com/treasure/hunt/strategy/hider/impl/package-tree.html">com.treasure.hunt.strategy.hider.impl</a>, </li>
@@ -203,6 +204,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/NavigationController.html" title="class in com.treasure.hunt.view.widget"><span class="typeNameLink">NavigationController</span></a></li>
 <li class="circle">com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/PointInspectorController.html" title="class in com.treasure.hunt.view.widget"><span class="typeNameLink">PointInspectorController</span></a></li>
 <li class="circle">com.treasure.hunt.jts.awt.<a href="com/treasure/hunt/jts/awt/PointTransformation.html" title="class in com.treasure.hunt.jts.awt"><span class="typeNameLink">PointTransformation</span></a> (implements org.locationtech.jts.awt.PointTransformation)</li>
+<li class="circle">com.treasure.hunt.service.preferences.<a href="com/treasure/hunt/service/preferences/PreferenceService.html" title="class in com.treasure.hunt.service.preferences"><span class="typeNameLink">PreferenceService</span></a></li>
+<li class="circle">com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/PreferencesWidgetController.html" title="class in com.treasure.hunt.view.widget"><span class="typeNameLink">PreferencesWidgetController</span></a></li>
 <li class="circle">com.treasure.hunt.strategy.hider.impl.<a href="com/treasure/hunt/strategy/hider/impl/RandomAngleHintHider.html" title="class in com.treasure.hunt.strategy.hider.impl"><span class="typeNameLink">RandomAngleHintHider</span></a> (implements com.treasure.hunt.strategy.hider.<a href="com/treasure/hunt/strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider">Hider</a>&lt;T&gt;)</li>
 <li class="circle">com.treasure.hunt.strategy.hider.impl.<a href="com/treasure/hunt/strategy/hider/impl/RandomHalfPlaneHintHider.html" title="class in com.treasure.hunt.strategy.hider.impl"><span class="typeNameLink">RandomHalfPlaneHintHider</span></a> (implements com.treasure.hunt.strategy.hider.<a href="com/treasure/hunt/strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider">Hider</a>&lt;T&gt;)</li>
 <li class="circle">com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/ReflectionUtils.html" title="class in com.treasure.hunt.utils"><span class="typeNameLink">ReflectionUtils</span></a></li>
@@ -219,10 +222,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="circle">com.treasure.hunt.analysis.<a href="com/treasure/hunt/analysis/Statistic.html" title="class in com.treasure.hunt.analysis"><span class="typeNameLink">Statistic</span></a></li>
 <li class="circle">com.treasure.hunt.analysis.<a href="com/treasure/hunt/analysis/StatisticObject.html" title="class in com.treasure.hunt.analysis"><span class="typeNameLink">StatisticObject</span></a></li>
+<li class="circle">com.treasure.hunt.analysis.<a href="com/treasure/hunt/analysis/StatisticObject.StatisticInfo.html" title="class in com.treasure.hunt.analysis"><span class="typeNameLink">StatisticObject.StatisticInfo</span></a></li>
 <li class="circle">com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/StatisticsWidgetController.html" title="class in com.treasure.hunt.view.widget"><span class="typeNameLink">StatisticsWidgetController</span></a></li>
 <li class="circle">com.treasure.hunt.analysis.<a href="com/treasure/hunt/analysis/StatisticsWithId.html" title="class in com.treasure.hunt.analysis"><span class="typeNameLink">StatisticsWithId</span></a></li>
 <li class="circle">com.treasure.hunt.analysis.<a href="com/treasure/hunt/analysis/StatisticsWithIdsAndPath.html" title="class in com.treasure.hunt.analysis"><span class="typeNameLink">StatisticsWithIdsAndPath</span></a></li>
-<li class="circle">com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/StatisticTableController.html" title="class in com.treasure.hunt.view.widget"><span class="typeNameLink">StatisticTableController</span></a></li>
+<li class="circle">com.treasure.hunt.view.<a href="com/treasure/hunt/view/StatisticTableController.html" title="class in com.treasure.hunt.view"><span class="typeNameLink">StatisticTableController</span></a></li>
 <li class="circle">com.treasure.hunt.strategy.geom.<a href="com/treasure/hunt/strategy/geom/StatusMessageItem.html" title="class in com.treasure.hunt.strategy.geom"><span class="typeNameLink">StatusMessageItem</span></a></li>
 <li class="circle">com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/StatusMessageWidgetController.html" title="class in com.treasure.hunt.view.widget"><span class="typeNameLink">StatusMessageWidgetController</span></a></li>
 <li class="circle">com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/StatusMessageWidgetTextFlowController.html" title="class in com.treasure.hunt.view.widget"><span class="typeNameLink">StatusMessageWidgetTextFlowController</span></a></li>
@@ -280,7 +284,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">com.treasure.hunt.strategy.geom.<a href="com/treasure/hunt/strategy/geom/GeometryType.html" title="enum in com.treasure.hunt.strategy.geom"><span class="typeNameLink">GeometryType</span></a></li>
 <li class="circle">com.treasure.hunt.strategy.hint.impl.<a href="com/treasure/hunt/strategy/hint/impl/HalfPlaneHint.Direction.html" title="enum in com.treasure.hunt.strategy.hint.impl"><span class="typeNameLink">HalfPlaneHint.Direction</span></a></li>
 <li class="circle">com.treasure.hunt.jts.other.<a href="com/treasure/hunt/jts/other/ImageItem.Alignment.html" title="enum in com.treasure.hunt.jts.other"><span class="typeNameLink">ImageItem.Alignment</span></a></li>
-<li class="circle">com.treasure.hunt.analysis.<a href="com/treasure/hunt/analysis/StatisticObject.StatisticInfo.html" title="enum in com.treasure.hunt.analysis"><span class="typeNameLink">StatisticObject.StatisticInfo</span></a></li>
 <li class="circle">com.treasure.hunt.strategy.geom.<a href="com/treasure/hunt/strategy/geom/StatusMessageType.html" title="enum in com.treasure.hunt.strategy.geom"><span class="typeNameLink">StatusMessageType</span></a></li>
 <li class="circle">com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.<a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/StrategyFromPaper.HintQuality.html" title="enum in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper"><span class="typeNameLink">StrategyFromPaper.HintQuality</span></a></li>
 </ul>
