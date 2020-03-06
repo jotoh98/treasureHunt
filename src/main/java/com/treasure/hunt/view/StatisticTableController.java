@@ -1,4 +1,4 @@
-package com.treasure.hunt.view.widget;
+package com.treasure.hunt.view;
 
 import com.treasure.hunt.analysis.StatisticObject;
 import com.treasure.hunt.analysis.StatisticsWithId;
@@ -78,7 +78,7 @@ public class StatisticTableController {
         averageColumn.setCellValueFactory(param -> {
             List<StatisticObject> value = param.getValue().getValue();
             return new SimpleObjectProperty<>(value.stream().map(StatisticObject::getValue)
-                    .mapToDouble(valueOfStatistic -> (double) valueOfStatistic)
+                    .mapToDouble(Number::doubleValue)
                     .average().getAsDouble());
         });
         averageColumn.setText("average");
@@ -88,7 +88,7 @@ public class StatisticTableController {
         minColumn.setCellValueFactory(param -> {
             List<StatisticObject> value = param.getValue().getValue();
             return new SimpleObjectProperty<>(value.stream().map(StatisticObject::getValue)
-                    .mapToDouble(valueOfStatistic -> (double) valueOfStatistic)
+                    .mapToDouble(Number::doubleValue)
                     .min().getAsDouble());
         });
         minColumn.setText("min");
@@ -98,7 +98,7 @@ public class StatisticTableController {
         maxColumn.setCellValueFactory(param -> {
             List<StatisticObject> value = param.getValue().getValue();
             return new SimpleObjectProperty<>(value.stream().map(StatisticObject::getValue)
-                    .mapToDouble(valueOfStatistic -> (double) valueOfStatistic)
+                    .mapToDouble(Number::doubleValue)
                     .max().getAsDouble());
         });
         maxColumn.setText("max");
@@ -134,35 +134,19 @@ public class StatisticTableController {
 
         statisticsMeasureHashMap.keySet()
                 .forEach(statisticInfo -> {
-                    TableColumn statisticColumnWithOutType;
-                    if (statisticInfo.getType() != Double.class) {
-                        TableColumn<StatisticsWithId, String> statisticColumn = new TableColumn<>();
-                        statisticColumn.setCellValueFactory(param -> {
-                            StatisticsWithId value = param.getValue();
-                            List<StatisticObject> statisticObjects = value.getStatisticObjects();
-                            Optional<StatisticObject> first = statisticObjects.stream()
-                                    .filter(statisticObject -> statisticObject.getStatisticInfo().equals(statisticInfo))
-                                    .findFirst();
-                            StatisticObject statisticObject = first.orElseThrow();
-                            return new SimpleStringProperty(statisticObject.getValue().toString());
-                        });
-                        statisticColumnWithOutType = statisticColumn;
-                    } else {
-                        TableColumn<StatisticsWithId, Double> statisticColumn = new TableColumn<>();
-                        statisticColumn.setCellValueFactory(param -> {
-                            StatisticsWithId value = param.getValue();
-                            List<StatisticObject> statisticObjects = value.getStatisticObjects();
-                            Optional<StatisticObject> first = statisticObjects.stream()
-                                    .filter(statisticObject -> statisticObject.getStatisticInfo().equals(statisticInfo))
-                                    .findFirst();
-                            StatisticObject statisticObject = first.orElseThrow();
-                            return new SimpleObjectProperty<>((Double) statisticObject.getValue());
-                        });
-                        statisticColumnWithOutType = statisticColumn;
-                    }
+                    TableColumn<StatisticsWithId, Double> statisticColumn = new TableColumn<>();
+                    statisticColumn.setCellValueFactory(param -> {
+                        StatisticsWithId value = param.getValue();
+                        List<StatisticObject> statisticObjects = value.getStatisticObjects();
+                        Optional<StatisticObject> first = statisticObjects.stream()
+                                .filter(statisticObject -> statisticObject.getStatisticInfo().equals(statisticInfo))
+                                .findFirst();
+                        StatisticObject statisticObject = first.orElseThrow();
+                        return new SimpleObjectProperty<>(statisticObject.getValue().doubleValue());
+                    });
 
-                    instanceStatisticsTableView.getColumns().add(statisticColumnWithOutType);
-                    statisticColumnWithOutType.setText(statisticInfo.getName());
+                    instanceStatisticsTableView.getColumns().add(statisticColumn);
+                    statisticColumn.setText(statisticInfo.getName());
                 });
     }
 
@@ -235,10 +219,7 @@ public class StatisticTableController {
                         log.error("Game Series run failed", throwable);
                         return null;
                     })
-                    .thenRun(() -> Platform.runLater(() -> {
-                                progressIndicator.setVisible(false);
-
-                            }
+                    .thenRun(() -> Platform.runLater(() -> progressIndicator.setVisible(false)
                     ));
         } catch (
                 Exception e) {

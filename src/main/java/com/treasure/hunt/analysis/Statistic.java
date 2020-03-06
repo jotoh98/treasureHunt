@@ -1,6 +1,7 @@
 package com.treasure.hunt.analysis;
 
 import com.treasure.hunt.game.Turn;
+import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.utils.ListUtils;
 import org.locationtech.jts.geom.Point;
 
@@ -60,7 +61,7 @@ public class Statistic {
 
     public List<StatisticObject> calculate(List<Turn> turns) {
         this.turns = new ArrayList<>(turns);
-        return new ArrayList<>(Arrays.asList(
+        ArrayList<StatisticObject> statisticObjects = new ArrayList<>(Arrays.asList(
                 new StatisticObject(StatisticObject.StatisticInfo.TRACE_LENGTH, getTraceLength()
                 ),
                 new StatisticObject(StatisticObject.StatisticInfo.SOLUTION_QUOTIENT, getSolutionQuotient()
@@ -73,6 +74,10 @@ public class Statistic {
                 new StatisticObject(StatisticObject.StatisticInfo.OPTIMAL_SOLUTION, getOptimumSolution()
                 )
         ));
+        PreferenceService.getInstance()
+                .getPreferences()
+                .forEach((key, value) -> statisticObjects.add(new StatisticObject(new StatisticObject.StatisticInfo(key, "Imprted from preferences", Number.class), value)));
+        return statisticObjects;
     }
 }
 
