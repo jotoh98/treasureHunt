@@ -10,6 +10,7 @@ import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.math.Vector2D;
 
 import static org.locationtech.jts.algorithm.Angle.interiorAngle;
 
@@ -27,8 +28,9 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
      */
     @Override
     public Point getTreasureLocation() {
-        Number treasureDistance = PreferenceService.getInstance().getPreference(TREASURE_DISTANCE, 100);
-        treasurePosition = JTSUtils.createPoint(Math.random() * treasureDistance.doubleValue(), Math.random() * treasureDistance.doubleValue());
+        double distance = PreferenceService.getInstance().getPreference(TREASURE_DISTANCE, 100).doubleValue();
+        Coordinate treasure = Vector2D.create(Math.random() * distance, 0).rotate(2 * Math.PI * Math.random()).translate(new Coordinate());
+        treasurePosition = JTSUtils.GEOMETRY_FACTORY.createPoint(treasure);
         return treasurePosition;
     }
 
