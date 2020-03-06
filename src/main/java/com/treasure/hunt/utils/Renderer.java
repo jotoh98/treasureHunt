@@ -178,10 +178,6 @@ public class Renderer {
 
         GeometryStyle geometryStyle = item.getGeometryStyle();
 
-        if (!geometryStyle.isVisible()) {
-            return;
-        }
-
         Object object = item.getObject();
 
         if (object instanceof JavaFxDrawable) {

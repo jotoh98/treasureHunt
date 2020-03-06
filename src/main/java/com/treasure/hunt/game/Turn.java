@@ -1,6 +1,7 @@
 package com.treasure.hunt.game;
 
 import com.treasure.hunt.jts.other.ImageItem;
+import com.treasure.hunt.strategy.Treasure;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.Hint;
@@ -34,7 +35,13 @@ public class Turn {
     /**
      * The current location of the treasure.
      */
-    private Point treasureLocation;
+    private Treasure treasure;
+
+    public Turn(Hint hint, SearchPath searchPath, Point treasure) {
+        this.hint = hint;
+        this.searchPath = searchPath;
+        this.treasure = new Treasure(treasure);
+    }
 
     /**
      * @return a list of all geometryItems of this.
@@ -50,7 +57,7 @@ public class Turn {
             output.addAll(getSearchPathGeometries(movementStart));
         }
 
-        if (treasureLocation != null) {
+        if (treasure != null) {
             output.addAll(getTreasureGeometries());
         }
 
@@ -67,8 +74,8 @@ public class Turn {
 
     private List<GeometryItem<?>> getTreasureGeometries() {
         return Arrays.asList(
-                new GeometryItem<>(treasureLocation, GeometryType.TREASURE),
-                new GeometryItem<>(new ImageItem(treasureLocation.getCoordinate(), 20, 20, "/images/target.png", ImageItem.Alignment.CENTER_CENTER), GeometryType.TREASURE_FLAG)
+                new GeometryItem<>(treasure, GeometryType.TREASURE),
+                new GeometryItem<>(new ImageItem(treasure.getCoordinate(), 20, 20, "/images/target.png", ImageItem.Alignment.CENTER_CENTER), GeometryType.TREASURE_FLAG)
         );
     }
 

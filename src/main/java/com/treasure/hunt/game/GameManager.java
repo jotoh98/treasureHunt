@@ -126,7 +126,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         statistics = Bindings.createObjectBinding(() -> gameEngine.getStatistics().calculate(getVisibleTurns()), viewIndex);
         stepBackwardImpossibleBinding = viewIndex.isEqualTo(0);
         lastMoveBinding = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()), viewIndex, turns);
-        lastTreasureBindings = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()).getTreasureLocation(), viewIndex, turns);
+        lastTreasureBindings = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()).getTreasure().getPoint(), viewIndex, turns);
         lastPointBinding = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()).getSearchPath().getLastPoint(), viewIndex, turns);
         moveSizeBinding = Bindings.size(turns);
         statusMessageItemsBinding = Bindings.createObjectBinding(this::getStatusMessageItems, viewIndex);

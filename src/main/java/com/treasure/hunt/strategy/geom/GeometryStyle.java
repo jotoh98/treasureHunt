@@ -24,7 +24,7 @@ public class GeometryStyle {
                 GeometryType.WAY_POINT, new GeometryStyle(true, new Color(0xFFFFFF)),
                 GeometryType.TREASURE, new GeometryStyle(true, new Color(0xFFD700)),
                 GeometryType.HINT_ANGLE, new GeometryStyle(true, new Color(0x575757)),
-                GeometryType.GRID, new GeometryStyle(true, false, new Color(0x555555), null, -1),
+                GeometryType.GRID, new GeometryStyle(false, new Color(0x555555), null, -1),
                 GeometryType.CURRENT_PHASE, new GeometryStyle(true, Color.YELLOW),
                 GeometryType.CURRENT_RECTANGLE, new GeometryStyle(true, Color.RED),
                 GeometryType.SEARCHER_LAST_MOVE, new GeometryStyle(true, new Color(0x007A1D)),
@@ -38,8 +38,6 @@ public class GeometryStyle {
         defaultsMap.putAll(defaultsMapAdd);
     }
 
-    private boolean visible;
-
     private boolean filled;
 
     private Color outlineColor;
@@ -49,11 +47,11 @@ public class GeometryStyle {
     private int zIndex = 0;
 
     public GeometryStyle(boolean visible, Color outlineColor) {
-        this(visible, false, outlineColor, Color.black, 0);
+        this(false, outlineColor, Color.black, 0);
     }
 
     public GeometryStyle(boolean visible, Color outlineColor, Color fillColor) {
-        this(visible, true, outlineColor, fillColor, 0);
+        this(true, outlineColor, fillColor, 0);
     }
 
     public static GeometryStyle getDefaults(GeometryType type) {
@@ -73,6 +71,6 @@ public class GeometryStyle {
     }
 
     protected GeometryStyle clone() {
-        return new GeometryStyle(visible, filled, outlineColor, fillColor, zIndex);
+        return new GeometryStyle(filled, outlineColor, fillColor, zIndex);
     }
 }
