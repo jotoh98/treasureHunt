@@ -32,7 +32,7 @@ public class Statistic {
     }
 
     public Point getTreasureLocation() {
-        return turns.get(0).getTreasureLocation();
+        return turns.get(0).getTreasure().getPoint();
     }
 
     public double getOptimumSolution() {

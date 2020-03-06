@@ -1,11 +1,12 @@
 package com.treasure.hunt.strategy.geom;
 
+import com.treasure.hunt.strategy.Selectable;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class HintAndMovement {
+public abstract class HintAndMovement extends Selectable {
     @Getter
     /**
      * Earlier added items that are now removed from display
