@@ -30,7 +30,7 @@ public class JavaFxApplication extends Application {
         //We are idiots we put 1.5 seconds more loading time so you can see your awesome splash screen
         CompletableFuture.runAsync(() -> {
             try {
-                Thread.sleep(1500);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.treasure.hunt.view.custom.CoinProgress?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
@@ -17,7 +18,7 @@
                        minWidth="-Infinity" text="rounds"/>
                 <Button fx:id="runMultipleButton" mnemonicParsing="false" onAction="#onSeriesRun"
                         text="Run multiple games"/>
-                <ProgressIndicator fx:id="progressIndicator" progress="0.0" visible="false"/>
+                <CoinProgress fx:id="progressIndicator" progress="0.0" visible="false" prefHeight="30" prefWidth="30"/>
                 <Button mnemonicParsing="false" onAction="#onSeriesLoad" text="Load series file"/>
             </children>
             <styleClass>

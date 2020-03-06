@@ -2,6 +2,7 @@ package com.treasure.hunt.view;
 
 import javafx.application.Preloader;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -22,7 +23,8 @@ public class SplashScreenLoader extends Preloader {
 
     public Scene createScene() throws IOException {
         final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/splash.fxml"));
-        return new Scene(fxmlLoader.load(), 600, 400);
+        Parent load = fxmlLoader.load();
+        return new Scene(load, 450, 300);
     }
 
 }
