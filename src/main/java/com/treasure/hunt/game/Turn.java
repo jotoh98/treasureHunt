@@ -74,7 +74,7 @@ public class Turn {
 
     private List<GeometryItem<?>> getTreasureGeometries() {
         return Arrays.asList(
-                new GeometryItem<>(treasure, GeometryType.TREASURE),
+                new GeometryItem<>(treasure.getPoint(), GeometryType.TREASURE),
                 new GeometryItem<>(new ImageItem(treasure.getCoordinate(), 20, 20, "/images/target.png", ImageItem.Alignment.CENTER_CENTER), GeometryType.TREASURE_FLAG)
         );
     }
