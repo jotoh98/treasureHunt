@@ -7,18 +7,22 @@ import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.hint.impl.CircleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.impl.*;
+import com.treasure.hunt.utils.JTSUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for the {@link GameEngine}.
  *
  * @author dorianreineccius
  */
+@Slf4j
 class GameEngineTest {
 
     /**
@@ -49,7 +53,8 @@ class GameEngineTest {
         gameEngine.init();
         simulateSteps(gameEngine, 2);
         assertTrue(gameEngine.isFinished());
-        assertSame(gameEngine.treasurePos, gameEngine.searcherPos);
+        assertTrue(gameEngine.treasurePos.getX() == gameEngine.searcherPos.getX());
+        assertTrue(gameEngine.treasurePos.getY() == gameEngine.searcherPos.getY());
     }
 
     /**
@@ -117,11 +122,11 @@ class GameEngineTest {
         GameEngine gameEngine = new GameEngine(new NaiveCircleSearcher(), new Hider() {
 
             private GeometryFactory gf = new GeometryFactory();
-            private Point treasurePos = gf.createPoint(new Coordinate(1, 1));
+            private Coordinate treasurePos = new Coordinate(1, 1);
 
             @Override
             public Point getTreasureLocation() {
-                return treasurePos;
+                return JTSUtils.createPoint(treasurePos.x, treasurePos.y);
             }
 
             @Override
@@ -130,7 +135,7 @@ class GameEngineTest {
 
             @Override
             public Hint move(SearchPath moves) {
-                return new CircleHint(gf.createPoint(new Coordinate(0, 2)), 2);
+                return new CircleHint(new Coordinate(0, 2), 2);
             }
         });
         gameEngine.init();
