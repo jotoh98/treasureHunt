@@ -83,7 +83,7 @@ public class GeometryAngle extends LineString implements Shapeable {
      * @return right coordinate
      */
     public Coordinate getRight() {
-        return points.getCoordinate(0);
+        return points.getCoordinate(0).copy();
     }
 
     /**
@@ -99,7 +99,7 @@ public class GeometryAngle extends LineString implements Shapeable {
      * @return central coordinate
      */
     public Coordinate getCenter() {
-        return points.getCoordinate(1);
+        return points.getCoordinate(1).copy();
     }
 
     /**
@@ -115,7 +115,7 @@ public class GeometryAngle extends LineString implements Shapeable {
      * @return left coordinate
      */
     public Coordinate getLeft() {
-        return points.getCoordinate(2);
+        return points.getCoordinate(2).copy();
     }
 
     /**
@@ -131,7 +131,7 @@ public class GeometryAngle extends LineString implements Shapeable {
      * @return vector of right arm
      */
     public Vector2D rightVector() {
-        return new Vector2D(getCenter(), getRight());
+        return Vector2D.create(getCenter(), getRight());
     }
 
     /**
@@ -140,7 +140,7 @@ public class GeometryAngle extends LineString implements Shapeable {
      * @return vector of left arm
      */
     public Vector2D leftVector() {
-        return new Vector2D(getCenter(), getLeft());
+        return Vector2D.create(getCenter(), getLeft());
     }
 
     /**

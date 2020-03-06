@@ -18,7 +18,7 @@ public enum GeometryType {
     // treasure/no-treasure (areas)
     NO_TREASURE(false, "no treasure"),
     POSSIBLE_TREASURE(false, "possible treasure"),
-    HINT_ANGLE(true, "angle hint", true),
+    HINT_ANGLE(true, "angle hint", false),
 
     // searcher movements
     SEARCHER_POSITION(true, "searcher position"),
@@ -36,7 +36,7 @@ public enum GeometryType {
     BOUNDING_CIRCE(false, "bounding circle"),
 
     GRID(true, "Grid", false),
-    HALFPLANE(true, "HalfPlane", true)
+    HALFPLANE(true, "HalfPlane", false)
     // TODO add more..
     ;
 

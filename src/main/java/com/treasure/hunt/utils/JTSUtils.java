@@ -37,6 +37,10 @@ public final class JTSUtils {
         return GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
     }
 
+    public static LineSegment deepCopy(LineSegment copyme) {
+        return new LineSegment(copyme.p0.copy(), copyme.p1.copy());
+    }
+
     // TODO is this necessary?
     public static LineString createLineString(Point A, Point B) {
         Coordinate[] coords = {A.getCoordinate(), B.getCoordinate()};
@@ -44,7 +48,7 @@ public final class JTSUtils {
     }
 
     public static LineString createLineString(LineSegment lineSegment) {
-        return GEOMETRY_FACTORY.createLineString(new Coordinate[]{lineSegment.p0, lineSegment.p1});
+        return GEOMETRY_FACTORY.createLineString(new Coordinate[]{lineSegment.p0.copy(), lineSegment.p1.copy()});
     }
 
     /**
