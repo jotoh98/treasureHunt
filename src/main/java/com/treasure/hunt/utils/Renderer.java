@@ -140,17 +140,6 @@ public class Renderer {
     }
 
     /**
-     * Render a {@link GameManager} state.
-     *
-     * @param gameManager the game manager to be rendered
-     */
-    public void render(GameManager gameManager) {
-        int viewIndex = gameManager.getViewIndex().get();
-        ArrayList<Turn> moves = new ArrayList<>(gameManager.getVisibleTurns());
-        render(moves, viewIndex);
-    }
-
-    /**
      * @param stream The {@link GeometryItem}, we want to apply an highlighter
      * @return A {@link Stream} containing the highlighted {@link GeometryItem}'s.
      */
@@ -159,7 +148,8 @@ public class Renderer {
 
         geometryItemList.stream()
                 .filter(GeometryItem::isSelected)
-                .map(geometryItem -> ((Geometry) geometryItem.getObject()).getEnvelopeInternal()) //TODO: implement envelopes for non-geometry items
+                .map(geometryItem -> (
+                        (Geometry) geometryItem.getObject()).getEnvelopeInternal()) //TODO: implement envelopes for non-geometry items
                 .reduce((envelope, envelope2) -> {
                     envelope.expandToInclude(envelope2);
                     return envelope;
@@ -173,6 +163,17 @@ public class Renderer {
                 );
 
         return geometryItemList.stream();
+    }
+
+    /**
+     * Render a {@link GameManager} state.
+     *
+     * @param gameManager the game manager to be rendered
+     */
+    public void render(GameManager gameManager) {
+        int viewIndex = gameManager.getViewIndex().get();
+        ArrayList<Turn> turns = new ArrayList<>(gameManager.getVisibleTurns());
+        render(turns, viewIndex);
     }
 
     /**

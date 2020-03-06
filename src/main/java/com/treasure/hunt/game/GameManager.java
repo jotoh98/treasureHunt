@@ -421,14 +421,10 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
 
         Point mouse = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinate);
 
-        log.info("mouse: " + mouse.getCoordinate());
-
         geometryItems = geometryItems.stream()
                 .filter(geometryItem -> geometryItem.getObject() instanceof Geometry || geometryItem.getObject() instanceof Shapeable) // TODO also allow non-geometries
                 .filter(geometryItem ->
                         {
-                            //log.info(/*"mouse: " + mouse + ", geometryItem: " + geometryItem.getObject() + */
-                            //        ", distance: " + mouse.distance((Geometry) geometryItem.getObject()) + " / " + distance);
                             return mouse.distance((Geometry) geometryItem.getObject()) <= distance;
                         }
                 )
@@ -476,6 +472,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         geometryItemsList.get(geometryItemsListIndex).setSelected(true);
 
         log.info("received: " + (geometryItemsListIndex + 1) + "/" + geometryItemsList.size());
-        log.info("selected: " + geometryItemsList.get(geometryItemsListIndex).getObject());
+        log.info("selected: " + geometryItemsList.get(geometryItemsListIndex).isSelected() + " " + geometryItemsList.get(geometryItemsListIndex).getObject());
     }
 }

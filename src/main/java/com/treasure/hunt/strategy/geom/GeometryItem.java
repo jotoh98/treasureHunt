@@ -27,7 +27,7 @@ public class GeometryItem<T> {
     private int preferredStyle = 0;
     @Getter
     @Setter
-    private boolean isSelected = false;
+    private boolean selected = false;
 
     /**
      * The constructor.
