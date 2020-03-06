@@ -11,13 +11,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.locationtech.jts.algorithm.Distance;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
 
 /**
  * This is the path of the searcher in the plain searching the treasure,
@@ -51,8 +55,27 @@ public class SearchPath extends HintAndMovement {
 
     public SearchPath(Coordinate... coordinates) {
         for (Coordinate coordinate : coordinates) {
-            this.addPoint(JTSUtils.GEOMETRY_FACTORY.createPoint(coordinate));
+            this.addPoint(GEOMETRY_FACTORY.createPoint(coordinate));
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Geometry getGeometry() {
+        // TODO implement this more beautiful.
+        if (points.size() == 1) {
+            return JTSUtils.createPoint(points.get(0).getX(), points.get(0).getY());
+        }
+
+        List<Coordinate> l = new LinkedList<>();
+        points.forEach(p -> l.add(p.getCoordinate()));
+        Coordinate[] coords = new Coordinate[l.size()];
+        for (int i = 0; i < coords.length; i++) {
+            coords[i] = l.get(i);
+        }
+        return GEOMETRY_FACTORY.createLineString(coords);
     }
 
     /**
@@ -109,7 +132,7 @@ public class SearchPath extends HintAndMovement {
         return ListUtils
                 .consecutive(coordinateList, (c1, c2) ->
                         new GeometryItem<>(
-                                JTSUtils.GEOMETRY_FACTORY.createLineString(new Coordinate[]{c1, c2}),
+                                GEOMETRY_FACTORY.createLineString(new Coordinate[]{c1, c2}),
                                 GeometryType.WAY_POINT
                         )
                 )

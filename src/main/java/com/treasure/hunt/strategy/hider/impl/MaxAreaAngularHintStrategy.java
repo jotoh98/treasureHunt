@@ -126,7 +126,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
     public Geometry integrateHint(AngleHint hint) {
 
         //for each hintVector there's going to be 2 intersections with the bounding circle, Take the ones which scale the Vector with a positive factor
-        GeometryAngle geometryAngle = hint.getGeometryAngle();
+        GeometryAngle geometryAngle = hint.getGeometry();
         LineSegment firstVector = new LineSegment(geometryAngle.getCenter(), geometryAngle.getRight());
         LineSegment secondVector = new LineSegment(geometryAngle.getCenter(), geometryAngle.getLeft());
 
@@ -183,7 +183,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         Polygon hintedArea; // the intersection of the bounding circle and the Hint
         List<Coordinate> buildingList = new ArrayList<>();
 
-        buildingList.add(hint.getGeometryAngle().getCenter());
+        buildingList.add(hint.getGeometry().getCenter());
         buildingList.add(intersects[0]);
 
         //if same intersectionSegment and right after the first intersection --> form triangle
@@ -213,7 +213,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
                 }
             } while (coordIdx != interSectionIndex[1]);
             buildingList.add(intersects[1]);
-            buildingList.add(hint.getGeometryAngle().getCenter());
+            buildingList.add(hint.getGeometry().getCenter());
         }
         Coordinate[] toArray = buildingList.stream().toArray(Coordinate[]::new);
         hintedArea = gf.createPolygon(toArray);
@@ -374,7 +374,7 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         hint.addAdditionalItem(possibleArea);
         hint.addAdditionalItem(checkedArea);
         hint.addAdditionalItem(boundingCircle);
-        log.info("given Hint: " + hint.getGeometryAngle().getLeft() + ",  " + hint.getGeometryAngle().getCenter() + ",  " + hint.getGeometryAngle().getRight());
+        log.info("given Hint: " + hint.getGeometry().getLeft() + ",  " + hint.getGeometry().getCenter() + ",  " + hint.getGeometry().getRight());
         log.info("whole circle area" + boundingCircle.getObject().getArea());
         log.info("possible area " + possibleArea.getObject().getArea());
         return hint;

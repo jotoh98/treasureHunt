@@ -67,12 +67,9 @@ public class Renderer {
     }
 
     /**
-     * Get visible geometry items.
-     * The visible {@link Turn}s determine which {@link GeometryItem} are visible.
-     *
-     * @param turns     list of turns
+     * @param turns     list of {@link Turn} objects
      * @param viewIndex the current max index of visible moves
-     * @return stream of visible geometry items
+     * @return stream of visible geometry items,
      */
     private static Stream<GeometryItem<?>> visibleGeometries(List<Turn> turns, int viewIndex) {
         return ListUtils
@@ -140,14 +137,16 @@ public class Renderer {
     }
 
     /**
-     * @param stream The {@link GeometryItem}, we want to apply an highlighter
-     * @return A {@link Stream} containing the highlighted {@link GeometryItem}'s.
+     * @param turns     list of {@link Turn} objects
+     * @param viewIndex the current max index of visible moves
+     * @return stream of selected geometry items
      */
-    private static Stream<GeometryItem<?>> applyHighlighter(Stream<GeometryItem<?>> stream) {
-        List<GeometryItem<?>> geometryItemList = stream.collect(Collectors.toList());
-
-        geometryItemList.stream()
-                .filter(GeometryItem::isSelected)
+    private static Stream<GeometryItem<?>> getHighlighter(List<Turn> turns, int viewIndex) {
+        List<GeometryItem<?>> geometryItemList = new ArrayList<>();
+        ListUtils
+                .consecutive(turns.subList(0, viewIndex + 1), (prev, next) -> next.getSelectedGeometryItems(prev.getSearchPath().getLastPoint()))
+                .flatMap(Collection::stream) // now we got all selectedGeometries.
+                .filter(geometryItem -> (geometryItem.getObject() instanceof Geometry)) // TODO this is important, since geometryItems can now contain ImageItems
                 .map(geometryItem -> (
                         (Geometry) geometryItem.getObject()).getEnvelopeInternal()) //TODO: implement envelopes for non-geometry items
                 .reduce((envelope, envelope2) -> {
@@ -161,7 +160,6 @@ public class Renderer {
                                     GeometryType.HIGHLIGHTER));
                         }
                 );
-
         return geometryItemList.stream();
     }
 
@@ -187,14 +185,15 @@ public class Renderer {
         clear();
 
         Stream<GeometryItem<?>> visible = visibleGeometries(turns, viewIndex);
+        Stream<GeometryItem<?>> highlighter = getHighlighter(turns, viewIndex);
+        Stream<GeometryItem<?>> itemStream = Stream.concat(visible, highlighter);
         Stream<GeometryItem<?>> additionalStream = additional.values().stream();
-        Stream<GeometryItem<?>> itemStream = Stream.concat(visible, additionalStream);
+        itemStream = Stream.concat(itemStream, additionalStream);
 
         applyFilters(
                 itemStream,
                 Renderer::filterOverride,
                 Renderer::assignMultiStyles,
-                Renderer::applyHighlighter,
                 Renderer::sortZIndex
         ).forEach(this::render);
     }

@@ -66,6 +66,43 @@ public class Turn {
         return output;
     }
 
+    public void unselect() {
+        if (hint != null) {
+            hint.setSelected(false);
+        }
+
+        if (searchPath != null) {
+            searchPath.setSelected(false);
+        }
+
+        if (treasure != null) {
+            treasure.setSelected(false);
+        }
+    }
+
+    /**
+     * @return a list of all geometryItems of this.
+     */
+    public List<GeometryItem<?>> getSelectedGeometryItems(Point movementStart) {
+        List<GeometryItem<?>> output = new ArrayList<>();
+
+        if (hint != null && hint.isSelected()) {
+            output.addAll(getHintGeometries());
+        }
+
+        if (searchPath != null && searchPath.isSelected()) {
+            output.addAll(getSearchPathGeometries(movementStart));
+        }
+
+        if (treasure != null && treasure.isSelected()) {
+            output.addAll(getTreasureGeometries());
+        }
+
+        output.sort(Comparator.comparingInt(a -> a.getGeometryStyle().getZIndex()));
+
+        return output;
+    }
+
     private List<GeometryItem<?>> getHintGeometries() {
         List<GeometryItem<?>> geometryItems = hint.getGeometryItems();
         geometryItems.addAll(hint.getAdditionalGeometryItems());

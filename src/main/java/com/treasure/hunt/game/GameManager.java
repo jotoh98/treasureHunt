@@ -7,7 +7,7 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.google.common.annotations.VisibleForTesting;
 import com.treasure.hunt.analysis.StatisticObject;
-import com.treasure.hunt.jts.geom.Shapeable;
+import com.treasure.hunt.strategy.Selectable;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.geom.StatusMessageItem;
@@ -29,7 +29,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
 import sun.reflect.ReflectionFactory;
 
@@ -55,8 +54,8 @@ import java.util.stream.Stream;
 public class GameManager implements KryoSerializable, KryoCopyable<GameManager> {
 
     public static final double MOUSE_RECOGNIZE_DISTANCE = 0.2;
-    private List<GeometryItem<?>> geometryItemsList = new ArrayList<>();
-    private int geometryItemsListIndex = 0;
+    private List<Selectable> selectables = new ArrayList<>();
+    private int selectablesIndex = 0;
     private Coordinate lastMouseClick;
     /**
      * Contains the "gameHistory".
@@ -199,20 +198,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         int viewIndexSnapshot = viewIndex.get();
         if (viewIndexSnapshot > 0) {
             for (int i = viewIndexSnapshot; i < turns.size(); i++) {
-                log.info("" + i + " of " + turns.size());
-                if (i == 0) {
-                    if (!turns.get(i).getGeometryItems(JTSUtils.createPoint(0, 0)).isEmpty()) {
-                        turns.get(i).getGeometryItems(JTSUtils.createPoint(0, 0)).forEach(geometryItem -> {
-                            geometryItem.setSelected(false);
-                        });
-                    }
-                } else {
-                    if (!turns.get(i).getGeometryItems(turns.get(i - 1).getSearchPath().getLastPoint()).isEmpty()) {
-                        turns.get(i).getGeometryItems(turns.get(i - 1).getSearchPath().getLastPoint()).forEach(geometryItem -> {
-                            geometryItem.setSelected(false);
-                        });
-                    }
-                }
+                turns.get(i).unselect();
             }
             viewIndex.set(viewIndexSnapshot - 1);
         }
@@ -413,29 +399,38 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      * @param distance   the maximum distance to a potential {@link GeometryItem}.
      * @return a sorted list, containing the nearest {@link GeometryItem}'s to {@code coordinate}, with a maximum distance of {@code distance}.
      */
-    private List<GeometryItem<?>> pickGeometryItem(Coordinate coordinate, double distance) {
-        List<GeometryItem<?>> geometryItems = getGeometryItems(true);
-        if (geometryItems.size() < 1) {
+    private List<Selectable> pickGeometryItem(Coordinate coordinate, double distance) {
+        List<Turn> visibleTurns = getVisibleTurns();
+        List<Selectable> selectables = new ArrayList<>();
+        if (visibleTurns.size() < 1) {
             return new ArrayList<>();
         }
 
         Point mouse = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinate);
 
-        geometryItems = geometryItems.stream()
-                .filter(geometryItem -> geometryItem.getObject() instanceof Geometry || geometryItem.getObject() instanceof Shapeable) // TODO also allow non-geometries
-                .filter(geometryItem ->
-                        {
-                            return mouse.distance((Geometry) geometryItem.getObject()) <= distance;
-                        }
+        for (Turn t : visibleTurns) {
+            if (t.getHint() != null) {
+                selectables.add(t.getHint());
+            }
+            if (t.getSearchPath() != null) {
+                selectables.add(t.getSearchPath());
+            }
+            if (t.getTreasure() != null) {
+                selectables.add(t.getTreasure());
+            }
+        }
+
+        selectables = selectables.stream()
+                .filter(selectable ->
+                        mouse.distance(selectable.getGeometry()) <= distance
                 )
-                .filter(geometryItem -> geometryItem.getGeometryStyle().isVisible())
-                .sorted((geometryItem, secondGeometryItem) ->
-                        (int) (mouse.distance((Geometry) geometryItem.getObject()) -
-                                mouse.distance((Geometry) secondGeometryItem.getObject()))
+                .sorted((selectable, secondGeometryItem) ->
+                        (int) (mouse.distance(selectable.getGeometry()) -
+                                mouse.distance(secondGeometryItem.getGeometry()))
                 )
                 .collect(Collectors.toList());
 
-        return geometryItems;
+        return selectables;
     }
 
     public void refreshHighlighter(Coordinate coordinate, double scale) {
@@ -443,8 +438,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         double distance = MOUSE_RECOGNIZE_DISTANCE / scale;
 
         // unselect all
-        for (GeometryItem geometryItem : geometryItemsList) {
-            geometryItem.setSelected(false);
+        for (Selectable selectable : selectables) {
+            selectable.setSelected(false);
         }
 
         if (lastMouseClick == null) {
@@ -455,23 +450,23 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         if (lastMouseClick.getX() != coordinate.getX() ||
                 lastMouseClick.getY() != coordinate.getY()) {
 
-            geometryItemsListIndex = 0;
-            geometryItemsList = pickGeometryItem(coordinate, distance);
+            selectablesIndex = 0;
+            selectables = pickGeometryItem(coordinate, distance);
 
             lastMouseClick = coordinate;
 
-            if (geometryItemsList.size() < 1) {
+            if (selectables.size() < 1) {
                 return;
             }
         } else { // same mouse coordinate
-            if (geometryItemsList.size() < 1) {
+            if (selectables.size() < 1) {
                 return;
             }
-            geometryItemsListIndex = (geometryItemsListIndex + 1) % geometryItemsList.size();
+            selectablesIndex = (selectablesIndex + 1) % selectables.size();
         }
-        geometryItemsList.get(geometryItemsListIndex).setSelected(true);
+        selectables.get(selectablesIndex).setSelected(true);
 
-        log.info("received: " + (geometryItemsListIndex + 1) + "/" + geometryItemsList.size());
-        log.info("selected: " + geometryItemsList.get(geometryItemsListIndex).isSelected() + " " + geometryItemsList.get(geometryItemsListIndex).getObject());
+        log.info("received: " + (selectablesIndex + 1) + "/" + selectables.size());
+        log.info("selected: " + selectables.get(selectablesIndex).getGeometry());
     }
 }

@@ -73,7 +73,7 @@ public final class JTSUtils {
      * @return {@link Coordinate} going through the middle of the {@link AngleHint}
      */
     public static Coordinate middleOfAngleHint(AngleHint angleHint) {
-        GeometryAngle angle = angleHint.getGeometryAngle();
+        GeometryAngle angle = angleHint.getGeometry();
         return angle
                 .rightVector()
                 .rotate(angle.extend() / 2)

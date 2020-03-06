@@ -154,7 +154,7 @@ public class GameEngine {
      */
     protected void verifyHint(Hint hint, Point treasurePosition) {
         if (hint instanceof AngleHint) {
-            if (!((AngleHint) hint).getGeometryAngle().inView(treasurePosition.getCoordinate())) {
+            if (!((AngleHint) hint).getGeometry().inView(treasurePosition.getCoordinate())) {
                 throw new IllegalArgumentException("Treasure does not lie in given Angle.");
             }
         }

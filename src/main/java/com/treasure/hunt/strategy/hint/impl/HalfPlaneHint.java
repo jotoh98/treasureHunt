@@ -131,22 +131,22 @@ public class HalfPlaneHint extends AngleHint {
                 }
                 break;
         }
-        geometryAngle.setRight(right);
-        geometryAngle.setCenter(center);
-        geometryAngle.setLeft(new Coordinate(2 * center.x - right.x, 2 * center.y - right.y));
+        this.right = right;
+        this.center = center;
+        this.left = new Coordinate(2 * center.x - right.x, 2 * center.y - right.y);
         this.direction = direction;
     }
 
     public Coordinate getCenter() {
-        return geometryAngle.getCenter();
+        return this.center;
     }
 
     public Coordinate getRight() {
-        return geometryAngle.getRight();
+        return this.right;
     }
 
     public Coordinate getLeft() {
-        return geometryAngle.getLeft();
+        return this.left;
     }
 
     public LineString getHalfPlaneLineGeometry() {
