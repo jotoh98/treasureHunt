@@ -300,3 +300,11 @@
 .progress-indicator {
     -fx-progress-color: ACCENT;
 }
+
+.inner_popup {
+    -fx-background-color: BACKGROUND_COLOR;
+}
+
+.error_label {
+    -fx-background-color: REQUIRED_RED;
+}
