@@ -30,7 +30,15 @@ public final class JTSUtils {
      * @return {@link Point} lying on {@code (x,y)}.
      */
     public static Point createPoint(double x, double y) {
-        return GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
+        return createPoint(new Coordinate(x, y));
+    }
+
+    /**
+     * @param coordinate
+     * @return {@link Point} lying on {@code coordinate}.
+     */
+    public static Point createPoint(Coordinate coordinate) {
+        return GEOMETRY_FACTORY.createPoint(coordinate);
     }
 
     /**

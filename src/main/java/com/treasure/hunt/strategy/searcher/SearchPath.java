@@ -12,7 +12,6 @@ import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,14 +32,14 @@ public class SearchPath extends SearchPathPrototype {
      * of the corresponding searcher.
      */
     @Getter
-    private final List<Point> points = new ArrayList<>(); // TODO Coordinates
+    private final List<Coordinate> coordinates = new ArrayList<>(); // TODO Coordinates
     @Getter
     private final Coordinate searcherStart;
     @Getter
     private final Coordinate searcherEnd;
 
-    public SearchPath(Point... points) { // TODO remove
-        this(new ArrayList<>(Arrays.asList(points)));
+    public SearchPath(Point... coordinates) { // TODO remove
+        this(new ArrayList<>(Arrays.asList(coordinates)));
     }
 
     public SearchPath(List<Point> points) { // TODO remove
@@ -50,7 +49,9 @@ public class SearchPath extends SearchPathPrototype {
         searcherStart = points.get(0).getCoordinate();
         searcherEnd = points.get(points.size() - 1).getCoordinate();
         if (points.size() > 1) {
-            this.points.addAll(points);
+            this.coordinates.addAll(points.stream()
+                    .map(point -> point.getCoordinate())
+                    .collect(Collectors.toList()));
         }
     }
 
@@ -72,12 +73,9 @@ public class SearchPath extends SearchPathPrototype {
      */
     @Override
     public Geometry getGeometry() {
-        // TODO implement this more beautiful.
-        List<Coordinate> l = new LinkedList<>();
-        points.forEach(p -> l.add(p.getCoordinate()));
-        Coordinate[] coords = new Coordinate[l.size()];
+        Coordinate[] coords = new Coordinate[this.coordinates.size()];
         for (int i = 0; i < coords.length; i++) {
-            coords[i] = l.get(i);
+            coords[i] = this.coordinates.get(i);
         }
         return GEOMETRY_FACTORY.createLineString(coords);
     }
@@ -90,13 +88,13 @@ public class SearchPath extends SearchPathPrototype {
     }
 
     public List<GeometryItem<Point>> getPointGeometryItemsList() {
-        return points.stream()
+        return getPoints().stream()
                 .map(point -> new GeometryItem<>(point, GeometryType.WAY_POINT))
                 .collect(Collectors.toList());
     }
 
     public List<GeometryItem<LineString>> getLinesGeometryItemsList() {
-        List<Coordinate> coordinateList = JTSUtils.getCoordinateList(points);
+        List<Coordinate> coordinateList = JTSUtils.getCoordinateList(getPoints());
 
         return ListUtils
                 .consecutive(coordinateList, (c1, c2) ->
@@ -109,22 +107,22 @@ public class SearchPath extends SearchPathPrototype {
     }
 
     public double getLength() {
-        return ListUtils.consecutive(JTSUtils.getCoordinateList(points), Coordinate::distance)
+        return ListUtils.consecutive(JTSUtils.getCoordinateList(getPoints()), Coordinate::distance)
                 .reduce(Double::sum)
                 .orElse(0d);
     }
 
     public Point getSearcherStartPoint() {
-        return JTSUtils.createPoint(searcherStart.x, searcherStart.y);
+        return JTSUtils.createPoint(searcherStart);
     }
 
     public Point getSearcherEndPoint() {
-        return JTSUtils.createPoint(searcherEnd.x, searcherEnd.y);
+        return JTSUtils.createPoint(searcherEnd);
     }
 
-    public List<Coordinate> getCoordinatesList() {
-        return points.stream()
-                .map(Point::getCoordinate)
+    public List<Point> getPoints() {
+        return coordinates.stream()
+                .map(coordinate -> JTSUtils.createPoint(coordinate))
                 .collect(Collectors.toList());
     }
 }

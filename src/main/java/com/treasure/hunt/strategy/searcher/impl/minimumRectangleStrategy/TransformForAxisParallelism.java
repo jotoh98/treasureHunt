@@ -107,9 +107,9 @@ public class TransformForAxisParallelism {
         return result;
     }
 
-    SearchPathPrototype toExternal(SearchPathPrototype move) {
+    SearchPathPrototype toExternal(SearchPathPrototype searchPathPrototype) {
         SearchPathPrototype outputMove = new SearchPathPrototype();
-        for (Point wayPoint : move.getPoints()) {
+        for (Point wayPoint : searchPathPrototype.getPoints()) {
             outputMove.addPoint(toExternal(wayPoint));
         }
         return outputMove;

@@ -27,6 +27,6 @@ public class Treasure extends Selectable {
     }
 
     public Point getPoint() {
-        return JTSUtils.createPoint(point.getX(), point.getY());
+        return JTSUtils.createPoint(point.getCoordinate());
     }
 }

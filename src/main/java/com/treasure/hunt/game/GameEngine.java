@@ -133,7 +133,7 @@ public class GameEngine {
 
         searcherMove();
 
-        if (located(lastSearchPath.getCoordinatesList(), treasurePos.getCoordinate())) {
+        if (located(lastSearchPath.getCoordinates(), treasurePos.getCoordinate())) {
             finished = true;
             return new Turn(null, lastSearchPath, treasurePos);
         } else {
@@ -164,7 +164,7 @@ public class GameEngine {
             tmpLastSearchPathPrototype = searcher.move(lastHint);
         }
         assert (tmpLastSearchPathPrototype != null);
-        assert (tmpLastSearchPathPrototype.getPoints().size() != 0);
+        assert (tmpLastSearchPathPrototype.getCoordinates().size() != 0);
 
         List<Point> points = new ArrayList<>();
         points.add(searcherPos);

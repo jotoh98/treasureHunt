@@ -62,7 +62,7 @@ public class SearchPathPrototype extends HintAndMovement {
     public Geometry getGeometry() {
         // TODO implement this more beautiful.
         if (points.size() == 1) {
-            return JTSUtils.createPoint(points.get(0).getX(), points.get(0).getY());
+            return JTSUtils.createPoint(points.get(0).getCoordinate());
         }
 
         List<Coordinate> l = new LinkedList<>();
@@ -105,8 +105,8 @@ public class SearchPathPrototype extends HintAndMovement {
         points.add(point);
     }
 
-    public void addPoint(double x, double y) {
-        addPoint(JTSUtils.createPoint(x, y));
+    public void addPoint(Coordinate coordinate) {
+        addPoint(JTSUtils.createPoint(coordinate));
     }
 
     /**
@@ -139,5 +139,9 @@ public class SearchPathPrototype extends HintAndMovement {
         return ListUtils.consecutive(JTSUtils.getCoordinateList(points), Coordinate::distance)
                 .reduce(Double::sum)
                 .orElse(0d);
+    }
+
+    public List<Coordinate> getCoordinates() {
+        return points.stream().map(point -> point.getCoordinate()).collect(Collectors.toList());
     }
 }

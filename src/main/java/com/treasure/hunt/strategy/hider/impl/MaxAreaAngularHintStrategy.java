@@ -360,9 +360,9 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         adaptBoundingCircle();
 
         //calc the visited Area by the player TODO should be done incrementally from move to move or be globally accessible
-        Coordinate[] visitedCoordinates = new Coordinate[searchPath.getPoints().size()];
-        for (int coordinateIndex = 0; coordinateIndex < searchPath.getPoints().size(); coordinateIndex++) {
-            visitedCoordinates[coordinateIndex] = searchPath.getPoints().get(coordinateIndex).getCoordinate();
+        Coordinate[] visitedCoordinates = new Coordinate[searchPath.getCoordinates().size()];
+        for (int coordinateIndex = 0; coordinateIndex < searchPath.getCoordinates().size(); coordinateIndex++) {
+            visitedCoordinates[coordinateIndex] = searchPath.getCoordinates().get(coordinateIndex);
         }
         LineString walkedPath = gf.createLineString(visitedCoordinates);
         this.walkedPathLength = walkedPath.getLength();

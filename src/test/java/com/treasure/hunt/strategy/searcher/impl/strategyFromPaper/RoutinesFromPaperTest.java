@@ -129,16 +129,16 @@ public class RoutinesFromPaperTest {
         SearchPathPrototype result = rectangleScan(rectangleToTest[0], rectangleToTest[1], rectangleToTest[2],
                 rectangleToTest[3], new SearchPathPrototype());
 
-        if (result.getPoints().size() != stepsExpectedResult.length) {
+        if (result.getCoordinates().size() != stepsExpectedResult.length) {
             throw new AssertionError("The number of steps should be " + stepsExpectedResult.length + " " +
-                    "but equals " + result.getPoints().size());
+                    "but equals " + result.getCoordinates().size());
         }
 
         for (int i = 0; i < stepsExpectedResult.length; i++) {
             result.getPoints().get(i).getPrecisionModel().makePrecise(stepsExpectedResult[i]);
-            if (!result.getPoints().get(i).getCoordinate().equals2D(
+            if (!result.getCoordinates().get(i).equals2D(
                     stepsExpectedResult[i])) {
-                throw new AssertionError("The coordinate " + result.getPoints().get(i) + " does" +
+                throw new AssertionError("The coordinate " + result.getCoordinates().get(i) + " does" +
                         " not equal the expected coordinate " + stepsExpectedResult[i]);
             }
         }
