@@ -59,6 +59,10 @@ class GameManagerTest {
             return new SearchPath(point);
         }
 
+        /**
+         * @param hint the hint, the {@link com.treasure.hunt.strategy.hider.Hider} gave last.
+         * @return A {@link SearchPath}, containing a useless {@link Circle} as additional items, which should get removed.
+         */
         @Override
         public SearchPath move(AngleHint hint) {
             SearchPath searchPath = new SearchPath(lastMove, lastMove);

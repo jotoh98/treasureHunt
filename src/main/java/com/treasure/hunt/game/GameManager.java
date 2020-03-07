@@ -112,6 +112,9 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         setBindings();
     }
 
+    /**
+     * This simulates the initial move on the {@link GameEngine}
+     */
     public void init() {
         // Do initial move
         turns.add(gameEngine.init());
