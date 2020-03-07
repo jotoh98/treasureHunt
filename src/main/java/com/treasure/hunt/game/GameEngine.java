@@ -5,6 +5,7 @@ import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.hint.impl.CircleHint;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
@@ -40,7 +41,7 @@ public class GameEngine {
      */
     protected boolean firstMove = true;
     protected Hint lastHint;
-    protected SearchPathPrototype lastSearchPathPrototype;
+    protected SearchPath lastSearchPath;
     protected Point searcherPos;
     protected Point treasurePos;
     @Getter
@@ -91,7 +92,7 @@ public class GameEngine {
 
         return new Turn(
                 null,
-                new SearchPathPrototype(searcherPos),
+                new SearchPath(),
                 treasurePos);
     }
 
@@ -108,25 +109,25 @@ public class GameEngine {
             throw new IllegalStateException("Game is already finished");
         }
 
-        final Point searchPathStart = lastSearchPathPrototype == null ? searcherPos : lastSearchPathPrototype.getLastPoint();
+        final Point searchPathStart = lastSearchPath == null ? searcherPos : lastSearchPath.getLastPoint();
 
         searcherMove();
 
-        if (lastSearchPathPrototype.located(searchPathStart, treasurePos)) {
+        if (lastSearchPath.located(searchPathStart, treasurePos)) {
             finished = true;
-            return new Turn(null, lastSearchPathPrototype, treasurePos);
+            return new Turn(null, lastSearchPath, treasurePos);
         } else {
             hiderMove();
         }
 
-        return new Turn(lastHint, lastSearchPathPrototype, treasurePos);
+        return new Turn(lastHint, lastSearchPath, treasurePos);
     }
 
     /**
      * Let the {@link GameEngine#hider} give its {@link Hint}.
      */
     protected void hiderMove() {
-        lastHint = hider.move(lastSearchPathPrototype);
+        lastHint = hider.move(lastSearchPath);
         assert (lastHint != null);
         verifyHint(lastHint, treasurePos);
     }
@@ -150,13 +151,13 @@ public class GameEngine {
         points.addAll(tmpLastSearchPathPrototype.getPoints());
 
         // build new SearchPath
-        lastSearchPathPrototype = new SearchPathPrototype(points);
-        tmpLastSearchPathPrototype.getAdditional().forEach(e -> lastSearchPathPrototype.addAdditionalItem(e)); // TODO finish
-        lastSearchPathPrototype.getGeometryItemsToBeRemoved().addAll(tmpLastSearchPathPrototype.getGeometryItemsToBeRemoved());
-        lastSearchPathPrototype.getStatusMessageItemsToBeAdded().addAll(tmpLastSearchPathPrototype.getStatusMessageItemsToBeAdded());
-        lastSearchPathPrototype.getStatusMessageItemsToBeRemoved().addAll(tmpLastSearchPathPrototype.getStatusMessageItemsToBeRemoved());
+        lastSearchPath = new SearchPath(points);
+        tmpLastSearchPathPrototype.getAdditional().forEach(e -> lastSearchPath.addAdditionalItem(e)); // TODO finish
+        lastSearchPath.getGeometryItemsToBeRemoved().addAll(tmpLastSearchPathPrototype.getGeometryItemsToBeRemoved());
+        lastSearchPath.getStatusMessageItemsToBeAdded().addAll(tmpLastSearchPathPrototype.getStatusMessageItemsToBeAdded());
+        lastSearchPath.getStatusMessageItemsToBeRemoved().addAll(tmpLastSearchPathPrototype.getStatusMessageItemsToBeRemoved());
 
-        searcherPos = lastSearchPathPrototype.getLastPoint();
+        searcherPos = lastSearchPath.getLastPoint();
     }
 
     /**

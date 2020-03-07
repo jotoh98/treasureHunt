@@ -46,10 +46,16 @@ public class SearchPath extends SearchPathPrototype {
     }
 
     public SearchPath(List<Point> points) {
+        if (points.size() == 1) {
+            throw new IllegalArgumentException("SearchPath must get initializes with 0 or ≥2 points!");
+        }
         this.points = points;
     }
 
     public SearchPath(Coordinate... coordinates) {
+        if (coordinates.length == 1) {
+            throw new IllegalArgumentException("SearchPath must get initializes with 0 or ≥2 coordinates!");
+        }
         for (Coordinate coordinate : coordinates) {
             this.addPoint(GEOMETRY_FACTORY.createPoint(coordinate));
         }
@@ -61,10 +67,6 @@ public class SearchPath extends SearchPathPrototype {
     @Override
     public Geometry getGeometry() {
         // TODO implement this more beautiful.
-        if (points.size() == 1) {
-            return JTSUtils.createPoint(points.get(0).getX(), points.get(0).getY());
-        }
-
         List<Coordinate> l = new LinkedList<>();
         points.forEach(p -> l.add(p.getCoordinate()));
         Coordinate[] coords = new Coordinate[l.size()];
@@ -138,13 +140,6 @@ public class SearchPath extends SearchPathPrototype {
     public boolean located(Point pathStart, Point treasure) {
         if (points.size() < 1) {
             return false;
-        }
-
-        if (points.size() == 1) {
-            return Distance.pointToSegment(
-                    treasure.getCoordinate(),
-                    pathStart.getCoordinate(),
-                    points.get(0).getCoordinate()) <= Searcher.SCANNING_DISTANCE;
         }
 
         List<Coordinate> wayCoordinates = points.stream()
