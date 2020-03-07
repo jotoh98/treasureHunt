@@ -50,10 +50,6 @@ public class SearchPath extends HintAndMovement {
         this.points = points;
     }
 
-    public SearchPath(double x, double y) {
-        this.addPoint(x, y);
-    }
-
     public SearchPath(Coordinate... coordinates) {
         for (Coordinate coordinate : coordinates) {
             this.addPoint(GEOMETRY_FACTORY.createPoint(coordinate));
