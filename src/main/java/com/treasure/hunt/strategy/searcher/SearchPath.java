@@ -166,9 +166,7 @@ public class SearchPath extends HintAndMovement {
     }
 
     public double getLength() {
-        List<Coordinate> way = JTSUtils.getCoordinateList(points);
-
-        return ListUtils.consecutive(way, Coordinate::distance)
+        return ListUtils.consecutive(JTSUtils.getCoordinateList(points), Coordinate::distance)
                 .reduce(Double::sum)
                 .orElse(0d);
     }

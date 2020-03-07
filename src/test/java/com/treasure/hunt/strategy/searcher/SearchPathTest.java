@@ -58,37 +58,40 @@ public class SearchPathTest {
         assertLineHasPoint(lines.get(5), point7);
     }
 
-    private void assertLineHasPoint(GeometryItem<LineString> geometryItem, Point point) {
-        assertTrue(Arrays.asList(geometryItem.getObject().getCoordinates()).contains(point.getCoordinate()));
-    }
-
     /**
-     * This initializes an {@link SearchPath}, containing one line and tests its length.
+     * This initializes an {@link SearchPath}, containing one line and tests
+     * {@link SearchPath#getLength()}.
      */
     @Test
-    public void testLengthOneLine() {
+    public void getLengthOneLineTest() {
         assertEquals(new SearchPath(new Coordinate(0, 0), new Coordinate(0, 1)).getLength(), 1);
     }
 
     /**
-     * This initializes an {@link SearchPath}, containing two lines and tests its length.
+     * This initializes an {@link SearchPath}, containing two lines and tests
+     * {@link SearchPath#getLength()}.
      */
     @Test
-    public void testLengthTwoLines() {
+    public void getLengthTwoLinesTest() {
         assertEquals(new SearchPath(new Coordinate(0, 0), new Coordinate(0, 1), new Coordinate(1, 1)).getLength(), 2);
     }
 
     /**
-     * This initializes an {@link SearchPath}, containing two lines and tests its length.
+     * This initializes an {@link SearchPath}, containing much lines and tests
+     * {@link SearchPath#getLength()}.
      */
     @Test
-    public void testLengthMuchLines() {
+    public void getLengthMuchLinesTest() {
         assertEquals(new SearchPath(
                 new Coordinate(0, 0),
                 new Coordinate(0, 1),
                 new Coordinate(1, 1),
                 new Coordinate(1, 5),
                 new Coordinate(-4, 5)
-        ).getLength(), 1 + 1 + 4 + 5);
+        ).getLength(), 11);
+    }
+
+    private void assertLineHasPoint(GeometryItem<LineString> geometryItem, Point point) {
+        assertTrue(Arrays.asList(geometryItem.getObject().getCoordinates()).contains(point.getCoordinate()));
     }
 }
