@@ -162,7 +162,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
-     * Works only for stepSim &le; stepView 
+     * Simulates the next step.
+     * Works only for stepSim &le; stepView.
      */
     public void next() {
         if (viewIndex.get() < turns.size()) {
@@ -192,7 +193,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
-     * Works only for stepView &gt; 0
+     * Decrements the viewIndex, such that the last {@link Turn} gets invisible.
+     * Works only for stepView &gt; 0.
      */
     public void previous() {
         int viewIndexSnapshot = viewIndex.get();
@@ -429,7 +431,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
                                 mouse.distance(secondGeometryItem.getGeometry()))
                 )
                 .collect(Collectors.toList());
-
         return selectables;
     }
 
@@ -438,9 +439,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         double distance = MOUSE_RECOGNIZE_DISTANCE / scale;
 
         // unselect all
-        for (Selectable selectable : selectables) {
-            selectable.setSelected(false);
-        }
+        selectables.forEach(selectable -> selectable.setSelected(false));
 
         if (lastMouseClick == null) {
             lastMouseClick = coordinate;

@@ -31,6 +31,7 @@ import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
  */
 @NoArgsConstructor
 public class SearchPath extends HintAndMovement {
+    @Getter
     protected List<GeometryItem<?>> additional = new ArrayList<>();
 
     /**
@@ -137,10 +138,6 @@ public class SearchPath extends HintAndMovement {
                         )
                 )
                 .collect(Collectors.toList());
-    }
-
-    public List<GeometryItem<?>> getAdditional() {
-        return this.additional;
     }
 
     public boolean located(Point pathStart, Point treasure) {

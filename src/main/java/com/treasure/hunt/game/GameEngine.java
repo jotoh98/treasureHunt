@@ -14,6 +14,9 @@ import lombok.Setter;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This is the engine which runs a simulation of a treasure hunt.
  *
@@ -132,14 +135,23 @@ public class GameEngine {
      * Let the {@link GameEngine#searcher} make {@link SearchPath}.
      */
     protected void searcherMove() {
+        SearchPath tmpLastSearchPath;
         if (firstMove) {
             firstMove = false;
-            lastSearchPath = searcher.move();
+            tmpLastSearchPath = searcher.move();
         } else {
-            lastSearchPath = searcher.move(lastHint);
+            tmpLastSearchPath = searcher.move(lastHint);
         }
-        assert (lastSearchPath != null);
-        assert (lastSearchPath.getPoints().size() != 0);
+        assert (tmpLastSearchPath != null);
+        assert (tmpLastSearchPath.getPoints().size() != 0);
+
+        List<Point> points = new ArrayList<>();
+        points.add(searcherPos);
+        points.addAll(tmpLastSearchPath.getPoints());
+        lastSearchPath = new SearchPath(points);
+
+        tmpLastSearchPath.getAdditional().forEach(e -> lastSearchPath.addAdditionalItem(e)); // TODO finish
+
         searcherPos = lastSearchPath.getLastPoint();
     }
 
