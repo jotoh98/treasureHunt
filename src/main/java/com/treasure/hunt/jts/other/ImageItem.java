@@ -10,7 +10,9 @@ import org.locationtech.jts.geom.Coordinate;
 
 import java.awt.*;
 
-
+/**
+ * @author Trostorff
+ */
 public class ImageItem implements JavaFxDrawable {
     private final Coordinate position;
     private final Alignment alignment;
