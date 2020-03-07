@@ -86,27 +86,27 @@ public class PolyhedronSearcher implements Searcher<AngleHint> {
         return movePositions.get(movePositions.size() - 1);
     }
 
-    class Hull {
+  class Hull {
 
-        private List<Coordinate> vertices = new ArrayList<>();
+      private List<Coordinate> vertices = new ArrayList<>();
 
-        private boolean isUnbound = true;
+      private boolean isUnbound = true;
 
-        private List<LineSegment> convexHull = new ArrayList<>();
+      private List<LineSegment> convexHull = new ArrayList<>();
 
 
-        public void addAngle(final GeometryAngle angle) {
-            if (vertices.size() == 0) {
-                LineSegment unboundLineSegment = new LineSegment(angle.getLeft(), angle.getRight());
+      public void addAngle(final GeometryAngle angle) {
+          if (vertices.size() == 0) {
+              LineSegment unboundLineSegment = new LineSegment(angle.getLeft(), angle.getRight());
 
-                final double distance = unboundLineSegment.distance(angle.getCenter());
-                if (distance < 1d) {
-                    unboundLineSegment.p0.setCoordinate(
-                            angle.leftVector().normalize().divide(distance * 0.5).translate(angle.getCenter())
-                    );
-                    unboundLineSegment.p1.setCoordinate(
-                            angle.rightVector().normalize().divide(distance * 0.5).translate(angle.getCenter())
-                    );
+              final double distance = unboundLineSegment.distance(angle.getCenter());
+              if (distance < 1d) {
+                  unboundLineSegment.p0.setCoordinate(
+                          angle.leftVector().normalize().divide(distance * 0.5).translate(angle.getCenter())
+                  );
+                  unboundLineSegment.p1.setCoordinate(
+                          angle.rightVector().normalize().divide(distance * 0.5).translate(angle.getCenter())
+                  );
                 }
 
                 convexHull.add(unboundLineSegment);
@@ -185,7 +185,10 @@ public class PolyhedronSearcher implements Searcher<AngleHint> {
                     right = lineSegment;
                 }
             }
-            pushUnbound(left, right);
+
+            if (convexHull.get(0).distance(left.p0) < 10) {
+                pushUnbound(left, right);
+            }
 
         }
 
@@ -197,9 +200,8 @@ public class PolyhedronSearcher implements Searcher<AngleHint> {
             if (!isUnbound) {
                 return;
             }
-
-            Coordinate unbound0 = Vector2D.create(left.p0, left.p1).multiply(2).translate(left.p0);
-            Coordinate unbound1 = Vector2D.create(right.p1, right.p0).multiply(2).translate(right.p1);
+            Coordinate unbound0 = Vector2D.create(left.p0, left.p1).multiply(1.5).translate(left.p0);
+            Coordinate unbound1 = Vector2D.create(right.p1, right.p0).multiply(1.5).translate(right.p1);
 
             if (unbound0 == null || null == unbound1) {
                 throw new IllegalStateException("translated point may not be null");
