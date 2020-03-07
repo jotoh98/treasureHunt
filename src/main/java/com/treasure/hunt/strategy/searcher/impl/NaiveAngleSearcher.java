@@ -1,7 +1,7 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
-import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Point;
@@ -24,19 +24,19 @@ public class NaiveAngleSearcher implements Searcher<AngleHint> {
     }
 
     /**
-     * @return {@link SearchPath}, containing only the starting position.
+     * @return {@link SearchPathPrototype}, containing only the starting position.
      */
     @Override
-    public SearchPath move() {
-        return new SearchPath(startPosition);
+    public SearchPathPrototype move() {
+        return new SearchPathPrototype(startPosition);
     }
 
     /**
      * @param angleHint the hint, the {@link com.treasure.hunt.strategy.hider.Hider} gave last.
-     * @return A {@link SearchPath} 1 length unit trough the middle of the AngleHint.
+     * @return A {@link SearchPathPrototype} 1 length unit trough the middle of the AngleHint.
      */
     @Override
-    public SearchPath move(AngleHint angleHint) {
-        return new SearchPath(JTSUtils.middleOfAngleHint(angleHint));
+    public SearchPathPrototype move(AngleHint angleHint) {
+        return new SearchPathPrototype(JTSUtils.middleOfAngleHint(angleHint));
     }
 }

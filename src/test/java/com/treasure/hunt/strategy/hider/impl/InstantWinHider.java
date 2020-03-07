@@ -2,7 +2,7 @@ package com.treasure.hunt.strategy.hider.impl;
 
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.Hint;
-import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Point;
 
@@ -30,7 +30,7 @@ public class InstantWinHider implements Hider<Hint> {
     }
 
     @Override
-    public Hint move(SearchPath searchPath) {
+    public Hint move(SearchPathPrototype searchPathPrototype) {
         throw new IllegalStateException("This may not be called since the Searcher has already won.");
         //return null;
     }

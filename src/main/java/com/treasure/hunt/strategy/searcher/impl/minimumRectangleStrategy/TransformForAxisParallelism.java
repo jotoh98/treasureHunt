@@ -1,7 +1,7 @@
 package com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy;
 
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
-import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
@@ -107,8 +107,8 @@ public class TransformForAxisParallelism {
         return result;
     }
 
-    SearchPath toExternal(SearchPath move) {
-        SearchPath outputMove = new SearchPath();
+    SearchPathPrototype toExternal(SearchPathPrototype move) {
+        SearchPathPrototype outputMove = new SearchPathPrototype();
         for (Point wayPoint : move.getPoints()) {
             outputMove.addPoint(toExternal(wayPoint));
         }

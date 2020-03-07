@@ -5,7 +5,7 @@ import com.treasure.hunt.strategy.hider.impl.InstantWinHider;
 import com.treasure.hunt.strategy.hider.impl.RevealingHider;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.hint.impl.CircleHint;
-import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
 import com.treasure.hunt.strategy.searcher.impl.*;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +58,7 @@ class GameEngineTest {
     }
 
     /**
-     * This tests the {@link SearchPath#located(Point, Point)} method.
+     * This tests the {@link SearchPathPrototype#located(Point, Point)} method.
      */
     @Test
     void bruteForceTest1() {
@@ -72,7 +72,7 @@ class GameEngineTest {
 
     /**
      * The {@link RevealingHider} places the treasure.
-     * The searcher, in one {@link SearchPath},
+     * The searcher, in one {@link SearchPathPrototype},
      * walks first ON the treasure,
      * the leaves it with a distance > 1.
      */
@@ -86,7 +86,7 @@ class GameEngineTest {
 
     /**
      * The {@link RevealingHider} places the treasure.
-     * The searcher, in one {@link SearchPath},
+     * The searcher, in one {@link SearchPathPrototype},
      * walks OVER the treasure, but stops
      * at a distance > 1.
      */
@@ -110,7 +110,7 @@ class GameEngineTest {
     }
 
     /**
-     * {@link SearchPath#located(Point, Point)} test.
+     * {@link SearchPathPrototype#located(Point, Point)} test.
      * In this test, the searcher moves <b>past</b> the treasure
      * with a minimum distance of 1.
      * searcher starts at (0,0) as usual.
@@ -134,7 +134,7 @@ class GameEngineTest {
             }
 
             @Override
-            public Hint move(SearchPath moves) {
+            public Hint move(SearchPathPrototype moves) {
                 return new CircleHint(new Coordinate(0, 2), 2);
             }
         });

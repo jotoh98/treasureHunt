@@ -3,6 +3,7 @@ package com.treasure.hunt.strategy.searcher;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
+import com.treasure.hunt.strategy.geom.HintAndMovement;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.ListUtils;
 import lombok.Getter;
@@ -29,7 +30,7 @@ import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
  * @author dorianreineccius, hassel
  */
 @NoArgsConstructor
-public class SearchPath extends SearchPathPrototype {
+public class SearchPathPrototype extends HintAndMovement {
     @Getter
     protected List<GeometryItem<?>> additional = new ArrayList<>();
 
@@ -41,15 +42,15 @@ public class SearchPath extends SearchPathPrototype {
     @Setter
     private List<Point> points = new ArrayList<>();
 
-    public SearchPath(Point... points) {
+    public SearchPathPrototype(Point... points) {
         this(new ArrayList<>(Arrays.asList(points)));
     }
 
-    public SearchPath(List<Point> points) {
+    public SearchPathPrototype(List<Point> points) {
         this.points = points;
     }
 
-    public SearchPath(Coordinate... coordinates) {
+    public SearchPathPrototype(Coordinate... coordinates) {
         for (Coordinate coordinate : coordinates) {
             this.addPoint(GEOMETRY_FACTORY.createPoint(coordinate));
         }

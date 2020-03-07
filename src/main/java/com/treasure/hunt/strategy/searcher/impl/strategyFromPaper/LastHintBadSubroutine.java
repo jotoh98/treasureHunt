@@ -3,7 +3,7 @@ package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 import com.treasure.hunt.strategy.geom.StatusMessageItem;
 import com.treasure.hunt.strategy.geom.StatusMessageType;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
-import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 
@@ -175,7 +175,7 @@ class LastHintBadSubroutine {
         return transformedRectangle;
     }
 
-    private void addCaseDescriptionToStatus(SearchPath move, int basicTransformation, int caseIndex,
+    private void addCaseDescriptionToStatus(SearchPathPrototype move, int basicTransformation, int caseIndex,
                                             StrategyFromPaper strategy) {
         String[] transformedRectangle = getLettersOfTransformedRectangle(basicTransformation);
         String statusMessage = "Let ABCD be the previous rectangle's corners, with\n" +// TODO vllt noch schreiben, wie das rectangle gezeichnet wird (Farbe)
@@ -280,8 +280,8 @@ class LastHintBadSubroutine {
      * @return The move to scan various areas so that A,B,C and D can be updated to a smaller rectangle (or the treasure
      * is found)
      */
-    SearchPath lastHintBadSubroutine(HalfPlaneHint curHint,
-                                     HalfPlaneHint lastBadHint, SearchPath move) {
+    SearchPathPrototype lastHintBadSubroutine(HalfPlaneHint curHint,
+                                              HalfPlaneHint lastBadHint, SearchPathPrototype move) {
 
         initializeVariables(curHint, lastBadHint);
         int caseIndex = -1;

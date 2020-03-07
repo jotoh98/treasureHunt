@@ -1,7 +1,7 @@
 package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
-import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
@@ -37,7 +37,7 @@ public class RoutinesFromPaper {
      * @param move
      * @return
      */
-    public static SearchPath rectangleScan(Point A, Point B, Point C, Point D, SearchPath move) {
+    public static SearchPathPrototype rectangleScan(Point A, Point B, Point C, Point D, SearchPathPrototype move) {
         return rectangleScan(A.getCoordinate(), B.getCoordinate(), C.getCoordinate(), D.getCoordinate(), move);
     }
 
@@ -71,7 +71,7 @@ public class RoutinesFromPaper {
      * @param move
      * @return
      */
-    public static SearchPath rectangleScan(Coordinate A, Coordinate B, Coordinate C, Coordinate D, SearchPath move) {
+    public static SearchPathPrototype rectangleScan(Coordinate A, Coordinate B, Coordinate C, Coordinate D, SearchPathPrototype move) {
         if (A.distance(B) > A.distance(D)) {
             Coordinate temp = A;
             A = D;
@@ -323,8 +323,8 @@ public class RoutinesFromPaper {
      * @param move
      * @return
      */
-    static SearchPath rectangleScanPhiReverse(int basicTrans, Coordinate[] phiRect, Coordinate A, Coordinate B,
-                                              Coordinate C, Coordinate D, SearchPath move, StrategyFromPaper strategy) {
+    static SearchPathPrototype rectangleScanPhiReverse(int basicTrans, Coordinate[] phiRect, Coordinate A, Coordinate B,
+                                                       Coordinate C, Coordinate D, SearchPathPrototype move, StrategyFromPaper strategy) {
         return strategy.specificRectangleScan(
                 phiPointInverse(basicTrans, phiRect, A),
                 phiPointInverse(basicTrans, phiRect, B),

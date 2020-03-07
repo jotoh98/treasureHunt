@@ -4,7 +4,7 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
-import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils;
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper;
@@ -70,21 +70,21 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
      * Use this to perform a initial move, without a hint given.
      * In this case, the searcher does nothing and receives a hint.
      *
-     * @return {@link SearchPath} the {@link SearchPath} the searcher did
+     * @return {@link SearchPathPrototype} the {@link SearchPathPrototype} the searcher did
      */
     @Override
-    public SearchPath move() {
-        SearchPath move = new SearchPath();
+    public SearchPathPrototype move() {
+        SearchPathPrototype move = new SearchPathPrototype();
         move.addPoint(realSearcherStartPosition);
         return move;
     }
 
     /**
      * @param hint the hint, the {@link Hider} gave last.
-     * @return {@link SearchPath} the {@link SearchPath}, this searcher chose.
+     * @return {@link SearchPathPrototype} the {@link SearchPathPrototype}, this searcher chose.
      */
     @Override
-    public SearchPath move(HalfPlaneHint hint) {
+    public SearchPathPrototype move(HalfPlaneHint hint) {
         if (firstMoveWithHint) {
             firstMoveWithHint = false;
             transformer = new TransformForAxisParallelism(hint, realSearcherStartPosition);
@@ -97,7 +97,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
                 previousHint = currentHint;
             }
             currentHint = transformer.toInternal(hint);
-            SearchPath move = new SearchPath();
+            SearchPathPrototype move = new SearchPathPrototype();
             scanCurrentRectangle(move, currentHint);
             Polygon newPolygon;
             do {
@@ -119,7 +119,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
     }
 
     @Override
-    protected SearchPath addState(SearchPath move) {
+    protected SearchPathPrototype addState(SearchPathPrototype move) {
         if (transformer == null) {
             return super.addState(move);
         }
@@ -147,8 +147,8 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
     }
 
     @Override
-    protected SearchPath specificRectangleScan(Coordinate rectangleCorner1, Coordinate rectangleCorner2,
-                                               Coordinate rectangleCorner3, Coordinate rectangleCorner4, SearchPath move) {
+    protected SearchPathPrototype specificRectangleScan(Coordinate rectangleCorner1, Coordinate rectangleCorner2,
+                                                        Coordinate rectangleCorner3, Coordinate rectangleCorner4, SearchPathPrototype move) {
         return RoutinesFromPaper.rectangleScan(rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4,
                 move);
     }
@@ -211,7 +211,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         phaseHints.add(new HalfPlaneHint(phaseRectangle[0], phaseRectangle[3]));
     }
 
-    private void scanCurrentRectangle(SearchPath move, HalfPlaneHint hint) {
+    private void scanCurrentRectangle(SearchPathPrototype move, HalfPlaneHint hint) {
         LineSegment hintLine = hint.getHalfPlaneLine();
         Point[] verticalSplitRectangle = splitRectangleVertically(searchAreaCornerA, searchAreaCornerB,
                 searchAreaCornerC, searchAreaCornerD, hint, hintLine, false);

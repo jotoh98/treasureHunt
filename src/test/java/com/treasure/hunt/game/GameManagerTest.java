@@ -5,7 +5,7 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hider.impl.RandomAngleHintHider;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
-import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import org.junit.jupiter.api.Test;
@@ -53,27 +53,27 @@ class GameManagerTest {
         }
 
         @Override
-        public SearchPath move() {
+        public SearchPathPrototype move() {
             Point point = JTSUtils.createPoint(0, 0);
             lastMove = point;
-            return new SearchPath(point);
+            return new SearchPathPrototype(point);
         }
 
         /**
          * @param hint the hint, the {@link com.treasure.hunt.strategy.hider.Hider} gave last.
-         * @return A {@link SearchPath}, containing a useless {@link Circle} as additional items, which should get removed.
+         * @return A {@link SearchPathPrototype}, containing a useless {@link Circle} as additional items, which should get removed.
          */
         @Override
-        public SearchPath move(AngleHint hint) {
-            SearchPath searchPath = new SearchPath(lastMove, lastMove);
+        public SearchPathPrototype move(AngleHint hint) {
+            SearchPathPrototype searchPathPrototype = new SearchPathPrototype(lastMove, lastMove);
             if (toBeRemovedLater != null) {
-                searchPath.getGeometryItemsToBeRemoved().add(toBeRemovedLater);
-                return searchPath;
+                searchPathPrototype.getGeometryItemsToBeRemoved().add(toBeRemovedLater);
+                return searchPathPrototype;
             }
             toBeRemovedLater = new GeometryItem<>(new Circle(new Coordinate(0, 0), 20, 20, JTSUtils.GEOMETRY_FACTORY), GeometryType.STANDARD);
-            searchPath.addAdditionalItem(toBeRemovedLater);
+            searchPathPrototype.addAdditionalItem(toBeRemovedLater);
 
-            return searchPath;
+            return searchPathPrototype;
         }
     }
 

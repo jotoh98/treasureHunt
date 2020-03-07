@@ -1,7 +1,7 @@
 package com.treasure.hunt.strategy.hider;
 
 import com.treasure.hunt.strategy.hint.Hint;
-import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import org.locationtech.jts.geom.Point;
 
@@ -21,10 +21,10 @@ public interface Hider<T extends Hint> {
     void init(Point searcherStartPosition);
 
     /**
-     * @param searchPath the {@link SearchPath}, the {@link Searcher} did last
+     * @param searchPathPrototype the {@link SearchPathPrototype}, the {@link Searcher} did last
      * @return T a (new) hint.
      */
-    T move(SearchPath searchPath);
+    T move(SearchPathPrototype searchPathPrototype);
 
     /**
      * @return the current treasure location

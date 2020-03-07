@@ -1,7 +1,7 @@
 package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
-import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
 import com.treasure.hunt.utils.JTSUtils;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -39,7 +39,7 @@ public class StrategyFromPaperTest {
 
     @Test
     void moveOnce() {
-        SearchPath move = strat.move();
+        SearchPathPrototype move = strat.move();
         List<Point> movePoints = move.getPoints();
         Point[] correctMovePoints = new Point[]{
                 createPoint(-1, 1), createPoint(-1, -1), createPoint(0, -1),
@@ -161,7 +161,7 @@ public class StrategyFromPaperTest {
         strat.searchAreaCornerC = JTSUtils.createPoint(4, -4);
         strat.searchAreaCornerD = JTSUtils.createPoint(-4, -4);
         HalfPlaneHint firstHint = new HalfPlaneHint(new Coordinate(0, 0), new Coordinate(4, -3.5));
-        SearchPath searcherMove = strat.move(firstHint);
+        SearchPathPrototype searcherMove = strat.move(firstHint);
 
         Point[] correctPoints = new Point[]{GEOMETRY_FACTORY.createPoint(getPAposForMyBadHint())};
         assertPoints(searcherMove.getPoints(), correctPoints);
@@ -171,7 +171,7 @@ public class StrategyFromPaperTest {
     void lastHintBadCaseOneTest() {
         oneBadHint();
         HalfPlaneHint secondHint = new HalfPlaneHint(getPAposForMyBadHint(), new Coordinate(-0.5, -4));
-        SearchPath searcherMove = strat.move(secondHint);
+        SearchPathPrototype searcherMove = strat.move(secondHint);
         Coordinate centerOfNewRectangle = new Coordinate((4 + getFForMyBadHint().x) / 2, 0);
         Point[] correctPoints = new Point[]{GEOMETRY_FACTORY.createPoint(centerOfNewRectangle)};
         assertPoints(searcherMove.getPoints(), correctPoints);
@@ -181,7 +181,7 @@ public class StrategyFromPaperTest {
     void lastHintBadCaseTwoTest() {
         oneBadHint();
         HalfPlaneHint secondHint = new HalfPlaneHint(getPAposForMyBadHint(), new Coordinate(-4, 1));
-        SearchPath searcherMove = strat.move(secondHint);
+        SearchPathPrototype searcherMove = strat.move(secondHint);
         Point[] correctPoints = new Point[]{
                 //scan m'k'km:
                 GEOMETRY_FACTORY.createPoint(getMForMyBadHint()),

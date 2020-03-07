@@ -1,7 +1,7 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
 import com.treasure.hunt.strategy.hint.Hint;
-import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import org.locationtech.jts.geom.Point;
 
@@ -23,23 +23,23 @@ public class BruteForceSearcher implements Searcher<Hint> {
     }
 
     @Override
-    public SearchPath move() {
-        SearchPath searchPath = new SearchPath();
+    public SearchPathPrototype move() {
+        SearchPathPrototype searchPathPrototype = new SearchPathPrototype();
         for (int i = 0; i < limit; i++) {
             y += ++lineSegmentDistance;
-            searchPath.addPoint(x, y);
+            searchPathPrototype.addPoint(x, y);
             x += lineSegmentDistance;
-            searchPath.addPoint(x, y);
+            searchPathPrototype.addPoint(x, y);
             y -= ++lineSegmentDistance;
-            searchPath.addPoint(x, y);
+            searchPathPrototype.addPoint(x, y);
             x -= lineSegmentDistance;
-            searchPath.addPoint(x, y);
+            searchPathPrototype.addPoint(x, y);
         }
-        return searchPath;
+        return searchPathPrototype;
     }
 
     @Override
-    public SearchPath move(Hint hint) {
+    public SearchPathPrototype move(Hint hint) {
         return move();
     }
 }

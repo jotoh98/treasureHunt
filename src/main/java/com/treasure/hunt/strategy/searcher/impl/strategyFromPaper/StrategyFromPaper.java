@@ -5,7 +5,7 @@ import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.geom.StatusMessageItem;
 import com.treasure.hunt.strategy.geom.StatusMessageType;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
-import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
@@ -68,18 +68,18 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     }
 
     @Override
-    public SearchPath move() {
-        SearchPath move = new SearchPath();
+    public SearchPathPrototype move() {
+        SearchPathPrototype move = new SearchPathPrototype();
         setRectToPhase();
         return (addState(incrementPhase(move)));
     }
 
     @Override
-    public SearchPath move(HalfPlaneHint hint) {
+    public SearchPathPrototype move(HalfPlaneHint hint) {
         previousHint = currentHint;
         currentHint = hint;
 
-        SearchPath move = new SearchPath();
+        SearchPathPrototype move = new SearchPathPrototype();
 
         // remove old status messages
         move.getStatusMessageItemsToBeRemoved().addAll(statusMessageItemsToBeRemovedNextMove);
@@ -164,7 +164,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * @param move
      * @return the input with the visualisations of the current phase and the search rectangle added
      */
-    protected SearchPath addState(SearchPath move, Coordinate[] currentRectanglePoints, Coordinate[] phaseRectanglePoints) {
+    protected SearchPathPrototype addState(SearchPathPrototype move, Coordinate[] currentRectanglePoints, Coordinate[] phaseRectanglePoints) {
         // add current rectangle which the strategy is working on
         Coordinate[] curCoords = new Coordinate[5];
         for (int i = 0; i < 4; i++) {
@@ -186,7 +186,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return move;
     }
 
-    protected SearchPath addState(SearchPath move) {
+    protected SearchPathPrototype addState(SearchPathPrototype move) {
         Coordinate[] curCoords = new Coordinate[4];
         curCoords[0] = searchAreaCornerA.getCoordinate();
         curCoords[1] = searchAreaCornerB.getCoordinate();
@@ -338,8 +338,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * @param move
      * @return
      */
-    protected SearchPath specificRectangleScan(Coordinate rectangleCorner1, Coordinate rectangleCorner2,
-                                               Coordinate rectangleCorner3, Coordinate rectangleCorner4, SearchPath move) {
+    protected SearchPathPrototype specificRectangleScan(Coordinate rectangleCorner1, Coordinate rectangleCorner2,
+                                                        Coordinate rectangleCorner3, Coordinate rectangleCorner4, SearchPathPrototype move) {
         return rectangleScan(rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4, move);
     }
 
@@ -354,8 +354,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * @param move
      * @return
      */
-    protected SearchPath specificRectangleScan(Point rectangleCorner1, Point rectangleCorner2,
-                                               Point rectangleCorner3, Point rectangleCorner4, SearchPath move) {
+    protected SearchPathPrototype specificRectangleScan(Point rectangleCorner1, Point rectangleCorner2,
+                                                        Point rectangleCorner3, Point rectangleCorner4, SearchPathPrototype move) {
         return specificRectangleScan(rectangleCorner1.getCoordinate(), rectangleCorner2.getCoordinate(),
                 rectangleCorner3.getCoordinate(), rectangleCorner4.getCoordinate(), move);
     }
@@ -429,7 +429,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * @param move
      * @return the parameter move with the center of the new ABCD added
      */
-    private SearchPath incrementPhase(SearchPath move) {
+    private SearchPathPrototype incrementPhase(SearchPathPrototype move) {
         phase++;
         Point oldA = searchAreaCornerA;
         Point oldB = searchAreaCornerB;

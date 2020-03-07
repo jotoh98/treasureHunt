@@ -5,7 +5,7 @@ import com.treasure.hunt.strategy.Treasure;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.Hint;
-import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,17 +29,17 @@ public class Turn {
      */
     private Hint hint;
     /**
-     * The {@link SearchPath} the {@link com.treasure.hunt.strategy.searcher.Searcher} did.
+     * The {@link SearchPathPrototype} the {@link com.treasure.hunt.strategy.searcher.Searcher} did.
      */
-    private SearchPath searchPath;
+    private SearchPathPrototype searchPathPrototype;
     /**
      * The current location of the treasure.
      */
     private Treasure treasure;
 
-    public Turn(Hint hint, SearchPath searchPath, Point treasure) {
+    public Turn(Hint hint, SearchPathPrototype searchPathPrototype, Point treasure) {
         this.hint = hint;
-        this.searchPath = searchPath;
+        this.searchPathPrototype = searchPathPrototype;
         this.treasure = new Treasure(treasure);
     }
 
@@ -53,7 +53,7 @@ public class Turn {
             output.addAll(getHintGeometries());
         }
 
-        if (searchPath != null) {
+        if (searchPathPrototype != null) {
             output.addAll(getSearchPathGeometries());
         }
 
@@ -71,8 +71,8 @@ public class Turn {
             hint.setSelected(false);
         }
 
-        if (searchPath != null) {
-            searchPath.setSelected(false);
+        if (searchPathPrototype != null) {
+            searchPathPrototype.setSelected(false);
         }
 
         if (treasure != null) {
@@ -90,7 +90,7 @@ public class Turn {
             output.addAll(getHintGeometries());
         }
 
-        if (searchPath != null && searchPath.isSelected()) {
+        if (searchPathPrototype != null && searchPathPrototype.isSelected()) {
             output.addAll(getSearchPathGeometries());
         }
 
@@ -117,18 +117,18 @@ public class Turn {
     }
 
     private List<GeometryItem<?>> getSearchPathGeometries() {
-        List<GeometryItem<?>> items = new ArrayList<>(searchPath.getPointList());
+        List<GeometryItem<?>> items = new ArrayList<>(searchPathPrototype.getPointList());
 
-        items.addAll(searchPath.getLines());
-        items.addAll(searchPath.getAdditional());
+        items.addAll(searchPathPrototype.getLines());
+        items.addAll(searchPathPrototype.getAdditional());
 
-        if (searchPath.getFirstPoint() != null && searchPath.getLastPoint() != null) {
+        if (searchPathPrototype.getFirstPoint() != null && searchPathPrototype.getLastPoint() != null) {
             items.add(new GeometryItem<>(
-                    JTSUtils.createLineString(searchPath.getLastPoint(), searchPath.getFirstPoint()),
+                    JTSUtils.createLineString(searchPathPrototype.getLastPoint(), searchPathPrototype.getFirstPoint()),
                     GeometryType.WAY_POINT
             ));
 
-            items.add(new GeometryItem<>(new ImageItem(searchPath.getLastPoint().getCoordinate(), 20, 20, "/images/pin.png", ImageItem.Alignment.BOTTOM_CENTER), GeometryType.SEARCHER_LAST_MOVE));
+            items.add(new GeometryItem<>(new ImageItem(searchPathPrototype.getLastPoint().getCoordinate(), 20, 20, "/images/pin.png", ImageItem.Alignment.BOTTOM_CENTER), GeometryType.SEARCHER_LAST_MOVE));
         }
 
         return items;

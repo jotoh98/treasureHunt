@@ -1,7 +1,7 @@
 package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
-import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -126,8 +126,8 @@ public class RoutinesFromPaperTest {
     }
 
     private void testRectangleScan(Coordinate[] rectangleToTest, Coordinate[] stepsExpectedResult) {
-        SearchPath result = rectangleScan(rectangleToTest[0], rectangleToTest[1], rectangleToTest[2],
-                rectangleToTest[3], new SearchPath());
+        SearchPathPrototype result = rectangleScan(rectangleToTest[0], rectangleToTest[1], rectangleToTest[2],
+                rectangleToTest[3], new SearchPathPrototype());
 
         if (result.getPoints().size() != stepsExpectedResult.length) {
             throw new AssertionError("The number of steps should be " + stepsExpectedResult.length + " " +

@@ -21,11 +21,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * @author bsen, dorianreineccius
  */
-public class SearchPathTest {
+public class SearchPathPrototypeTest {
     @ParameterizedTest
     @ArgumentsSource(RandomNumberArgumentProvider.class)
     public void testGetLines(int randomNumber) {
-        SearchPath searchPath = new SearchPath();
+        SearchPathPrototype searchPathPrototype = new SearchPathPrototype();
         Random random = new Random(randomNumber);
         ArrayList<Point> points = new ArrayList<>();
         Point point1 = JTSUtils.createPoint(random.nextInt(), random.nextInt());
@@ -42,8 +42,8 @@ public class SearchPathTest {
         points.add(point6);
         Point point7 = JTSUtils.createPoint(random.nextInt(), random.nextInt());
         points.add(point7);
-        searchPath.setPoints(points);
-        List<GeometryItem<LineString>> lines = searchPath.getLines();
+        searchPathPrototype.setPoints(points);
+        List<GeometryItem<LineString>> lines = searchPathPrototype.getLines();
         assertLineHasPoint(lines.get(0), point1);
         assertLineHasPoint(lines.get(0), point2);
         assertLineHasPoint(lines.get(1), point2);
@@ -59,30 +59,30 @@ public class SearchPathTest {
     }
 
     /**
-     * This initializes an {@link SearchPath}, containing one line and tests
-     * {@link SearchPath#getLength()}.
+     * This initializes an {@link SearchPathPrototype}, containing one line and tests
+     * {@link SearchPathPrototype#getLength()}.
      */
     @Test
     public void getLengthOneLineTest() {
-        assertEquals(new SearchPath(new Coordinate(0, 0), new Coordinate(0, 1)).getLength(), 1);
+        assertEquals(new SearchPathPrototype(new Coordinate(0, 0), new Coordinate(0, 1)).getLength(), 1);
     }
 
     /**
-     * This initializes an {@link SearchPath}, containing two lines and tests
-     * {@link SearchPath#getLength()}.
+     * This initializes an {@link SearchPathPrototype}, containing two lines and tests
+     * {@link SearchPathPrototype#getLength()}.
      */
     @Test
     public void getLengthTwoLinesTest() {
-        assertEquals(new SearchPath(new Coordinate(0, 0), new Coordinate(0, 1), new Coordinate(1, 1)).getLength(), 2);
+        assertEquals(new SearchPathPrototype(new Coordinate(0, 0), new Coordinate(0, 1), new Coordinate(1, 1)).getLength(), 2);
     }
 
     /**
-     * This initializes an {@link SearchPath}, containing much lines and tests
-     * {@link SearchPath#getLength()}.
+     * This initializes an {@link SearchPathPrototype}, containing much lines and tests
+     * {@link SearchPathPrototype#getLength()}.
      */
     @Test
     public void getLengthMuchLinesTest() {
-        assertEquals(new SearchPath(
+        assertEquals(new SearchPathPrototype(
                 new Coordinate(0, 0),
                 new Coordinate(0, 1),
                 new Coordinate(1, 1),

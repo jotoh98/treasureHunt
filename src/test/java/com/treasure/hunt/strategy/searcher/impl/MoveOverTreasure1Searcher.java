@@ -1,14 +1,14 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
 import com.treasure.hunt.strategy.hint.impl.CircleHint;
-import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Point;
 
 /**
  * This test {@link Searcher} walks on the treasure and leaves it,
- * in the same {@link SearchPath}.
+ * in the same {@link SearchPathPrototype}.
  *
  * @author dorianreineccius
  */
@@ -21,18 +21,18 @@ public class MoveOverTreasure1Searcher implements Searcher<CircleHint> {
     }
 
     @Override
-    public SearchPath move() {
-        return new SearchPath(startPosition);
+    public SearchPathPrototype move() {
+        return new SearchPathPrototype(startPosition);
     }
 
     @Override
-    public SearchPath move(CircleHint hint) {
-        SearchPath searchPath = new SearchPath(hint.getCenter());
-        searchPath.addPoint(JTSUtils.createPoint(
+    public SearchPathPrototype move(CircleHint hint) {
+        SearchPathPrototype searchPathPrototype = new SearchPathPrototype(hint.getCenter());
+        searchPathPrototype.addPoint(JTSUtils.createPoint(
                 hint.getCenter().getX() * 2,
                 hint.getCenter().getY() * 2
 
         ));
-        return searchPath;
+        return searchPathPrototype;
     }
 }
