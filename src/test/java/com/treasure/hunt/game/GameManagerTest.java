@@ -31,7 +31,7 @@ class GameManagerTest {
             throw new RuntimeException(e);
         }
 
-        instance.next();
+        instance.next(); // TODO fix
         instance.next();
 
         assertTrue(instance.getGeometryItems(true).contains(toBeRemovedLater));
