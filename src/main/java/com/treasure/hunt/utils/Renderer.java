@@ -73,7 +73,7 @@ public class Renderer {
      */
     private static Stream<GeometryItem<?>> visibleGeometries(List<Turn> turns, int viewIndex) {
         return ListUtils
-                .consecutive(turns.subList(0, viewIndex + 1), (prev, next) -> next.getGeometryItems(prev.getSearchPath().getLastPoint()))
+                .consecutive(turns.subList(0, viewIndex + 1), (prev, next) -> next.getGeometryItems())
                 .flatMap(Collection::stream);
     }
 

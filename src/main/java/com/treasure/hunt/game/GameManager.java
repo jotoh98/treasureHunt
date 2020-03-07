@@ -248,7 +248,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
                     if (index > 0) {
                         lastMove = visible.get(index - 1).getSearchPath().getLastPoint();
                     }
-                    return visible.get(index).getGeometryItems(lastMove).stream();
+                    return visible.get(index).getGeometryItems().stream();
                 })
                 .collect(Collectors.toCollection(ArrayList::new));
 
