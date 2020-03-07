@@ -2,7 +2,7 @@ package com.treasure.hunt.strategy.hider.impl;
 
 import com.treasure.hunt.game.mods.hideandseek.HideAndSeekHider;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
-import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.SwingUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
@@ -29,8 +29,8 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
     }
 
     @Override
-    public AngleHint move(SearchPathPrototype searchPathPrototype) {
-        return createAngleDialog(searchPathPrototype.getLastPoint().getCoordinate());
+    public AngleHint move(SearchPath searchPath) {
+        return createAngleDialog(searchPath.getSearcherEnd());
     }
 
     private AngleHint createAngleDialog(Coordinate middle) {

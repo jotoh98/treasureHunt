@@ -18,17 +18,17 @@ public class Statistic {
 
     public double getTraceLength() {
         double length = ListUtils
-                .consecutive(turns, (turn, turn2) -> turn2.getSearchPathPrototype().getLength())
+                .consecutive(turns, (turn, turn2) -> turn2.getSearchPath().getLength())
                 .reduce(Double::sum)
                 .orElse(0d);
         if (turns.size() > 0) {
-            length += turns.get(0).getSearchPathPrototype().getLength();
+            length += turns.get(0).getSearchPath().getLength();
         }
         return length;
     }
 
     public Point getStartPoint() {
-        return turns.get(0).getSearchPathPrototype().getFirstPoint();
+        return turns.get(0).getSearchPath().getSearcherStartPoint();
     }
 
     public Point getTreasureLocation() {

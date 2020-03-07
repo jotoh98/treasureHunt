@@ -135,7 +135,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         stepBackwardImpossibleBinding = viewIndex.isEqualTo(0);
         lastMoveBinding = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()), viewIndex, turns);
         lastTreasureBindings = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()).getTreasure().getPoint(), viewIndex, turns);
-        lastPointBinding = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()).getSearchPathPrototype().getLastPoint(), viewIndex, turns);
+        lastPointBinding = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()).getSearchPath().getSearcherEndPoint(), viewIndex, turns);
         moveSizeBinding = Bindings.size(turns);
         statusMessageItemsBinding = Bindings.createObjectBinding(this::getStatusMessageItems, viewIndex);
     }
@@ -143,7 +143,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     @NotNull
     private List<StatusMessageItem> getStatusMessageItems() {
         Map<StatusMessageType, List<StatusMessageItem>> statusByType = getVisibleTurns().stream()
-                .flatMap(turn -> Stream.of(turn.getHint(), turn.getSearchPathPrototype()))
+                .flatMap(turn -> Stream.of(turn.getHint(), turn.getSearchPath()))
                 .flatMap(hintAndMovement -> hintAndMovement == null ? Stream.empty() : hintAndMovement.getStatusMessageItemsToBeAdded().stream())
                 .collect(Collectors.groupingBy(StatusMessageItem::getStatusMessageType));
 
@@ -159,7 +159,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
                 })
                 .filter(statusMessageItem -> turns.stream().noneMatch(turn ->
                         turn.getHint() != null && turn.getHint().getStatusMessageItemsToBeRemoved().contains(statusMessageItem) ||
-                                turn.getSearchPathPrototype() != null && turn.getSearchPathPrototype().getStatusMessageItemsToBeRemoved().contains(statusMessageItem)
+                                turn.getSearchPath() != null && turn.getSearchPath().getStatusMessageItemsToBeRemoved().contains(statusMessageItem)
                 ))
                 .collect(Collectors.toList());
     }
@@ -244,9 +244,9 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
                 .range(0, visible.size())
                 .boxed()
                 .flatMap(index -> {
-                    Point lastMove = null;
+                    Point lastMove = null; // TODO remove
                     if (index > 0) {
-                        lastMove = visible.get(index - 1).getSearchPathPrototype().getLastPoint();
+                        lastMove = visible.get(index - 1).getSearchPath().getSearcherEndPoint();
                     }
                     return visible.get(index).getGeometryItems().stream();
                 })
@@ -270,7 +270,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
                 })
                 .filter(geometryItem -> turns.stream().noneMatch(turn ->
                         turn.getHint() != null && turn.getHint().getGeometryItemsToBeRemoved().contains(geometryItem) ||
-                                turn.getSearchPathPrototype() != null && turn.getSearchPathPrototype().getGeometryItemsToBeRemoved().contains(geometryItem)
+                                turn.getSearchPath() != null && turn.getSearchPath().getGeometryItemsToBeRemoved().contains(geometryItem)
                 ))
                 .collect(Collectors.toList());
     }
@@ -417,8 +417,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
             if (t.getHint() != null) {
                 selectables.add(t.getHint());
             }
-            if (t.getSearchPathPrototype() != null) {
-                selectables.add(t.getSearchPathPrototype());
+            if (t.getSearchPath() != null) {
+                selectables.add(t.getSearchPath());
             }
             if (t.getTreasure() != null) {
                 selectables.add(t.getTreasure());

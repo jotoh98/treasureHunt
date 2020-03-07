@@ -92,7 +92,7 @@ public class GameEngine {
 
         return new Turn(
                 null,
-                new SearchPath(),
+                new SearchPath(searcherPos),
                 treasurePos);
     }
 
@@ -109,7 +109,7 @@ public class GameEngine {
             throw new IllegalStateException("Game is already finished");
         }
 
-        final Point searchPathStart = lastSearchPath == null ? searcherPos : lastSearchPath.getLastPoint();
+        final Point searchPathStart = lastSearchPath == null ? searcherPos : lastSearchPath.getSearcherEndPoint();
 
         searcherMove();
 
@@ -157,7 +157,7 @@ public class GameEngine {
         lastSearchPath.getStatusMessageItemsToBeAdded().addAll(tmpLastSearchPathPrototype.getStatusMessageItemsToBeAdded());
         lastSearchPath.getStatusMessageItemsToBeRemoved().addAll(tmpLastSearchPathPrototype.getStatusMessageItemsToBeRemoved());
 
-        searcherPos = lastSearchPath.getLastPoint();
+        searcherPos = lastSearchPath.getSearcherEndPoint();
     }
 
     /**

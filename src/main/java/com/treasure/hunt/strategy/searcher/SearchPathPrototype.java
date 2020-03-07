@@ -78,9 +78,9 @@ public class SearchPathPrototype extends HintAndMovement {
     /**
      * @return the first points of the moves-sequence.
      */
-    public Point getFirstPoint() {
+    public Point getSearcherStartPoint() {
         if (points.size() == 0) {
-            return null;
+            throw new IllegalArgumentException("points.size() == 0");
         }
         return points.get(0);
     }
@@ -88,9 +88,9 @@ public class SearchPathPrototype extends HintAndMovement {
     /**
      * @return the last end-position of the moves-sequence.
      */
-    public Point getLastPoint() {
+    public Point getSearcherEndPoint() {
         if (points.size() == 0) {
-            return null;
+            throw new IllegalArgumentException("points.size() == 0");
         }
 
         return points.get(points.size() - 1);

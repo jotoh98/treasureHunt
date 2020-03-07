@@ -1,14 +1,10 @@
 package com.treasure.hunt.strategy.searcher;
 
-
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.ListUtils;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.locationtech.jts.algorithm.Distance;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
@@ -28,7 +24,6 @@ import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
  *
  * @author dorianreineccius, hassel
  */
-@NoArgsConstructor
 public class SearchPath extends SearchPathPrototype {
     @Getter
     protected List<GeometryItem<?>> additional = new ArrayList<>();
@@ -38,26 +33,37 @@ public class SearchPath extends SearchPathPrototype {
      * of the corresponding searcher.
      */
     @Getter
-    @Setter
-    private List<Point> points = new ArrayList<>();
+    private final List<Point> points = new ArrayList<>(); // TODO Coordinates
+    @Getter
+    private final Coordinate searcherStart;
+    @Getter
+    private final Coordinate searcherEnd;
 
-    public SearchPath(Point... points) {
+    public SearchPath(Point... points) { // TODO remove
         this(new ArrayList<>(Arrays.asList(points)));
     }
 
-    public SearchPath(List<Point> points) {
-        if (points.size() == 1) {
-            throw new IllegalArgumentException("SearchPath must get initializes with 0 or ≥2 points!");
+    public SearchPath(List<Point> points) { // TODO remove
+        if (points.isEmpty()) {
+            throw new IllegalArgumentException("SearchPath must get initialized with ≥1 points!");
         }
-        this.points = points;
+        searcherStart = points.get(0).getCoordinate();
+        searcherEnd = points.get(points.size() - 1).getCoordinate();
+        if (points.size() > 1) {
+            this.points.addAll(points);
+        }
     }
 
     public SearchPath(Coordinate... coordinates) {
-        if (coordinates.length == 1) {
-            throw new IllegalArgumentException("SearchPath must get initializes with 0 or ≥2 coordinates!");
+        if (coordinates.length == 0) {
+            throw new IllegalArgumentException("SearchPath must get initialized with ≥1 coordinates!");
         }
-        for (Coordinate coordinate : coordinates) {
-            this.addPoint(GEOMETRY_FACTORY.createPoint(coordinate));
+        searcherStart = coordinates[0];
+        searcherEnd = coordinates[coordinates.length - 1];
+        if (coordinates.length > 1) {
+            for (Coordinate coordinate : coordinates) {
+                this.addPoint(GEOMETRY_FACTORY.createPoint(coordinate));
+            }
         }
     }
 
@@ -77,44 +83,23 @@ public class SearchPath extends SearchPathPrototype {
     }
 
     /**
-     * @return the first points of the moves-sequence.
-     */
-    public Point getFirstPoint() {
-        if (points.size() == 0) {
-            return null;
-        }
-        return points.get(0);
-    }
-
-    /**
-     * @return the last end-position of the moves-sequence.
-     */
-    public Point getLastPoint() {
-        if (points.size() == 0) {
-            return null;
-        }
-
-        return points.get(points.size() - 1);
-    }
-
-    /**
      * @param point The next point, visited in this movement.
      */
-    public void addPoint(Point point) {
+    public void addPoint(Point point) { // TODO remove
         if (Double.isNaN(point.getX()) || Double.isNaN(point.getY())) {
             throw new IllegalArgumentException("Point with NAN as coordinate is invalid");
         }
         points.add(point);
     }
 
-    public void addPoint(double x, double y) {
+    public void addPoint(double x, double y) {// TODO remove
         addPoint(JTSUtils.createPoint(x, y));
     }
 
     /**
      * @param geometryItem to add {@link GeometryItem} objects, which are only relevant for displaying
      */
-    public void addAdditionalItem(GeometryItem<?> geometryItem) {
+    public void addAdditionalItem(GeometryItem<?> geometryItem) { // TODO remove
         additional.add(geometryItem);
     }
 
@@ -137,27 +122,17 @@ public class SearchPath extends SearchPathPrototype {
                 .collect(Collectors.toList());
     }
 
-    public boolean located(Point pathStart, Point treasure) {
-        if (points.size() < 1) {
-            return false;
-        }
-
-        List<Coordinate> wayCoordinates = points.stream()
-                .map(Point::getCoordinate)
-                .collect(Collectors.toList());
-
-        wayCoordinates.add(0, pathStart.getCoordinate());
-
-        return ListUtils
-                .consecutive(wayCoordinates, (firstCoordinate, nextCoordinate) ->
-                        Distance.pointToSegment(treasure.getCoordinate(), firstCoordinate, nextCoordinate)
-                )
-                .anyMatch(distance -> distance <= Searcher.SCANNING_DISTANCE);
-    }
-
     public double getLength() {
         return ListUtils.consecutive(JTSUtils.getCoordinateList(points), Coordinate::distance)
                 .reduce(Double::sum)
                 .orElse(0d);
+    }
+
+    public Point getSearcherStartPoint() {
+        return JTSUtils.createPoint(searcherStart.x, searcherStart.y);
+    }
+
+    public Point getSearcherEndPoint() {
+        return JTSUtils.createPoint(searcherEnd.x, searcherEnd.y);
     }
 }

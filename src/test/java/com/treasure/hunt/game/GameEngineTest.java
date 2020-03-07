@@ -5,6 +5,7 @@ import com.treasure.hunt.strategy.hider.impl.InstantWinHider;
 import com.treasure.hunt.strategy.hider.impl.RevealingHider;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.hint.impl.CircleHint;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
 import com.treasure.hunt.strategy.searcher.impl.*;
 import com.treasure.hunt.utils.JTSUtils;
@@ -134,7 +135,7 @@ class GameEngineTest {
             }
 
             @Override
-            public Hint move(SearchPathPrototype moves) {
+            public Hint move(SearchPath searchPath) {
                 return new CircleHint(new Coordinate(0, 2), 2);
             }
         });
