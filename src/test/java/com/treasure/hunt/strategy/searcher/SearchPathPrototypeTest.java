@@ -59,6 +59,15 @@ public class SearchPathPrototypeTest {
     }
 
     /**
+     * This initializes an {@link SearchPathPrototype}, containing no line and tests
+     * {@link SearchPathPrototype#getLength()}.
+     */
+    @Test
+    public void getLengthNoLineTest() {
+        assertEquals(new SearchPathPrototype(new Coordinate(0, 0)).getLength(), 0);
+    }
+
+    /**
      * This initializes an {@link SearchPathPrototype}, containing one line and tests
      * {@link SearchPathPrototype#getLength()}.
      */
@@ -82,7 +91,7 @@ public class SearchPathPrototypeTest {
      */
     @Test
     public void getLengthMuchLinesTest() {
-        assertEquals(new SearchPathPrototype(
+        assertEquals(new SearchPath(
                 new Coordinate(0, 0),
                 new Coordinate(0, 1),
                 new Coordinate(1, 1),

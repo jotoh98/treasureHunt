@@ -2,6 +2,7 @@ package com.treasure.hunt.strategy.searcher;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
+import com.treasure.hunt.strategy.geom.HintAndMovement;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.ListUtils;
 import lombok.Getter;
@@ -11,7 +12,6 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +23,7 @@ import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
  *
  * @author dorianreineccius, hassel
  */
-public class SearchPath extends SearchPathPrototype {
+public class SearchPath extends HintAndMovement {
     @Getter
     protected List<GeometryItem<?>> additional = new ArrayList<>();
 
@@ -38,20 +38,14 @@ public class SearchPath extends SearchPathPrototype {
     @Getter
     private final Coordinate searcherEnd;
 
-    public SearchPath(Point... coordinates) { // TODO remove
-        this(new ArrayList<>(Arrays.asList(coordinates)));
-    }
-
-    public SearchPath(List<Point> points) { // TODO remove
-        if (points.isEmpty()) {
+    public SearchPath(List<Coordinate> coordinates) {
+        if (coordinates.isEmpty()) {
             throw new IllegalArgumentException("SearchPath must get initialized with ≥1 points!");
         }
-        searcherStart = points.get(0).getCoordinate();
-        searcherEnd = points.get(points.size() - 1).getCoordinate();
-        if (points.size() > 1) {
-            this.coordinates.addAll(points.stream()
-                    .map(point -> point.getCoordinate())
-                    .collect(Collectors.toList()));
+        searcherStart = coordinates.get(0);
+        searcherEnd = coordinates.get(coordinates.size() - 1);
+        if (coordinates.size() > 1) {
+            this.coordinates.addAll(coordinates);
         }
     }
 
@@ -63,7 +57,7 @@ public class SearchPath extends SearchPathPrototype {
         searcherEnd = coordinates[coordinates.length - 1];
         if (coordinates.length > 1) {
             for (Coordinate coordinate : coordinates) {
-                this.addPoint(GEOMETRY_FACTORY.createPoint(coordinate));
+                this.coordinates.add(coordinate);
             }
         }
     }

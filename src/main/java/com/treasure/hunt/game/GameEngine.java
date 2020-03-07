@@ -114,7 +114,7 @@ public class GameEngine {
 
         return new Turn(
                 null,
-                new SearchPath(searcherPos),
+                new SearchPath(searcherPos.getCoordinates()),
                 treasurePos);
     }
 
@@ -171,7 +171,9 @@ public class GameEngine {
         points.addAll(tmpLastSearchPathPrototype.getPoints());
 
         // build new SearchPath
-        lastSearchPath = new SearchPath(points);
+        lastSearchPath = new SearchPath(points.stream()
+                .map(point -> point.getCoordinate())
+                .collect(Collectors.toList()));
         tmpLastSearchPathPrototype.getAdditional().forEach(e -> lastSearchPath.addAdditionalItem(e)); // TODO finish
         lastSearchPath.getGeometryItemsToBeRemoved().addAll(tmpLastSearchPathPrototype.getGeometryItemsToBeRemoved());
         lastSearchPath.getStatusMessageItemsToBeAdded().addAll(tmpLastSearchPathPrototype.getStatusMessageItemsToBeAdded());
