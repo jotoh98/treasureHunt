@@ -131,8 +131,6 @@ public class GameEngine {
             throw new IllegalStateException("Game is already finished");
         }
 
-        final Point searchPathStart = lastSearchPath == null ? searcherPos : lastSearchPath.getSearcherEndPoint();
-
         searcherMove();
 
         if (located(lastSearchPath.getCoordinatesList(), treasurePos.getCoordinate())) {
