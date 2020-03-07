@@ -81,11 +81,8 @@ public class GameEngine {
             return coordinates.get(0).distance(treasure) <= Searcher.SCANNING_DISTANCE;
         }
 
-        List<Coordinate> wayCoordinates = coordinates.stream()
-                .collect(Collectors.toList());
-
         return ListUtils
-                .consecutive(wayCoordinates, (firstCoordinate, nextCoordinate) ->
+                .consecutive(coordinates, (firstCoordinate, nextCoordinate) ->
                         Distance.pointToSegment(treasure, firstCoordinate, nextCoordinate)
                 )
                 .anyMatch(distance -> distance <= Searcher.SCANNING_DISTANCE);
