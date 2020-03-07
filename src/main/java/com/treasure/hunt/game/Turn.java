@@ -7,7 +7,6 @@ import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
-import com.treasure.hunt.utils.JTSUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.locationtech.jts.geom.Coordinate;
@@ -125,11 +124,6 @@ public class Turn {
 
         // TODO what does this !?
         if (searchPath.getSearcherStartPoint() != null && searchPath.getSearcherEndPoint() != null) {
-            items.add(new GeometryItem<>(
-                    JTSUtils.createLineString(searchPath.getSearcherEndPoint(), searchPath.getSearcherStartPoint()),
-                    GeometryType.WAY_POINT
-            ));
-
             items.add(new GeometryItem<>(new ImageItem(searchPath.getSearcherEndPoint().getCoordinate(), 20, 20, "/images/pin.png", ImageItem.Alignment.BOTTOM_CENTER), GeometryType.SEARCHER_LAST_MOVE));
         }
 
