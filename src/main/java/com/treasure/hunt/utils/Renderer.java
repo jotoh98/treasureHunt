@@ -144,7 +144,7 @@ public class Renderer {
     private static Stream<GeometryItem<?>> getHighlighter(List<Turn> turns, int viewIndex) {
         List<GeometryItem<?>> geometryItemList = new ArrayList<>();
         ListUtils
-                .consecutive(turns.subList(0, viewIndex + 1), (prev, next) -> next.getSelectedGeometryItems(prev.getSearchPath().getLastPoint()))
+                .consecutive(turns.subList(0, viewIndex + 1), (prev, next) -> next.getSelectedGeometryItems())
                 .flatMap(Collection::stream) // now we got all selectedGeometries.
                 .filter(geometryItem -> (geometryItem.getObject() instanceof Geometry)) // TODO this is important, since geometryItems can now contain ImageItems
                 .map(geometryItem -> (

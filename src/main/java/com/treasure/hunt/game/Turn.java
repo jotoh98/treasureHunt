@@ -46,7 +46,7 @@ public class Turn {
     /**
      * @return a list of all geometryItems of this.
      */
-    public List<GeometryItem<?>> getGeometryItems(Point movementStart) {
+    public List<GeometryItem<?>> getGeometryItems() {
         List<GeometryItem<?>> output = new ArrayList<>();
 
         if (hint != null) {
@@ -54,7 +54,7 @@ public class Turn {
         }
 
         if (searchPath != null) {
-            output.addAll(getSearchPathGeometries(movementStart));
+            output.addAll(getSearchPathGeometries());
         }
 
         if (treasure != null) {
@@ -83,7 +83,7 @@ public class Turn {
     /**
      * @return a list of all geometryItems of this.
      */
-    public List<GeometryItem<?>> getSelectedGeometryItems(Point movementStart) {
+    public List<GeometryItem<?>> getSelectedGeometryItems() {
         List<GeometryItem<?>> output = new ArrayList<>();
 
         if (hint != null && hint.isSelected()) {
@@ -91,7 +91,7 @@ public class Turn {
         }
 
         if (searchPath != null && searchPath.isSelected()) {
-            output.addAll(getSearchPathGeometries(movementStart));
+            output.addAll(getSearchPathGeometries());
         }
 
         if (treasure != null && treasure.isSelected()) {
@@ -116,15 +116,15 @@ public class Turn {
         );
     }
 
-    private List<GeometryItem<?>> getSearchPathGeometries(Point lastPoint) {
+    private List<GeometryItem<?>> getSearchPathGeometries() {
         List<GeometryItem<?>> items = new ArrayList<>(searchPath.getPointList());
 
         items.addAll(searchPath.getLines());
         items.addAll(searchPath.getAdditional());
 
-        if (searchPath.getFirstPoint() != null && lastPoint != null) {
+        if (searchPath.getFirstPoint() != null && searchPath.getLastPoint() != null) {
             items.add(new GeometryItem<>(
-                    JTSUtils.createLineString(lastPoint, searchPath.getFirstPoint()),
+                    JTSUtils.createLineString(searchPath.getLastPoint(), searchPath.getFirstPoint()),
                     GeometryType.WAY_POINT
             ));
 
