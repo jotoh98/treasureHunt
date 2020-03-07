@@ -165,12 +165,8 @@ public class SearchPath extends HintAndMovement {
                 .anyMatch(distance -> distance <= Searcher.SCANNING_DISTANCE);
     }
 
-    public double getLength(Point start) {
+    public double getLength() {
         List<Coordinate> way = JTSUtils.getCoordinateList(points);
-
-        if (start != null) {
-            way.add(0, start.getCoordinate());
-        }
 
         return ListUtils.consecutive(way, Coordinate::distance)
                 .reduce(Double::sum)

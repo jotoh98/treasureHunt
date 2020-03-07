@@ -3,8 +3,10 @@ package com.treasure.hunt.strategy.searcher;
 import com.treasure.hunt.RandomNumberArgumentProvider;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.utils.JTSUtils;
+import org.junit.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 
@@ -13,8 +15,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * @author bsen, dorianreineccius
+ */
 public class SearchPathTest {
     @ParameterizedTest
     @ArgumentsSource(RandomNumberArgumentProvider.class)
@@ -54,5 +60,35 @@ public class SearchPathTest {
 
     private void assertLineHasPoint(GeometryItem<LineString> geometryItem, Point point) {
         assertTrue(Arrays.asList(geometryItem.getObject().getCoordinates()).contains(point.getCoordinate()));
+    }
+
+    /**
+     * This initializes an {@link SearchPath}, containing one line and tests its length.
+     */
+    @Test
+    public void testLengthOneLine() {
+        assertEquals(new SearchPath(new Coordinate(0, 0), new Coordinate(0, 1)).getLength(), 1);
+    }
+
+    /**
+     * This initializes an {@link SearchPath}, containing two lines and tests its length.
+     */
+    @Test
+    public void testLengthTwoLines() {
+        assertEquals(new SearchPath(new Coordinate(0, 0), new Coordinate(0, 1), new Coordinate(1, 1)).getLength(), 2);
+    }
+
+    /**
+     * This initializes an {@link SearchPath}, containing two lines and tests its length.
+     */
+    @Test
+    public void testLengthMuchLines() {
+        assertEquals(new SearchPath(
+                new Coordinate(0, 0),
+                new Coordinate(0, 1),
+                new Coordinate(1, 1),
+                new Coordinate(1, 5),
+                new Coordinate(-4, 5)
+        ).getLength(), 1 + 1 + 4 + 5);
     }
 }
