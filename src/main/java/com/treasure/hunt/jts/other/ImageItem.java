@@ -19,7 +19,7 @@ public class ImageItem implements JavaFxDrawable {
     private final int maxWidth;
     private final int maxHeight;
     private final String imagePath;
-    private final Image image;
+    private Image image;
 
     public ImageItem(Coordinate position, int maxWidth, int maxHeight, String imagePath, Alignment alignment) {
         this.position = new Coordinate(position.x, position.y);
@@ -27,12 +27,14 @@ public class ImageItem implements JavaFxDrawable {
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
         this.imagePath = imagePath;
-        this.image = ImageService.getInstance().load(getClass().getResource(imagePath).toExternalForm(), maxWidth, maxHeight, true, true);
 
     }
 
     @Override
     public void draw(GeometryStyle geometryStyle, GraphicsContext graphics2D, AdvancedShapeWriter shapeWriter) {
+        if (image == null) {
+            image = ImageService.getInstance().load(getClass().getResource(imagePath).toExternalForm(), maxWidth, maxHeight, true, true);
+        }
         Point dest = new Point();
         double height = image.getHeight();
         double width = image.getWidth();
