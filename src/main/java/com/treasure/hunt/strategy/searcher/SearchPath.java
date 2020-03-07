@@ -83,33 +83,19 @@ public class SearchPath extends SearchPathPrototype {
     }
 
     /**
-     * @param point The next point, visited in this movement.
-     */
-    public void addPoint(Point point) { // TODO remove
-        if (Double.isNaN(point.getX()) || Double.isNaN(point.getY())) {
-            throw new IllegalArgumentException("Point with NAN as coordinate is invalid");
-        }
-        points.add(point);
-    }
-
-    public void addPoint(double x, double y) {// TODO remove
-        addPoint(JTSUtils.createPoint(x, y));
-    }
-
-    /**
      * @param geometryItem to add {@link GeometryItem} objects, which are only relevant for displaying
      */
     public void addAdditionalItem(GeometryItem<?> geometryItem) { // TODO remove
         additional.add(geometryItem);
     }
 
-    public List<GeometryItem<Point>> getPointList() {
+    public List<GeometryItem<Point>> getPointGeometryItemsList() {
         return points.stream()
                 .map(point -> new GeometryItem<>(point, GeometryType.WAY_POINT))
                 .collect(Collectors.toList());
     }
 
-    public List<GeometryItem<LineString>> getLines() {
+    public List<GeometryItem<LineString>> getLinesGeometryItemsList() {
         List<Coordinate> coordinateList = JTSUtils.getCoordinateList(points);
 
         return ListUtils
@@ -134,5 +120,11 @@ public class SearchPath extends SearchPathPrototype {
 
     public Point getSearcherEndPoint() {
         return JTSUtils.createPoint(searcherEnd.x, searcherEnd.y);
+    }
+
+    public List<Coordinate> getCoordinatesList() {
+        return points.stream()
+                .map(Point::getCoordinate)
+                .collect(Collectors.toList());
     }
 }

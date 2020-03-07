@@ -9,14 +9,17 @@ import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
+import com.treasure.hunt.utils.ListUtils;
 import com.treasure.hunt.utils.Requires;
 import lombok.Getter;
 import lombok.Setter;
+import org.locationtech.jts.algorithm.Distance;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This is the engine which runs a simulation of a treasure hunt.
@@ -70,6 +73,25 @@ public class GameEngine {
         this.initialSearcherCoordinate = initialSearcherCoordinate;
     }
 
+    public static boolean located(List<Coordinate> coordinates, Coordinate treasure) {
+        if (coordinates.isEmpty()) {
+            throw new IllegalArgumentException("points must not be empty!");
+        }
+
+        if (coordinates.size() == 1) {
+            return coordinates.get(0).distance(treasure) <= Searcher.SCANNING_DISTANCE;
+        }
+
+        List<Coordinate> wayCoordinates = coordinates.stream()
+                .collect(Collectors.toList());
+
+        return ListUtils
+                .consecutive(wayCoordinates, (firstCoordinate, nextCoordinate) ->
+                        Distance.pointToSegment(treasure, firstCoordinate, nextCoordinate)
+                )
+                .anyMatch(distance -> distance <= Searcher.SCANNING_DISTANCE);
+    }
+
     /**
      * initialize searcher and treasure positions.
      *
@@ -113,7 +135,7 @@ public class GameEngine {
 
         searcherMove();
 
-        if (lastSearchPath.located(searchPathStart, treasurePos)) {
+        if (located(lastSearchPath.getCoordinatesList(), treasurePos.getCoordinate())) {
             finished = true;
             return new Turn(null, lastSearchPath, treasurePos);
         } else {

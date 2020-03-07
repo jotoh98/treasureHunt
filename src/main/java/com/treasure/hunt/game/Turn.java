@@ -118,9 +118,9 @@ public class Turn {
     }
 
     private List<GeometryItem<?>> getSearchPathGeometries() {
-        List<GeometryItem<?>> items = new ArrayList<>(searchPath.getPointList());
+        List<GeometryItem<?>> items = new ArrayList<>(searchPath.getPointGeometryItemsList());
 
-        items.addAll(searchPath.getLines());
+        items.addAll(searchPath.getLinesGeometryItemsList());
         items.addAll(searchPath.getAdditional());
 
         // TODO what does this !?

@@ -9,7 +9,6 @@ import com.treasure.hunt.utils.ListUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.locationtech.jts.algorithm.Distance;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
@@ -117,13 +116,13 @@ public class SearchPathPrototype extends HintAndMovement {
         additional.add(geometryItem);
     }
 
-    public List<GeometryItem<Point>> getPointList() {
+    public List<GeometryItem<Point>> getPointGeometryItemsList() {
         return points.stream()
                 .map(point -> new GeometryItem<>(point, GeometryType.WAY_POINT))
                 .collect(Collectors.toList());
     }
 
-    public List<GeometryItem<LineString>> getLines() {
+    public List<GeometryItem<LineString>> getLinesGeometryItemsList() {
         List<Coordinate> coordinateList = JTSUtils.getCoordinateList(points);
 
         return ListUtils
@@ -134,31 +133,6 @@ public class SearchPathPrototype extends HintAndMovement {
                         )
                 )
                 .collect(Collectors.toList());
-    }
-
-    public boolean located(Point pathStart, Point treasure) {
-        if (points.size() < 1) {
-            return false;
-        }
-
-        if (points.size() == 1) {
-            return Distance.pointToSegment(
-                    treasure.getCoordinate(),
-                    pathStart.getCoordinate(),
-                    points.get(0).getCoordinate()) <= Searcher.SCANNING_DISTANCE;
-        }
-
-        List<Coordinate> wayCoordinates = points.stream()
-                .map(Point::getCoordinate)
-                .collect(Collectors.toList());
-
-        wayCoordinates.add(0, pathStart.getCoordinate());
-
-        return ListUtils
-                .consecutive(wayCoordinates, (firstCoordinate, nextCoordinate) ->
-                        Distance.pointToSegment(treasure.getCoordinate(), firstCoordinate, nextCoordinate)
-                )
-                .anyMatch(distance -> distance <= Searcher.SCANNING_DISTANCE);
     }
 
     public double getLength() {
