@@ -30,7 +30,7 @@ public class UserControlledAngleHintHider implements HideAndSeekHider<AngleHint>
 
     @Override
     public AngleHint move(SearchPath searchPath) {
-        return createAngleDialog(searchPath.getSearcherEnd());
+        return createAngleDialog(searchPath.getSearcherEndCoordinate());
     }
 
     private AngleHint createAngleDialog(Coordinate middle) {

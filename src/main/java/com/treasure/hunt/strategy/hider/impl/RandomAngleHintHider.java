@@ -40,7 +40,7 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
 
     @Override
     public AngleHint move(SearchPath searchPath) {
-        Coordinate searcherPos = searchPath.getSearcherEnd();
+        Coordinate searcherPos = searchPath.getSearcherEndCoordinate();
 
         GeometryAngle angle = JTSUtils.validRandomAngle(searcherPos, treasurePosition.getCoordinate(), 2 * Math.PI);
         double angleDegree = interiorAngle(angle.getRight(), angle.getCenter(), angle.getLeft());

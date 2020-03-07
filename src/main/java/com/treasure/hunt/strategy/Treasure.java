@@ -10,7 +10,7 @@ import org.locationtech.jts.geom.Point;
 @AllArgsConstructor
 public class Treasure extends Selectable {
     @NonNull
-    private final Point point;
+    private final Coordinate coordinate;
 
     /**
      * {@inheritDoc}
@@ -20,13 +20,16 @@ public class Treasure extends Selectable {
     }
 
     /**
-     * @return The {@link Coordinate} of the treasure.
+     * @return A clone of the {@link Coordinate}, where the treasure lies.
      */
     public Coordinate getCoordinate() {
-        return new Coordinate(point.getX(), point.getY());
+        return this.coordinate.copy();
     }
 
+    /**
+     * @return A new {@link Point}, where the treasure lies.
+     */
     public Point getPoint() {
-        return JTSUtils.createPoint(point.getCoordinate());
+        return JTSUtils.createPoint(getCoordinate());
     }
 }

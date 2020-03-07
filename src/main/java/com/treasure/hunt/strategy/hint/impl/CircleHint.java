@@ -30,7 +30,7 @@ public class CircleHint extends Hint {
      */
     @Override
     public Circle getGeometry() {
-        return new Circle(center, radius, JTSUtils.GEOMETRY_FACTORY);
+        return new Circle(getCenter(), radius, JTSUtils.GEOMETRY_FACTORY);
     }
 
     /**
@@ -44,8 +44,12 @@ public class CircleHint extends Hint {
         return output;
     }
 
-    public Point getCenter() {
-        return JTSUtils.GEOMETRY_FACTORY.createPoint(this.center);
+    public Coordinate getCenter() {
+        return this.center.copy();
+    }
+
+    public Point getCenterPoint() {
+        return JTSUtils.GEOMETRY_FACTORY.createPoint(getCenter());
     }
 
     public double getRadius() {

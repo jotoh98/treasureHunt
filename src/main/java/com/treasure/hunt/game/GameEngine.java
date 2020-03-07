@@ -15,7 +15,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.locationtech.jts.algorithm.Distance;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +44,8 @@ public class GameEngine {
     protected boolean firstMove = true;
     protected Hint lastHint;
     protected SearchPath lastSearchPath;
-    protected Point searcherPos;
-    protected Point treasurePos;
+    protected Coordinate searcherPos;
+    protected Coordinate treasurePos;
     @Getter
     private final Statistic statistics = new Statistic();
 
@@ -98,11 +97,11 @@ public class GameEngine {
      * @return a {@link Turn}, since the initialization must be displayed.
      */
     public Turn init() {
-        searcherPos = JTSUtils.GEOMETRY_FACTORY.createPoint(initialSearcherCoordinate);
-        searcher.init(searcherPos);
-        hider.init(searcherPos);
+        searcherPos = initialSearcherCoordinate;
+        searcher.init(JTSUtils.createPoint(searcherPos));
+        hider.init(JTSUtils.createPoint(searcherPos));
 
-        treasurePos = hider.getTreasureLocation();
+        treasurePos = hider.getTreasureLocation().getCoordinate();
         if (treasurePos == null) {
             throw new IllegalArgumentException(hider + " gave a treasurePosition which is null.");
         }
@@ -114,7 +113,7 @@ public class GameEngine {
 
         return new Turn(
                 null,
-                new SearchPath(searcherPos.getCoordinates()),
+                new SearchPath(new ArrayList<>(), searcherPos),
                 treasurePos);
     }
 
@@ -133,7 +132,7 @@ public class GameEngine {
 
         searcherMove();
 
-        if (located(lastSearchPath.getCoordinates(), treasurePos.getCoordinate())) {
+        if (located(lastSearchPath.getCoordinates(), treasurePos)) {
             finished = true;
             return new Turn(null, lastSearchPath, treasurePos);
         } else {
@@ -166,20 +165,20 @@ public class GameEngine {
         assert (tmpLastSearchPathPrototype != null);
         assert (tmpLastSearchPathPrototype.getCoordinates().size() != 0);
 
-        List<Point> points = new ArrayList<>();
-        points.add(searcherPos);
-        points.addAll(tmpLastSearchPathPrototype.getPoints());
+        List<Coordinate> coordinates = new ArrayList<>();
+        coordinates.add(searcherPos);
+        coordinates.addAll(tmpLastSearchPathPrototype.getCoordinates());
 
         // build new SearchPath
-        lastSearchPath = new SearchPath(points.stream()
-                .map(point -> point.getCoordinate())
-                .collect(Collectors.toList()));
-        tmpLastSearchPathPrototype.getAdditional().forEach(e -> lastSearchPath.addAdditionalItem(e));
+        lastSearchPath = new SearchPath(tmpLastSearchPathPrototype.getAdditional().stream()
+                .map(additionalGeometryItem -> additionalGeometryItem.clone())
+                .collect(Collectors.toList()),
+                coordinates);
         lastSearchPath.getGeometryItemsToBeRemoved().addAll(tmpLastSearchPathPrototype.getGeometryItemsToBeRemoved());
         lastSearchPath.getStatusMessageItemsToBeAdded().addAll(tmpLastSearchPathPrototype.getStatusMessageItemsToBeAdded());
         lastSearchPath.getStatusMessageItemsToBeRemoved().addAll(tmpLastSearchPathPrototype.getStatusMessageItemsToBeRemoved());
 
-        searcherPos = lastSearchPath.getSearcherEndPoint();
+        searcherPos = lastSearchPath.getSearcherEndCoordinate();
     }
 
     /**
@@ -191,16 +190,16 @@ public class GameEngine {
      * @param hint             {@link Hint} to be verified
      * @param treasurePosition treasure position
      */
-    protected void verifyHint(Hint hint, Point treasurePosition) {
+    protected void verifyHint(Hint hint, Coordinate treasurePosition) {
         if (hint instanceof AngleHint) {
-            if (!((AngleHint) hint).getGeometry().inView(treasurePosition.getCoordinate())) {
+            if (!((AngleHint) hint).getGeometry().inView(treasurePosition)) {
                 throw new IllegalArgumentException("Treasure does not lie in given Angle.");
             }
         }
         if (hint instanceof CircleHint) {
             if (((CircleHint) hint).getRadius() < ((CircleHint) hint).getCenter().distance(treasurePosition)) {
                 throw new IllegalArgumentException("The CircleHint does not contain the treasure.\n" +
-                        "It says, " + ((CircleHint) hint).getRadius() + " around " + ((CircleHint) hint).getCenter() + ", " +
+                        "It says, " + ((CircleHint) hint).getRadius() + " around " + ((CircleHint) hint).getCenterPoint() + ", " +
                         "but was " + ((CircleHint) hint).getCenter().distance(treasurePosition));
             }
         }

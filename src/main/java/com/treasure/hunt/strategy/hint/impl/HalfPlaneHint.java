@@ -2,7 +2,6 @@ package com.treasure.hunt.strategy.hint.impl;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
-import lombok.Getter;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
@@ -23,9 +22,7 @@ import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
 public class HalfPlaneHint extends AngleHint {
     static final double visual_extent = 1000;
     private LineString halfPlaneLine = null;
-    @Getter
     /**
-     *
      * when the line indicated by anglePointLeft and anglePointRight is not horizontal,
      * right and left indicate where the target is (right indicates the target is in positive x-Direction
      * in relationship to the line)
@@ -33,7 +30,7 @@ public class HalfPlaneHint extends AngleHint {
      * to the line (the up and down enumerators are only used when the line is horizontal)
      * left and down respectively
      */
-    private Direction direction;
+    private final Direction direction;
 
     public HalfPlaneHint(Coordinate center, Coordinate right) {
         super(right, center, new Coordinate(2 * center.x - right.x, 2 * center.y - right.y));
@@ -221,5 +218,9 @@ public class HalfPlaneHint extends AngleHint {
 
     public enum Direction {
         right, left, up, down
+    }
+
+    public Direction getDirection() {
+        return this.direction;
     }
 }

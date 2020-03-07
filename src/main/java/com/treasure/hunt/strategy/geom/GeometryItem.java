@@ -1,8 +1,10 @@
 package com.treasure.hunt.strategy.geom;
 
+import com.treasure.hunt.jts.other.ImageItem;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
+import org.locationtech.jts.geom.Geometry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +60,21 @@ public class GeometryItem<T> {
         this.preferredStyle = Math.max(0, Math.min(geometryStyles.size() - 1, preferredStyle));
     }
 
-    public void addGeometryStyle(GeometryStyle style) {
-        geometryStyles.add(style);
+    public GeometryItem<?> clone() {
+        if (getObject() instanceof Geometry) {
+            return new GeometryItem(
+                    ((Geometry) this.getObject()).copy(), // TODO copy!1
+                    this.getGeometryType(), // enum, no clone needed
+                    this.getGeometryStyle().clone()
+            );
+        } else if (getObject() instanceof ImageItem) {
+            return new GeometryItem(
+                    this.getObject(), // ImageItems are not changeable
+                    this.getGeometryType(), // enum, no clone needed
+                    this.getGeometryStyle().clone()
+            );
+        } else {
+            throw new IllegalStateException(this.getObject() + " is of a weird type.");
+        }
     }
 }

@@ -70,7 +70,7 @@ public class GeometryStyle {
         return new BasicStroke(1);
     }
 
-    protected GeometryStyle clone() {
+    public GeometryStyle clone() {
         return new GeometryStyle(filled, outlineColor, fillColor, zIndex);
     }
 }

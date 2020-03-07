@@ -10,7 +10,7 @@ import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Coordinate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +38,7 @@ public class Turn {
      */
     private Treasure treasure;
 
-    public Turn(Hint hint, SearchPath searchPath, Point treasure) {
+    public Turn(Hint hint, SearchPath searchPath, Coordinate treasure) {
         this.hint = hint;
         this.searchPath = searchPath;
         this.treasure = new Treasure(treasure);

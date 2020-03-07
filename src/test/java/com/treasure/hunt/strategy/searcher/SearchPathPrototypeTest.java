@@ -42,7 +42,8 @@ public class SearchPathPrototypeTest {
         points.add(point6);
         Point point7 = JTSUtils.createPoint(random.nextInt(), random.nextInt());
         points.add(point7);
-        SearchPath searchPath = new SearchPath(points.stream().map(point -> point.getCoordinate()).collect(Collectors.toList()));
+        SearchPath searchPath = new SearchPath(new ArrayList<>(),
+                points.stream().map(point -> point.getCoordinate()).collect(Collectors.toList()));
         List<GeometryItem<LineString>> lines = searchPath.getLinesGeometryItemsList();
         assertLineHasPoint(lines.get(0), point1);
         assertLineHasPoint(lines.get(0), point2);
@@ -64,7 +65,7 @@ public class SearchPathPrototypeTest {
      */
     @Test
     public void getLengthNoLineTest() {
-        assertEquals(new SearchPath(new Coordinate(0, 0)).getLength(), 0);
+        assertEquals(new SearchPath(new ArrayList<>(), new Coordinate(0, 0)).getLength(), 0);
     }
 
     /**
@@ -73,7 +74,7 @@ public class SearchPathPrototypeTest {
      */
     @Test
     public void getLengthOneLineTest() {
-        assertEquals(new SearchPath(new Coordinate(0, 0), new Coordinate(0, 1)).getLength(), 1);
+        assertEquals(new SearchPath(new ArrayList<>(), new Coordinate(0, 0), new Coordinate(0, 1)).getLength(), 1);
     }
 
     /**
@@ -82,7 +83,7 @@ public class SearchPathPrototypeTest {
      */
     @Test
     public void getLengthTwoLinesTest() {
-        assertEquals(new SearchPath(new Coordinate(0, 0), new Coordinate(0, 1), new Coordinate(1, 1)).getLength(), 2);
+        assertEquals(new SearchPath(new ArrayList<>(), new Coordinate(0, 0), new Coordinate(0, 1), new Coordinate(1, 1)).getLength(), 2);
     }
 
     /**
@@ -91,7 +92,7 @@ public class SearchPathPrototypeTest {
      */
     @Test
     public void getLengthMuchLinesTest() {
-        assertEquals(new SearchPath(
+        assertEquals(new SearchPath(new ArrayList<>(),
                 new Coordinate(0, 0),
                 new Coordinate(0, 1),
                 new Coordinate(1, 1),

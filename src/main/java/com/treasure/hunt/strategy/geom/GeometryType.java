@@ -44,9 +44,9 @@ public enum GeometryType {
     GRID(true, "Grid", false);
 
     @Getter
-    private final String displayName;
-    @Getter
     private boolean enabled;
+    @Getter
+    private final String displayName;
     @Getter
     private boolean override;
     @Getter

@@ -4,7 +4,6 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.ListUtils;
-import lombok.Getter;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
@@ -24,19 +23,11 @@ import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
  */
 public class SearchPath extends SearchPathPrototype {
     private final List<GeometryItem<?>> additionalGeometryItemsList = new ArrayList<>();
-
-    /**
-     * The list of points representing the searching path
-     * of the corresponding searcher.
-     */
-    @Getter
     private final List<Coordinate> coordinates = new ArrayList<>(); // TODO Coordinates
-    @Getter
     private final Coordinate searcherStart;
-    @Getter
     private final Coordinate searcherEnd;
 
-    public SearchPath(List<Coordinate> coordinates) {
+    public SearchPath(List<GeometryItem<?>> additionalGeometryItemsList, List<Coordinate> coordinates) {
         if (coordinates.isEmpty()) {
             throw new IllegalArgumentException("SearchPath must get initialized with ≥1 points!");
         }
@@ -47,7 +38,7 @@ public class SearchPath extends SearchPathPrototype {
         }
     }
 
-    public SearchPath(Coordinate... coordinates) {
+    public SearchPath(List<GeometryItem<?>> additionalGeometryItemsList, Coordinate... coordinates) {
         if (coordinates.length == 0) {
             throw new IllegalArgumentException("SearchPath must get initialized with ≥1 coordinates!");
         }
@@ -97,16 +88,36 @@ public class SearchPath extends SearchPathPrototype {
                 .orElse(0d);
     }
 
+    public Coordinate getSearcherStartCoordinate() {
+        return this.searcherStart.copy();
+    }
+
+    public Coordinate getSearcherEndCoordinate() {
+        return this.searcherEnd.copy();
+    }
+
     public Point getSearcherStartPoint() {
-        return JTSUtils.createPoint(searcherStart);
+        return JTSUtils.createPoint(getSearcherStartCoordinate());
     }
 
     public Point getSearcherEndPoint() {
-        return JTSUtils.createPoint(searcherEnd);
+        return JTSUtils.createPoint(getSearcherEndCoordinate());
     }
 
+    /**
+     * @return A list of copies of the {@link Coordinate} {@link List}.
+     */
+    public List<Coordinate> getCoordinates() {
+        return this.coordinates.stream()
+                .map(coordinate -> new Coordinate(coordinate.x, coordinate.y))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * @return A list of {@link Point}'s, containing copies of this' {@link Coordinate} objects.
+     */
     public List<Point> getPoints() {
-        return coordinates.stream()
+        return getCoordinates().stream()
                 .map(coordinate -> JTSUtils.createPoint(coordinate))
                 .collect(Collectors.toList());
     }
@@ -116,6 +127,8 @@ public class SearchPath extends SearchPathPrototype {
     }
 
     public List<GeometryItem<?>> getAdditional() {
-        return this.additionalGeometryItemsList;
+        return this.additionalGeometryItemsList.stream()
+                .map(geometryItem -> geometryItem.clone())
+                .collect(Collectors.toList());
     }
 }
