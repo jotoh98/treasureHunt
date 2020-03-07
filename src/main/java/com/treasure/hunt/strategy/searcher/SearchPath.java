@@ -24,8 +24,7 @@ import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
  * @author dorianreineccius, hassel
  */
 public class SearchPath extends HintAndMovement {
-    @Getter
-    protected List<GeometryItem<?>> additional = new ArrayList<>();
+    private final List<GeometryItem<?>> additionalGeometryItemsList = new ArrayList<>();
 
     /**
      * The list of points representing the searching path
@@ -69,16 +68,9 @@ public class SearchPath extends HintAndMovement {
     public Geometry getGeometry() {
         Coordinate[] coords = new Coordinate[this.coordinates.size()];
         for (int i = 0; i < coords.length; i++) {
-            coords[i] = this.coordinates.get(i);
+            coords[i] = (Coordinate) this.coordinates.get(i).clone();
         }
         return GEOMETRY_FACTORY.createLineString(coords);
-    }
-
-    /**
-     * @param geometryItem to add {@link GeometryItem} objects, which are only relevant for displaying
-     */
-    public void addAdditionalItem(GeometryItem<?> geometryItem) { // TODO remove
-        additional.add(geometryItem);
     }
 
     public List<GeometryItem<Point>> getPointGeometryItemsList() {
@@ -118,5 +110,13 @@ public class SearchPath extends HintAndMovement {
         return coordinates.stream()
                 .map(coordinate -> JTSUtils.createPoint(coordinate))
                 .collect(Collectors.toList());
+    }
+
+    public void addAdditionalItem(GeometryItem geometryItem) {
+        this.additionalGeometryItemsList.add(geometryItem);
+    }
+
+    public List<GeometryItem<?>> getAdditional() {
+        return this.additionalGeometryItemsList;
     }
 }
