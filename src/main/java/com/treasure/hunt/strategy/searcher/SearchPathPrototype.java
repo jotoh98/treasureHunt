@@ -42,11 +42,7 @@ public class SearchPathPrototype extends HintAndMovement {
     private List<Point> points = new ArrayList<>();
 
     public SearchPathPrototype(Point... points) {
-        this(new ArrayList<>(Arrays.asList(points)));
-    }
-
-    public SearchPathPrototype(List<Point> points) {
-        this.points = points;
+        this.points = new ArrayList<>(Arrays.asList(points));
     }
 
     public SearchPathPrototype(Coordinate... coordinates) {
@@ -75,27 +71,6 @@ public class SearchPathPrototype extends HintAndMovement {
     }
 
     /**
-     * @return the first points of the moves-sequence.
-     */
-    public Point getSearcherStartPoint() {
-        if (points.size() == 0) {
-            throw new IllegalArgumentException("points.size() == 0");
-        }
-        return points.get(0);
-    }
-
-    /**
-     * @return the last end-position of the moves-sequence.
-     */
-    public Point getSearcherEndPoint() {
-        if (points.size() == 0) {
-            throw new IllegalArgumentException("points.size() == 0");
-        }
-
-        return points.get(points.size() - 1);
-    }
-
-    /**
      * @param point The next point, visited in this movement.
      */
     public void addPoint(Point point) {
@@ -116,12 +91,6 @@ public class SearchPathPrototype extends HintAndMovement {
         additional.add(geometryItem);
     }
 
-    public List<GeometryItem<Point>> getPointGeometryItemsList() {
-        return points.stream()
-                .map(point -> new GeometryItem<>(point, GeometryType.WAY_POINT))
-                .collect(Collectors.toList());
-    }
-
     public List<GeometryItem<LineString>> getLinesGeometryItemsList() {
         List<Coordinate> coordinateList = JTSUtils.getCoordinateList(points);
 
@@ -133,12 +102,6 @@ public class SearchPathPrototype extends HintAndMovement {
                         )
                 )
                 .collect(Collectors.toList());
-    }
-
-    public double getLength() {
-        return ListUtils.consecutive(JTSUtils.getCoordinateList(points), Coordinate::distance)
-                .reduce(Double::sum)
-                .orElse(0d);
     }
 
     public List<Coordinate> getCoordinates() {

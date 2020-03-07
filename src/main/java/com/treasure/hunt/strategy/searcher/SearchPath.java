@@ -2,7 +2,6 @@ package com.treasure.hunt.strategy.searcher;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
-import com.treasure.hunt.strategy.geom.HintAndMovement;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.ListUtils;
 import lombok.Getter;
@@ -23,7 +22,7 @@ import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
  *
  * @author dorianreineccius, hassel
  */
-public class SearchPath extends HintAndMovement {
+public class SearchPath extends SearchPathPrototype {
     private final List<GeometryItem<?>> additionalGeometryItemsList = new ArrayList<>();
 
     /**
