@@ -34,9 +34,7 @@ public class CanvasController {
 
     public void initialize() {
         makeCanvasResizable();
-        renderer = new Renderer(canvas.getGraphicsContext2D(), transformation);
-
-        renderer.addAdditional("grid", new GeometryItem<>(new Grid(), GeometryType.GRID));
+        renderer = new Renderer(canvas, transformation);
         transformation.getScaleProperty().addListener(invalidation -> drawShapes());
         transformation.getOffsetProperty().addListener(invalidation -> drawShapes());
     }
@@ -53,7 +51,7 @@ public class CanvasController {
             if (gameManager.isNull().get()) {
                 return;
             }
-            renderer.render(gameManager.get());
+            renderer.render(gameManager.get().getVisibleGeometries());
         });
     }
 
@@ -98,6 +96,8 @@ public class CanvasController {
             }
             this.gameManager.get().getViewIndex()
                     .addListener(observable1 -> drawShapes());
+
+            this.gameManager.get().addAdditional("grid", new GeometryItem<>(new Grid(), GeometryType.GRID));
 
         });
     }
