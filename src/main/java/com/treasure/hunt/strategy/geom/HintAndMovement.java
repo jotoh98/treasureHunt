@@ -6,11 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class HintAndMovement {
-    @Getter
-    /**
-     * Earlier added items that are now removed from display
-     */
-    private List<GeometryItem> geometryItemsToBeRemoved = new ArrayList<>();
 
     @Getter
     /**
@@ -23,6 +18,5 @@ public abstract class HintAndMovement {
      * Earlier added status message items that are now removed from display
      */
     private List<StatusMessageItem> statusMessageItemsToBeRemoved = new ArrayList<>();
-
 
 }
