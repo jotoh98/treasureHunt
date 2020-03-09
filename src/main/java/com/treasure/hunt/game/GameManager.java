@@ -113,10 +113,9 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
-     * This simulates the initial move on the {@link GameEngine}
+     * This simulates the initial move on the {@link GameEngine}.
      */
     public void init() {
-        // Do initial move
         turns.add(gameEngine.init());
         if (gameEngine.isFinished()) {
             finishedProperty.set(true);
@@ -417,13 +416,11 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
             if (t.getHint() != null) {
                 selectables.add(t.getHint());
             }
-            if (t.getSearchPath() != null) {
+            if (t.getSearchPath().getPoints().size() > 1) {
                 selectables.add(t.getSearchPath());
             }
-            if (t.getTreasure() != null) {
-                selectables.add(t.getTreasure());
-            }
         }
+        selectables.add(visibleTurns.get(visibleTurns.size() - 1).getTreasure());
 
         selectables = selectables.stream()
                 .filter(selectable ->
@@ -438,7 +435,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     public void refreshHighlighter(Coordinate coordinate, double scale) {
-
         double distance = MOUSE_RECOGNIZE_DISTANCE / scale;
 
         // unselect all

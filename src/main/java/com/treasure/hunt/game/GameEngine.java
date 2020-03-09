@@ -151,7 +151,7 @@ public class GameEngine {
 
         // build new SearchPath
         lastSearchPath = new SearchPath(points);
-        tmpLastSearchPath.getAdditional().forEach(e -> lastSearchPath.addAdditionalItem(e)); // TODO finish
+        tmpLastSearchPath.getAdditional().forEach(e -> lastSearchPath.addAdditionalItem(e));
         lastSearchPath.getGeometryItemsToBeRemoved().addAll(tmpLastSearchPath.getGeometryItemsToBeRemoved());
         lastSearchPath.getStatusMessageItemsToBeAdded().addAll(tmpLastSearchPath.getStatusMessageItemsToBeAdded());
         lastSearchPath.getStatusMessageItemsToBeRemoved().addAll(tmpLastSearchPath.getStatusMessageItemsToBeRemoved());

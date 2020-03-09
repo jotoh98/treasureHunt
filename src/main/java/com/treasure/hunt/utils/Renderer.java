@@ -68,7 +68,7 @@ public class Renderer {
 
     /**
      * @param turns     list of {@link Turn} objects
-     * @param viewIndex the current max index of visible moves
+     * @param viewIndex the current max index of visible turns
      * @return stream of visible geometry items,
      */
     private static Stream<GeometryItem<?>> visibleGeometries(List<Turn> turns, int viewIndex) {
@@ -138,7 +138,7 @@ public class Renderer {
 
     /**
      * @param turns     list of {@link Turn} objects
-     * @param viewIndex the current max index of visible moves
+     * @param viewIndex the current max index of visible turns
      * @return stream of selected geometry items
      */
     private static Stream<GeometryItem<?>> getHighlighter(List<Turn> turns, int viewIndex) {
@@ -175,10 +175,10 @@ public class Renderer {
     }
 
     /**
-     * Render a list of moves and additional items.
+     * Render a list of turns and additional items.
      * Filters and sorts the assigned {@link GeometryItem}s.
      *
-     * @param turns     all moves available
+     * @param turns     all turns available
      * @param viewIndex the current view index
      */
     private void render(List<Turn> turns, int viewIndex) {
