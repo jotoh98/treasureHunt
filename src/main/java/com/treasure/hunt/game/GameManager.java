@@ -113,10 +113,9 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
-     * This simulates the initial move on the {@link GameEngine}
+     * This simulates the initial move on the {@link GameEngine}.
      */
     public void init() {
-        // Do initial move
         turns.add(gameEngine.init());
         if (gameEngine.isFinished()) {
             finishedProperty.set(true);
@@ -436,7 +435,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     public void refreshHighlighter(Coordinate coordinate, double scale) {
-
         double distance = MOUSE_RECOGNIZE_DISTANCE / scale;
 
         // unselect all
