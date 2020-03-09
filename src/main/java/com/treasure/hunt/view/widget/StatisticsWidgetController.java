@@ -36,9 +36,11 @@ public class StatisticsWidgetController {
     private void fillTable() {
         InvalidationListener statisticsChangeListener = (observable) -> statisticsTable.getItems().setAll(gameManager.get().getStatistics().get());
 
-        gameManager.addListener(observable ->
-                gameManager.get().getStatistics()
-                        .addListener(statisticsChangeListener));
+        gameManager.addListener(observable -> {
+            statisticsChangeListener.invalidated(null);
+            gameManager.get().getStatistics()
+                    .addListener(statisticsChangeListener);
+        });
 
         gameManager.get().getStatistics()
                 .addListener(statisticsChangeListener);

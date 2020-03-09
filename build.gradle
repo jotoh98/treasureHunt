@@ -57,7 +57,7 @@ dependencies {
     compile("org.openjfx:javafx-fxml:${javafxVersion}:${javafxPlatform}")
 }
 
-project.version = project.projVersion.replace('v','')
+project.version = project.projVersion.replace('v', '')
 
 distZip {
     archiveName "${project.name}-v${project.version}-${javafxPlatform}.zip"
@@ -80,7 +80,7 @@ javafx {
      * running the build. By declaring the dependency configuration compileOnly, the native binaries will not be
      * included. You will need to provide those separately during deployment for each target platform.
      */
-     configuration = 'compileOnly'
+    configuration = 'compileOnly'
 }
 
 mainClassName = 'com.treasure.hunt.Main'
@@ -93,10 +93,13 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
+applicationDefaultJvmArgs = [
+        "-Xdock:name=\"TreasureHunt\""
+]
 jar {
     manifest {
         attributes 'Main-Class': 'com.treasure.hunt.Main',
-                                 'Implementation-Version': project.version
+                'Implementation-Version': project.version
     }
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }

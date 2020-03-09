@@ -56,6 +56,9 @@ public class ScaleController {
     public void init(CanvasController canvasController) {
         this.canvasController = canvasController;
 
+        slider.setMax(PointTransformation.MAX_SCALE);
+        slider.setMin(PointTransformation.MIN_SCALE);
+
         final PointTransformation transformer = canvasController.getTransformation();
 
         transformer
