@@ -10,7 +10,6 @@ import com.treasure.hunt.strategy.searcher.SearchPathPrototype;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
-import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Coordinate;
 
 import java.util.ArrayList;

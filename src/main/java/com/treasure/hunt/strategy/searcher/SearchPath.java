@@ -2,6 +2,7 @@ package com.treasure.hunt.strategy.searcher;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
+import com.treasure.hunt.strategy.geom.HintAndMovement;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.ListUtils;
 import org.locationtech.jts.geom.Coordinate;
@@ -21,9 +22,9 @@ import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
  *
  * @author dorianreineccius, hassel
  */
-public class SearchPath extends SearchPathPrototype {
+public class SearchPath extends HintAndMovement {
     private final List<GeometryItem<?>> additionalGeometryItemsList = new ArrayList<>();
-    private final List<Coordinate> coordinates = new ArrayList<>(); // TODO Coordinates
+    private final List<Coordinate> coordinates = new ArrayList<>();
     private final Coordinate searcherStart;
     private final Coordinate searcherEnd;
 
@@ -36,6 +37,9 @@ public class SearchPath extends SearchPathPrototype {
         if (coordinates.size() > 1) {
             this.coordinates.addAll(coordinates);
         }
+        this.additionalGeometryItemsList.addAll(additionalGeometryItemsList.stream()
+                .map(additionalGeometryItem -> additionalGeometryItem.clone())
+                .collect(Collectors.toList()));
     }
 
     public SearchPath(List<GeometryItem<?>> additionalGeometryItemsList, Coordinate... coordinates) {
@@ -49,6 +53,9 @@ public class SearchPath extends SearchPathPrototype {
                 this.coordinates.add(coordinate);
             }
         }
+        this.additionalGeometryItemsList.addAll(additionalGeometryItemsList.stream()
+                .map(additionalGeometryItem -> additionalGeometryItem.clone())
+                .collect(Collectors.toList()));
     }
 
     /**

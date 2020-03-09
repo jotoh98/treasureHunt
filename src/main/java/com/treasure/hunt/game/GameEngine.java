@@ -18,7 +18,6 @@ import org.locationtech.jts.geom.Coordinate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This is the engine which runs a simulation of a treasure hunt.
@@ -152,28 +151,25 @@ public class GameEngine {
      * Let the {@link GameEngine#searcher} make {@link SearchPathPrototype}.
      */
     protected void searcherMove() {
-        SearchPathPrototype tmpLastSearchPathPrototype;
+        SearchPathPrototype searchPathPrototype;
         if (firstMove) {
             firstMove = false;
-            tmpLastSearchPathPrototype = searcher.move();
+            searchPathPrototype = searcher.move();
         } else {
-            tmpLastSearchPathPrototype = searcher.move(lastHint);
+            searchPathPrototype = searcher.move(lastHint);
         }
-        assert (tmpLastSearchPathPrototype != null);
-        assert (tmpLastSearchPathPrototype.getCoordinates().size() != 0);
+        assert (searchPathPrototype != null);
+        assert (searchPathPrototype.getCoordinates().size() != 0);
 
         List<Coordinate> coordinates = new ArrayList<>();
         coordinates.add(searcherPos);
-        coordinates.addAll(tmpLastSearchPathPrototype.getCoordinates());
+        coordinates.addAll(searchPathPrototype.getCoordinates());
 
         // build new SearchPath
-        lastSearchPath = new SearchPath(tmpLastSearchPathPrototype.getAdditional().stream()
-                .map(additionalGeometryItem -> additionalGeometryItem.clone())
-                .collect(Collectors.toList()),
-                coordinates);
-        lastSearchPath.getGeometryItemsToBeRemoved().addAll(tmpLastSearchPathPrototype.getGeometryItemsToBeRemoved());
-        lastSearchPath.getStatusMessageItemsToBeAdded().addAll(tmpLastSearchPathPrototype.getStatusMessageItemsToBeAdded());
-        lastSearchPath.getStatusMessageItemsToBeRemoved().addAll(tmpLastSearchPathPrototype.getStatusMessageItemsToBeRemoved());
+        lastSearchPath = new SearchPath(searchPathPrototype.getAdditional(), coordinates);
+        lastSearchPath.getGeometryItemsToBeRemoved().addAll(searchPathPrototype.getGeometryItemsToBeRemoved());
+        lastSearchPath.getStatusMessageItemsToBeAdded().addAll(searchPathPrototype.getStatusMessageItemsToBeAdded());
+        lastSearchPath.getStatusMessageItemsToBeRemoved().addAll(searchPathPrototype.getStatusMessageItemsToBeRemoved());
 
         searcherPos = lastSearchPath.getSearcherEndCoordinate();
     }

@@ -26,7 +26,7 @@ import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
  * This is the path of the searcher in the plain searching the treasure,
  * stored as a list of {@link Point}s.
  *
- * @author dorianreineccius, hassel
+ * @author dorianreineccius
  */
 @NoArgsConstructor
 public class SearchPathPrototype extends HintAndMovement {
@@ -39,16 +39,16 @@ public class SearchPathPrototype extends HintAndMovement {
      */
     @Getter
     @Setter
-    private List<Point> points = new ArrayList<>();
+    private List<Coordinate> coordinates = new ArrayList<>();
 
-    public SearchPathPrototype(Point... points) {
-        this.points = new ArrayList<>(Arrays.asList(points));
+    public SearchPathPrototype(Point... coordinates) {
+        this.coordinates = Arrays.asList(coordinates).stream()
+                .map(point -> point.getCoordinate())
+                .collect(Collectors.toList());
     }
 
     public SearchPathPrototype(Coordinate... coordinates) {
-        for (Coordinate coordinate : coordinates) {
-            this.addPoint(GEOMETRY_FACTORY.createPoint(coordinate));
-        }
+        this.coordinates = Arrays.asList(coordinates);
     }
 
     /**
@@ -57,12 +57,12 @@ public class SearchPathPrototype extends HintAndMovement {
     @Override
     public Geometry getGeometry() {
         // TODO implement this more beautiful.
-        if (points.size() == 1) {
-            return JTSUtils.createPoint(points.get(0).getCoordinate());
+        if (coordinates.size() == 1) {
+            return JTSUtils.createPoint(coordinates.get(0));
         }
 
         List<Coordinate> l = new LinkedList<>();
-        points.forEach(p -> l.add(p.getCoordinate()));
+        coordinates.forEach(p -> l.add(p));
         Coordinate[] coords = new Coordinate[l.size()];
         for (int i = 0; i < coords.length; i++) {
             coords[i] = l.get(i);
@@ -74,14 +74,14 @@ public class SearchPathPrototype extends HintAndMovement {
      * @param point The next point, visited in this movement.
      */
     public void addPoint(Point point) {
-        if (Double.isNaN(point.getX()) || Double.isNaN(point.getY())) {
-            throw new IllegalArgumentException("Point with NAN as coordinate is invalid");
-        }
-        points.add(point);
+        addPoint(point.getCoordinate());
     }
 
     public void addPoint(Coordinate coordinate) {
-        addPoint(JTSUtils.createPoint(coordinate));
+        if (Double.isNaN(coordinate.x) || Double.isNaN(coordinate.y)) {
+            throw new IllegalArgumentException("Point with NAN as coordinate is invalid");
+        }
+        coordinates.add(coordinate);
     }
 
     /**
@@ -92,10 +92,8 @@ public class SearchPathPrototype extends HintAndMovement {
     }
 
     public List<GeometryItem<LineString>> getLinesGeometryItemsList() {
-        List<Coordinate> coordinateList = JTSUtils.getCoordinateList(points);
-
         return ListUtils
-                .consecutive(coordinateList, (c1, c2) ->
+                .consecutive(coordinates, (c1, c2) ->
                         new GeometryItem<>(
                                 GEOMETRY_FACTORY.createLineString(new Coordinate[]{c1, c2}),
                                 GeometryType.WAY_POINT
@@ -104,7 +102,9 @@ public class SearchPathPrototype extends HintAndMovement {
                 .collect(Collectors.toList());
     }
 
-    public List<Coordinate> getCoordinates() {
-        return points.stream().map(point -> point.getCoordinate()).collect(Collectors.toList());
+    public List<Point> getPoints() {
+        return this.coordinates.stream()
+                .map(coordinate -> JTSUtils.createPoint(coordinate))
+                .collect(Collectors.toList());
     }
 }
