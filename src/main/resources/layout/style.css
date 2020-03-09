@@ -19,7 +19,7 @@
 
 .toolbar,
 .combo-box,
-.combo-box .list-cell {
+.list-cell {
     -fx-background-color: BACKGROUND_COLOR;
 }
 
@@ -55,7 +55,8 @@
     -fx-padding: 0 0 0 10pt;
 }
 
-.toolbar * {
+.toolbar *,
+.list-cell {
     -fx-text-fill: lightgrey;
 }
 
@@ -187,37 +188,42 @@
     -fx-border-radius: 2pt;
 }
 
-.combo-box .arrow {
-    -fx-background-color: white;
+.arrow {
+    -fx-background-color: lightgrey;
 }
 
-.combo-box .list-cell {
+.list-cell {
     -fx-padding: 0pt 4pt;
     -fx-background-color: transparent;
 }
 
-.combo-box-popup .list-view {
+.list-view {
     -fx-border-color: transparent;
     -fx-padding: 0;
-    -fx-background-color: black;
-}
-
-.combo-box-popup .list-view {
+    -fx-background-color: DARKER_BACKGROUND;
     -fx-border-width: 0;
 }
 
-.combo-box-popup .list-view .list-cell {
+.list-view .list-cell {
     -fx-padding: 3pt 5pt;
     -fx-cursor: hand;
 }
 
-.combo-box-popup .list-view .list-cell:hover {
+.list-view .list-cell:hover {
     -fx-background-color: #2946b4;
+}
+
+.list-cell:empty {
+    visibility: hidden;
+}
+
+.list-cell:selected {
+    -fx-background-color: DARK_BACKGROUND;
     -fx-text-fill: white;
 }
 
-.combo-box .list-view .scroll-bar .increment-button,
-.combo-box .list-view .scroll-bar .decrement-button {
+.combo-box .list-cell:selected {
+    -fx-background-color: transparent;
 }
 
 .split-pane {
@@ -307,4 +313,16 @@
 
 .error_label {
     -fx-background-color: REQUIRED_RED;
+}
+
+.titled-pane * {
+    -fx-border-width: 0;
+    -fx-border-radius: 0;
+    -fx-background-color: BACKGROUND_COLOR;
+    -fx-fill: lightgrey;
+}
+
+.titled-pane .arrow-button .arrow,
+.tree-cell > .tree-disclosure-node > .arrow {
+    -fx-background-color: lightgrey;
 }
