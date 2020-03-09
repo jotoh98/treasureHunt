@@ -47,8 +47,6 @@ public class CanvasController {
         renderer.addAdditional("grid", new GeometryItem<>(new Grid(), GeometryType.GRID));
         transformation.getScaleProperty().addListener(invalidation -> drawShapes());
         transformation.getOffsetProperty().addListener(invalidation -> drawShapes());
-
-        //subscribeToGeometryItem();
     }
 
     public void makeCanvasResizable() {

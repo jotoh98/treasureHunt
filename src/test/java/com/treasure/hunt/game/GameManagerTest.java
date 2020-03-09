@@ -33,7 +33,7 @@ class GameManagerTest {
             throw new RuntimeException(e);
         }
 
-        instance.next();
+        instance.next(); // TODO fix
         instance.next();
 
         // this test is broken, since we cannot access the toBeRemovedLater.
