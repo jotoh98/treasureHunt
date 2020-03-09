@@ -27,7 +27,6 @@ public class ImageItem implements JavaFxDrawable {
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
         this.imagePath = imagePath;
-
     }
 
     @Override

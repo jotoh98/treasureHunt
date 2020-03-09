@@ -58,7 +58,7 @@ public class Turn {
         output.addAll(getSearchPathGeometries());
         output.addAll(getTreasureGeometries());
 
-        output.sort(Comparator.comparingInt(a -> a.getGeometryStyle().getZIndex()));
+        output.sort(Comparator.comparingInt(geometryItem -> geometryItem.getGeometryStyle().getZIndex()));
 
         return output;
     }

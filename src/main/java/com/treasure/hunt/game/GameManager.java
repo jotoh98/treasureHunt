@@ -243,10 +243,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
                 .range(0, visible.size())
                 .boxed()
                 .flatMap(index -> {
-                    Point lastMove = null; // TODO remove
-                    if (index > 0) {
-                        lastMove = visible.get(index - 1).getSearchPath().getSearcherEndPoint();
-                    }
                     return visible.get(index).getGeometryItems().stream();
                 })
                 .collect(Collectors.toCollection(ArrayList::new));
@@ -412,12 +408,12 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
 
         Point mouse = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinate);
 
-        for (Turn t : visibleTurns) {
-            if (t.getHint() != null) {
-                selectables.add(t.getHint());
+        for (Turn turn : visibleTurns) {
+            if (turn.getHint() != null) {
+                selectables.add(turn.getHint());
             }
-            if (t.getSearchPath().getPoints().size() > 1) {
-                selectables.add(t.getSearchPath());
+            if (turn.getSearchPath().getPoints().size() > 1) {
+                selectables.add(turn.getSearchPath());
             }
         }
         selectables.add(visibleTurns.get(visibleTurns.size() - 1).getTreasure());

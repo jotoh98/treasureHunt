@@ -89,9 +89,9 @@ public class CanvasController {
         }
         dragged = false;
 
-        Coordinate c = transformation.revert(dragStart.toCoordinate());
+        Coordinate coordinate = transformation.revert(dragStart.toCoordinate());
 
-        gameManager.get().refreshHighlighter(c, transformation.getScaleProperty().get());
+        gameManager.get().refreshHighlighter(coordinate, transformation.getScaleProperty().get());
         renderer.render(gameManager.get());
     }
 
