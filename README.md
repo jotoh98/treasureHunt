@@ -1,3 +1,5 @@
+![Gradle Test](https://github.com/jotoh98/treasureHunt/workflows/Gradle%20Test/badge.svg)
+
 # Java docs
 [here](https://jotoh98.github.io/treasureHunt/)
 
