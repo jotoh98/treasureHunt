@@ -62,6 +62,7 @@ public class MainController {
     public ComboBox<Class<? extends GameEngine>> gameEngineList;
     public Button startGameButton;
     public Label logLabel;
+    public Pane popUpPane;
     @FXML
     private NavigationController stepViewNavigatorController;
     @FXML
@@ -93,6 +94,24 @@ public class MainController {
         listenToGameMangerLoad();
         listenToLogLabelEvent();
         addGameIndependentWidgets();
+        setUpPopUpPane();
+        EventBusUtils.INNER_POP_UP_EVENT
+                .addListener(this::newInnerPopUp);
+        EventBusUtils.INNER_POP_UP_EVENT_CLOSE
+                .addListener(this::closePopUp);
+    }
+
+    private void closePopUp(Void aVoid) {
+        popUpPane.setVisible(false);
+    }
+
+    private void newInnerPopUp(Node node) {
+        popUpPane.setVisible(true);
+        popUpPane.getChildren().addAll(node);
+    }
+
+    private void setUpPopUpPane() {
+        popUpPane.managedProperty().bind(popUpPane.visibleProperty());
     }
 
     private void addGameIndependentWidgets() {

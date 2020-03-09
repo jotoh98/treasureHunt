@@ -110,7 +110,7 @@ public class SearchPath extends HintAndMovement {
                 .consecutive(coordinateList, (c1, c2) ->
                         new GeometryItem<>(
                                 JTSUtils.GEOMETRY_FACTORY.createLineString(new Coordinate[]{c1, c2}),
-                                GeometryType.WAY_POINT
+                                GeometryType.WAY_POINT_LINE
                         )
                 )
                 .collect(Collectors.toList());

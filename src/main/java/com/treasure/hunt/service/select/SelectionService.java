@@ -1,0 +1,124 @@
+package com.treasure.hunt.service.select;
+
+import com.treasure.hunt.game.GameManager;
+import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.geom.GeometryType;
+import com.treasure.hunt.utils.EventBusUtils;
+import com.treasure.hunt.utils.JTSUtils;
+import com.treasure.hunt.view.SelectClickedPopUpController;
+import javafx.beans.InvalidationListener;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.SneakyThrows;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class SelectionService {
+    private static final SelectionService instance = new SelectionService();
+    private static final double MOUSE_RECOGNIZE_DISTANCE = 4;
+
+    @Getter
+    @Setter
+    private BooleanProperty selectionInProgress = new SimpleBooleanProperty(false);
+    private GameManager currentGameManager;
+    private Geometry geometrySelected;
+    private GeometryItem<? extends Geometry> geometryItemSelected;
+    private InvalidationListener stepChangeListener = observable -> stepChanged();
+
+    private SelectionService() {
+
+    }
+
+    public static SelectionService getInstance() {
+        return instance;
+    }
+
+    private void stepChanged() {
+        if (currentGameManager.getVisibleGeometries()
+                .noneMatch(geometryItem -> geometryItem.equals(geometryItemSelected))) {
+            if (geometryItemSelected != null) {
+                currentGameManager.getAdditional()
+                        .remove("Highlighter");
+            }
+            EventBusUtils.GEOMETRY_ITEM_SELECTED.trigger(null);
+
+            geometryItemSelected = null;
+            geometrySelected = null;
+        }
+    }
+
+    @SneakyThrows
+    public void handleClickEvent(Coordinate coordinate, double scale, GameManager gameManager) {
+        selectionInProgress.setValue(false);
+        if (currentGameManager != gameManager) {
+            gameManager.getViewIndex().addListener(stepChangeListener);
+            if (currentGameManager != null) {
+                currentGameManager.getViewIndex().removeListener(stepChangeListener);
+            }
+            currentGameManager = gameManager;
+        }
+
+        double distance = MOUSE_RECOGNIZE_DISTANCE / scale;
+        List<GeometryItem<?>> foundItems = gameManager
+                .getVisibleGeometries()
+                .filter(geometryItem -> geometryItem.getObject() instanceof Geometry && geometryItem.getGeometryType() != GeometryType.HIGHLIGHTER && geometryItem != geometryItemSelected)
+                .filter(geometryItem -> ((Geometry) geometryItem.getObject()).distance(JTSUtils.createPoint(coordinate.getX(), coordinate.getY())) <= distance)
+                .collect(Collectors.toList());
+
+        if (foundItems.isEmpty()) {
+            if (geometryItemSelected != null) {
+                gameManager.getAdditional()
+                        .remove("Highlighter");
+            }
+            EventBusUtils.GEOMETRY_ITEM_SELECTED.trigger(null);
+
+            geometryItemSelected = null;
+            geometrySelected = null;
+
+            EventBusUtils.LOG_LABEL_EVENT.trigger("No item found within reasonable range.");
+            return;
+        }
+
+        if (foundItems.size() == 1) {
+            GeometryItem<? extends Geometry> geometryItem = (GeometryItem<? extends Geometry>) foundItems.get(0);
+            selectItem(gameManager, geometryItem);
+            return;
+        }
+
+        final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/selectClickedPopUp.fxml"));
+        Node load = fxmlLoader.load();
+        EventBusUtils.INNER_POP_UP_EVENT.trigger(load);
+        SelectClickedPopUpController controller = fxmlLoader.getController();
+
+        controller.getCorrectItem(foundItems).thenAccept(geometryItem -> selectItem(gameManager, (GeometryItem<? extends Geometry>) geometryItem));
+    }
+
+    private void selectItem(GameManager gameManager, GeometryItem<? extends Geometry> geometryItem) {
+        EventBusUtils.LOG_LABEL_EVENT.trigger("Item selected");
+
+        geometryItemSelected = geometryItem;
+        geometrySelected = geometryItemSelected.getObject();
+        EventBusUtils.GEOMETRY_ITEM_SELECTED.trigger(geometryItemSelected);
+        gameManager.getAdditional()
+                .put("Highlighter", createEnvelope(geometrySelected));
+    }
+
+    private GeometryItem<?> createEnvelope(Geometry item) {
+        if (item instanceof Point) {
+            return new GeometryItem<>(
+                    JTSUtils.createPoint(((Point) item).getX(), ((Point) item).getY()),
+                    GeometryType.HIGHLIGHTER);
+        }
+        return new GeometryItem<>(
+                JTSUtils.toPolygon(item.getEnvelopeInternal()),
+                GeometryType.HIGHLIGHTER);
+    }
+}

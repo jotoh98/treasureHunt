@@ -23,6 +23,7 @@ import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,10 @@ import sun.reflect.ReflectionFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
@@ -57,7 +61,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     ObservableList<Turn> turns = FXCollections.observableArrayList();
 
     @Getter
-    public HashMap<String, GeometryItem<?>> additional = new HashMap<>();
+    private ObservableMap<String, GeometryItem<?>> additional = FXCollections.observableHashMap();
 
     @Getter
     private volatile BooleanProperty beatThreadRunning = new SimpleBooleanProperty(false);
@@ -363,7 +367,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         additional.remove(key);
     }
 
-    public HashMap<String, GeometryItem<?>> getAdditionals() {
+    public Map<String, GeometryItem<?>> getAdditionals() {
         return getAdditional();
     }
 

@@ -3,10 +3,12 @@ package com.treasure.hunt.view;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.jts.awt.PointTransformation;
 import com.treasure.hunt.jts.geom.Grid;
+import com.treasure.hunt.service.select.SelectionService;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.utils.Renderer;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
@@ -14,6 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.math.Vector2D;
 
 /**
@@ -56,6 +59,11 @@ public class CanvasController {
     }
 
     public void onCanvasClicked(MouseEvent mouseEvent) {
+        if (SelectionService.getInstance().getSelectionInProgress().get()) {
+            Coordinate coordinate = transformation.revert(mouseEvent.getX(), mouseEvent.getY());
+            SelectionService.getInstance().handleClickEvent(coordinate, transformation.getScale(), gameManager.get());
+            return;
+        }
         if (gameManager.isNull().get()) {
             return;
         }
@@ -99,6 +107,8 @@ public class CanvasController {
 
             this.gameManager.get().addAdditional("grid", new GeometryItem<>(new Grid(), GeometryType.GRID));
 
+            this.gameManager.get().getAdditional()
+                    .addListener((InvalidationListener) change -> drawShapes());
         });
     }
 }

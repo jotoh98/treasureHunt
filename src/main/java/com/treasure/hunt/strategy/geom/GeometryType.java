@@ -22,14 +22,15 @@ public enum GeometryType {
     HALF_PLANE_LINE_BROWN(true, "half plane line", true),
 
     // treasure/no-treasure (areas)
-    TREASURE(true, "treasure"),
+    TREASURE(true, "treasure", true),
     TREASURE_FLAG(true, "treasure flag", true),
     NO_TREASURE(false, "no treasure"),
     POSSIBLE_TREASURE(false, "possible treasure"),
     HINT_ANGLE(true, "angle hint", true),
 
     // searcher movements
-    WAY_POINT(true, "no treasure"),
+    WAY_POINT(true, "way point"),
+    WAY_POINT_LINE(true, "way point line"),
     SEARCHER_MOVEMENT(true, "searcher movement"),
     SEARCHER_LAST_MOVE(true, "the searchers last movement", true),
 
@@ -42,7 +43,8 @@ public enum GeometryType {
 
     STANDARD(true, ""),
     CURRENT_WAY_POINT(true, "Current way point", true),
-    GRID(true, "Grid", false);
+    GRID(true, "Grid", false),
+    HIGHLIGHTER(true, "Highlighter", true);
 
     @Getter
     private final String displayName;

@@ -36,6 +36,10 @@ public class GeometryStyle {
         defaultsMap.putAll(defaultsMapAdd);
         defaultsMapAdd.put(GeometryType.HALF_PLANE_LINE_BROWN, new GeometryStyle(true, new Color(0x8B4513)));
         defaultsMap.putAll(defaultsMapAdd);
+        defaultsMapAdd.put(GeometryType.WAY_POINT_LINE, new GeometryStyle(true, new Color(0xFFFFFF)));
+        defaultsMap.putAll(defaultsMapAdd);
+        defaultsMapAdd.put(GeometryType.HIGHLIGHTER, new GeometryStyle(true, Color.GREEN, Integer.MAX_VALUE));
+        defaultsMap.putAll(defaultsMapAdd);
     }
 
     private boolean visible;
@@ -54,6 +58,12 @@ public class GeometryStyle {
 
     public GeometryStyle(boolean visible, Color outlineColor, Color fillColor) {
         this(visible, true, outlineColor, fillColor, 0);
+    }
+
+    public GeometryStyle(boolean visible, Color outlineColor, int zIndex) {
+        this.visible = visible;
+        this.outlineColor = outlineColor;
+        this.zIndex = zIndex;
     }
 
     public static GeometryStyle getDefaults(GeometryType type) {

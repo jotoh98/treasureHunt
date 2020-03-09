@@ -13,6 +13,17 @@
     -fx-background-color: BACKGROUND_COLOR;
 }
 
+.pop-up-pane {
+    -fx-background-color: rgba(56, 56, 56, 0.75);
+    -fx-border-color: BORDER_COLOR;
+    -fx-border-width: 1px;
+    -fx-text-fill: white;
+}
+
+.pop-up-pane .label, .pop-up-pane .button {
+    -fx-text-fill: white;
+}
+
 #logLabel {
     -fx-text-fill: darkgrey;
 }
