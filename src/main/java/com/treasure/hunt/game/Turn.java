@@ -9,6 +9,7 @@ import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
 import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
@@ -31,10 +32,12 @@ public class Turn {
     /**
      * The {@link SearchPath} the {@link com.treasure.hunt.strategy.searcher.Searcher} did.
      */
+    @NonNull
     private SearchPath searchPath;
     /**
      * The current location of the treasure.
      */
+    @NonNull
     private Treasure treasure;
 
     public Turn(Hint hint, SearchPath searchPath, Point treasure) {
@@ -52,14 +55,8 @@ public class Turn {
         if (hint != null) {
             output.addAll(getHintGeometries());
         }
-
-        if (searchPath != null) {
-            output.addAll(getSearchPathGeometries());
-        }
-
-        if (treasure != null) {
-            output.addAll(getTreasureGeometries());
-        }
+        output.addAll(getSearchPathGeometries());
+        output.addAll(getTreasureGeometries());
 
         output.sort(Comparator.comparingInt(a -> a.getGeometryStyle().getZIndex()));
 
@@ -70,14 +67,8 @@ public class Turn {
         if (hint != null) {
             hint.setSelected(false);
         }
-
-        if (searchPath != null) {
-            searchPath.setSelected(false);
-        }
-
-        if (treasure != null) {
-            treasure.setSelected(false);
-        }
+        searchPath.setSelected(false);
+        treasure.setSelected(false);
     }
 
     /**
@@ -90,11 +81,11 @@ public class Turn {
             output.addAll(getHintGeometries());
         }
 
-        if (searchPath != null && searchPath.isSelected()) {
+        if (searchPath.isSelected()) {
             output.addAll(getSearchPathGeometries());
         }
 
-        if (treasure != null && treasure.isSelected()) {
+        if (treasure.isSelected()) {
             output.addAll(getTreasureGeometries());
         }
 
