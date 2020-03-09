@@ -28,13 +28,13 @@ public class BruteForceSearcher implements Searcher<Hint> {
         SearchPathPrototype searchPathPrototype = new SearchPathPrototype();
         for (int i = 0; i < limit; i++) {
             y += ++lineSegmentDistance;
-            searchPathPrototype.addPoint(new Coordinate(x, y));
+            searchPathPrototype.addCoordinate(new Coordinate(x, y));
             x += lineSegmentDistance;
-            searchPathPrototype.addPoint(new Coordinate(x, y));
+            searchPathPrototype.addCoordinate(new Coordinate(x, y));
             y -= ++lineSegmentDistance;
-            searchPathPrototype.addPoint(new Coordinate(x, y));
+            searchPathPrototype.addCoordinate(new Coordinate(x, y));
             x -= lineSegmentDistance;
-            searchPathPrototype.addPoint(new Coordinate(x, y));
+            searchPathPrototype.addCoordinate(new Coordinate(x, y));
         }
         return searchPathPrototype;
     }

@@ -2,16 +2,13 @@ package com.treasure.hunt.strategy.searcher;
 
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
-import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.geom.HintAndMovement;
 import com.treasure.hunt.utils.JTSUtils;
-import com.treasure.hunt.utils.ListUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
@@ -41,8 +38,8 @@ public class SearchPathPrototype extends HintAndMovement {
     @Setter
     private List<Coordinate> coordinates = new ArrayList<>();
 
-    public SearchPathPrototype(Point... coordinates) {
-        this.coordinates = Arrays.asList(coordinates).stream()
+    public SearchPathPrototype(Point... points) {
+        this.coordinates = Arrays.asList(points).stream()
                 .map(point -> point.getCoordinate())
                 .collect(Collectors.toList());
     }
@@ -74,10 +71,10 @@ public class SearchPathPrototype extends HintAndMovement {
      * @param point The next point, visited in this movement.
      */
     public void addPoint(Point point) {
-        addPoint(point.getCoordinate());
+        addCoordinate(point.getCoordinate());
     }
 
-    public void addPoint(Coordinate coordinate) {
+    public void addCoordinate(Coordinate coordinate) {
         if (Double.isNaN(coordinate.x) || Double.isNaN(coordinate.y)) {
             throw new IllegalArgumentException("Point with NAN as coordinate is invalid");
         }
@@ -89,17 +86,6 @@ public class SearchPathPrototype extends HintAndMovement {
      */
     public void addAdditionalItem(GeometryItem<?> geometryItem) {
         additional.add(geometryItem);
-    }
-
-    public List<GeometryItem<LineString>> getLinesGeometryItemsList() {
-        return ListUtils
-                .consecutive(coordinates, (c1, c2) ->
-                        new GeometryItem<>(
-                                GEOMETRY_FACTORY.createLineString(new Coordinate[]{c1, c2}),
-                                GeometryType.WAY_POINT
-                        )
-                )
-                .collect(Collectors.toList());
     }
 
     public List<Point> getPoints() {
