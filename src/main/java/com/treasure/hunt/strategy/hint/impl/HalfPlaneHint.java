@@ -64,9 +64,9 @@ public class HalfPlaneHint extends AngleHint {
      * This constructor can be used when unsure whether pointOne or pointTwo is the right/left point of the
      * hint but the direction of the hint is known.
      *
-     * @param pointOne
-     * @param pointTwo
-     * @param direction
+     * @param pointOne  first point of half plane
+     * @param pointTwo  second point of half plane
+     * @param direction direction of the half plane
      */
     public HalfPlaneHint(Coordinate pointOne, Coordinate pointTwo, Direction direction) {
         super(new Coordinate(), new Coordinate(), new Coordinate());
@@ -183,8 +183,6 @@ public class HalfPlaneHint extends AngleHint {
 
     /**
      * {@inheritDoc}
-     *
-     * @return
      */
     @Override
     public List<GeometryItem<?>> getGeometryItems() {

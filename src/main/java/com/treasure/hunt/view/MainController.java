@@ -3,7 +3,6 @@ package com.treasure.hunt.view;
 import com.google.common.util.concurrent.AtomicDouble;
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.service.io.FileService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.EventBusUtils;
@@ -16,7 +15,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -34,51 +32,128 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ * Controller for the main layout.
+ *
  * @author jotoh
  */
 @Slf4j
 public class MainController {
 
+    /**
+     * The {@link GameManager} instance for the run.
+     */
     @Getter
     private final ObjectProperty<GameManager> gameManager = new SimpleObjectProperty<>();
+
+    /**
+     * The central vertical split pane.
+     */
     public SplitPane mainSplitPane;
+
+    /**
+     * Left widget bar for widgets containers.
+     */
     public Pane leftWidgetBar;
-    public Pane rightWidgetBar;
-    public Pane bottomWidgetBar;
-    public VBox rightToolbar;
+    /**
+     * Left toolbar for widgets buttons.
+     */
     public VBox leftToolbar;
+    /**
+     * Right widget bar for widgets containers.
+     */
+    public Pane rightWidgetBar;
+    /**
+     * Left toolbar for widgets buttons.
+     */
+    public VBox rightToolbar;
+    /**
+     * Bottom widget bar for widgets containers.
+     */
+    public Pane bottomWidgetBar;
+    /**
+     * Bottom toolbar for widgets buttons.
+     */
     public HBox bottomToolbar;
-    public Pane canvas;
+    /**
+     * Instance of the {@link CanvasController} associated with the {@link javafx.scene.canvas.Canvas}.
+     */
     @FXML
     public CanvasController canvasController;
+    /**
+     * Main split pane for the left and right widgets and the canvas.
+     */
+    public SplitPane mainVerticalSplitPane;
+    /**
+     * List of available searchers.
+     */
+    public ComboBox<Class<? extends Searcher>> searcherList;
+    /**
+     * List of available hiders.
+     */
+    public ComboBox<Class<? extends Hider>> hiderList;
+    /**
+     * List of available game engines.
+     */
+    public ComboBox<Class<? extends GameEngine>> gameEngineList;
+    /**
+     * The button to initialize the game on the ui.
+     */
+    public Button startGameButton;
+    /**
+     * The label used for logging outputs on the bottom left.
+     */
+    public Label logLabel;
+
     /**
      * Navigator for the view.
      * Changes the step view.
      */
     public HBox stepViewNavigator;
-    public SplitPane mainVerticalSplitPane;
-    public ComboBox<Class<? extends Searcher>> searcherList;
-    public ComboBox<Class<? extends Hider>> hiderList;
-    public ComboBox<Class<? extends GameEngine>> gameEngineList;
-    public Button startGameButton;
-    public Label logLabel;
-    @FXML
-    private NavigationController stepViewNavigatorController;
-    @FXML
-    private Label versionLabel;
+    /**
+     * Controller of the left widget bar.
+     */
     @FXML
     private WidgetBarController leftWidgetBarController;
-    @FXML
-    private WidgetBarController rightWidgetBarController;
-    @FXML
-    private WidgetBarController bottomWidgetBarController;
+    /**
+     * Controller of the left toolbar.
+     */
     @FXML
     private ToolbarController leftToolbarController;
+    /**
+     * Controller of the right widget bar.
+     */
+    @FXML
+    private WidgetBarController rightWidgetBarController;
+    /**
+     * Controller of the right toolbar.
+     */
     @FXML
     private ToolbarController rightToolbarController;
+    /**
+     * Controller of the lower widget bar.
+     */
+    @FXML
+    private WidgetBarController bottomWidgetBarController;
+    /**
+     * Controller of the lower toolbar.
+     */
     @FXML
     private ToolbarController bottomToolbarController;
+    /**
+     * Controller for the step view navigation.
+     */
+    @FXML
+    private NavigationController stepViewNavigatorController;
 
+    /**
+     * Upper left versioning label.
+     */
+    @FXML
+    private Label versionLabel;
+
+    /**
+     * Initializer binding all the components together.
+     */
     public void initialize() {
         canvasController.setGameManager(gameManager);
         String implementationVersion = getClass().getPackage().getImplementationVersion();
@@ -95,6 +170,9 @@ public class MainController {
         addGameIndependentWidgets();
     }
 
+    /**
+     * Add widgets which are independent of a game instance.
+     */
     private void addGameIndependentWidgets() {
         Widget<StatisticTableController, ?> statisticsTableWidget = new Widget<>("/layout/statisticsTable.fxml");
         statisticsTableWidget.getController().init(gameManager, searcherList, hiderList, gameEngineList);
@@ -108,10 +186,18 @@ public class MainController {
         insertWidget(SplitPaneLocation.WEST, "Preferences", preferencesWidgetControllerPaneWidget.getComponent(), true);
     }
 
+    /**
+     * Bind the log label event to the log label.
+     */
     private void listenToLogLabelEvent() {
         EventBusUtils.LOG_LABEL_EVENT.addListener(logLabelMessage -> Platform.runLater(() -> logLabel.setText(logLabelMessage)));
     }
 
+    /**
+     * Bind the event of the game manager being loaded to the initialisation sequence.
+     *
+     * @see MainController#initGameManager(GameManager)
+     */
     private void listenToGameMangerLoad() {
         EventBusUtils.GAME_MANAGER_LOADED_EVENT.addListener(loadedGameManager -> Platform.runLater(() -> {
             try {
@@ -121,6 +207,19 @@ public class MainController {
                 EventBusUtils.LOG_LABEL_EVENT.trigger("Error loading GameManger in UI from file");
             }
         }));
+    }
+
+    /**
+     * Binds the visibility of the widget containers to the individual button toggle groups.
+     * If no button is active, then the widget container will be invisible.
+     */
+    private void bindWidgetBarVisibility() {
+        mainSplitPane.getItems().remove(0);
+        mainSplitPane.getItems().remove(mainSplitPane.getItems().size() - 1);
+
+        widgetBarVisibility(true, leftToolbarController);
+        widgetBarVisibility(false, rightToolbarController);
+        bottomBarVisibility();
     }
 
     /**
@@ -136,15 +235,12 @@ public class MainController {
         gameManager.bindBidirectional(stepViewNavigatorController.getGameManager());
     }
 
-    private void bindWidgetBarVisibility() {
-        mainSplitPane.getItems().remove(0);
-        mainSplitPane.getItems().remove(1);
-
-        widgetBarVisibility(true, leftToolbarController);
-        widgetBarVisibility(false, rightToolbarController);
-        bottomBarVisibility();
-    }
-
+    /**
+     * Binds the visibility of either the left or the right widget bar.
+     *
+     * @param left              whether the binding ovvurs on the left or the right bar
+     * @param toolbarController the associated toolbar controller
+     */
     private void widgetBarVisibility(boolean left, ToolbarController toolbarController) {
         final ObservableList<SplitPane.Divider> dividers = mainSplitPane.getDividers();
         AtomicReference<Node> savedBar = new AtomicReference<>(leftWidgetBar);
@@ -179,6 +275,9 @@ public class MainController {
         });
     }
 
+    /**
+     * Binds the visibility of the bottom widget bar.
+     */
     private void bottomBarVisibility() {
         mainVerticalSplitPane.getItems().remove(1);
         AtomicDouble slider = new AtomicDouble(.2);
@@ -196,11 +295,18 @@ public class MainController {
                 });
     }
 
+    /**
+     * Adds css style classes to the toolbars.
+     */
     private void addToolbarStyleClasses() {
         leftToolbar.getStyleClass().add("left");
         rightToolbar.getStyleClass().add("right");
     }
 
+    /**
+     * Add game dependent widgets.
+     * In general, these analyse the behaviour of the game.
+     */
     private void addWidgets() {
         Widget<PointInspectorController, ?> pointInspectorWidget = new Widget<>("/layout/pointInspector.fxml");
         pointInspectorWidget.getController().init(gameManager);
@@ -223,6 +329,10 @@ public class MainController {
         insertWidget(SplitPaneLocation.EAST, "Navigator", scaleWidget.getComponent());
     }
 
+    /**
+     * Set the converters of the game init drop downs.
+     * Each hider/searcher and game engine drop down at the top gets one.
+     */
     private void setListStringConverters() {
         StringConverter classStringConverter = new StringConverter<Class>() {
             @Override
@@ -266,6 +376,9 @@ public class MainController {
         gameEngineList.setConverter(gameManagerStringConverter);
     }
 
+    /**
+     * Fill the game init drop downs at the top via reflections.
+     */
     private void fillLists() {
 
         Set<Class<? extends Searcher>> allSearchers = ReflectionUtils.getAllSearchers();
@@ -312,16 +425,23 @@ public class MainController {
         }));
     }
 
+    /**
+     * Adds an required css class behaviour to the init drop downs.
+     */
     private void addPromptBindings() {
         addRequiredListener(searcherList);
         addRequiredListener(hiderList);
         addRequiredListener(gameEngineList);
     }
 
+    /**
+     * Adds an required css class behaviour a drop down.
+     *
+     * @param comboBox the drop down to get a required css class
+     */
     private void addRequiredListener(ComboBox comboBox) {
         comboBox.getSelectionModel().selectedItemProperty().addListener((observableValue, aClass, t1) -> {
             if (t1 == null) {
-                //TODO maybe... ...list to f*****g button cell
                 comboBox.getStyleClass().add("required");
             } else {
                 comboBox.getStyleClass().remove("required");
@@ -329,6 +449,9 @@ public class MainController {
         });
     }
 
+    /**
+     * Bind the init button active state to all drop downs being set.
+     */
     private void bindStartButtonState() {
         startGameButton.disableProperty().bind(searcherList.getSelectionModel().selectedItemProperty().isNull()
                 .or(hiderList.getSelectionModel().selectedItemProperty().isNull())
@@ -336,10 +459,26 @@ public class MainController {
         );
     }
 
+    /**
+     * Insert a widget to the gui.
+     * Sets the selected property to false by default.
+     *
+     * @param toolbar    location of toolbar to add a button to
+     * @param buttonText the button text
+     * @param widgetBox  the widget box
+     */
     private void insertWidget(SplitPaneLocation toolbar, String buttonText, Pane widgetBox) {
         insertWidget(toolbar, buttonText, widgetBox, false);
     }
 
+    /**
+     * Insert a widget to the gui.
+     *
+     * @param toolbar    location of toolbar to add a button to
+     * @param buttonText the button text
+     * @param widgetBox  the widget box
+     * @param selected   whether or not to select the widget button and thus to show the widget
+     */
     private void insertWidget(SplitPaneLocation toolbar, String buttonText, Pane widgetBox, boolean selected) {
 
         switch (toolbar) {
@@ -357,6 +496,10 @@ public class MainController {
         }
     }
 
+    /**
+     * Behaviour for the start button being clicked.
+     * Initializes the game manager.
+     */
     public void onStartButtonClicked() {
         Class<? extends Searcher> searcherClass = searcherList.getSelectionModel().getSelectedItem();
         Class<? extends Hider> hiderClass = hiderList.getSelectionModel().getSelectedItem();
@@ -373,6 +516,11 @@ public class MainController {
         }
     }
 
+    /**
+     * Initializes the game manager.
+     *
+     * @param gameManagerInstance instance of game manager to initialize.
+     */
     private void initGameManager(GameManager gameManagerInstance) {
         gameManagerInstance.init();
         boolean initialize = gameManager.isNull().get();
@@ -386,15 +534,17 @@ public class MainController {
         }
     }
 
+    /**
+     * Initialize the gui elements dependent on the game manager.
+     */
     public void initGameUI() {
         canvasController.drawShapes();
         addWidgets();
     }
 
-    public void onLoadGame(ActionEvent actionEvent) {
-        FileService.getInstance().loadGameManager();
-    }
-
+    /**
+     * Available locations for the widgets.
+     */
     private enum SplitPaneLocation {
         EAST,
         SOUTH,

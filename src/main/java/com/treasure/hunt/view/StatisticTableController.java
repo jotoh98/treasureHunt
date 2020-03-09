@@ -16,7 +16,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,6 +27,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Controller for the statistics tables.
+ *
+ * @author axel12, anLeid
+ */
 @Slf4j
 public class StatisticTableController {
     public TableView<StatisticsWithId> instanceStatisticsTableView;
@@ -201,7 +205,7 @@ public class StatisticTableController {
 
     }
 
-    public void onSeriesRun(ActionEvent actionEvent) {
+    public void onSeriesRun() {
         progressIndicator.setVisible(true);
         try {
             Class<? extends GameEngine> selectedGameEngine = gameEngineList.getSelectionModel().getSelectedItem();

@@ -17,21 +17,52 @@ import lombok.Getter;
 import org.locationtech.jts.math.Vector2D;
 
 /**
+ * The controller for the canvas and its behaviour.
+ *
  * @author axel12, dorianreineccius
  */
 public class CanvasController {
+    /**
+     * Drawing canvas.
+     */
     @Getter
     public Canvas canvas;
+
+    /**
+     * Pane holding and resizing the canvas.
+     */
     public Pane canvasPane;
+
+    /**
+     * Shared game manager instance.
+     * Given and initialized by the {@link MainController}.
+     */
     private ObjectProperty<GameManager> gameManager = new SimpleObjectProperty<>();
 
+    /**
+     * The point transformation used to manipulate how the canvas is rendered.
+     */
     @Getter
     private PointTransformation transformation = new PointTransformation();
+
+    /**
+     * The renderer associated with the canvas.
+     */
     private Renderer renderer;
 
+    /**
+     * Vector of the position at the beginning of a drag gesture.
+     */
     private Vector2D dragStart = new Vector2D();
+
+    /**
+     * Distance vector of the drag offset to the current drag position.
+     */
     private Vector2D offsetBackup = new Vector2D();
 
+    /**
+     * Initialize the canvas controller binding resizing and rendering.
+     */
     public void initialize() {
         makeCanvasResizable();
         renderer = new Renderer(canvas, transformation);
@@ -39,6 +70,9 @@ public class CanvasController {
         transformation.getOffsetProperty().addListener(invalidation -> drawShapes());
     }
 
+    /**
+     * Bind the canvas resizing to the rendering.
+     */
     public void makeCanvasResizable() {
         canvas.widthProperty().addListener((observable, oldValue, newValue) -> drawShapes());
         canvas.heightProperty().addListener((observable, oldValue, newValue) -> drawShapes());
@@ -46,6 +80,9 @@ public class CanvasController {
         canvas.widthProperty().bind(canvasPane.widthProperty());
     }
 
+    /**
+     * Draw all the available shapes on the canvas.
+     */
     public void drawShapes() {
         Platform.runLater(() -> {
             if (gameManager.isNull().get()) {
@@ -55,6 +92,11 @@ public class CanvasController {
         });
     }
 
+    /**
+     * Click (and drag beginning) behaviour on the canvas.
+     *
+     * @param mouseEvent the click event
+     */
     public void onCanvasClicked(MouseEvent mouseEvent) {
         if (gameManager.isNull().get()) {
             return;
@@ -65,7 +107,7 @@ public class CanvasController {
 
     /**
      * This will be executed, when the mouse is pressed (and not released)
-     * and moves over the canvas
+     * and moves over the canvas.
      * <p>
      * It will swipe the game to the dragged position.
      *
@@ -79,6 +121,12 @@ public class CanvasController {
         transformation.setOffset(dragOffset.add(offsetBackup));
     }
 
+    /**
+     * Zooming (scrolling) behaviour for the canvas.
+     * It zooms the items on the canvas.
+     *
+     * @param scrollEvent mouse wheel scroll event
+     */
     public void onCanvasZoom(ScrollEvent scrollEvent) {
         if (gameManager.isNull().get()) {
             return;
@@ -88,6 +136,11 @@ public class CanvasController {
         transformation.scaleRelative(scaleFactor, mouse);
     }
 
+    /**
+     * Game manager property setter.
+     *
+     * @param gameManager the game manager property to set
+     */
     public void setGameManager(ObjectProperty<GameManager> gameManager) {
         this.gameManager = gameManager;
         gameManager.addListener(observable -> {

@@ -65,7 +65,7 @@
                 <items>
                     <fx:include fx:id="leftWidgetBar" maxHeight="1.7976931348623157E308" source="widgetBar.fxml"
                                 styleClass="widget-pane"/>
-                    <fx:include fx:id="canvas" source="canvas.fxml"/>
+                    <fx:include source="canvas.fxml"/>
                     <fx:include fx:id="rightWidgetBar" maxHeight="1.7976931348623157E308" source="widgetBar.fxml"
                                 styleClass="widget-pane"/>
                 </items>

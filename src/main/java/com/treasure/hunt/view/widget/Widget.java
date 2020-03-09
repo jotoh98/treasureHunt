@@ -7,25 +7,42 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * Widget wrapper class to formalize a widget.
+ *
  * @author jotoh
  */
 @Slf4j
+@Getter
 public class Widget<C, P extends Pane> {
 
-    @Getter
+    /**
+     * The relative path to the fxml resource.
+     */
     private String resourcePath;
 
-    @Getter
+    /**
+     * The associated controller of the widget.
+     */
     private C controller;
 
-    @Getter
+    /**
+     * The widget component box.
+     */
     private P component = null;
 
+    /**
+     * Default constructor loading the properties from the resource path.
+     *
+     * @param path path to the fxml resource
+     */
     public Widget(String path) {
         resourcePath = path;
         init();
     }
 
+    /**
+     * Load the properties from the resource path.
+     */
     @SneakyThrows
     private void init() {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(resourcePath));

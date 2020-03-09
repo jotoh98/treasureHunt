@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * This is the path of the searcher in the plain searching the treasure,
  * stored as a list of {@link Point}s.
  *
- * @author dorianreineccius, hassel
+ * @author dorianreineccius, jotoh
  */
 @NoArgsConstructor
 public class SearchPath extends HintAndMovement {

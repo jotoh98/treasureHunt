@@ -14,8 +14,9 @@ public class ListUtils {
     }
 
     /**
-     * Apply some stream filters to a stream.
+     * Apply some filters/operations to a stream.
      *
+     * @param <T>     generic stream type, used for consistency of results
      * @param input   stream to be filtered
      * @param filters multiple filters to be applied
      * @return filtered input

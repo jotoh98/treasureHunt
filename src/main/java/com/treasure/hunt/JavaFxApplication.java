@@ -12,6 +12,9 @@ import java.awt.*;
 import java.util.concurrent.CompletableFuture;
 
 /**
+ * The javafx application main class.
+ * Sets properties for the application as well as launching the stage.
+ *
  * @author jotoh
  */
 @Slf4j
@@ -20,11 +23,19 @@ public class JavaFxApplication extends Application {
         System.getProperties().setProperty("-Xdock:name", "TreasureHunt");
     }
 
+    /**
+     * Main application invoker.
+     *
+     * @param args cli args
+     */
     public static void main(String[] args) {
         setTaskBarIcon();
         launch(args);
     }
 
+    /**
+     * Set the taskbar icon for the app.
+     */
     private static void setTaskBarIcon() {
         Image image = Toolkit.getDefaultToolkit().getImage(JavaFxApplication.class.getResource("/images/icon.png"));
         try {
@@ -34,6 +45,12 @@ public class JavaFxApplication extends Application {
         }
     }
 
+    /**
+     * Start the javafx application.
+     *
+     * @param stage the stage associated with the current javafx app
+     * @throws Exception if main layout could not be loaded
+     */
     @Override
     public void start(Stage stage) throws Exception {
         final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/main.fxml"));
@@ -59,6 +76,11 @@ public class JavaFxApplication extends Application {
         });
     }
 
+    /**
+     * Set the icon for the javafx stage.
+     *
+     * @param stage the stage associated with the current javafx app
+     */
     private void setStageIcon(Stage stage) {
         try {
             stage.getIcons().add(new javafx.scene.image.Image(JavaFxApplication.class.getResourceAsStream("/images/icon.png")));

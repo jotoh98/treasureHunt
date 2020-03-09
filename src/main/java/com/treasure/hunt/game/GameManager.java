@@ -199,6 +199,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
 
     /**
      * This simulates the whole game, until its finished.
+     *
+     * @return a completable future of a beaten game
      */
     public CompletableFuture<Void> beat() {
         return beat(new SimpleObjectProperty<>(0d), false);
@@ -229,6 +231,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     /**
      * {@code executeNextOnJavaFxThread} defaults to {@code true}.
      *
+     * @param delay a delay in ms before beating the game
+     * @return a completable future of a beaten game
      * @see GameManager#beat(ReadOnlyObjectProperty, Boolean)
      */
     public CompletableFuture<Void> beat(ReadOnlyObjectProperty<Double> delay) {
@@ -241,6 +245,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      * @param delay                     time between each move
      * @param executeNextOnJavaFxThread if set to true the next call is made on javafx thread that is important when UI is attached to the GameManager,
      *                                  if it false the delay parameter is ignored
+     * @return a completable future of a beaten game
      */
     public CompletableFuture<Void> beat(ReadOnlyObjectProperty<Double> delay, Boolean executeNextOnJavaFxThread) {
         CompletableFuture<Void> completableFuture = new CompletableFuture<>();

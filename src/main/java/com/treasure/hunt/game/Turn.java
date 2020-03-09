@@ -37,6 +37,10 @@ public class Turn {
     private Point treasureLocation;
 
     /**
+     * Retrieve the turns geometry items including the search path through points and connecting lines and
+     * additional geometries like hint angles, etc.
+     *
+     * @param movementStart the start from which to start the movement from
      * @return a list of all geometryItems of this.
      */
     public List<GeometryItem<?>> getGeometryItems(Point movementStart) {

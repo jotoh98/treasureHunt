@@ -81,7 +81,11 @@ public class SeriesService {
      * @param gameManager      gameManager to be copied (preserves state for multiple starts with same states)
      * @param progressConsumer consumer for working progress, We have 4 workload points per run 1 for copying GameManager, 6 for the actual run and 2 for writing the file
      * @param selectedFile     the file the runs are written to
-     * @return
+     * @param alreadyInitialed
+     * @param writeGameManger
+     * @return statistics with id and path
+     * <p>
+     * //TODO: docs from @alex12
      */
     @SneakyThrows
     public StatisticsWithIdsAndPath runSeriesAndSaveToFile(Integer rounds, GameManager gameManager, Consumer<Double> progressConsumer, File selectedFile, boolean alreadyInitialed, boolean writeGameManger) {
