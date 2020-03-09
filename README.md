@@ -1,3 +1,6 @@
+# Java docs
+[here](https://jotoh98.github.io/treasureHunt/)
+
 # How to run
     1. Install IntelliJ
     2. Install the lombok plugin https://projectlombok.org/setup/intellij
