@@ -8,7 +8,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
-import java.awt.*;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -16,23 +15,6 @@ import java.util.concurrent.CompletableFuture;
  */
 @Slf4j
 public class JavaFxApplication extends Application {
-    static {
-        System.getProperties().setProperty("-Xdock:name", "TreasureHunt");
-    }
-
-    public static void main(String[] args) {
-        setTaskBarIcon();
-        launch(args);
-    }
-
-    private static void setTaskBarIcon() {
-        Image image = Toolkit.getDefaultToolkit().getImage(JavaFxApplication.class.getResource("/images/icon.png"));
-        try {
-            Taskbar.getTaskbar().setIconImage(image);
-        } catch (Exception e) {
-            log.info("This platform seems to not support taskbar icon image");
-        }
-    }
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -45,7 +27,7 @@ public class JavaFxApplication extends Application {
         scene.getStylesheets().add(getClass().getResource("/layout/style.css").toExternalForm());
         stage.setScene(scene);
         stage.setOnCloseRequest(event -> Platform.exit());
-        //We are idiots we put 1.5 seconds more loading time so you can see your awesome splash screen
+
         CompletableFuture.runAsync(() -> {
             try {
                 Thread.sleep(2000);
