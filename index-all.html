@@ -99,7 +99,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/view/widget/PreferencesWidgetController.html#addAdd()">addAdd()</a></span> - Method in class com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/PreferencesWidgetController.html" title="class in com.treasure.hunt.view.widget">PreferencesWidgetController</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/Renderer.html#addAdditional(java.lang.String,com.treasure.hunt.strategy.geom.GeometryItem)">addAdditional(String, GeometryItem&lt;?&gt;)</a></span> - Method in class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/Renderer.html" title="class in com.treasure.hunt.utils">Renderer</a></dt>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameManager.html#addAdditional(java.lang.String,com.treasure.hunt.strategy.geom.GeometryItem)">addAdditional(String, GeometryItem&lt;?&gt;)</a></span> - Method in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a></dt>
 <dd>
 <div class="block">Add an additional <a href="com/treasure/hunt/strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryItem</code></a> to the rendering queue.</div>
 </dd>
@@ -114,6 +114,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/geom/GeometryItem.html#addGeometryStyle(com.treasure.hunt.strategy.geom.GeometryStyle)">addGeometryStyle(GeometryStyle)</a></span> - Method in class com.treasure.hunt.strategy.geom.<a href="com/treasure/hunt/strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/view/widget/PreferencesWidgetController.html#addItem()">addItem()</a></span> - Method in class com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/PreferencesWidgetController.html" title="class in com.treasure.hunt.view.widget">PreferencesWidgetController</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameManager.html#additional">additional</a></span> - Variable in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/SearchPath.html#additional">additional</a></span> - Variable in class com.treasure.hunt.strategy.searcher.<a href="com/treasure/hunt/strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></dt>
 <dd>&nbsp;</dd>
@@ -157,6 +159,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/jts/geom/GeometryUtility.html#apply(org.locationtech.jts.geom.GeometryComponentFilter)">apply(GeometryComponentFilter)</a></span> - Method in class com.treasure.hunt.jts.geom.<a href="com/treasure/hunt/jts/geom/GeometryUtility.html" title="class in com.treasure.hunt.jts.geom">GeometryUtility</a></dt>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/jts/geom/GeometryLine.html#apply(org.locationtech.jts.geom.GeometryFilter)">apply(GeometryFilter)</a></span> - Method in class com.treasure.hunt.jts.geom.<a href="com/treasure/hunt/jts/geom/GeometryLine.html" title="class in com.treasure.hunt.jts.geom">GeometryLine</a></dt>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/jts/geom/GeometryUtility.html#apply(org.locationtech.jts.geom.GeometryFilter)">apply(GeometryFilter)</a></span> - Method in class com.treasure.hunt.jts.geom.<a href="com/treasure/hunt/jts/geom/GeometryUtility.html" title="class in com.treasure.hunt.jts.geom">GeometryUtility</a></dt>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/GeometryPipeline.html#assignMultiStyles(java.util.stream.Stream)">assignMultiStyles(Stream&lt;GeometryItem&lt;?&gt;&gt;)</a></span> - Static method in class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/GeometryPipeline.html" title="class in com.treasure.hunt.utils">GeometryPipeline</a></dt>
+<dd>
+<div class="block">Assign the correct style if multiple styles are set.</div>
+</dd>
 <dt><a href="com/treasure/hunt/utils/AsyncUtils.html" title="class in com.treasure.hunt.utils"><span class="typeNameLink">AsyncUtils</span></a> - Class in <a href="com/treasure/hunt/utils/package-summary.html">com.treasure.hunt.utils</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/AsyncUtils.html#%3Cinit%3E()">AsyncUtils()</a></span> - Constructor for class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/AsyncUtils.html" title="class in com.treasure.hunt.utils">AsyncUtils</a></dt>
@@ -446,6 +452,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><a href="com/treasure/hunt/service/io/FileService.DataWithVersion.html" title="class in com.treasure.hunt.service.io"><span class="typeNameLink">FileService.DataWithVersion</span></a>&lt;<a href="com/treasure/hunt/service/io/FileService.DataWithVersion.html" title="type parameter in FileService.DataWithVersion">E</a>&gt; - Class in <a href="com/treasure/hunt/service/io/package-summary.html">com.treasure.hunt.service.io</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameManager.html#filter(java.util.stream.Stream)">filter(Stream&lt;GeometryItem&lt;?&gt;&gt;)</a></span> - Static method in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/GeometryPipeline.html#filterOverride(java.util.stream.Stream)">filterOverride(Stream&lt;GeometryItem&lt;?&gt;&gt;)</a></span> - Static method in class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/GeometryPipeline.html" title="class in com.treasure.hunt.utils">GeometryPipeline</a></dt>
+<dd>
+<div class="block">Filter overridden geometry items.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/ListUtils.html#filterStream(java.util.stream.Stream,java.util.function.Function...)">filterStream(Stream&lt;T&gt;, Function&lt;Stream&lt;T&gt;, Stream&lt;T&gt;&gt;...)</a></span> - Static method in class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/ListUtils.html" title="class in com.treasure.hunt.utils">ListUtils</a></dt>
+<dd>
+<div class="block">Apply some stream filters to a stream.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameEngine.html#finished">finished</a></span> - Variable in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameEngine.html" title="class in com.treasure.hunt.game">GameEngine</a></dt>
 <dd>
 <div class="block">Tells, whether the game is done or not.</div>
@@ -535,6 +551,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Creates a new <code>Geometry</code> via the specified GeometryFactory.</div>
 </dd>
+<dt><a href="com/treasure/hunt/utils/GeometryPipeline.html" title="class in com.treasure.hunt.utils"><span class="typeNameLink">GeometryPipeline</span></a> - Class in <a href="com/treasure/hunt/utils/package-summary.html">com.treasure.hunt.utils</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/GeometryPipeline.html#%3Cinit%3E()">GeometryPipeline()</a></span> - Constructor for class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/GeometryPipeline.html" title="class in com.treasure.hunt.utils">GeometryPipeline</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/treasure/hunt/strategy/geom/GeometryStyle.html" title="class in com.treasure.hunt.strategy.geom"><span class="typeNameLink">GeometryStyle</span></a> - Class in <a href="com/treasure/hunt/strategy/geom/package-summary.html">com.treasure.hunt.strategy.geom</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/geom/GeometryStyle.html#%3Cinit%3E(boolean,java.awt.Color)">GeometryStyle(boolean, Color)</a></span> - Constructor for class com.treasure.hunt.strategy.geom.<a href="com/treasure/hunt/strategy/geom/GeometryStyle.html" title="class in com.treasure.hunt.strategy.geom">GeometryStyle</a></dt>
@@ -551,6 +571,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/SearchPath.html#getAdditional()">getAdditional()</a></span> - Method in class com.treasure.hunt.strategy.searcher.<a href="com/treasure/hunt/strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/hint/Hint.html#getAdditionalGeometryItems()">getAdditionalGeometryItems()</a></span> - Method in class com.treasure.hunt.strategy.hint.<a href="com/treasure/hunt/strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameManager.html#getAdditionals()">getAdditionals()</a></span> - Method in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/ReflectionUtils.html#getAllGameEngines()">getAllGameEngines()</a></span> - Static method in class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/ReflectionUtils.html" title="class in com.treasure.hunt.utils">ReflectionUtils</a></dt>
 <dd>&nbsp;</dd>
@@ -591,8 +613,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/hint/impl/CircleHint.html#getGeometryItems()">getGeometryItems()</a></span> - Method in class com.treasure.hunt.strategy.hint.impl.<a href="com/treasure/hunt/strategy/hint/impl/CircleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">CircleHint</a></dt>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/hint/impl/HalfPlaneHint.html#getGeometryItems()">getGeometryItems()</a></span> - Method in class com.treasure.hunt.strategy.hint.impl.<a href="com/treasure/hunt/strategy/hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a></dt>
-<dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameManager.html#getGeometryItems(java.lang.Boolean)">getGeometryItems(Boolean)</a></span> - Method in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/game/Turn.html#getGeometryItems(org.locationtech.jts.geom.Point)">getGeometryItems(Point)</a></span> - Method in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/Turn.html" title="class in com.treasure.hunt.game">Turn</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/geom/GeometryItem.html#getGeometryStyle()">getGeometryStyle()</a></span> - Method in class com.treasure.hunt.strategy.geom.<a href="com/treasure/hunt/strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a></dt>
@@ -698,6 +718,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/JavaFxUtils.html#getVersionString()">getVersionString()</a></span> - Static method in class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/JavaFxUtils.html" title="class in com.treasure.hunt.utils">JavaFxUtils</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameManager.html#getVisibleGeometries()">getVisibleGeometries()</a></span> - Method in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a></dt>
+<dd>
+<div class="block">Get visible geometry items.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameManager.html#getVisibleTurns()">getVisibleTurns()</a></span> - Method in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/StrategyFromPaper.HintQuality.html#good">good</a></span> - com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.<a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/StrategyFromPaper.HintQuality.html" title="enum in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">StrategyFromPaper.HintQuality</a></dt>
@@ -1291,19 +1315,19 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/geom/GeometryStyle.html#registerDefault(com.treasure.hunt.strategy.geom.GeometryType,com.treasure.hunt.strategy.geom.GeometryStyle)">registerDefault(GeometryType, GeometryStyle)</a></span> - Static method in class com.treasure.hunt.strategy.geom.<a href="com/treasure/hunt/strategy/geom/GeometryStyle.html" title="class in com.treasure.hunt.strategy.geom">GeometryStyle</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/Renderer.html#removeAdditional(java.lang.String)">removeAdditional(String)</a></span> - Method in class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/Renderer.html" title="class in com.treasure.hunt.utils">Renderer</a></dt>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameManager.html#removeAdditional(java.lang.String)">removeAdditional(String)</a></span> - Method in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a></dt>
 <dd>
 <div class="block">Remove an additional <a href="com/treasure/hunt/strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryItem</code></a> from the rendering queue.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/Renderer.html#render(com.treasure.hunt.game.GameManager)">render(GameManager)</a></span> - Method in class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/Renderer.html" title="class in com.treasure.hunt.utils">Renderer</a></dt>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/Renderer.html#render(java.util.stream.Stream)">render(Stream&lt;GeometryItem&lt;?&gt;&gt;)</a></span> - Method in class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/Renderer.html" title="class in com.treasure.hunt.utils">Renderer</a></dt>
 <dd>
-<div class="block">Render a <a href="com/treasure/hunt/game/GameManager.html" title="class in com.treasure.hunt.game"><code>GameManager</code></a> state.</div>
+<div class="block">Renders a list of filtered and sorted <a href="com/treasure/hunt/strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryItem</code></a>s.</div>
 </dd>
 <dt><a href="com/treasure/hunt/utils/Renderer.html" title="class in com.treasure.hunt.utils"><span class="typeNameLink">Renderer</span></a> - Class in <a href="com/treasure/hunt/utils/package-summary.html">com.treasure.hunt.utils</a></dt>
 <dd>
 <div class="block">The renderer responsible for drawing <a href="com/treasure/hunt/strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryItem</code></a>s on the <code>Canvas</code>.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/Renderer.html#%3Cinit%3E(javafx.scene.canvas.GraphicsContext,com.treasure.hunt.jts.awt.PointTransformation)">Renderer(GraphicsContext, PointTransformation)</a></span> - Constructor for class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/Renderer.html" title="class in com.treasure.hunt.utils">Renderer</a></dt>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/Renderer.html#%3Cinit%3E(javafx.scene.canvas.Canvas,com.treasure.hunt.jts.awt.PointTransformation)">Renderer(Canvas, PointTransformation)</a></span> - Constructor for class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/Renderer.html" title="class in com.treasure.hunt.utils">Renderer</a></dt>
 <dd>
 <div class="block">Construct the renderer held by <a href="com/treasure/hunt/view/CanvasController.html" title="class in com.treasure.hunt.view"><code>CanvasController</code></a>.</div>
 </dd>
@@ -1461,6 +1485,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/analysis/StatisticObject.StatisticInfo.html#SOLUTION_QUOTIENT">SOLUTION_QUOTIENT</a></span> - Static variable in class com.treasure.hunt.analysis.<a href="com/treasure/hunt/analysis/StatisticObject.StatisticInfo.html" title="class in com.treasure.hunt.analysis">StatisticObject.StatisticInfo</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/GeometryPipeline.html#sortZIndex(java.util.stream.Stream)">sortZIndex(Stream&lt;GeometryItem&lt;?&gt;&gt;)</a></span> - Static method in class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/GeometryPipeline.html" title="class in com.treasure.hunt.utils">GeometryPipeline</a></dt>
+<dd>
+<div class="block">Sort the geometry items by their z-index.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/MinimumRectangleStrategy.html#specificRectangleScan(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,com.treasure.hunt.strategy.searcher.SearchPath)">specificRectangleScan(Coordinate, Coordinate, Coordinate, Coordinate, SearchPath)</a></span> - Method in class com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.<a href="com/treasure/hunt/strategy/searcher/impl/minimumRectangleStrategy/MinimumRectangleStrategy.html" title="class in com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy">MinimumRectangleStrategy</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/StrategyFromPaper.html#specificRectangleScan(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,com.treasure.hunt.strategy.searcher.SearchPath)">specificRectangleScan(Coordinate, Coordinate, Coordinate, Coordinate, SearchPath)</a></span> - Method in class com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.<a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/StrategyFromPaper.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">StrategyFromPaper</a></dt>
