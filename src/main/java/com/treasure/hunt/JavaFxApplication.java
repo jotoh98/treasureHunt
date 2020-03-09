@@ -7,6 +7,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
+
+import java.awt.*;
 import java.util.concurrent.CompletableFuture;
 
 /**
