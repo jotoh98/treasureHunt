@@ -32,6 +32,9 @@ public final class JTSUtils {
     public static Point createPoint(double x, double y) {
         return GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
     }
+    public static Point createPoint(Coordinate p){
+        return createPoint(p.x,p.x);
+    }
 
     /**
      * @param a the begin of the {@link LineString}.

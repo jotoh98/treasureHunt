@@ -24,6 +24,20 @@ public class Line extends Ray {
      */
     @Override
     public Coordinate intersection(LineSegment line) {
+        final Coordinate coordinate = lineIntersection(line);
+        if (coordinate != null || line.distance(coordinate) < 1e-7) {
+            return coordinate;
+        }
+        return null;
+    }
+
+    /**
+     * Intersect two infinite {@link Line}s.
+     *
+     * @param line infinite line to intersect this infinite line with
+     * @return intersection between two infinite lines, if there is none: null
+     */
+    public Coordinate intersection(Line line) {
         return super.lineIntersection(line);
     }
 
