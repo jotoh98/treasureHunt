@@ -25,6 +25,7 @@ public class HistoryController {
         split.prefHeightProperty().bind(wrapper.heightProperty());
         list.prefWidthProperty().bind(wrapper.widthProperty());
         collapse.prefWidthProperty().bind(wrapper.widthProperty());
+        collapse.prefHeightProperty().bind(collapseWrap.heightProperty());
     }
 
     public void init(ObjectProperty<GameManager> gameManager) {
@@ -43,7 +44,7 @@ public class HistoryController {
                 .bind(Bindings.createBooleanBinding(() -> turns.size() > 0, turns));
 
         list.setItems(turns);
-        list.getSelectionModel().select(0);
+
         list.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(Turn turn, boolean empty) {
@@ -77,14 +78,16 @@ public class HistoryController {
             }
         });
 
-        collapse.expandedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
+        list.getSelectionModel().select(0);
+
+        collapse.expandedProperty().addListener((observable, wasExpanded, isExpanded) -> {
+            if (isExpanded) {
                 split.setDividerPosition(0, splitPosition);
             } else {
                 splitPosition = split.getDividerPositions()[0];
                 split.setDividerPosition(0, 1.0 - 30 / split.getHeight());
             }
-
+            split.lookupAll(".split-pane-divider").forEach(divider -> divider.setMouseTransparent(!isExpanded));
         });
 
         gameManager.getViewIndex().addListener((observable, oldValue, newValue) -> {

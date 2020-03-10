@@ -49,8 +49,7 @@ public class TreeConstructor {
             AngleHint angleHint = (AngleHint) hint;
             TreeItem<String> angleItem = createItem(angleHint.getGeometryAngle());
             root.getChildren().add(angleItem);
-        }
-        if (hint instanceof CircleHint) {
+        } else if (hint instanceof CircleHint) {
             root.setValue("CircleHint");
             CircleHint circleHint = (CircleHint) hint;
 
@@ -58,6 +57,8 @@ public class TreeConstructor {
                     createItem("center: %s", print(circleHint.getCenter().getCoordinate())),
                     createItem("radius: %s", circleHint.getRadius())
             );
+        } else {
+            root.setValue(hint.toString());
         }
 
         final TreeItem<String> additionalItems = createItem("Additional Items");

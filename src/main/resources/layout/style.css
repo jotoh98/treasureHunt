@@ -186,6 +186,7 @@
     -fx-border-color: rgba(255, 255, 255, 0.27);
     -fx-padding: 1.5pt 0pt;
     -fx-border-radius: 2pt;
+    -fx-cursor: hand;
 }
 
 .arrow {
@@ -209,14 +210,6 @@
     -fx-cursor: hand;
 }
 
-.list-view .list-cell:hover {
-    -fx-background-color: #2946b4;
-}
-
-.list-cell:empty {
-    visibility: hidden;
-}
-
 .list-cell:selected {
     -fx-background-color: DARK_BACKGROUND;
     -fx-text-fill: white;
@@ -224,6 +217,15 @@
 
 .combo-box .list-cell:selected {
     -fx-background-color: transparent;
+}
+
+.list-cell:hover,
+.combo-box .list-cell:hover {
+    -fx-background-color: #2946b4;
+}
+
+.list-cell:empty {
+    visibility: hidden;
 }
 
 .split-pane {
@@ -325,4 +327,8 @@
 .titled-pane .arrow-button .arrow,
 .tree-cell > .tree-disclosure-node > .arrow {
     -fx-background-color: lightgrey;
+}
+
+.tree-cell > .tree-disclosure-node > .arrow {
+    -fx-cursor: hand;
 }
