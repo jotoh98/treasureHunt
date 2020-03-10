@@ -34,10 +34,7 @@ import sun.reflect.ReflectionFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
@@ -301,6 +298,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         kryo.writeObject(output, new ArrayList<>(turns));
         output.writeInt(viewIndex.get());
         output.writeBoolean(finishedProperty.get());
+        kryo.writeObject(output, new HashMap<>(additional));
     }
 
     /**
@@ -313,6 +311,9 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         turns = FXCollections.observableArrayList(kryo.readObject(input, ArrayList.class));
         viewIndex = new SimpleIntegerProperty(input.readInt());
         finishedProperty = new SimpleBooleanProperty(input.readBoolean());
+        HashMap hashMap = kryo.readObject(input, HashMap.class);
+        additional = FXCollections.observableHashMap();
+        additional.putAll(hashMap);
         setBindings();
     }
 
@@ -343,6 +344,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         gameManager.turns = FXCollections.observableArrayList(turns);
         gameManager.viewIndex = new SimpleIntegerProperty(viewIndex.get());
         gameManager.finishedProperty = new SimpleBooleanProperty(finishedProperty.get());
+        gameManager.additional = FXCollections.observableHashMap();
+        gameManager.additional.putAll(additional);
         gameManager.setBindings();
         return gameManager;
     }
