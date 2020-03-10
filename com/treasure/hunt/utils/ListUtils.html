@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9};
+var data = {"i0":9,"i1":9,"i2":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -188,6 +188,11 @@ extends java.lang.Object</pre>
 <div class="block">Apply some stream filters to a stream.</div>
 </td>
 </tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;java.util.List&lt;java.util.List&lt;T&gt;&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#transpose(java.util.List)">transpose</a></span>&#8203;(java.util.List&lt;java.util.List&lt;T&gt;&gt;&nbsp;table)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -244,7 +249,7 @@ extends java.lang.Object</pre>
 <a id="filterStream(java.util.stream.Stream,java.util.function.Function...)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>filterStream</h4>
 <pre class="methodSignature">@SafeVarargs
@@ -258,6 +263,15 @@ public static&nbsp;&lt;T&gt;&nbsp;java.util.stream.Stream&lt;T&gt;&nbsp;filterSt
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>filtered input</dd>
 </dl>
+</li>
+</ul>
+<a id="transpose(java.util.List)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>transpose</h4>
+<pre class="methodSignature">public static&nbsp;&lt;T&gt;&nbsp;java.util.List&lt;java.util.List&lt;T&gt;&gt;&nbsp;transpose&#8203;(java.util.List&lt;java.util.List&lt;T&gt;&gt;&nbsp;table)</pre>
 </li>
 </ul>
 </li>
