@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<Pane xmlns:fx="http://javafx.com/fxml/1" fx:id="wrapper" xmlns="http://javafx.com/javafx/11.0.1"
+      fx:controller="com.treasure.hunt.view.widget.HistoryController">
+    <children>
+        <SplitPane fx:id="split" dividerPositions="0.5" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                   minWidth="-Infinity" orientation="VERTICAL">
+            <items>
+                <ListView fx:id="list" editable="true"/>
+                <Pane fx:id="collapseWrap" prefHeight="0.0" prefWidth="248.0">
+                    <children>
+                        <TitledPane fx:id="collapse" animated="false" collapsible="false" expanded="false"
+                                    minWidth="30.0" text="No Steps available">
+                            <content>
+                                <AnchorPane/>
+                            </content>
+                        </TitledPane>
+                    </children>
+                </Pane>
+            </items>
+        </SplitPane>
+    </children>
+</Pane>

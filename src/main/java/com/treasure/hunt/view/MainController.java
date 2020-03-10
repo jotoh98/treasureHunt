@@ -221,6 +221,10 @@ public class MainController {
         Widget<ScaleController, ?> scaleWidget = new Widget<>("/layout/scaling.fxml");
         scaleWidget.getController().init(canvasController);
         insertWidget(SplitPaneLocation.EAST, "Navigator", scaleWidget.getComponent());
+
+        Widget<HistoryController, ?> historyWidget = new Widget<>("/layout/history.fxml");
+        historyWidget.getController().init(gameManager);
+        insertWidget(SplitPaneLocation.EAST, "History", historyWidget.getComponent());
     }
 
     private void setListStringConverters() {
