@@ -1,7 +1,6 @@
 package com.treasure.hunt.strategy.hider.impl;
 
 
-import com.treasure.hunt.game.mods.hideandseek.HideAndSeekHider;
 import com.treasure.hunt.jts.geom.Circle;
 import com.treasure.hunt.jts.geom.GeometryAngle;
 import com.treasure.hunt.strategy.geom.GeometryItem;
@@ -19,7 +18,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.algorithm.Angle;
-import org.locationtech.jts.algorithm.RobustLineIntersector;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
@@ -30,8 +28,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * There are 3 Structures to represent the state of Algorithm
@@ -44,8 +40,9 @@ import java.util.stream.Stream;
  *
  */
 @Slf4j
-public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
+public class GameField {
 
+    @Getter
     private Point startingPoint;
     private Point currentPlayersPosition;
     private List<AngleHint> givenHints = new ArrayList<>();
@@ -53,12 +50,12 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
     private double walkedPathLength = 0.0;
     private List<Point> visitedPoints = new ArrayList<>();
 
-    @Getter
+
     private GeometryItem<Geometry> possibleArea;
     private GeometryStyle possibleAreaStyle = new GeometryStyle(true, new Color(255, 105, 180));
     private GeometryItem<Circle> boundingCircle;
     private GeometryItem<Polygon> checkedArea; //the area which has been visited by the player
-    private GeometryItem<Point> pointWithWorstConstant;
+    private GeometryItem<Point> favoredTreasureLocation;
 
     //Algorithm Parameters
 
@@ -76,75 +73,112 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
     @Setter
     private double searcherScoutRadius = 1.0;
 
-
-    public MaxAreaAngularHintStrategy() {
+    public GameField() {
 
     }
 
-    @Override
-    public void init(Point searcherStartPosition) {
-        log.info("MaxAreaAngularHintStrategy init");
+
+
+    public void init(Point searcherStartPosition, Point treasureLocation) {
+        log.info("GameField init");
 
         startingPoint = searcherStartPosition;
         currentPlayersPosition = startingPoint;
+        favoredTreasureLocation = new GeometryItem<>(treasureLocation, GeometryType.WORST_CONSTANT, new GeometryStyle(true, new Color(0x800080)));
 
         Circle c = new Circle(startingPoint.getCoordinate(), boundingCircleSize, gf);
         boundingCircle = new GeometryItem<>(c, GeometryType.BOUNDING_CIRCE);
 
-        possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{c}, gf), GeometryType.POSSIBLE_TREASURE);
+        possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{c}, gf), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
 
         visitedPoints.add(startingPoint);
         SearchPath startingPath = new SearchPath(startingPoint);
-        integrateMovementWithCheckedArea(startingPath);
+        commitPlayerMovement(startingPath);
 
-        this.pointWithWorstConstant = new GeometryItem<>(gf.createPoint(new Coordinate(10.0, -10)), GeometryType.WORST_CONSTANT, new GeometryStyle(true, new Color(0x800080)));
+
+    }
+
+    public Geometry getPossibleArea(){
+        return this.possibleArea.getObject();
+    }
+
+
+    /**
+     * Extends the bounding Area when the player comes close to its edge or the player has exited the bounding Area
+     * At later stages the circle could be extended to a lineString, which only extends around the player, not the starting point
+     */
+    private void adaptBoundingCircle() {
+
+        double distToBoundary = boundingCircleSize - currentPlayersPosition.distance(startingPoint);
+        if (extensions < maxExtensions) {
+            while ((distToBoundary < circleExtensionDistance || !boundingCircle.getObject().contains(currentPlayersPosition))) {
+
+
+                boundingCircleSize += boundingCircleExtensionDelta;
+                log.info("extending Bounding Area by " + boundingCircleSize + "to " + boundingCircleSize);
+                boundingCircle = new GeometryItem<>(new Circle(startingPoint.getCoordinate(), boundingCircleSize, gf), GeometryType.BOUNDING_CIRCE, new GeometryStyle(true, new Color(50, 205, 50)));
+                possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{boundingCircle.getObject()}, gf), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
+
+                //now recompute all the intersections of Hints and the Bounding Circle
+                for (AngleHint hint : givenHints) {
+                    possibleArea = new GeometryItem<>(testHint(hint), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
+
+                }
+                extensions++;
+                distToBoundary = boundingCircleSize - currentPlayersPosition.distance(startingPoint);
+            }
+        }
     }
 
     /**
-     * TODO: get out of WIP, fix return text
-     * Helper method to fix some instability issues; still WIP
-     * RobustLineIntersector does not recognize a point along a segment to be on the segment...
-     * <p>
-     * computes the intersection between a Ray / Half-Line  and a segment, afterwards projects it onto the segment vector if sufficiently close
-     * so that the LineIntersector recognizes the intersection to be on the segment argument
+     * Updates the GameField's state with a new Players SearchPath
      *
-     * @param line    interpreted as Line
-     * @param segment interpreted as Segment
-     * @return intersection / null if no intersection exists
+     * @param searchPath the new SearchPath
      */
-    public Coordinate computeIntersectionOnBoundary(LineSegment line, LineSegment segment) {
-        double eps = 0.0000000001;
-        Coordinate intersection = line.lineIntersection(segment);
-        if (intersection == null) {
-            return null;
-        }
-        if (line.projectionFactor(intersection) < 0) {
-            return null;
-        }
-        if (intersection.distance(segment.p0) < eps) {
+    public void commitPlayerMovement(SearchPath searchPath) {
+        currentPlayersPosition = searchPath.getLastPoint();
+        adaptBoundingCircle();
 
-            return segment.p0;
-        }
-        if (intersection.distance(segment.p1) < eps) {
 
-            return segment.p1;
-        }
-        if (segment.distance(intersection) < eps) {
-            return intersection; // segment.closestPoint(intersection);
+        List<Point> newMovementPoints = searchPath.getPoints().subList(1, searchPath.getPoints().size());
+
+        //int prevNumberOfPoints = visitedPoints.size();
+        log.debug("supplied searchpath " + searchPath.getPoints());
+        log.debug("new points to add" + newMovementPoints);
+        this.visitedPoints.addAll(newMovementPoints);
+
+        log.debug("total Walked Path " + visitedPoints.toString());
+        Polygon checkedPoly;
+        if (visitedPoints.size() > 1) {
+
+            Coordinate[] visitedCoords = visitedPoints.stream().map(p -> p.getCoordinate()).toArray(Coordinate[]::new);
+            LineString walkedPath = gf.createLineString(visitedCoords);
+            checkedPoly = (Polygon) walkedPath.buffer(searcherScoutRadius + 0.1); //0.1 to just be outside the searchers radius
+            this.walkedPathLength = walkedPath.getLength();
+        } else {
+            log.debug("1 point visited so far");
+            //checkedPoly = (Polygon) newMovemenPoints.get(0).buffer(searcherScoutRadius + 0.001);
+            checkedPoly = (Polygon) startingPoint.buffer(searcherScoutRadius + 0.1);
         }
 
-        return null;
+        Geometry possible = possibleArea.getObject().difference(checkedPoly);
+        checkedArea = new GeometryItem<>(checkedPoly, GeometryType.NO_TREASURE, new GeometryStyle(true, new Color(0x1E90FF)));
+        possibleArea = new GeometryItem<>(possible, GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
     }
 
-     /**
-     * Computes the 2 intersections between the bounding circle and the current hint,
-     * then merges the resulting polygon and the remaining possible area
-     * to the new possible area
+
+
+    /**
+      * Integrates the 2 intersections between the bounding circle and the current hint,
+      * then merges the resulting polygon and the remaining possible area
+      * to the new possible area.
      *
-     * @param hint The hint to integrate
-     * @return the resulting Geometry
-     */
-    private Geometry integrateHint(AngleHint hint) {
+      * The resulting area is NOT committed, therefore this method can be used to test a possibleHint for its result
+      *
+      * @param hint The hint to integrate
+      * @return the resulting Geometry
+      **/
+    public Geometry testHint(AngleHint hint) {
 
         GeometryAngle angle = hint.getGeometryAngle();
 
@@ -172,139 +206,48 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         arcArray = arCoords.toArray(arcArray);
         Polygon arc = gf.createPolygon(arcArray);
 
-        //log.debug("arc polygon" + arc.getExteriorRing());
-        //log.debug("circle polygon" + boundingCircle.getObject().getBoundary());
 
         Geometry newPossibleArea = possibleArea.getObject().intersection(arc).difference(this.checkedArea.getObject());
         GeometryItem<Geometry> circleIntersection = new GeometryItem<>(arc, GeometryType.OUTER_CIRCLE, new GeometryStyle(true, new Color(0x800080)));
+
+        // now fill Hint with HelperStructs
         hint.addAdditionalItem(circleIntersection);
+        hint.addAdditionalItem(checkedArea);
+        hint.addAdditionalItem(new GeometryItem<>(newPossibleArea, GeometryType.POSSIBLE_TREASURE, possibleAreaStyle));
+        hint.addAdditionalItem(boundingCircle);
 
         return newPossibleArea;
 
     }
 
     /**
-     * TODO Could be factored out into util Class
+     * Finally commits the hint
      *
-     * @param coords the coords to check
-     * @return the orientation CCW or CW
+     * @param hint the Hint to be integrated
+     * @return the resulting Area in which the Treasure could be
      */
-    public boolean isClockwiseOrdered(Coordinate[] coords) {
-        double sum = 0;
-        for (int cIndex = 0; cIndex < coords.length - 1; cIndex++) {
-            sum += (coords[cIndex + 1].x - coords[cIndex].x) * (coords[cIndex + 1].y - coords[cIndex].y);
-        }
-        sum += (coords[0].x - coords[coords.length - 1].x) * ((coords[0].y - coords[coords.length - 1].y));
-
-        return sum >= 0;
+    public Geometry commitHint(AngleHint hint){
+        Geometry newPossibleArea = testHint(hint);
+        this.possibleArea = new GeometryItem<>(newPossibleArea, GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
+        return newPossibleArea;
     }
 
-    /**
-     * Brute Force Method to determine the best hint by sampling over all possible angles
-     *
-     * @param samples determines how many test are executed to determine the best Hint
-     * @return
-     */
-    private AngleHint generateHint(int samples, Point origin) {
-
-        final double twoPi = Math.PI * 2;
-
-        int numberOfFeatures = 2; // feature 0: area ; feature 1: approximation to get C high
-        double[][] features = new double[samples][numberOfFeatures];
-
-        AngleHint hint;
-        Geometry resultingGeom;
-
-        double maxArea = 0;
-        AngleHint maxAngle = null; //new AngleHint(new Coordinate(origin.getX() + 1, origin.getY() + 0), origin.getCoordinate(), new Coordinate(origin.getX() - 1, origin.getY() - 0));
-        Geometry maxGeometry = null;
-
-        // if player out of bounding area use the line orthogonal to the line from player to boundingArea Center
-        if (!boundingCircle.getObject().covers(origin)) {
-            log.info("player not in bounding circle, giving generic hint");
-            // use translation then rotation on Player Point by 90degree then translate back
-            //AffineTransform orthAroundPlayer = new AffineTransform(0.0, -1.0 , 2 * origin.getX() , 1.0 , 0.0, -origin.getX() + origin.getY());
-            AffineTransformation orthAroundPlayer = new AffineTransformation();
-            orthAroundPlayer.rotate(Math.toRadians(90), origin.getX(), origin.getY());
-            Coordinate orth = startingPoint.getCoordinate(); //to middle of circle
-            orthAroundPlayer.transform(orth, orth);
-
-            Point right = gf.createPoint(new Coordinate(origin.getX() - (orth.x - origin.getX()), origin.getY() - (orth.y - origin.getY())));
-            Point left = gf.createPoint(orth);
-            AngleHint outOfBoundsHint = new AngleHint(right.getCoordinate(), origin.getCoordinate(), left.getCoordinate());
-            return outOfBoundsHint;
-
-        }
-
-
-        List<Pair<Coordinate, Double>> interestPoints = getWorstPointsOnAllEdges();
-        Pair<Coordinate, Double> maxPoint = interestPoints.get(0);
-
-        this.pointWithWorstConstant = new GeometryItem<>(gf.createPoint(maxPoint.getKey()), GeometryType.WORST_CONSTANT);
-        log.info("Checking possible Hints for containment of " + this.pointWithWorstConstant.getObject());
-
-        double areaBeforeHint = this.possibleArea.getObject().getArea();
-        HintEvaluator evaluator = HintEvaluator.initRound(this.currentPlayersPosition.getCoordinate(), areaBeforeHint);
-
-        for (Pair<Coordinate, Double> p : interestPoints)  evaluator.registerPointOfInterest(p);
-
-        for (int i = 0; i < samples; i++) {
-            double angle = twoPi * (((double) i) / samples);
-            double dX = Math.cos(angle);
-            double dY = Math.sin(angle);
-            Point right = gf.createPoint(new Coordinate(origin.getX() + dX, origin.getY() + dY));
-            Point left = gf.createPoint(new Coordinate(origin.getX() - dX, origin.getY() - dY));
-
-            hint = new AngleHint(right.getCoordinate(), origin.getCoordinate(), left.getCoordinate());
-            resultingGeom = integrateHint(hint);
-
-            double areaAfter = resultingGeom.getArea();
-
-            try {
-                evaluator.registerHint(hint, areaAfter);
-            } catch (InvalidHintException e) {
-                e.printStackTrace();
-            }
-
-            features[i][0] = areaAfter;
-
-            // get the largest area, but only if the Geometry contains the Point with the best constant
-            if (features[i][0] > maxArea) {
-
-                if (hint.getGeometryAngle().inView(pointWithWorstConstant.getObject().getCoordinate())) { // c
-
-                    log.trace("area contains Worst Constant Point --> viable hint");
-                    maxGeometry = resultingGeom;
-                    maxArea = features[i][0];
-                    maxAngle = hint;
-
-                }
-            }
-        }
-
-        AngleHint evaluatedHint = evaluator.evaluateRound();
-        log.trace(" the evalHint " + Angle.toDegrees(evaluatedHint.getGeometryAngle().getNormalizedAngle()));
-        log.trace(" the maxGeometry " + maxGeometry);
-        log.trace(" the worst Point " + this.pointWithWorstConstant.getObject());
-        log.trace(" the maxGeometry covers: " + maxGeometry.buffer(0.0001).covers(pointWithWorstConstant.getObject()));
-        this.possibleArea = new GeometryItem<>(maxGeometry, GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
-        log.info(possibleArea.getObject().toString());
-
-        return maxAngle;
+    public boolean isWithinGameField(Point p){
+        return boundingCircle.getObject().covers(p);
     }
 
 
     /**
-     * Checks all edges for the Coordinate which maximizes the value of {dist(C - Player) / dist( C -Origin) }
+     * Checks all edges of the possibleArea for the Coordinate which maximizes the value of {dist(C - Player) / dist( C -Origin) }
      *
      * @return the List of Pairs made of (Coordinates C ; their associated Value of {dist(C-Player)/dist(C-Origin)} )
      */
-    private List<Pair<Coordinate, Double>> getWorstPointsOnAllEdges() {
+    public List<Pair<Coordinate, Double>> getWorstPointsOnAllEdges() {
         assert this.possibleArea.getObject().getNumGeometries() == 1 : "more than one geom";
         Coordinate[] edges = this.possibleArea.getObject().getCoordinates();
         log.info("Sampling " + edges.length + " edges in run " + visitedPoints.size());
-        Pair<Coordinate, Double> bestSampled = new Pair(this.pointWithWorstConstant.getObject().getCoordinate(), this.pointWithWorstConstant.getObject().getCoordinate().distance(this.currentPlayersPosition.getCoordinate()) / this.pointWithWorstConstant.getObject().getCoordinate().distance(this.startingPoint.getCoordinate()));
-        Pair<Coordinate, Double> bestCalc = new Pair(this.pointWithWorstConstant.getObject().getCoordinate(), this.pointWithWorstConstant.getObject().getCoordinate().distance(this.currentPlayersPosition.getCoordinate()) / this.pointWithWorstConstant.getObject().getCoordinate().distance(this.startingPoint.getCoordinate()));
+        Pair<Coordinate, Double> bestSampled = new Pair(this.favoredTreasureLocation.getObject().getCoordinate(), this.favoredTreasureLocation.getObject().getCoordinate().distance(this.currentPlayersPosition.getCoordinate()) / this.favoredTreasureLocation.getObject().getCoordinate().distance(this.startingPoint.getCoordinate()));
+        Pair<Coordinate, Double> bestCalc = new Pair(this.favoredTreasureLocation.getObject().getCoordinate(), this.favoredTreasureLocation.getObject().getCoordinate().distance(this.currentPlayersPosition.getCoordinate()) / this.favoredTreasureLocation.getObject().getCoordinate().distance(this.startingPoint.getCoordinate()));
         Pair<Coordinate, Double> sampledOnEdge;
         Pair<Coordinate, Double> calcOnEdge;
 
@@ -479,6 +422,67 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         return firstTerm - secondTerm;
     }
 
+
+    // TODO cleanup
+    /*
+    public AngleHint move(SearchPath searchPath) {
+
+        integrateMovementWithCheckedArea(searchPath);
+
+
+        AngleHint hint = generateHint(360, currentPlayersPosition); //compute by maximizing the remaining possible Area after the Hint over 360 sample points
+        givenHints.add(hint);
+
+
+        hint.addAdditionalItem(favoredTreasureLocation);
+
+        log.info("given Hint: " + hint.getGeometryAngle().getLeft() + ",  " + hint.getGeometryAngle().getCenter() + ",  " + hint.getGeometryAngle().getRight());
+        log.info("whole circle area" + boundingCircle.getObject().getArea());
+        log.info("possible area " + possibleArea.getObject().getArea());
+        log.info("Point with worst constant (" + favoredTreasureLocation.getObject().getX() + ", " + favoredTreasureLocation.getObject().getY() + ")");
+        log.info("Treasure will be placed on Point (" + this.getTreasureLocation().getX() + ", " + this.getTreasureLocation().getY() + ")");
+        return hint;
+    }
+    */
+
+
+    /**
+     * TODO: get out of WIP, maybe just throw away
+     * Helper method to fix some instability issues; still WIP
+     * RobustLineIntersector does not recognize a point along a segment to be on the segment...
+     * <p>
+     * computes the intersection between a Ray / Half-Line  and a segment, afterwards projects it onto the segment vector if sufficiently close
+     * so that the LineIntersector recognizes the intersection to be on the segment argument
+     *
+     * @param line    interpreted as Line
+     * @param segment interpreted as Segment
+     * @return intersection / null if no intersection exists
+     */
+    public Coordinate computeIntersectionOnBoundary(LineSegment line, LineSegment segment) {
+        double eps = 0.0000000001;
+        Coordinate intersection = line.lineIntersection(segment);
+        if (intersection == null) {
+            return null;
+        }
+        if (line.projectionFactor(intersection) < 0) {
+            return null;
+        }
+        if (intersection.distance(segment.p0) < eps) {
+
+            return segment.p0;
+        }
+        if (intersection.distance(segment.p1) < eps) {
+
+            return segment.p1;
+        }
+        if (segment.distance(intersection) < eps) {
+            return intersection; // segment.closestPoint(intersection);
+        }
+
+        return null;
+    }
+
+    // TODO cleanup
     /**
      * Samples for the Point on the boundarySegment described by p1,p2 of the possible Area which results in the largest Constant of PathMin * C = PathActual
      *
@@ -512,93 +516,6 @@ public class MaxAreaAngularHintStrategy implements HideAndSeekHider<AngleHint> {
         return bestPoint;
     }
 
-    /**
-     * Returns the current Treasure Location
-     * Always places it out of the agents reach until the remaining area
-     * is less than 1
-     *
-     * @return current treasure location
-     */
-    @Override
-    public Point getTreasureLocation() {
-        return this.pointWithWorstConstant.getObject();
-    }
 
-    private void integrateMovementWithCheckedArea(SearchPath searchPath) {
-        List<Point> newMovementPoints = searchPath.getPoints().subList(1, searchPath.getPoints().size());
-
-        //int prevNumberOfPoints = visitedPoints.size();
-        log.debug("supplied searchpath " + searchPath.getPoints());
-        log.debug("new points to add" + newMovementPoints);
-        this.visitedPoints.addAll(newMovementPoints);
-
-        log.debug("total Walked Path " + visitedPoints.toString());
-        Polygon checkedPoly;
-        if (visitedPoints.size() > 1) {
-
-            Coordinate[] visitedCoords = visitedPoints.stream().map(p -> p.getCoordinate()).toArray(Coordinate[]::new);
-            LineString walkedPath = gf.createLineString(visitedCoords);
-            checkedPoly = (Polygon) walkedPath.buffer(searcherScoutRadius + 0.1); //0.1 to just be outside the searchers radius
-            this.walkedPathLength = walkedPath.getLength();
-        } else {
-            log.debug("1 point visited so far");
-            //checkedPoly = (Polygon) newMovemenPoints.get(0).buffer(searcherScoutRadius + 0.001);
-            checkedPoly = (Polygon) startingPoint.buffer(searcherScoutRadius + 0.1);
-        }
-
-        Geometry possible = possibleArea.getObject().difference(checkedPoly);
-        checkedArea = new GeometryItem<>(checkedPoly, GeometryType.NO_TREASURE, new GeometryStyle(true, new Color(0x1E90FF)));
-        possibleArea = new GeometryItem<>(possible, GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
-    }
-
-    @Override
-    public AngleHint move(SearchPath searchPath) {
-        currentPlayersPosition = searchPath.getLastPoint();
-        integrateMovementWithCheckedArea(searchPath);
-        adaptBoundingCircle();
-
-        AngleHint hint = generateHint(360, currentPlayersPosition); //compute by maximizing the remaining possible Area after the Hint over 360 sample points
-        givenHints.add(hint);
-
-        hint.addAdditionalItem(checkedArea);
-        hint.addAdditionalItem(possibleArea);
-
-        hint.addAdditionalItem(boundingCircle);
-        hint.addAdditionalItem(pointWithWorstConstant);
-
-        log.info("given Hint: " + hint.getGeometryAngle().getLeft() + ",  " + hint.getGeometryAngle().getCenter() + ",  " + hint.getGeometryAngle().getRight());
-        log.info("whole circle area" + boundingCircle.getObject().getArea());
-        log.info("possible area " + possibleArea.getObject().getArea());
-        log.info("Point with worst constant (" + pointWithWorstConstant.getObject().getX() + ", " + pointWithWorstConstant.getObject().getY() + ")");
-        log.info("Treasure will be placed on Point (" + this.getTreasureLocation().getX() + ", " + this.getTreasureLocation().getY() + ")");
-        return hint;
-    }
-
-    /**
-     * Extends the bounding Area when the player comes close to its edge or the player has exited the bounding Area
-     * At later stages the circle could be extended to a lineString, which only extends around the player, not the starting point
-     */
-    private void adaptBoundingCircle() {
-
-        double distToBoundary = boundingCircleSize - currentPlayersPosition.distance(startingPoint);
-        if (extensions < maxExtensions) {
-            while ((distToBoundary < circleExtensionDistance || !boundingCircle.getObject().contains(currentPlayersPosition))) {
-
-
-                boundingCircleSize += boundingCircleExtensionDelta;
-                log.info("extending Bounding Area by " + boundingCircleSize + "to " + boundingCircleSize);
-                boundingCircle = new GeometryItem<>(new Circle(startingPoint.getCoordinate(), boundingCircleSize, gf), GeometryType.BOUNDING_CIRCE, new GeometryStyle(true, new Color(50, 205, 50)));
-                possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{boundingCircle.getObject()}, gf), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
-
-                //now recompute all the intersections of Hints and the Bounding Circle
-                for (AngleHint hint : givenHints) {
-                    possibleArea = new GeometryItem<>(integrateHint(hint), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
-
-                }
-                extensions++;
-                distToBoundary = boundingCircleSize - currentPlayersPosition.distance(startingPoint);
-            }
-        }
-    }
 
 }

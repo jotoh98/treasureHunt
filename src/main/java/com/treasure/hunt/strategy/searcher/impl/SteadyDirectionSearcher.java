@@ -38,6 +38,7 @@ public class SteadyDirectionSearcher implements Searcher<AngleHint> {
         this.currentOrientationByAngle = 0.0;
     }
 
+    // being called for the first move
     @Override
     public SearchPath move() {
         return new SearchPath(startPosition);
