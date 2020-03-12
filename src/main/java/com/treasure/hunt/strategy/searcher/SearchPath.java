@@ -97,7 +97,6 @@ public class SearchPath extends HintAndMovement {
         additional.add(geometryItem);
     }
 
-
     public List<GeometryItem<Point>> getPointList() {
         return points.stream()
                 .map(point -> new GeometryItem<>(point, GeometryType.WAY_POINT))
