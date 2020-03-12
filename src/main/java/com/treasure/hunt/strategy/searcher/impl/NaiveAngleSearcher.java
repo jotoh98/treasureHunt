@@ -16,7 +16,7 @@ import org.locationtech.jts.geom.Point;
  *
  * @author dorianreineccius
  */
-public class NaiveAngleSearcher implements Searcher<AngleHint> , HideAndSeekSearcher<AngleHint> {
+public class NaiveAngleSearcher implements HideAndSeekSearcher<AngleHint> {
     private Point startPosition;
 
     /**
