@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public abstract class StatisticalHider implements Hider<AngleHint> {
+public abstract class StatisticalHider{
     protected GameField gameField;
     protected GeometryFactory gf = JTSUtils.GEOMETRY_FACTORY;
 
@@ -32,7 +32,7 @@ public abstract class StatisticalHider implements Hider<AngleHint> {
     protected double counterStrategyGeometryCutoff;
     protected double distanceFromNormalAngleRay;
 
-    @Override
+
     public void init(Point searcherStartPosition) {
         this.gameField = new GameField();
         startingPoint = searcherStartPosition;
@@ -42,7 +42,7 @@ public abstract class StatisticalHider implements Hider<AngleHint> {
         this.currentPossibleArea = gameField.getPossibleArea();
     }
 
-    @Override
+
     public AngleHint move(SearchPath searchPath) {
 
         // update GameField
@@ -142,6 +142,6 @@ public abstract class StatisticalHider implements Hider<AngleHint> {
     }
 
 
-    @Override
+
     public abstract Point getTreasureLocation();
 }

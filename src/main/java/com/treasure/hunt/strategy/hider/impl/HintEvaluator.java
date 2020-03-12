@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+//DEPRECATED
 @Slf4j
 public class HintEvaluator {
 
@@ -53,12 +54,12 @@ public class HintEvaluator {
         }
 
 
-        AngleHintStat ahs = new AngleHintStat(hint, currentArea, areaAfter);
-        hints.add(ahs);
+        //AngleHintStat ahs = new AngleHintStat(hint, currentArea, areaAfter);
+       // hints.add(ahs);
     }
 
     /**
-     * Enforces the Distance Constraint, by stableSorting the TreasureLocations > distance to the low indicies
+     * Enforces the Distance Constraint, by stableSorting the TreasureLocations > distance to the low indices
      * Points which are closer than distance will be sorted to the end, beginning with the points with the greatest distance
      *
      * @param distance
@@ -76,7 +77,6 @@ public class HintEvaluator {
         }
 
     }
-
 
     public AngleHint evaluateRound() {
         log.info("Evaluating Round with " + treasurePointsOfInterest.size() + " points of interest and " + hints.size() + " possible hints");
