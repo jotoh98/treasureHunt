@@ -71,6 +71,13 @@
     -fx-border-color: rgba(255, 255, 255, 0.27);
 }
 
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+}
 
 .table-view {
     -fx-background-color: transparent;
@@ -331,4 +338,8 @@
 
 .tree-cell > .tree-disclosure-node > .arrow {
     -fx-cursor: hand;
+}
+
+.widget-bar .split-pane-divider {
+    -fx-background-color: BACKGROUND_COLOR;
 }
