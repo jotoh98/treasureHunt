@@ -1,13 +1,17 @@
 package com.treasure.hunt.strategy.hider.impl;
 
+import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
+import com.treasure.hunt.utils.Preference;
+import com.treasure.hunt.utils.Preferences;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.math.Vector2D;
 
 /**
  * This type of {@link Hider} returns a random {@link HalfPlaneHint},
@@ -15,12 +19,12 @@ import org.locationtech.jts.geom.Point;
  *
  * @author Rank
  */
+@Preferences({
+        @Preference(name = RandomAngleHintHider.TREASURE_DISTANCE, value = 200)
+})
 public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
-    double xmax = 1000;
-    double ymax = 1000;
     HalfPlaneHint lastHint = null;
-    private Point treasurePos = JTSUtils.createPoint(Math.random() * xmax * 2 - xmax,
-            Math.random() * ymax * 2 - ymax);
+    private Point treasurePos = null;
 
     /**
      * @param searcherStartPosition the {@link Searcher} starting position,
@@ -55,6 +59,15 @@ public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
      */
     @Override
     public Point getTreasureLocation() {
+        if (treasurePos == null) {
+            treasurePos = JTSUtils.GEOMETRY_FACTORY.createPoint(
+                    Vector2D.create(
+                            PreferenceService.getInstance().getPreference(RandomAngleHintHider.TREASURE_DISTANCE, 200).doubleValue(), 0)
+                            .rotate(2 * Math.PI * Math.random())
+                            .toCoordinate()
+            );
+        }
+
         return treasurePos;
     }
 }
