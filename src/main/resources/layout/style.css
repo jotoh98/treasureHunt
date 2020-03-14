@@ -1,6 +1,7 @@
 * {
     BACKGROUND_COLOR: #383838;
     BORDER_COLOR: #2a2a2a;
+    SECONDARY_GREY: #8e9194;
     LIGHTER_BACKGROUND: #3e4042;
     DARKER_BACKGROUND: #2f2f2f;
     DARK_BACKGROUND: #1c1c1c;
@@ -331,4 +332,27 @@
 
 .tree-cell > .tree-disclosure-node > .arrow {
     -fx-cursor: hand;
+}
+
+.settings > .viewport {
+    -fx-background-color: BACKGROUND_COLOR;
+}
+
+.settings * {
+    -fx-text-fill: white;
+}
+
+.settings .description {
+    -fx-padding: 5pt 0 0 0;
+    -fx-text-fill: SECONDARY_GREY;
+}
+
+.settings-list > * {
+    -fx-padding: 10pt;
+}
+
+.settings .setting-section {
+    -fx-border-width: 1pt 0 0 0;
+    -fx-border-color: LIGHTER_BACKGROUND;
+    -fx-padding: 10pt;
 }

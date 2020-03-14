@@ -4,11 +4,14 @@ import com.google.common.util.concurrent.AtomicDouble;
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.service.io.FileService;
+import com.treasure.hunt.service.settings.Session;
+import com.treasure.hunt.service.settings.SettingsService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.EventBusUtils;
 import com.treasure.hunt.utils.ReflectionUtils;
 import com.treasure.hunt.utils.Requires;
+import com.treasure.hunt.view.settings.SettingsWindow;
 import com.treasure.hunt.view.widget.*;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -85,6 +88,7 @@ public class MainController {
         versionLabel.setText(implementationVersion == null ? "snapshot" : "v" + implementationVersion);
         setListStringConverters();
         fillLists();
+        insertSessionConfiguration();
         addPromptBindings();
         bindStartButtonState();
         addToolbarStyleClasses();
@@ -93,6 +97,24 @@ public class MainController {
         listenToGameMangerLoad();
         listenToLogLabelEvent();
         addGameIndependentWidgets();
+    }
+
+    public void saveSession() {
+        if (SettingsService.getInstance().getSettings().isPreserveConfiguration()) {
+            Session session = SettingsService.getInstance().getSession();
+            session.setSearcher(searcherList.getSelectionModel().getSelectedItem());
+            session.setHider(hiderList.getSelectionModel().getSelectedItem());
+            session.setEngine(gameEngineList.getSelectionModel().getSelectedItem());
+        }
+    }
+
+    private void insertSessionConfiguration() {
+        if (SettingsService.getInstance().getSettings().isPreserveConfiguration()) {
+            Session session = SettingsService.getInstance().getSession();
+            searcherList.getSelectionModel().select(session.getSearcher());
+            hiderList.getSelectionModel().select(session.getHider());
+            gameEngineList.getSelectionModel().select(session.getEngine());
+        }
     }
 
     private void addGameIndependentWidgets() {
@@ -397,6 +419,14 @@ public class MainController {
 
     public void onLoadGame(ActionEvent actionEvent) {
         FileService.getInstance().loadGameManager();
+    }
+
+    public void openPreferences() {
+        try {
+            SettingsWindow.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private enum SplitPaneLocation {

@@ -37,6 +37,7 @@
                     <children>
                         <Label text="TreasureHunt: "/>
                         <Label fx:id="versionLabel"/>
+                        <Button onAction="#openPreferences" text="Preferences"/>
                     </children>
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" maxWidth="60000.0" spacing="5.0" HBox.hgrow="ALWAYS">
