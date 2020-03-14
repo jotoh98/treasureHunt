@@ -2,11 +2,13 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.Group?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.String?>
 <StackPane xmlns:fx="http://javafx.com/fxml/1" id="root" maxHeight="-Infinity" maxWidth="-Infinity"
            minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="1080.0"
-           xmlns="http://javafx.com/javafx/11.0.1" fx:controller="com.treasure.hunt.view.MainController">
+           xmlns="http://javafx.com/javafx/11.0.1" fx:controller="com.treasure.hunt.view.MainController"
+           alignment="TOP_LEFT" fx:id="mainRoot">
     <BorderPane>
         <bottom>
             <VBox>
@@ -81,8 +83,5 @@
             <fx:include fx:id="leftToolbar" source="toolbar.fxml"/>
         </left>
     </BorderPane>
-    <Pane fx:id="popUpPane" styleClass="pop-up-pane" maxHeight="-Infinity" maxWidth="-Infinity"
-          StackPane.alignment="CENTER">
-
-    </Pane>
+    <Group fx:id="popupGroup" styleClass="pop-up-pane"/>
 </StackPane>

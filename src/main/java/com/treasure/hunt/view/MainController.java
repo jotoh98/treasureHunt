@@ -18,6 +18,8 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -25,6 +27,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import lombok.Getter;
@@ -62,7 +65,8 @@ public class MainController {
     public ComboBox<Class<? extends GameEngine>> gameEngineList;
     public Button startGameButton;
     public Label logLabel;
-    public Pane popUpPane;
+    public Group popupGroup;
+    public StackPane mainRoot;
     @FXML
     private NavigationController stepViewNavigatorController;
     @FXML
@@ -95,23 +99,28 @@ public class MainController {
         listenToLogLabelEvent();
         addGameIndependentWidgets();
         setUpPopUpPane();
-        EventBusUtils.INNER_POP_UP_EVENT
-                .addListener(this::newInnerPopUp);
-        EventBusUtils.INNER_POP_UP_EVENT_CLOSE
-                .addListener(this::closePopUp);
+        EventBusUtils.INNER_POP_UP_EVENT.addListener(this::newInnerPopUp);
+        EventBusUtils.INNER_POP_UP_EVENT_CLOSE.addListener(this::closePopUp);
+        EventBusUtils.POP_UP_POSITION.addListener(mouseEvent -> {
+            Bounds boundsInLocal = mainRoot.getBoundsInLocal();
+            Bounds bounds = mainRoot.localToScreen(boundsInLocal);
+            popupGroup.setTranslateX(mouseEvent.getScreenX() - bounds.getMinX());
+            popupGroup.setTranslateY(mouseEvent.getScreenY() - bounds.getMinY());
+            EventBusUtils.LOG_LABEL_EVENT.trigger(String.format("x:%s, y:%s", bounds.getMinX(), bounds.getMinY()));
+        });
     }
 
     private void closePopUp(Void aVoid) {
-        popUpPane.setVisible(false);
+        popupGroup.setVisible(false);
     }
 
     private void newInnerPopUp(Node node) {
-        popUpPane.setVisible(true);
-        popUpPane.getChildren().addAll(node);
+        popupGroup.setVisible(true);
+        popupGroup.getChildren().addAll(node);
     }
 
     private void setUpPopUpPane() {
-        popUpPane.managedProperty().bind(popUpPane.visibleProperty());
+        popupGroup.managedProperty().bind(popupGroup.visibleProperty());
     }
 
     private void addGameIndependentWidgets() {

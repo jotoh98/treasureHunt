@@ -1,16 +1,16 @@
 package com.treasure.hunt.service.select;
 
 import com.treasure.hunt.game.GameManager;
+import com.treasure.hunt.jts.awt.PointTransformation;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.utils.EventBusUtils;
 import com.treasure.hunt.utils.JTSUtils;
-import com.treasure.hunt.view.SelectClickedPopUpController;
+import com.treasure.hunt.view.SelectClickedPopUp;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -56,7 +56,9 @@ public class SelectionService {
     }
 
     @SneakyThrows
-    public void handleClickEvent(Coordinate coordinate, double scale, GameManager gameManager) {
+    public void handleClickEvent(MouseEvent mouseEvent, PointTransformation transformation, GameManager gameManager) {
+        Coordinate coordinate = transformation.revert(mouseEvent.getX(), mouseEvent.getY());
+
         selectionInProgress.setValue(false);
         if (currentGameManager != gameManager) {
             gameManager.getViewIndex().addListener(stepChangeListener);
@@ -66,7 +68,7 @@ public class SelectionService {
             currentGameManager = gameManager;
         }
 
-        double distance = MOUSE_RECOGNIZE_DISTANCE / scale;
+        double distance = MOUSE_RECOGNIZE_DISTANCE / transformation.getScale();
         List<GeometryItem<?>> foundItems = gameManager
                 .getVisibleGeometries()
                 .filter(geometryItem -> geometryItem.getObject() instanceof Geometry && geometryItem.getGeometryType() != GeometryType.HIGHLIGHTER && geometryItem != geometryItemSelected)
@@ -93,12 +95,11 @@ public class SelectionService {
             return;
         }
 
-        final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/selectClickedPopUp.fxml"));
-        Node load = fxmlLoader.load();
-        EventBusUtils.INNER_POP_UP_EVENT.trigger(load);
-        SelectClickedPopUpController controller = fxmlLoader.getController();
+        SelectClickedPopUp selectClickedPopUp = new SelectClickedPopUp();
+        EventBusUtils.INNER_POP_UP_EVENT.trigger(selectClickedPopUp.getListView());
+        EventBusUtils.POP_UP_POSITION.trigger(mouseEvent);
 
-        controller.getCorrectItem(foundItems).thenAccept(geometryItem -> selectItem(gameManager, (GeometryItem<? extends Geometry>) geometryItem));
+        selectClickedPopUp.getCorrectItem(foundItems).thenAccept(geometryItem -> selectItem(gameManager, (GeometryItem<? extends Geometry>) geometryItem));
     }
 
     private void selectItem(GameManager gameManager, GeometryItem<? extends Geometry> geometryItem) {

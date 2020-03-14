@@ -1,6 +1,8 @@
 * {
     BACKGROUND_COLOR: #383838;
     BORDER_COLOR: #2a2a2a;
+    LIGHTEST_BACKGROUND: #616365;
+    FOCUSED_BACKGROUND: #005797;
     LIGHTER_BACKGROUND: #3e4042;
     DARKER_BACKGROUND: #2f2f2f;
     DARK_BACKGROUND: #1c1c1c;
@@ -14,14 +16,24 @@
 }
 
 .pop-up-pane {
-    -fx-background-color: rgba(56, 56, 56, 0.75);
+    -fx-background-color: transparent;
     -fx-border-color: BORDER_COLOR;
     -fx-border-width: 1px;
     -fx-text-fill: white;
 }
 
-.pop-up-pane .label, .pop-up-pane .button {
+.pop-up-pane .list-view {
+    -fx-border-width: 0;
+    -fx-background-color: LIGHTER_BACKGROUND;
+}
+
+.pop-up-pane .list-cell {
+    -fx-background-color: LIGHTER_BACKGROUND;
     -fx-text-fill: white;
+}
+
+.pop-up-pane .list-cell:focused {
+    -fx-background-color: FOCUSED_BACKGROUND;
 }
 
 #logLabel {

@@ -43,7 +43,6 @@
             <Font size="20.0"/>
         </font>
     </Label>
-    <Button fx:id="selectButton" mnemonicParsing="false" onAction="#selectNow" text="Select item now"/>
     <Label fx:id="noSelectedLabel" text="No selected item!!!"/>
     <GridPane fx:id="selectedPane">
         <columnConstraints>

@@ -6,6 +6,7 @@ import com.treasure.hunt.jts.geom.Grid;
 import com.treasure.hunt.service.select.SelectionService;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
+import com.treasure.hunt.utils.EventBusUtils;
 import com.treasure.hunt.utils.Renderer;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -16,7 +17,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
-import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.math.Vector2D;
 
 /**
@@ -60,8 +60,7 @@ public class CanvasController {
 
     public void onCanvasClicked(MouseEvent mouseEvent) {
         if (SelectionService.getInstance().getSelectionInProgress().get()) {
-            Coordinate coordinate = transformation.revert(mouseEvent.getX(), mouseEvent.getY());
-            SelectionService.getInstance().handleClickEvent(coordinate, transformation.getScale(), gameManager.get());
+            SelectionService.getInstance().handleClickEvent(mouseEvent, transformation, gameManager.get());
             return;
         }
         if (gameManager.isNull().get()) {
@@ -69,6 +68,9 @@ public class CanvasController {
         }
         offsetBackup = transformation.getOffsetProperty().get();
         dragStart = Vector2D.create(mouseEvent.getX(), mouseEvent.getY());
+
+        SelectionService.getInstance().getSelectionInProgress().setValue(true);
+        EventBusUtils.INNER_POP_UP_EVENT_CLOSE.trigger();
     }
 
     /**
@@ -85,6 +87,8 @@ public class CanvasController {
         }
         Vector2D dragOffset = Vector2D.create(mouseEvent.getX(), mouseEvent.getY()).subtract(dragStart);
         transformation.setOffset(dragOffset.add(offsetBackup));
+
+        SelectionService.getInstance().getSelectionInProgress().setValue(false);
     }
 
     public void onCanvasZoom(ScrollEvent scrollEvent) {
@@ -110,5 +114,9 @@ public class CanvasController {
             this.gameManager.get().getAdditional()
                     .addListener((InvalidationListener) change -> drawShapes());
         });
+    }
+
+    public void onCanvasMove(MouseEvent mouseEvent) {
+
     }
 }
