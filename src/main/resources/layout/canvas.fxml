@@ -12,7 +12,7 @@
                 onMouseDragged="#onCanvasDragged"
                 onMousePressed="#onCanvasClicked"
                 onScroll="#onCanvasZoom"
-                onMouseMoved="#onCanvasMove"
+                onMouseReleased="#onMouseLifted"
         />
     </children>
 </Pane>

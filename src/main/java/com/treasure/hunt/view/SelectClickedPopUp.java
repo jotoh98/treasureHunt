@@ -5,6 +5,7 @@ import com.treasure.hunt.utils.EventBusUtils;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.input.KeyCode;
 import lombok.Getter;
 
@@ -17,6 +18,8 @@ public class SelectClickedPopUp {
     private CompletableFuture<GeometryItem<?>> geometryItemCompletableFuture = new CompletableFuture<>();
 
     public SelectClickedPopUp() {
+
+        listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         listView.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(GeometryItem item, boolean empty) {
@@ -26,8 +29,10 @@ public class SelectClickedPopUp {
                     setText(null);
                 } else {
                     setText(item.getGeometryType().getDisplayName());
+                    setOnMouseMoved(event -> requestFocus());
                 }
             }
+
         });
 
         listView.setOnMouseClicked(event -> {

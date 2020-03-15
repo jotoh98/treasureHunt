@@ -8,11 +8,7 @@ import com.treasure.hunt.utils.EventBusUtils;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.view.SelectClickedPopUp;
 import javafx.beans.InvalidationListener;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.input.MouseEvent;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.SneakyThrows;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
@@ -25,9 +21,6 @@ public class SelectionService {
     private static final SelectionService instance = new SelectionService();
     private static final double MOUSE_RECOGNIZE_DISTANCE = 4;
 
-    @Getter
-    @Setter
-    private BooleanProperty selectionInProgress = new SimpleBooleanProperty(false);
     private GameManager currentGameManager;
     private Geometry geometrySelected;
     private GeometryItem<? extends Geometry> geometryItemSelected;
@@ -59,7 +52,6 @@ public class SelectionService {
     public void handleClickEvent(MouseEvent mouseEvent, PointTransformation transformation, GameManager gameManager) {
         Coordinate coordinate = transformation.revert(mouseEvent.getX(), mouseEvent.getY());
 
-        selectionInProgress.setValue(false);
         if (currentGameManager != gameManager) {
             gameManager.getViewIndex().addListener(stepChangeListener);
             if (currentGameManager != null) {
