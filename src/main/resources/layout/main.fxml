@@ -74,6 +74,8 @@
                                   styleClass="widget-pane"/>
                   </items>
               </SplitPane>
+              <fx:include fx:id="bottomWidgetBar" source="widgetBar.fxml" maxWidth="Infinity" orientation="HORIZONTAL"/>
+          </SplitPane>
         </center>
         <right>
             <fx:include fx:id="rightToolbar" source="toolbar.fxml"/>

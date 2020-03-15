@@ -7,26 +7,14 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
-import javafx.scene.layout.Pane;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class HistoryController {
     public ListView<Turn> list;
     public TitledPane collapse;
-    public Pane wrapper;
     public SplitPane split;
-    public Pane collapseWrap;
-
     private double splitPosition = 0.5;
-
-    public void initialize() {
-        split.prefWidthProperty().bind(wrapper.widthProperty());
-        split.prefHeightProperty().bind(wrapper.heightProperty());
-        list.prefWidthProperty().bind(wrapper.widthProperty());
-        collapse.prefWidthProperty().bind(wrapper.widthProperty());
-        collapse.prefHeightProperty().bind(collapseWrap.heightProperty());
-    }
 
     public void init(ObjectProperty<GameManager> gameManager) {
         bindToGameManager(gameManager.get());
