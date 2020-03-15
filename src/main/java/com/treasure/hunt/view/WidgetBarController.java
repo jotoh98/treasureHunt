@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -23,15 +23,28 @@ public class WidgetBarController {
 
     private ScrollPane secondScrollPane = new ScrollPane();
 
-    private Pane firstPane = new Pane();
-    private Pane secondPane = new Pane();
+    private AnchorPane firstPane = new AnchorPane();
+    private AnchorPane secondPane = new AnchorPane();
 
     private double dividerPosition;
 
     public void initialize() {
+        firstScrollPane.setFitToWidth(true);
+        firstScrollPane.setFitToHeight(true);
+        firstScrollPane.setFitToWidth(true);
+        firstScrollPane.setFitToHeight(true);
         firstScrollPane.setContent(firstPane);
         secondScrollPane.setContent(secondPane);
         dividerPosition = .5;
+
+        if (widgetBar.getOrientation() == Orientation.VERTICAL) {
+            firstPane.minHeightProperty().bind(firstScrollPane.heightProperty());
+            secondPane.minHeightProperty().bind(secondScrollPane.heightProperty());
+        } else {
+            firstPane.minWidthProperty().bind(firstScrollPane.widthProperty());
+            secondPane.minWidthProperty().bind(secondScrollPane.widthProperty());
+        }
+
         init(firstScrollPane);
         init(secondScrollPane);
     }
@@ -42,23 +55,24 @@ public class WidgetBarController {
         } else {
             widgetWrapper.setFitToWidth(true);
         }
-        widgetWrapper.prefWidthProperty().bind(widgetWrapper.widthProperty());
-        widgetWrapper.prefHeightProperty().bind(widgetWrapper.heightProperty());
     }
 
-    public void addWidget(boolean first, Pane widget) {
-        widget.maxWidth(Double.MAX_VALUE);
-        widget.maxHeight(Double.MAX_VALUE);
-        widget.minWidth(Region.USE_PREF_SIZE);
-        widget.minHeight(Region.USE_PREF_SIZE);
-        widget.prefWidthProperty().bind((first ? firstScrollPane : secondScrollPane).widthProperty());
+    public void addWidget(boolean first, Region widget) {
+        if (widget == null) {
+            return;
+        }
+        AnchorPane.setTopAnchor(widget, 0d);
+        AnchorPane.setRightAnchor(widget, 0d);
+        AnchorPane.setBottomAnchor(widget, 0d);
+        AnchorPane.setLeftAnchor(widget, 0d);
+        widget.setPrefWidth(0);
+        widget.setPrefHeight(0);
         (first ? firstPane : secondPane).getChildren().add(widget);
     }
 
     public void bindToggleGroups(ToolbarController controller) {
 
         controller.getFirstGroup().selectedToggleProperty().addListener((observable, oldValue, thisToggle) -> {
-            log.info("{}", thisToggle);
             if (thisToggle == null) {
                 if (widgetBar.getItems().size() == 2) {
                     dividerPosition = widgetBar.getDividerPositions()[0];

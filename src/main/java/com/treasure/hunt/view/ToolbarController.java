@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,10 +25,10 @@ public class ToolbarController {
     @Getter
     private ToggleGroup secondGroup = new ToggleGroup();
 
-    public void addButton(boolean first, String text, boolean selected, Pane widget) {
+    public void addButton(boolean first, String text, boolean selected, Region widget) {
 
         if (widget == null) {
-            throw new NullPointerException("Widget pane mustn't be null.");
+            return;
         }
 
         ToggleButton toggleButton = new ToggleButton();

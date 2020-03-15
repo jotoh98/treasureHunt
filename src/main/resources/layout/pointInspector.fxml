@@ -3,7 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.String?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/11"
+<VBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+      minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1"
       fx:controller="com.treasure.hunt.view.widget.PointInspectorController">
     <GridPane hgap="10.0" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" vgap="10.0"
               xmlns="http://javafx.com/javafx/11">

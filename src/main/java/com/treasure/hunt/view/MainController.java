@@ -27,6 +27,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import lombok.Getter;
@@ -345,11 +346,11 @@ public class MainController {
         );
     }
 
-    private void insertWidget(SplitPaneLocation toolbar, String buttonText, Pane widgetBox) {
+    private void insertWidget(SplitPaneLocation toolbar, String buttonText, Region widgetBox) {
         insertWidget(toolbar, buttonText, widgetBox, false);
     }
 
-    private void insertWidget(SplitPaneLocation location, String buttonText, Pane widgetBox, boolean selected) {
+    private void insertWidget(SplitPaneLocation location, String buttonText, Region widgetBox, boolean selected) {
         boolean first = location == SplitPaneLocation.BOTTOM_LEFT || location == SplitPaneLocation.LEFT_UPPER || location == SplitPaneLocation.RIGHT_UPPER;
         selectToolbarController(location).addButton(first, buttonText, selected, widgetBox);
         selectWidgetController(location).addWidget(first, widgetBox);
