@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9};
+var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -281,6 +281,11 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i15" class="rowColor">
+<td class="colFirst"><code>static org.locationtech.jts.geom.Polygon</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toPolygon(org.locationtech.jts.geom.Envelope)">toPolygon</a></span>&#8203;(org.locationtech.jts.geom.Envelope&nbsp;envelope)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>static <a href="../jts/geom/GeometryAngle.html" title="class in com.treasure.hunt.jts.geom">GeometryAngle</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#validRandomAngle(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,double)">validRandomAngle</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;searcher,
                 org.locationtech.jts.geom.Coordinate&nbsp;treasure,
@@ -594,10 +599,19 @@ extends java.lang.Object</pre>
 <a id="getCoordinateList(java.util.List)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getCoordinateList</h4>
 <pre class="methodSignature">public static&nbsp;java.util.List&lt;org.locationtech.jts.geom.Coordinate&gt;&nbsp;getCoordinateList&#8203;(java.util.List&lt;? extends org.locationtech.jts.geom.Geometry&gt;&nbsp;geometries)</pre>
+</li>
+</ul>
+<a id="toPolygon(org.locationtech.jts.geom.Envelope)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>toPolygon</h4>
+<pre class="methodSignature">public static&nbsp;org.locationtech.jts.geom.Polygon&nbsp;toPolygon&#8203;(org.locationtech.jts.geom.Envelope&nbsp;envelope)</pre>
 </li>
 </ul>
 </li>

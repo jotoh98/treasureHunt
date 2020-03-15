@@ -8,6 +8,7 @@ com.treasure.hunt.jts.geom
 com.treasure.hunt.jts.other
 com.treasure.hunt.service.io
 com.treasure.hunt.service.preferences
+com.treasure.hunt.service.select
 com.treasure.hunt.strategy.geom
 com.treasure.hunt.strategy.hider
 com.treasure.hunt.strategy.hider.impl
