@@ -107,7 +107,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/SearchPath.html#addAdditionalItem(com.treasure.hunt.strategy.geom.GeometryItem)">addAdditionalItem(GeometryItem&lt;?&gt;)</a></span> - Method in class com.treasure.hunt.strategy.searcher.<a href="com/treasure/hunt/strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/treasure/hunt/view/ToolbarController.html#addButton(java.lang.String,boolean,javafx.scene.layout.Pane)">addButton(String, boolean, Pane)</a></span> - Method in class com.treasure.hunt.view.<a href="com/treasure/hunt/view/ToolbarController.html" title="class in com.treasure.hunt.view">ToolbarController</a></dt>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/view/ToolbarController.html#addButton(boolean,java.lang.String,boolean,javafx.scene.layout.Region)">addButton(boolean, String, boolean, Region)</a></span> - Method in class com.treasure.hunt.view.<a href="com/treasure/hunt/view/ToolbarController.html" title="class in com.treasure.hunt.view">ToolbarController</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/view/widget/PreferencesWidgetController.html#addCancel()">addCancel()</a></span> - Method in class com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/PreferencesWidgetController.html" title="class in com.treasure.hunt.view.widget">PreferencesWidgetController</a></dt>
 <dd>&nbsp;</dd>
@@ -131,7 +131,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">This method is used to visualize the current phases rectangle and the current search rectangle.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/treasure/hunt/view/WidgetBarController.html#addWidget(javafx.scene.layout.Pane)">addWidget(Pane)</a></span> - Method in class com.treasure.hunt.view.<a href="com/treasure/hunt/view/WidgetBarController.html" title="class in com.treasure.hunt.view">WidgetBarController</a></dt>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/view/WidgetBarController.html#addWidget(boolean,javafx.scene.layout.Region)">addWidget(boolean, Region)</a></span> - Method in class com.treasure.hunt.view.<a href="com/treasure/hunt/view/WidgetBarController.html" title="class in com.treasure.hunt.view">WidgetBarController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/treasure/hunt/jts/awt/AdvancedShapeWriter.html" title="class in com.treasure.hunt.jts.awt"><span class="typeNameLink">AdvancedShapeWriter</span></a> - Class in <a href="com/treasure/hunt/jts/awt/package-summary.html">com.treasure.hunt.jts.awt</a></dt>
 <dd>
@@ -194,6 +194,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/geom/StatusMessageType.html#BEFORE_PREVIOUS_QUALITY">BEFORE_PREVIOUS_QUALITY</a></span> - com.treasure.hunt.strategy.geom.<a href="com/treasure/hunt/strategy/geom/StatusMessageType.html" title="enum in com.treasure.hunt.strategy.geom">StatusMessageType</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/view/widget/PointInspectorController.html#bindPoint(javafx.beans.binding.ObjectBinding)">bindPoint(ObjectBinding&lt;Point&gt;)</a></span> - Method in class com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/PointInspectorController.html" title="class in com.treasure.hunt.view.widget">PointInspectorController</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/view/WidgetBarController.html#bindToggleGroups(com.treasure.hunt.view.ToolbarController)">bindToggleGroups(ToolbarController)</a></span> - Method in class com.treasure.hunt.view.<a href="com/treasure/hunt/view/WidgetBarController.html" title="class in com.treasure.hunt.view">WidgetBarController</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/jts/other/ImageItem.Alignment.html#BOTTOM_CENTER">BOTTOM_CENTER</a></span> - com.treasure.hunt.jts.other.<a href="com/treasure/hunt/jts/other/ImageItem.Alignment.html" title="enum in com.treasure.hunt.jts.other">ImageItem.Alignment</a></dt>
 <dd>&nbsp;</dd>
@@ -295,8 +297,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/view/custom/CoinProgressSkin.html#%3Cinit%3E(com.treasure.hunt.view.custom.CoinProgress)">CoinProgressSkin(CoinProgress)</a></span> - Constructor for class com.treasure.hunt.view.custom.<a href="com/treasure/hunt/view/custom/CoinProgressSkin.html" title="class in com.treasure.hunt.view.custom">CoinProgressSkin</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/view/widget/HistoryController.html#collapse">collapse</a></span> - Variable in class com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/HistoryController.html" title="class in com.treasure.hunt.view.widget">HistoryController</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/treasure/hunt/view/widget/HistoryController.html#collapseWrap">collapseWrap</a></span> - Variable in class com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/HistoryController.html" title="class in com.treasure.hunt.view.widget">HistoryController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/treasure/hunt/package-summary.html">com.treasure.hunt</a> - package com.treasure.hunt</dt>
 <dd>&nbsp;</dd>
@@ -536,6 +536,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Tells, whether the game is done or not.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/view/ToolbarController.html#first">first</a></span> - Variable in class com.treasure.hunt.view.<a href="com/treasure/hunt/view/ToolbarController.html" title="class in com.treasure.hunt.view">ToolbarController</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameEngine.html#firstMove">firstMove</a></span> - Variable in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameEngine.html" title="class in com.treasure.hunt.game">GameEngine</a></dt>
 <dd>
 <div class="block">Tells, whether a first move is happened in the game yet, or not.</div>
@@ -997,11 +999,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/view/StatisticTableController.html#initialize()">initialize()</a></span> - Method in class com.treasure.hunt.view.<a href="com/treasure/hunt/view/StatisticTableController.html" title="class in com.treasure.hunt.view">StatisticTableController</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/treasure/hunt/view/ToolbarController.html#initialize()">initialize()</a></span> - Method in class com.treasure.hunt.view.<a href="com/treasure/hunt/view/ToolbarController.html" title="class in com.treasure.hunt.view">ToolbarController</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/view/widget/BeatWidgetController.html#initialize()">initialize()</a></span> - Method in class com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/BeatWidgetController.html" title="class in com.treasure.hunt.view.widget">BeatWidgetController</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/treasure/hunt/view/widget/HistoryController.html#initialize()">initialize()</a></span> - Method in class com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/HistoryController.html" title="class in com.treasure.hunt.view.widget">HistoryController</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/view/widget/NavigationController.html#initialize()">initialize()</a></span> - Method in class com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/NavigationController.html" title="class in com.treasure.hunt.view.widget">NavigationController</a></dt>
 <dd>&nbsp;</dd>
@@ -1012,6 +1010,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/view/widget/StatisticsWidgetController.html#initialize()">initialize()</a></span> - Method in class com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/StatisticsWidgetController.html" title="class in com.treasure.hunt.view.widget">StatisticsWidgetController</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/view/widget/StatusMessageWidgetController.html#initialize()">initialize()</a></span> - Method in class com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/StatusMessageWidgetController.html" title="class in com.treasure.hunt.view.widget">StatusMessageWidgetController</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/view/WidgetBarController.html#initialize()">initialize()</a></span> - Method in class com.treasure.hunt.view.<a href="com/treasure/hunt/view/WidgetBarController.html" title="class in com.treasure.hunt.view">WidgetBarController</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameEngine.html#initialSearcherCoordinate">initialSearcherCoordinate</a></span> - Variable in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameEngine.html" title="class in com.treasure.hunt.game">GameEngine</a></dt>
 <dd>&nbsp;</dd>
@@ -1607,6 +1607,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/SearchPath.html#%3Cinit%3E(org.locationtech.jts.geom.Point...)">SearchPath(Point...)</a></span> - Constructor for class com.treasure.hunt.strategy.searcher.<a href="com/treasure/hunt/strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/view/ToolbarController.html#second">second</a></span> - Variable in class com.treasure.hunt.view.<a href="com/treasure/hunt/view/ToolbarController.html" title="class in com.treasure.hunt.view">ToolbarController</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/treasure/hunt/view/SelectClickedPopUp.html" title="class in com.treasure.hunt.view"><span class="typeNameLink">SelectClickedPopUp</span></a> - Class in <a href="com/treasure/hunt/view/package-summary.html">com.treasure.hunt.view</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/view/SelectClickedPopUp.html#%3Cinit%3E()">SelectClickedPopUp()</a></span> - Constructor for class com.treasure.hunt.view.<a href="com/treasure/hunt/view/SelectClickedPopUp.html" title="class in com.treasure.hunt.view">SelectClickedPopUp</a></dt>
@@ -1799,7 +1801,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/jts/awt/CanvasBoundary.html#toLineSegments()">toLineSegments()</a></span> - Method in class com.treasure.hunt.jts.awt.<a href="com/treasure/hunt/jts/awt/CanvasBoundary.html" title="class in com.treasure.hunt.jts.awt">CanvasBoundary</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/treasure/hunt/view/ToolbarController.html" title="class in com.treasure.hunt.view"><span class="typeNameLink">ToolbarController</span></a> - Class in <a href="com/treasure/hunt/view/package-summary.html">com.treasure.hunt.view</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">The toolbar controller holds two sections for buttons.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/view/ToolbarController.html#%3Cinit%3E()">ToolbarController()</a></span> - Constructor for class com.treasure.hunt.view.<a href="com/treasure/hunt/view/ToolbarController.html" title="class in com.treasure.hunt.view">ToolbarController</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/JTSUtils.html#toPolygon(org.locationtech.jts.geom.Envelope)">toPolygon(Envelope)</a></span> - Static method in class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/JTSUtils.html" title="class in com.treasure.hunt.utils">JTSUtils</a></dt>
@@ -1979,6 +1983,8 @@ the order they are declared.</div>
  CircleHints must contain each other !?
  Verifies whether the <a href="com/treasure/hunt/strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a> <code>hint</code> given by the <a href="com/treasure/hunt/strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> followed the rules.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/view/ToolbarController.html#visibleBinding()">visibleBinding()</a></span> - Method in class com.treasure.hunt.view.<a href="com/treasure/hunt/view/ToolbarController.html" title="class in com.treasure.hunt.view">ToolbarController</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <a id="I:W">
 <!--   -->
@@ -1989,15 +1995,13 @@ the order they are declared.</div>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/geom/GeometryType.html#WAY_POINT_LINE">WAY_POINT_LINE</a></span> - com.treasure.hunt.strategy.geom.<a href="com/treasure/hunt/strategy/geom/GeometryType.html" title="enum in com.treasure.hunt.strategy.geom">GeometryType</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/treasure/hunt/view/widget/Widget.html" title="class in com.treasure.hunt.view.widget"><span class="typeNameLink">Widget</span></a>&lt;<a href="com/treasure/hunt/view/widget/Widget.html" title="type parameter in Widget">C</a>,&#8203;<a href="com/treasure/hunt/view/widget/Widget.html" title="type parameter in Widget">P</a> extends javafx.scene.layout.Pane&gt; - Class in <a href="com/treasure/hunt/view/widget/package-summary.html">com.treasure.hunt.view.widget</a></dt>
+<dt><a href="com/treasure/hunt/view/widget/Widget.html" title="class in com.treasure.hunt.view.widget"><span class="typeNameLink">Widget</span></a>&lt;<a href="com/treasure/hunt/view/widget/Widget.html" title="type parameter in Widget">C</a>,&#8203;<a href="com/treasure/hunt/view/widget/Widget.html" title="type parameter in Widget">P</a> extends javafx.scene.layout.Region&gt; - Class in <a href="com/treasure/hunt/view/widget/package-summary.html">com.treasure.hunt.view.widget</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/view/widget/Widget.html#%3Cinit%3E(java.lang.String)">Widget(String)</a></span> - Constructor for class com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/Widget.html" title="class in com.treasure.hunt.view.widget">Widget</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/treasure/hunt/view/WidgetBarController.html" title="class in com.treasure.hunt.view"><span class="typeNameLink">WidgetBarController</span></a> - Class in <a href="com/treasure/hunt/view/package-summary.html">com.treasure.hunt.view</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/view/WidgetBarController.html#%3Cinit%3E()">WidgetBarController()</a></span> - Constructor for class com.treasure.hunt.view.<a href="com/treasure/hunt/view/WidgetBarController.html" title="class in com.treasure.hunt.view">WidgetBarController</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/treasure/hunt/view/widget/HistoryController.html#wrapper">wrapper</a></span> - Variable in class com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/HistoryController.html" title="class in com.treasure.hunt.view.widget">HistoryController</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/view/widget/ScaleController.html#wrapper">wrapper</a></span> - Variable in class com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/ScaleController.html" title="class in com.treasure.hunt.view.widget">ScaleController</a></dt>
 <dd>&nbsp;</dd>

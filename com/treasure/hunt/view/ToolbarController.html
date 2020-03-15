@@ -89,13 +89,13 @@ loadScripts(document, 'script');</script>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -133,12 +133,42 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">ToolbarController</span>
 extends java.lang.Object</pre>
+<div class="block">The toolbar controller holds two sections for buttons.
+ These buttons show and hide widgets in the corresponding section in the <a href="WidgetBarController.html" title="class in com.treasure.hunt.view"><code>WidgetBarController</code></a>.</div>
 </li>
 </ul>
 </div>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- =========== FIELD SUMMARY =========== -->
+<section role="region">
+<ul class="blockList">
+<li class="blockList"><a id="field.summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<table class="memberSummary">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Field</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>javafx.scene.layout.Pane</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#first">first</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>javafx.scene.layout.Pane</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#second">second</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</table>
+</li>
+</ul>
+</section>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <section role="region">
 <ul class="blockList">
@@ -176,14 +206,15 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addButton(java.lang.String,boolean,javafx.scene.layout.Pane)">addButton</a></span>&#8203;(java.lang.String&nbsp;text,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addButton(boolean,java.lang.String,boolean,javafx.scene.layout.Region)">addButton</a></span>&#8203;(boolean&nbsp;first,
+         java.lang.String&nbsp;text,
          boolean&nbsp;selected,
-         javafx.scene.layout.Pane&nbsp;widget)</code></th>
+         javafx.scene.layout.Region&nbsp;widget)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#initialize()">initialize</a></span>()</code></th>
+<td class="colFirst"><code>javafx.beans.binding.BooleanBinding</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#visibleBinding()">visibleBinding</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -203,6 +234,34 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
+<!-- ============ FIELD DETAIL =========== -->
+<section role="region">
+<ul class="blockList">
+<li class="blockList"><a id="field.detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a id="first">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>first</h4>
+<pre>public&nbsp;javafx.scene.layout.Pane first</pre>
+</li>
+</ul>
+<a id="second">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>second</h4>
+<pre>public&nbsp;javafx.scene.layout.Pane second</pre>
+</li>
+</ul>
+</li>
+</ul>
+</section>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <section role="region">
 <ul class="blockList">
@@ -229,24 +288,25 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="initialize()">
+<a id="addButton(boolean,java.lang.String,boolean,javafx.scene.layout.Region)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>initialize</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;initialize()</pre>
+<h4>addButton</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;addButton&#8203;(boolean&nbsp;first,
+                      java.lang.String&nbsp;text,
+                      boolean&nbsp;selected,
+                      javafx.scene.layout.Region&nbsp;widget)</pre>
 </li>
 </ul>
-<a id="addButton(java.lang.String,boolean,javafx.scene.layout.Pane)">
+<a id="visibleBinding()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>addButton</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;addButton&#8203;(java.lang.String&nbsp;text,
-                      boolean&nbsp;selected,
-                      javafx.scene.layout.Pane&nbsp;widget)</pre>
+<h4>visibleBinding</h4>
+<pre class="methodSignature">public&nbsp;javafx.beans.binding.BooleanBinding&nbsp;visibleBinding()</pre>
 </li>
 </ul>
 </li>
@@ -301,13 +361,13 @@ extends java.lang.Object</pre>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
