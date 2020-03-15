@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @Data
 public class Session {
 
-    private double wWidth = 960d;
-    private double wHeight = 720d;
-    private double wTop = 100;
-    private double wLeft = 100;
+    private double windowWidth = 960d;
+    private double windowHeight = 720d;
+    private double windowTop = 100;
+    private double windowLeft = 100;
     private Class<? extends Searcher> searcher = null;
     private Class<? extends Hider> hider = null;
     private Class<? extends GameEngine> engine = null;

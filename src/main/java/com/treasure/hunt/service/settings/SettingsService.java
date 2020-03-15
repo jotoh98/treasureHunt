@@ -34,6 +34,7 @@ public class SettingsService {
         kryo.register(Session.class);
         kryo.register(Settings.class);
         kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
+        setup();
     }
 
     public synchronized static SettingsService getInstance() {
@@ -41,6 +42,27 @@ public class SettingsService {
             instance = new SettingsService();
         }
         return instance;
+    }
+
+    private void setup() {
+        File sessionFile = new File(SESSION_PATH);
+        File settingsFile = new File(SETTINGS_PATH);
+
+        if (!sessionFile.exists()) {
+            create(sessionFile);
+            session = new Session();
+            saveSession();
+        } else {
+            loadSession();
+        }
+
+        if (!settingsFile.exists()) {
+            create(settingsFile);
+            settings = new Settings();
+            saveSettings();
+        } else {
+            loadSettings();
+        }
     }
 
     public void loadSession() {
@@ -74,37 +96,33 @@ public class SettingsService {
     }
 
     public void saveSession() {
-        if (!create(SESSION_PATH)) {
-            return;
-        }
-
-        try (FileOutputStream fileOutputStream = new FileOutputStream(SESSION_PATH)) {
-            final Output output = new Output(fileOutputStream);
-            kryo.writeObject(output, session);
-            output.flush();
-        } catch (FileNotFoundException e) {
-            log.error("Save file not found", e);
-            e.printStackTrace();
-        } catch (IOException e) {
-            log.error("Error saving the settings", e);
-        }
+        save(false);
     }
 
     public void saveSettings() {
-        if (!create(SETTINGS_PATH)) {
+        save(true);
+    }
+
+    private void save(boolean isSettings) {
+        final String path = isSettings ? SETTINGS_PATH : SESSION_PATH;
+        final String name = isSettings ? "Settings" : "Session";
+        if (!create(path)) {
             return;
         }
 
-        try (FileOutputStream fileOutputStream = new FileOutputStream(SETTINGS_PATH)) {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(path)) {
             final Output output = new Output(fileOutputStream);
-            kryo.writeObject(output, settings);
+            kryo.writeObject(output, isSettings ? settings : session);
             output.flush();
         } catch (FileNotFoundException e) {
-            log.error("Save file not found", e);
-            e.printStackTrace();
+            log.error(name + " file not found", e);
         } catch (IOException e) {
-            log.error("Error saving the settings", e);
+            log.error("Error saving the " + name.toLowerCase(), e);
         }
+    }
+
+    private boolean create(String path) {
+        return create(new File(path));
     }
 
     private boolean create(File file) {
@@ -128,30 +146,5 @@ public class SettingsService {
         }
 
         return true;
-    }
-
-    private boolean create(String path) {
-        return create(new File(path));
-    }
-
-    public void setup() {
-        File sessionFile = new File(SESSION_PATH);
-        File settingsFile = new File(SETTINGS_PATH);
-
-        if (!sessionFile.exists()) {
-            create(sessionFile);
-            session = new Session();
-            saveSession();
-        } else {
-            loadSession();
-        }
-
-        if (!settingsFile.exists()) {
-            create(settingsFile);
-            settings = new Settings();
-            saveSettings();
-        } else {
-            loadSettings();
-        }
     }
 }

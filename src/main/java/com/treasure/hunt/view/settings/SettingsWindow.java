@@ -1,7 +1,6 @@
 package com.treasure.hunt.view.settings;
 
 import com.treasure.hunt.Main;
-import com.treasure.hunt.service.settings.SettingsService;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -17,8 +16,6 @@ public class SettingsWindow {
 
     public static void show() throws Exception {
         Stage stage = new Stage();
-        SettingsService.getInstance().setup();
-
         final FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/layout/settings/settings.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         scene.getStylesheets().add(Main.class.getResource("/layout/style.css").toExternalForm());

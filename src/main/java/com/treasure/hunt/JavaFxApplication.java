@@ -22,8 +22,6 @@ public class JavaFxApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        SettingsService.getInstance().setup();
-
         final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/main.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
 
@@ -63,19 +61,19 @@ public class JavaFxApplication extends Application {
 
     private void loadSession(Stage stage) {
         Session session = SettingsService.getInstance().getSession();
-        stage.setX(session.getWLeft());
-        stage.setY(session.getWTop());
-        stage.setWidth(session.getWWidth());
-        stage.setHeight(session.getWHeight());
+        stage.setX(session.getWindowLeft());
+        stage.setY(session.getWindowTop());
+        stage.setWidth(session.getWindowWidth());
+        stage.setHeight(session.getWindowHeight());
         stage.setFullScreen(session.isFullscreen());
     }
 
     private void saveSession(Stage stage) {
         Session session = SettingsService.getInstance().getSession();
-        session.setWLeft(stage.getX());
-        session.setWTop(stage.getY());
-        session.setWWidth(stage.getWidth());
-        session.setWHeight(stage.getHeight());
+        session.setWindowLeft(stage.getX());
+        session.setWindowTop(stage.getY());
+        session.setWindowWidth(stage.getWidth());
+        session.setWindowHeight(stage.getHeight());
         session.setFullscreen(stage.isFullScreen());
         SettingsService.getInstance().saveSession();
     }

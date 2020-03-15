@@ -425,7 +425,7 @@ public class MainController {
         try {
             SettingsWindow.show();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Could not open the settings", e);
         }
     }
 
