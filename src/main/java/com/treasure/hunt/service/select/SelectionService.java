@@ -9,6 +9,7 @@ import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.view.SelectClickedPopUp;
 import javafx.beans.InvalidationListener;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Pair;
 import lombok.SneakyThrows;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
@@ -88,8 +89,7 @@ public class SelectionService {
         }
 
         SelectClickedPopUp selectClickedPopUp = new SelectClickedPopUp();
-        EventBusUtils.INNER_POP_UP_EVENT.trigger(selectClickedPopUp.getListView());
-        EventBusUtils.POP_UP_POSITION.trigger(mouseEvent);
+        EventBusUtils.INNER_POP_UP_EVENT.trigger(new Pair<>(selectClickedPopUp.getListView(), new Pair<>(mouseEvent.getScreenX(), mouseEvent.getScreenY())));
 
         selectClickedPopUp.getCorrectItem(foundItems).thenAccept(geometryItem -> selectItem(gameManager, (GeometryItem<? extends Geometry>) geometryItem));
     }

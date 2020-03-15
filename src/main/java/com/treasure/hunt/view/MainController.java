@@ -29,6 +29,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Pair;
 import javafx.util.StringConverter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -101,22 +102,19 @@ public class MainController {
         setUpPopUpPane();
         EventBusUtils.INNER_POP_UP_EVENT.addListener(this::newInnerPopUp);
         EventBusUtils.INNER_POP_UP_EVENT_CLOSE.addListener(this::closePopUp);
-        EventBusUtils.POP_UP_POSITION.addListener(mouseEvent -> {
-            Bounds boundsInLocal = mainRoot.getBoundsInLocal();
-            Bounds bounds = mainRoot.localToScreen(boundsInLocal);
-            popupGroup.setTranslateX(mouseEvent.getScreenX() - bounds.getMinX());
-            popupGroup.setTranslateY(mouseEvent.getScreenY() - bounds.getMinY());
-            EventBusUtils.LOG_LABEL_EVENT.trigger(String.format("x:%s, y:%s", bounds.getMinX(), bounds.getMinY()));
-        });
     }
 
     private void closePopUp(Void aVoid) {
         popupGroup.setVisible(false);
     }
 
-    private void newInnerPopUp(Node node) {
+    private void newInnerPopUp(Pair<Node, Pair<Double, Double>> args) {
+        Bounds boundsInLocal = mainRoot.getBoundsInLocal();
+        Bounds bounds = mainRoot.localToScreen(boundsInLocal);
+        popupGroup.setTranslateX(args.getValue().getKey() - bounds.getMinX());
+        popupGroup.setTranslateY(args.getValue().getValue() - bounds.getMinY());
         popupGroup.setVisible(true);
-        popupGroup.getChildren().addAll(node);
+        popupGroup.getChildren().addAll(args.getKey());
     }
 
     private void setUpPopUpPane() {
