@@ -81,7 +81,7 @@ public class Turn {
         if (searchPath.getFirstPoint() != null && lastPoint != null) {
             items.add(new GeometryItem<>(
                     JTSUtils.createLineString(lastPoint, searchPath.getFirstPoint()),
-                    GeometryType.WAY_POINT
+                    GeometryType.WAY_POINT_LINE
             ));
 
             items.add(new GeometryItem<>(new ImageItem(searchPath.getLastPoint().getCoordinate(), 20, 20, "/images/pin.png", ImageItem.Alignment.BOTTOM_CENTER), GeometryType.SEARCHER_LAST_MOVE));

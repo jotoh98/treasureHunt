@@ -21,6 +21,8 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -28,7 +30,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Pair;
 import javafx.util.StringConverter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -65,6 +69,8 @@ public class MainController {
     public ComboBox<Class<? extends GameEngine>> gameEngineList;
     public Button startGameButton;
     public Label logLabel;
+    public Group popupGroup;
+    public StackPane mainRoot;
     @FXML
     private NavigationController stepViewNavigatorController;
     @FXML
@@ -97,6 +103,26 @@ public class MainController {
         listenToGameMangerLoad();
         listenToLogLabelEvent();
         addGameIndependentWidgets();
+        setUpPopUpPane();
+        EventBusUtils.INNER_POP_UP_EVENT.addListener(this::newInnerPopUp);
+        EventBusUtils.INNER_POP_UP_EVENT_CLOSE.addListener(this::closePopUp);
+    }
+
+    private void closePopUp(Void aVoid) {
+        popupGroup.setVisible(false);
+    }
+
+    private void newInnerPopUp(Pair<Node, Pair<Double, Double>> args) {
+        Bounds boundsInLocal = mainRoot.getBoundsInLocal();
+        Bounds bounds = mainRoot.localToScreen(boundsInLocal);
+        popupGroup.setTranslateX(args.getValue().getKey() - bounds.getMinX());
+        popupGroup.setTranslateY(args.getValue().getValue() - bounds.getMinY());
+        popupGroup.setVisible(true);
+        popupGroup.getChildren().addAll(args.getKey());
+    }
+
+    private void setUpPopUpPane() {
+        popupGroup.managedProperty().bind(popupGroup.visibleProperty());
     }
 
     public void saveSession() {
@@ -127,6 +153,11 @@ public class MainController {
         insertWidget(SplitPaneLocation.WEST, "Save & Load", saveAndLoadWidget.getComponent(), true);
 
         Widget<PreferencesWidgetController, ?> preferencesWidgetControllerPaneWidget = new Widget<>("/layout/preferencesWidget.fxml");
+        preferencesWidgetControllerPaneWidget.getController().init(
+                searcherList.getSelectionModel().selectedItemProperty(),
+                hiderList.getSelectionModel().selectedItemProperty(),
+                gameEngineList.getSelectionModel().selectedItemProperty()
+        );
         insertWidget(SplitPaneLocation.WEST, "Preferences", preferencesWidgetControllerPaneWidget.getComponent(), true);
     }
 

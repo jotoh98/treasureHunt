@@ -272,10 +272,11 @@ public class StatisticTableController {
     @SneakyThrows
     public void exportCSV() {
         FileChooser fileChooser = new FileChooser();
-        File dest = fileChooser.showSaveDialog(instanceStatisticsTableView.getScene().getWindow());
         fileChooser.setInitialFileName("table.csv");
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("A CSV file (*.csv)", "*.csv");
         fileChooser.getExtensionFilters().add(extFilter);
+
+        File dest = fileChooser.showSaveDialog(instanceStatisticsTableView.getScene().getWindow());
 
         if (dest == null) {
             return;
