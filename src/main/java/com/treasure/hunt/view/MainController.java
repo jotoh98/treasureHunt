@@ -4,11 +4,14 @@ import com.google.common.util.concurrent.AtomicDouble;
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.service.io.FileService;
+import com.treasure.hunt.service.settings.Session;
+import com.treasure.hunt.service.settings.SettingsService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.EventBusUtils;
 import com.treasure.hunt.utils.ReflectionUtils;
 import com.treasure.hunt.utils.Requires;
+import com.treasure.hunt.view.settings.SettingsWindow;
 import com.treasure.hunt.view.widget.*;
 import javafx.application.Platform;
 import javafx.beans.binding.BooleanBinding;
@@ -19,6 +22,8 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
+import javafx.scene.Group;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -28,7 +33,9 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Pair;
 import javafx.util.StringConverter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -64,6 +71,8 @@ public class MainController {
     public ComboBox<Class<? extends GameEngine>> gameEngineList;
     public Button startGameButton;
     public Label logLabel;
+    public Group popupGroup;
+    public StackPane mainRoot;
     @FXML
     private NavigationController stepViewNavigatorController;
     @FXML
@@ -90,6 +99,7 @@ public class MainController {
         versionLabel.setText(implementationVersion == null ? "snapshot" : "v" + implementationVersion);
         setListStringConverters();
         fillLists();
+        insertSessionConfiguration();
         addPromptBindings();
         bindStartButtonState();
         addToolbarStyleClasses();
@@ -101,12 +111,50 @@ public class MainController {
         addGameIndependentWidgets();
         bindAbsoluteSplitPane(mainSplitPane);
         bindAbsoluteSplitPane(mainVerticalSplitPane);
+        setUpPopUpPane();
+        EventBusUtils.INNER_POP_UP_EVENT.addListener(this::newInnerPopUp);
+        EventBusUtils.INNER_POP_UP_EVENT_CLOSE.addListener(this::closePopUp);
     }
 
     private void bindWidgetControllers() {
         leftWidgetBarController.bindToggleGroups(leftToolbarController);
         rightWidgetBarController.bindToggleGroups(rightToolbarController);
         bottomWidgetBarController.bindToggleGroups(bottomToolbarController);
+    }
+
+    private void closePopUp(Void aVoid) {
+        popupGroup.setVisible(false);
+    }
+
+    private void newInnerPopUp(Pair<Node, Pair<Double, Double>> args) {
+        Bounds boundsInLocal = mainRoot.getBoundsInLocal();
+        Bounds bounds = mainRoot.localToScreen(boundsInLocal);
+        popupGroup.setTranslateX(args.getValue().getKey() - bounds.getMinX());
+        popupGroup.setTranslateY(args.getValue().getValue() - bounds.getMinY());
+        popupGroup.setVisible(true);
+        popupGroup.getChildren().addAll(args.getKey());
+    }
+
+    private void setUpPopUpPane() {
+        popupGroup.managedProperty().bind(popupGroup.visibleProperty());
+    }
+
+    public void saveSession() {
+        if (SettingsService.getInstance().getSettings().isPreserveConfiguration()) {
+            Session session = SettingsService.getInstance().getSession();
+            session.setSearcher(searcherList.getSelectionModel().getSelectedItem());
+            session.setHider(hiderList.getSelectionModel().getSelectedItem());
+            session.setEngine(gameEngineList.getSelectionModel().getSelectedItem());
+        }
+    }
+
+    private void insertSessionConfiguration() {
+        if (SettingsService.getInstance().getSettings().isPreserveConfiguration()) {
+            Session session = SettingsService.getInstance().getSession();
+            searcherList.getSelectionModel().select(session.getSearcher());
+            hiderList.getSelectionModel().select(session.getHider());
+            gameEngineList.getSelectionModel().select(session.getEngine());
+        }
     }
 
     private void addGameIndependentWidgets() {
@@ -120,6 +168,11 @@ public class MainController {
         insertWidget(SplitPaneLocation.LEFT_UPPER, "Save & Load", saveAndLoadWidget.getComponent(), true);
 
         Widget<PreferencesWidgetController, ?> preferencesWidgetControllerPaneWidget = new Widget<>("/layout/preferencesWidget.fxml");
+        preferencesWidgetControllerPaneWidget.getController().init(
+                searcherList.getSelectionModel().selectedItemProperty(),
+                hiderList.getSelectionModel().selectedItemProperty(),
+                gameEngineList.getSelectionModel().selectedItemProperty()
+        );
         insertWidget(SplitPaneLocation.LEFT_LOWER, "Preferences", preferencesWidgetControllerPaneWidget.getComponent(), true);
     }
 
@@ -416,6 +469,14 @@ public class MainController {
 
     public void onLoadGame(ActionEvent actionEvent) {
         FileService.getInstance().loadGameManager();
+    }
+
+    public void openPreferences() {
+        try {
+            SettingsWindow.show();
+        } catch (Exception e) {
+            log.error("Could not open the settings", e);
+        }
     }
 
     private enum SplitPaneLocation {

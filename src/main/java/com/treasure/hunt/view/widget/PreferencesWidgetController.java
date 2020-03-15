@@ -1,7 +1,12 @@
 package com.treasure.hunt.view.widget;
 
+import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.service.preferences.PreferenceService;
+import com.treasure.hunt.strategy.hider.Hider;
+import com.treasure.hunt.strategy.searcher.Searcher;
+import com.treasure.hunt.utils.Preference;
 import javafx.beans.InvalidationListener;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,6 +20,7 @@ import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -62,6 +68,35 @@ public class PreferencesWidgetController {
         PreferenceService.getInstance().getPreferences().addListener(invalidationListener);
         invalidationListener.invalidated(null);
 
+    }
+
+    public void init(
+            ReadOnlyObjectProperty<Class<? extends Searcher>> selectedItemProperty,
+            ReadOnlyObjectProperty<Class<? extends Hider>> selectedItemProperty1,
+            ReadOnlyObjectProperty<Class<? extends GameEngine>> selectedItemProperty2
+    ) {
+        HashMap<String, Number> searcherPreferences = new HashMap<>();
+        HashMap<String, Number> hiderPreferences = new HashMap<>();
+        HashMap<String, Number> managerPreferences = new HashMap<>();
+
+        selectedItemProperty.addListener((observable, oldValue, newValue) -> updatePreferences(searcherPreferences, oldValue, newValue));
+        selectedItemProperty1.addListener((observable, oldValue, newValue) -> updatePreferences(hiderPreferences, oldValue, newValue));
+        selectedItemProperty2.addListener((observable, oldValue, newValue) -> updatePreferences(managerPreferences, oldValue, newValue));
+    }
+
+    private void updatePreferences(HashMap<String, Number> associated, Class<?> deselected, Class<?> selected) {
+        if (selected == null || selected == deselected) {
+            return;
+        }
+
+        final PreferenceService service = PreferenceService.getInstance();
+        associated.keySet().forEach(service::deletePreferences);
+        associated.clear();
+
+        for (Preference preference : selected.getAnnotationsByType(Preference.class)) {
+            associated.put(preference.name(), preference.value());
+        }
+        associated.forEach(service::putPreference);
     }
 
     public void addItem() {
