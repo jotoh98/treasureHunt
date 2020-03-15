@@ -9,4 +9,6 @@ public class JavaFxUtils {
         String implementationVersion = JavaFxUtils.class.getPackage().getImplementationVersion();
         return implementationVersion == null ? "snapshot" : "v" + implementationVersion;
     }
+
+
 }

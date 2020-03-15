@@ -34,47 +34,46 @@
             </VBox>
         </bottom>
         <top>
-            <HBox BorderPane.alignment="CENTER">
-                <children>
-                    <HBox alignment="CENTER_LEFT" maxWidth="60000.0" spacing="5.0" HBox.hgrow="ALWAYS">
-                        <children>
-                            <Label text="TreasureHunt: "/>
-                            <Label fx:id="versionLabel"/>
-                        </children>
-                    </HBox>
-                    <HBox alignment="CENTER_RIGHT" maxWidth="60000.0" spacing="5.0" HBox.hgrow="ALWAYS">
-                        <children>
-                            <ComboBox fx:id="searcherList" maxWidth="250.0" minWidth="150.0"
-                                      promptText="Select searcher"/>
-                            <ComboBox fx:id="hiderList" maxWidth="250.0" minWidth="150.0" promptText="Select hider"/>
-                            <ComboBox fx:id="gameEngineList" maxWidth="250.0" minWidth="150.0"
-                                      promptText="Select game manager"/>
-                            <Button fx:id="startGameButton" disable="true" maxHeight="1.7976931348623157E308"
-                                    mnemonicParsing="false" onAction="#onStartButtonClicked" text="Init"
-                                    textAlignment="CENTER"/>
-                        </children>
-                    </HBox>
+          <HBox BorderPane.alignment="CENTER">
+              <children>
+                  <HBox alignment="CENTER_LEFT" maxWidth="60000.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                      <children>
+                          <Label text="TreasureHunt: "/>
+                          <Label fx:id="versionLabel"/>
+                          <Button onAction="#openPreferences" text="Preferences"/>
+                      </children>
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT" maxWidth="60000.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                      <children>
+                          <ComboBox fx:id="searcherList" maxWidth="250.0" minWidth="150.0" promptText="Select searcher"/>
+                          <ComboBox fx:id="hiderList" maxWidth="250.0" minWidth="150.0" promptText="Select hider"/>
+                          <ComboBox fx:id="gameEngineList" maxWidth="250.0" minWidth="150.0"
+                                    promptText="Select game manager"/>
+                          <Button fx:id="startGameButton" disable="true" maxHeight="1.7976931348623157E308"
+                                  mnemonicParsing="false" onAction="#onStartButtonClicked" text="Init"
+                                  textAlignment="CENTER"/>
+                      </children>
+                  </HBox>
 
-                </children>
-                <styleClass>
-                    <String fx:value="toolbar"/>
-                    <String fx:value="top"/>
-                </styleClass>
-            </HBox>
-        </top>
-        <center>
-            <SplitPane fx:id="mainVerticalSplitPane" dividerPositions="1.0" orientation="VERTICAL">
-                <SplitPane fx:id="mainSplitPane" dividerPositions="0.2, 0.8" BorderPane.alignment="CENTER">
-                    <items>
-                        <fx:include fx:id="leftWidgetBar" maxHeight="1.7976931348623157E308" source="widgetBar.fxml"
-                                    styleClass="widget-pane"/>
-                        <fx:include fx:id="canvas" source="canvas.fxml"/>
-                        <fx:include fx:id="rightWidgetBar" maxHeight="1.7976931348623157E308" source="widgetBar.fxml"
-                                    styleClass="widget-pane"/>
-                    </items>
-                </SplitPane>
-                <fx:include fx:id="bottomWidgetBar" maxWidth="Infinity" source="widgetBar.fxml"/>
-            </SplitPane>
+              </children>
+              <styleClass>
+                  <String fx:value="toolbar"/>
+                  <String fx:value="top"/>
+              </styleClass>
+          </HBox>
+      </top>
+      <center>
+          <SplitPane fx:id="mainVerticalSplitPane" orientation="VERTICAL" dividerPositions="1.0">
+              <SplitPane fx:id="mainSplitPane" dividerPositions="0.2, 0.8"
+                         BorderPane.alignment="CENTER">
+                  <items>
+                      <fx:include fx:id="leftWidgetBar" maxHeight="1.7976931348623157E308" source="widgetBar.fxml"
+                                  styleClass="widget-pane"/>
+                      <fx:include fx:id="canvas" source="canvas.fxml"/>
+                      <fx:include fx:id="rightWidgetBar" maxHeight="1.7976931348623157E308" source="widgetBar.fxml"
+                                  styleClass="widget-pane"/>
+                  </items>
+              </SplitPane>
         </center>
         <right>
             <fx:include fx:id="rightToolbar" source="toolbar.fxml"/>
