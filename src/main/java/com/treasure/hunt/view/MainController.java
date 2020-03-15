@@ -131,6 +131,11 @@ public class MainController {
         insertWidget(SplitPaneLocation.WEST, "Save & Load", saveAndLoadWidget.getComponent(), true);
 
         Widget<PreferencesWidgetController, ?> preferencesWidgetControllerPaneWidget = new Widget<>("/layout/preferencesWidget.fxml");
+        preferencesWidgetControllerPaneWidget.getController().init(
+                searcherList.getSelectionModel().selectedItemProperty(),
+                hiderList.getSelectionModel().selectedItemProperty(),
+                gameEngineList.getSelectionModel().selectedItemProperty()
+        );
         insertWidget(SplitPaneLocation.WEST, "Preferences", preferencesWidgetControllerPaneWidget.getComponent(), true);
     }
 
