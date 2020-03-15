@@ -9,6 +9,7 @@ com.treasure.hunt.jts.other
 com.treasure.hunt.service.io
 com.treasure.hunt.service.preferences
 com.treasure.hunt.service.select
+com.treasure.hunt.service.settings
 com.treasure.hunt.strategy.geom
 com.treasure.hunt.strategy.hider
 com.treasure.hunt.strategy.hider.impl
@@ -21,5 +22,6 @@ com.treasure.hunt.strategy.searcher.impl.strategyFromPaper
 com.treasure.hunt.utils
 com.treasure.hunt.view
 com.treasure.hunt.view.custom
+com.treasure.hunt.view.settings
 com.treasure.hunt.view.utils
 com.treasure.hunt.view.widget
