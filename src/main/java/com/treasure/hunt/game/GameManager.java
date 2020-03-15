@@ -23,6 +23,7 @@ import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +58,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     ObservableList<Turn> turns = FXCollections.observableArrayList();
 
     @Getter
-    public HashMap<String, GeometryItem<?>> additional = new HashMap<>();
+    private ObservableMap<String, GeometryItem<?>> additional = FXCollections.observableHashMap();
 
     @Getter
     private volatile BooleanProperty beatThreadRunning = new SimpleBooleanProperty(false);
@@ -297,6 +298,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         kryo.writeObject(output, new ArrayList<>(turns));
         output.writeInt(viewIndex.get());
         output.writeBoolean(finishedProperty.get());
+        kryo.writeObject(output, new HashMap<>(additional));
     }
 
     /**
@@ -309,6 +311,9 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         turns = FXCollections.observableArrayList(kryo.readObject(input, ArrayList.class));
         viewIndex = new SimpleIntegerProperty(input.readInt());
         finishedProperty = new SimpleBooleanProperty(input.readBoolean());
+        HashMap hashMap = kryo.readObject(input, HashMap.class);
+        additional = FXCollections.observableHashMap();
+        additional.putAll(hashMap);
         setBindings();
     }
 
@@ -339,6 +344,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         gameManager.turns = FXCollections.observableArrayList(turns);
         gameManager.viewIndex = new SimpleIntegerProperty(viewIndex.get());
         gameManager.finishedProperty = new SimpleBooleanProperty(finishedProperty.get());
+        gameManager.additional = FXCollections.observableHashMap();
+        gameManager.additional.putAll(additional);
         gameManager.setBindings();
         return gameManager;
     }
@@ -363,7 +370,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         additional.remove(key);
     }
 
-    public HashMap<String, GeometryItem<?>> getAdditionals() {
+    public Map<String, GeometryItem<?>> getAdditionals() {
         return getAdditional();
     }
 

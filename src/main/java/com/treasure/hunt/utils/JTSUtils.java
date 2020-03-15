@@ -209,4 +209,14 @@ public final class JTSUtils {
                 .map(Geometry::getCoordinate)
                 .collect(Collectors.toList());
     }
+
+    public static Polygon toPolygon(Envelope envelope) {
+        return GEOMETRY_FACTORY.createPolygon(new Coordinate[]{
+                new Coordinate(envelope.getMinX(), envelope.getMinY()),
+                new Coordinate(envelope.getMaxX(), envelope.getMinY()),
+                new Coordinate(envelope.getMaxX(), envelope.getMaxY()),
+                new Coordinate(envelope.getMinX(), envelope.getMaxY()),
+                new Coordinate(envelope.getMinX(), envelope.getMinY()),
+        });
+    }
 }
