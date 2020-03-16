@@ -62,11 +62,25 @@ public class SelectionService {
         }
 
         double distance = MOUSE_RECOGNIZE_DISTANCE / transformation.getScale();
+
         List<GeometryItem<?>> foundItems = gameManager
                 .getVisibleGeometries()
-                .filter(geometryItem -> geometryItem.getObject() instanceof Geometry && geometryItem.getGeometryType() != GeometryType.HIGHLIGHTER && geometryItem != geometryItemSelected)
+                .filter(geometryItem -> geometryItem.getObject() instanceof Geometry && geometryItem.getGeometryType() != GeometryType.HIGHLIGHTER)
                 .filter(geometryItem -> ((Geometry) geometryItem.getObject()).distance(JTSUtils.createPoint(coordinate.getX(), coordinate.getY())) <= distance)
                 .collect(Collectors.toList());
+
+        if (mouseEvent.isShiftDown()) {
+            if (foundItems.contains(geometryItemSelected)) {
+                if (geometryItemSelected != null) {
+                    gameManager.getAdditional()
+                            .remove("Highlighter");
+                }
+                EventBusUtils.GEOMETRY_ITEM_SELECTED.trigger(null);
+                geometryItemSelected = null;
+                geometrySelected = null;
+            }
+            return;
+        }
 
         if (foundItems.isEmpty()) {
             if (geometryItemSelected != null) {
@@ -87,6 +101,8 @@ public class SelectionService {
             selectItem(gameManager, geometryItem);
             return;
         }
+
+        foundItems.remove(geometryItemSelected);
 
         SelectClickedPopUp selectClickedPopUp = new SelectClickedPopUp();
         EventBusUtils.INNER_POP_UP_EVENT.trigger(new Pair<>(selectClickedPopUp.getPopUp(), new Pair<>(mouseEvent.getScreenX(), mouseEvent.getScreenY())));
