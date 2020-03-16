@@ -4,6 +4,7 @@ import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
 /**
@@ -37,6 +38,7 @@ public class NaiveAngleSearcher implements Searcher<AngleHint> {
      */
     @Override
     public SearchPath move(AngleHint angleHint) {
-        return new SearchPath(JTSUtils.middleOfAngleHint(angleHint));
+        Coordinate coordinate = JTSUtils.middleOfAngleHint(angleHint);
+        return new SearchPath(JTSUtils.createPoint(coordinate.x, coordinate.y));
     }
 }
