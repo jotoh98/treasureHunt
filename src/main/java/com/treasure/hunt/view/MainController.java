@@ -23,18 +23,14 @@ import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
-import javafx.scene.Group;
 import javafx.geometry.Orientation;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
 import lombok.Getter;
@@ -99,7 +95,6 @@ public class MainController {
         versionLabel.setText(implementationVersion == null ? "snapshot" : "v" + implementationVersion);
         setListStringConverters();
         fillLists();
-        insertSessionConfiguration();
         addPromptBindings();
         bindStartButtonState();
         addToolbarStyleClasses();
@@ -112,6 +107,7 @@ public class MainController {
         bindAbsoluteSplitPane(mainSplitPane);
         bindAbsoluteSplitPane(mainVerticalSplitPane);
         setUpPopUpPane();
+        insertSessionConfiguration();
         EventBusUtils.INNER_POP_UP_EVENT.addListener(this::newInnerPopUp);
         EventBusUtils.INNER_POP_UP_EVENT_CLOSE.addListener(this::closePopUp);
     }

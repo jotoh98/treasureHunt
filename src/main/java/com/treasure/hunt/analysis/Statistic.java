@@ -56,7 +56,11 @@ public class Statistic {
     }
 
     public double getHintTraceLengthRatio() {
-        return getHintRequests() / getTraceLength();
+        final double traceLength = getTraceLength();
+        if (traceLength == 0) {
+            return 1;
+        }
+        return getHintRequests() / traceLength;
     }
 
     public List<StatisticObject> calculate(List<Turn> turns) {
