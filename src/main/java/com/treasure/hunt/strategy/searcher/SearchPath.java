@@ -1,13 +1,11 @@
 package com.treasure.hunt.strategy.searcher;
 
-
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.geom.HintAndMovement;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.ListUtils;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.locationtech.jts.algorithm.Distance;
 import org.locationtech.jts.geom.Coordinate;
@@ -25,7 +23,6 @@ import java.util.stream.Collectors;
  *
  * @author dorianreineccius, hassel
  */
-@NoArgsConstructor
 public class SearchPath extends HintAndMovement {
     protected List<GeometryItem<?>> additional = new ArrayList<>();
 
@@ -35,20 +32,10 @@ public class SearchPath extends HintAndMovement {
      */
     @Getter
     @Setter
-    private List<Point> points = new ArrayList<>();
+    private List<Point> points;
 
     public SearchPath(Point... points) {
-        this(new ArrayList<>(Arrays.asList(points)));
-    }
-
-    public SearchPath(List<Point> points) {
-        this.points = points;
-    }
-
-    public SearchPath(Coordinate... coordinates) {
-        for (Coordinate coordinate : coordinates) {
-            this.addPoint(JTSUtils.GEOMETRY_FACTORY.createPoint(coordinate));
-        }
+        this.points = new ArrayList<>(Arrays.asList(points));
     }
 
     /**
