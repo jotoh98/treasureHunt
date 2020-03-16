@@ -45,10 +45,6 @@ public class SearchPath extends HintAndMovement {
         this.points = points;
     }
 
-    public SearchPath(double x, double y) {
-        this.addPoint(x, y);
-    }
-
     public SearchPath(Coordinate... coordinates) {
         for (Coordinate coordinate : coordinates) {
             this.addPoint(JTSUtils.GEOMETRY_FACTORY.createPoint(coordinate));
@@ -84,10 +80,6 @@ public class SearchPath extends HintAndMovement {
             throw new IllegalArgumentException("Point with NAN as coordinate is invalid");
         }
         points.add(point);
-    }
-
-    public void addPoint(double x, double y) {
-        addPoint(JTSUtils.createPoint(x, y));
     }
 
     /**
