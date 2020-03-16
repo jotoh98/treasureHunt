@@ -80,6 +80,7 @@ public class HistoryController {
 
         gameManager.getViewIndex().addListener((observable, oldValue, newValue) -> {
             list.getSelectionModel().select(newValue.intValue());
+            list.scrollTo(newValue.intValue());
         });
     }
 }
