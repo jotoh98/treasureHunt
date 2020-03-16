@@ -9,9 +9,6 @@ public class Settings {
     @PrefName(prefName = "Preserve configuration", prefDesc = "Saves the strategy configuration after program exit.")
     private boolean preserveConfiguration = true;
 
-    @PrefName(prefName = "Naming:", prefDesc = "Var naming prefix shit")
-    private String naming = "Default value";
-
-    @PrefName(prefName = "Counter:")
-    private int counter = 15;
+    @PrefName(prefName = "Decimal places", prefDesc = "Amount of decimal places to display")
+    private int decimalPlaces = 12;
 }
