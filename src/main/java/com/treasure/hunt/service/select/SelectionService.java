@@ -89,7 +89,7 @@ public class SelectionService {
         }
 
         SelectClickedPopUp selectClickedPopUp = new SelectClickedPopUp();
-        EventBusUtils.INNER_POP_UP_EVENT.trigger(new Pair<>(selectClickedPopUp.getListView(), new Pair<>(mouseEvent.getScreenX(), mouseEvent.getScreenY())));
+        EventBusUtils.INNER_POP_UP_EVENT.trigger(new Pair<>(selectClickedPopUp.getPopUp(), new Pair<>(mouseEvent.getScreenX(), mouseEvent.getScreenY())));
 
         selectClickedPopUp.getCorrectItem(foundItems).thenAccept(geometryItem -> selectItem(gameManager, (GeometryItem<? extends Geometry>) geometryItem));
     }
