@@ -9,7 +9,6 @@ import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.Preference;
-import com.treasure.hunt.utils.Preferences;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.math.Vector2D;
@@ -21,10 +20,8 @@ import static org.locationtech.jts.algorithm.Angle.interiorAngle;
  *
  * @author dorianreineccius
  */
-@Preferences({
-        @Preference(name = RandomAngleHintHider.TREASURE_DISTANCE, value = 100),
-        @Preference(name = RandomAngleHintHider.HINT_MAX_ANGLE, value = 2 * Math.PI)
-})
+@Preference(name = RandomAngleHintHider.TREASURE_DISTANCE, value = 100)
+@Preference(name = RandomAngleHintHider.HINT_MAX_ANGLE, value = Math.PI)
 public class RandomAngleHintHider implements Hider<AngleHint> {
     public static final String TREASURE_DISTANCE = "TREASURE_DISTANCE";
     public static final String HINT_MAX_ANGLE = "HINT_MAX_ANGLE";
