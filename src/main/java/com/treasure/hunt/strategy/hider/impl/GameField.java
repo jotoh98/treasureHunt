@@ -54,11 +54,11 @@ public class GameField {
     private GeometryItem<Geometry> possibleArea;
     private GeometryStyle possibleAreaStyle = new GeometryStyle(true, new Color(255, 105, 180));
     private GeometryItem<Circle> boundingCircle;
+    private GeometryStyle boundingCircleStyle = new GeometryStyle(true, new Color(50, 205, 50));
     private GeometryItem<Polygon> checkedArea; //the area which has been visited by the player
+    private GeometryStyle checkedAreaStyle = new GeometryStyle(true, new Color(0x1E90FF));
     private GeometryItem<Point> favoredTreasureLocation;
-
-    //Algorithm Parameters
-
+    private GeometryStyle favoredTreasureLocationStyle = new GeometryStyle(true, new Color(0x800080));
     /*
     In order to ensure that the remaining Area for the treasure is closed the Strategy has a Bounding circle
     whose radius will only increase and ensure the Distance between
@@ -84,7 +84,7 @@ public class GameField {
 
         startingPoint = searcherStartPosition;
         currentPlayersPosition = startingPoint;
-        favoredTreasureLocation = new GeometryItem<>(treasureLocation, GeometryType.WORST_CONSTANT, new GeometryStyle(true, new Color(0x800080)));
+        favoredTreasureLocation = new GeometryItem<>(treasureLocation, GeometryType.WORST_CONSTANT, favoredTreasureLocationStyle);
 
         Circle c = new Circle(startingPoint.getCoordinate(), boundingCircleSize, gf);
         boundingCircle = new GeometryItem<>(c, GeometryType.BOUNDING_CIRCE);
@@ -111,12 +111,12 @@ public class GameField {
 
         double distToBoundary = boundingCircleSize - currentPlayersPosition.distance(startingPoint);
         if (extensions < maxExtensions) {
-            while ((distToBoundary < circleExtensionDistance || !boundingCircle.getObject().contains(currentPlayersPosition))) {
+            while ((distToBoundary < circleExtensionDistance || !boundingCircle.getObject().contains(currentPlayersPosition)) && (extensions < maxExtensions)) {
 
 
                 boundingCircleSize += boundingCircleExtensionDelta;
                 log.info("extending Bounding Area by " + boundingCircleSize + "to " + boundingCircleSize);
-                boundingCircle = new GeometryItem<>(new Circle(startingPoint.getCoordinate(), boundingCircleSize, gf), GeometryType.BOUNDING_CIRCE, new GeometryStyle(true, new Color(50, 205, 50)));
+                boundingCircle = new GeometryItem<>(new Circle(startingPoint.getCoordinate(), boundingCircleSize, gf), GeometryType.BOUNDING_CIRCE, boundingCircleStyle);
                 possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{boundingCircle.getObject()}, gf), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
 
                 //now recompute all the intersections of Hints and the Bounding Circle
@@ -140,7 +140,7 @@ public class GameField {
         adaptBoundingCircle();
 
 
-        List<Point> newMovementPoints = searchPath.getPoints().subList(1, searchPath.getPoints().size());
+        List<Point> newMovementPoints = searchPath.getPoints();
 
         //int prevNumberOfPoints = visitedPoints.size();
         log.debug("supplied searchpath " + searchPath.getPoints());
@@ -157,12 +157,12 @@ public class GameField {
             this.walkedPathLength = walkedPath.getLength();
         } else {
             log.debug("1 point visited so far");
-            //checkedPoly = (Polygon) newMovemenPoints.get(0).buffer(searcherScoutRadius + 0.001);
+
             checkedPoly = (Polygon) startingPoint.buffer(searcherScoutRadius + 0.1);
         }
 
         Geometry possible = possibleArea.getObject().difference(checkedPoly);
-        checkedArea = new GeometryItem<>(checkedPoly, GeometryType.NO_TREASURE, new GeometryStyle(true, new Color(0x1E90FF)));
+        checkedArea = new GeometryItem<>(checkedPoly, GeometryType.NO_TREASURE, checkedAreaStyle);
         possibleArea = new GeometryItem<>(possible, GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
     }
 
@@ -185,10 +185,9 @@ public class GameField {
 
         double rightAngle = Angle.angle(angle.getCenter(), angle.getRight());
         double extend = angle.extend();
+        log.info("testing Angle of size size: " + Angle.toDegrees(extend));
 
-        //.info("right angle:" + Angle.toDegrees(rightAngle));
-        //log.info("angle size: " + Angle.toDegrees(extend));
-
+        // Use Arc for Angle Representation
         GeometricShapeFactory shapeFactory = new GeometricShapeFactory(gf);
         shapeFactory.setNumPoints(4);
         shapeFactory.setCentre(angle.getCenter());
@@ -201,13 +200,20 @@ public class GameField {
 
         arCoords.add(angle.getCenter());
         arCoords.add(arCoords.get(0));
-        //log.debug("arc coords" + arCoords.toString());
+
         Coordinate[] arcArray = new Coordinate[arCoords.size()];
         arcArray = arCoords.toArray(arcArray);
         Polygon arc = gf.createPolygon(arcArray);
 
-
+        Geometry possibleAreaWithNewHint = possibleArea.getObject().intersection(arc);
         Geometry newPossibleArea = possibleArea.getObject().intersection(arc).difference(this.checkedArea.getObject());
+
+        log.info("are they equal " + possibleAreaWithNewHint.equals(newPossibleArea));
+        log.info("intersection and Dif GEOMETRIES" + newPossibleArea.getNumGeometries());
+        log.info("intersection GEOMETRIES " + possibleAreaWithNewHint.getNumGeometries());
+
+
+
         GeometryItem<Geometry> circleIntersection = new GeometryItem<>(arc, GeometryType.OUTER_CIRCLE, new GeometryStyle(true, new Color(0x800080)));
 
         // now fill Hint with HelperStructs
@@ -310,14 +316,14 @@ public class GameField {
         Coordinate p2Transformed = p2.copy();
         Coordinate playerTransformed = player.copy();
 
-        //log.trace("scaling by Factor" + scalingFactor);
+        log.trace("scaling by Factor" + scalingFactor);
         p1Transformed = scalingTransform.transform(p1Transformed, p1Transformed);
         p2Transformed = scalingTransform.transform(p2Transformed, p2Transformed);
         playerTransformed = scalingTransform.transform(playerTransformed, playerTransformed);
-        //log.info("after scaling: " + new LineSegment(p1Transformed, p2Transformed));
-        //log.info(playerTransformed.toString());
+        log.trace("after scaling: " + new LineSegment(p1Transformed, p2Transformed));
+        log.trace(playerTransformed.toString());
 
-        //log.trace("rotation by Angle" + Angle.toDegrees(rotationAngle));
+        log.trace("rotation by Angle" + Angle.toDegrees(rotationAngle));
         p1Transformed = rotationTransform.transform(p1Transformed, p1Transformed);
         p2Transformed = rotationTransform.transform(p2Transformed, p2Transformed);
         playerTransformed = rotationTransform.transform(playerTransformed, playerTransformed);
@@ -327,34 +333,34 @@ public class GameField {
 
         //now normal state is reached and Derivative can be applied for MaxConstant Search
 
-        //log.trace("transformed player is now on " + playerTransformed);
+        log.trace("transformed player is now on " + playerTransformed);
         double a = playerTransformed.x;
         double b = playerTransformed.y;
         double maximum, extremum1, extremum2, variableTerm;
 
         if (a != 0.0) { //player is not on Y-Axis --> 2 Extrema
-            //log.info(" player NOT on Y-Axis");
+            log.trace(" player NOT on Y-Axis");
             variableTerm = Math.sqrt(Math.pow(-2 * Math.pow(a, 2.0) - 2 * Math.pow(b, 2.0) + 4 * b, 2.0) + 16 * Math.pow(a, 2.0));
 
             extremum1 = (variableTerm + 2 * Math.pow(a, 2.0) + 2 * Math.pow(b, 2.0) - 4 * b) / (4 * a);
             extremum2 = (-variableTerm + 2 * Math.pow(a, 2.0) + 2 * Math.pow(b, 2.0) - 4 * b) / (4 * a);
-            //log.info(" extremum1 : " + extremum1);
-            //log.info(" extremum2 : " + extremum2);
+            log.trace(" extremum1 : " + extremum1);
+            log.trace(" extremum2 : " + extremum2);
             //now plug into 2nd Derivative to see who is Max and whos Min
             if (evalSecondDerivOfConstFunction(extremum1, a, b) < 0) {
-                //log.info("Extremum 1 is a maxima");
+                log.trace("Extremum 1 is a maxima");
                 maximum = extremum1;
             } else if (evalSecondDerivOfConstFunction(extremum2, a, b) < 0) {
-                //log.info("Extremum 2 is a maxima");
+                log.trace("Extremum 2 is a maxima");
                 maximum = extremum2;
             } else {
-                //log.info("This should not be possible");
+                log.trace("This should not be possible");
                 maximum = 0.0;
             }
             //SafetyCheck necessary here, but long formula .....
 
         } else { // either both points are Identical( x can be chosen arbitrarily), or x == 0
-            //log.info(" player on Y-Axis");
+            log.trace(" player on Y-Axis");
             if (b == 0.0 || b == 2.0) { // all points on line have the same constant ==> choose x=0
                 maximum = 0;
             } else if (b > 0 || b > 2) { // 0 maximizes the Constant
@@ -364,7 +370,7 @@ public class GameField {
                 maximum = Math.abs(p1Transformed.x) > Math.abs(p2Transformed.x) ? p1Transformed.x : p2Transformed.x;
             }
         }
-        //log.info("Calculated Maximum on Line is Point : " + maximum + " , 1");
+        log.trace("Calculated Maximum on Line is Point : " + maximum + " , 1");
 
         // check if maximum is on LineSegment
         double left = Math.min(p1Transformed.x, p2Transformed.x);
@@ -389,7 +395,7 @@ public class GameField {
                 maximum = right;
             }
         }
-        //log.info("Calculated Maximum on LineSEGMENT is Point : " + maximum + " , 1");
+        log.trace("Calculated Maximum on LineSEGMENT is Point : " + maximum + " , 1");
         Coordinate bestCoordinate = new Coordinate(maximum, 1.0);
         // Now Transform that Point back and/or Calc the Angle which it has
         try {
@@ -397,9 +403,9 @@ public class GameField {
             bestCoordinate = scalingTransform.getInverse().transform(bestCoordinate, bestCoordinate);
 
             //bit hacky but needed to make bestCoordinate lie on the LineString
-            //log.info("Distance from " + bestCoordinate + "to " + unscaled + " : " + unscaled.distance(bestCoordinate)); // are in the range of 10e-16
+            log.debug("Distance from " + bestCoordinate + "to " + unscaled + " : " + unscaled.distance(bestCoordinate)); // are in the range of 10e-16
             bestCoordinate = unscaled.project(bestCoordinate);
-            //log.info("after projection; Distance from " + bestCoordinate + "to " + unscaled + " : " + unscaled.distance(bestCoordinate)); // stays in the 10e-16 range
+            log.debug("after projection; Distance from " + bestCoordinate + "to " + unscaled + " : " + unscaled.distance(bestCoordinate)); // stays in the 10e-16 range
 
         } catch (NoninvertibleTransformationException e) {
             //log.info("Non invertible, but it should be!");
@@ -421,30 +427,6 @@ public class GameField {
         double secondTerm = (2 * (Math.pow(a, 2.0) - 2 * a * x + (b - 2) * b)) / Math.pow(Math.pow(x, 2.0) + 1, 2.0);
         return firstTerm - secondTerm;
     }
-
-
-    // TODO cleanup
-    /*
-    public AngleHint move(SearchPath searchPath) {
-
-        integrateMovementWithCheckedArea(searchPath);
-
-
-        AngleHint hint = generateHint(360, currentPlayersPosition); //compute by maximizing the remaining possible Area after the Hint over 360 sample points
-        givenHints.add(hint);
-
-
-        hint.addAdditionalItem(favoredTreasureLocation);
-
-        log.info("given Hint: " + hint.getGeometryAngle().getLeft() + ",  " + hint.getGeometryAngle().getCenter() + ",  " + hint.getGeometryAngle().getRight());
-        log.info("whole circle area" + boundingCircle.getObject().getArea());
-        log.info("possible area " + possibleArea.getObject().getArea());
-        log.info("Point with worst constant (" + favoredTreasureLocation.getObject().getX() + ", " + favoredTreasureLocation.getObject().getY() + ")");
-        log.info("Treasure will be placed on Point (" + this.getTreasureLocation().getX() + ", " + this.getTreasureLocation().getY() + ")");
-        return hint;
-    }
-    */
-
 
     /**
      * TODO: get out of WIP, maybe just throw away
@@ -492,7 +474,7 @@ public class GameField {
      * @return the Point and its corresponding constant C
      */
     private Pair<Coordinate, Double> sampleMaxConstantPointOnLineSegment(Coordinate p1, Coordinate p2, Coordinate player) {
-        //log.info("checking Linesegment(" + p1.getX() + ", " + p1.getY() + ") -> (" + p2.getX() + ", " + p2.getY() + ")");
+        log.trace("checking Linesegment(" + p1.getX() + ", " + p1.getY() + ") -> (" + p2.getX() + ", " + p2.getY() + ")");
         double eps = 0.2; //the maximum distance between two sampled Point on the LineSegment
 
         LineSegment segment = new LineSegment(p1, p2);
@@ -509,7 +491,7 @@ public class GameField {
             double constant = distToPlayer / distToStart;
             if (constant > bestPoint.getValue()) {
                 bestPoint = new Pair<>(currentPoint, constant);
-                //log.info("new Best Point found on Linesegment at " + step + "/" + samples + "with C=" + constant);
+                log.trace("new Best Point found on Linesegment at " + step + "/" + samples + "with C=" + constant);
             }
         }
 

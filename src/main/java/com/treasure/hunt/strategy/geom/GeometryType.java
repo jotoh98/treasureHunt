@@ -36,7 +36,7 @@ public enum GeometryType {
     BOUNDING_CIRCE(false, "bounding circle", true),
     OUTER_CIRCLE(false, "outer circle", true),
     WORST_CONSTANT(false, "Point with worst Constant",true),
-
+    CENTROID(true, "Centroid of remaining possible Area", true),
 
     // StrategyFromPaper
     CURRENT_PHASE(false, "current phase", true),

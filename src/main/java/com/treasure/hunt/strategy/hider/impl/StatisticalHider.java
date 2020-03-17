@@ -32,6 +32,7 @@ public abstract class StatisticalHider{
     protected double counterStrategyGeometryCutoff;
     protected double distanceFromNormalAngleRay;
 
+    protected double preferredHintSize = 90;
 
     public void init(Point searcherStartPosition) {
         this.gameField = new GameField();
@@ -41,7 +42,6 @@ public abstract class StatisticalHider{
         gameField.init(searcherStartPosition, initialTreasureLocation);
         this.currentPossibleArea = gameField.getPossibleArea();
     }
-
 
     public AngleHint move(SearchPath searchPath) {
 
@@ -54,46 +54,16 @@ public abstract class StatisticalHider{
         // evaluateHints --> use the GameField
         AngleHint hint = eval(possibleHints);
 
-
         // commitHint
         gameField.commitHint(hint);
+        this.currentPossibleArea = gameField.getPossibleArea();
         // return Hint
         return hint;
 
     }
 
-    // PROPER DOING !!
-    public abstract AngleHint eval( List<AngleHint> hints);/*{
 
-        List<Pair<Coordinate, Double>> interestPoints = getWorstPointsOnAllEdges();
-        Pair<Coordinate, Double> maxPoint = interestPoints.get(0);
-
-        this.favoredTreasureLocation = new GeometryItem<>(gf.createPoint(maxPoint.getKey()), GeometryType.WORST_CONSTANT);
-        log.info("Checking possible Hints for containment of " + this.favoredTreasureLocation.getObject());
-
-        double areaBeforeHint = this.possibleArea.getObject().getArea();
-        HintEvaluator evaluator = HintEvaluator.initRound(this.currentPlayersPosition.getCoordinate(), areaBeforeHint);
-
-
-       !!!!!!           List<AngleHintStat> hintStats = new ArrayList<>();              !!!!!
-
-
-        for (Pair<Coordinate, Double> p : interestPoints) {
-            evaluator.registerPointOfInterest(p);
-        }
-
-        AngleHint evaluatedHint = evaluator.evaluateRound();
-        log.trace(" the evalHint " + Angle.toDegrees(evaluatedHint.getGeometryAngle().getNormalizedAngle()));
-        log.trace(" the max Angle " + Angle.toDegrees(maxAngle.getGeometryAngle().getNormalizedAngle()));
-//        log.trace(" the maxGeometry " + maxGeometry);
-//        log.trace(" the worst Point " + this.favoredTreasureLocation.getObject());
-//        log.trace(" the maxGeometry covers: " + maxGeometry.buffer(0.0001).covers(favoredTreasureLocation.getObject()));
-        this.possibleArea = new GeometryItem<>(maxGeometry, GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
-        log.info(possibleArea.getObject().toString());
-
-    }*/
-
-
+    public abstract AngleHint eval( List<AngleHint> hints);
 
     /**
      * Generates {samples} evenly spaced angles
@@ -128,20 +98,23 @@ public abstract class StatisticalHider{
         } else {
 
             for (int i = 0; i < samples; i++) {
-                double angle = twoPi * (((double) i) / samples);
-                double dX = Math.cos(angle);
-                double dY = Math.sin(angle);
-                Point right = gf.createPoint(new Coordinate(hintCenter.getX() + dX, hintCenter.getY() + dY));
-                Point left = gf.createPoint(new Coordinate(hintCenter.getX() - dX, hintCenter.getY() - dY));
+                double rightAngle = twoPi * (((double) i) / samples);
+                double leftAngle = rightAngle + Angle.toRadians(preferredHintSize);
+                log.info("");
+                double dX_right = Math.cos(rightAngle);
+                double dY_right = Math.sin(rightAngle);
+                double dX_left = Math.cos(leftAngle);
+                double dY_left = Math.sin(leftAngle);
+                Point right = gf.createPoint(new Coordinate(hintCenter.getX() + dX_right, hintCenter.getY() + dY_right));
+                Point left = gf.createPoint(new Coordinate(hintCenter.getX() + dX_left, hintCenter.getY() + dY_left));
 
                 hint = new AngleHint(right.getCoordinate(), hintCenter.getCoordinate(), left.getCoordinate());
+                log.info("ANGLESIZE: " +  Angle.toDegrees(hint.getGeometryAngle().extend()));
                 hints.add(hint);
             }
         }
         return hints;
     }
-
-
 
     public abstract Point getTreasureLocation();
 }
