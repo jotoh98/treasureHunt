@@ -17,6 +17,10 @@ import static com.treasure.hunt.utils.JTSUtils.createPoint;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * @author Rank
+ */
+
 public class StrategyFromPaperTest {
     private StrategyFromPaper strat;
 
@@ -48,6 +52,7 @@ public class StrategyFromPaperTest {
         assertPoints(movePoints, correctMovePoints);
     }
 
+    //@Test
     void moveTwice() {// todo redo
         moveOnce();
         HalfPlaneHint testedHint = new HalfPlaneHint(new Coordinate(-2, 1), new Coordinate(2, -1), right);
@@ -59,7 +64,9 @@ public class StrategyFromPaperTest {
         Point[] correctMovePoints = new Point[]{
                 createPoint(-2, 2), createPoint(-2, -1), createPoint(-1, -1), createPoint(-1, 2),
                 createPoint(0, 2), createPoint(0, -1), createPoint(1, -1), createPoint(1, 2),
-                createPoint(2, 2), createPoint(2, -1), createPoint(0, 0)
+                createPoint(2, 2), createPoint(2, -1),
+
+                createPoint(0, 0)
         };
         assertPoints(movePoints, correctMovePoints);
     }
@@ -106,13 +113,15 @@ public class StrategyFromPaperTest {
         return pApos;
     }
 
-    Coordinate getFForMyBadHint() {
+    LineSegment getL1DoubleAposForMyBadHint() {
         Coordinate pApos = getPAposForMyBadHint();
-        LineSegment L1DoubleApos = new LineSegment(pApos, new Coordinate(-4 + pApos.x, 3.5 + pApos.y));
+        return new LineSegment(pApos, new Coordinate(-4 + pApos.x, 3.5 + pApos.y));
+    }
+
+    Coordinate getFForMyBadHint() {
         LineSegment AB = new LineSegment(strat.searchAreaCornerA.getCoordinate(),
                 strat.searchAreaCornerB.getCoordinate());
-        Coordinate intersectionL1DoubleAposAB = L1DoubleApos.lineIntersection(AB);
-        return intersectionL1DoubleAposAB;
+        return getL1DoubleAposForMyBadHint().lineIntersection(AB);
     }
 
     Coordinate getTForMyBadHint() {
@@ -152,6 +161,34 @@ public class StrategyFromPaperTest {
         return new Coordinate(getPAposForMyBadHint().x, -4);
     }
 
+    Coordinate getSForMyBadHint() {
+        Coordinate a = new Coordinate(-4, 4); // The left top point of the current rectangle
+        LineSegment L1Apos = new LineSegment(new Coordinate(0, 0), new Coordinate(4, -3.5));
+        double distancePToA = new Coordinate(0, 0).distance(a);
+        double distanceSToA = L1Apos.distancePerpendicular(a);
+        double distancePToS = Math.sqrt(Math.pow(distancePToA, 2) - Math.pow(distanceSToA, 2));
+        Vector2D pToS = new Vector2D(L1Apos.p1, L1Apos.p0).multiply(distancePToS / L1Apos.getLength());
+        return pToS.toCoordinate();
+    }
+
+    Coordinate getSAposForMyBadHint() {
+        return new Coordinate(getSForMyBadHint().x + getPAposForMyBadHint().x,
+                getSForMyBadHint().y + getPAposForMyBadHint().y);
+    }
+
+    Coordinate getDForMyBadHint() {
+        return new Coordinate(4, -3.5);
+    }
+
+    Coordinate getDAposForMyBadHint() {
+        return new Coordinate(getDForMyBadHint().x + getPAposForMyBadHint().x,
+                getDForMyBadHint().y + getPAposForMyBadHint().y);
+    }
+
+    Coordinate getJForMyBadHint() {
+        LineSegment bc = new LineSegment(new Coordinate(4, 4), new Coordinate(4, -4));
+        return JTSUtils.lineWayIntersection(getL1DoubleAposForMyBadHint(), bc);
+    }
 
     @Test
     void oneBadHint() {
@@ -195,8 +232,92 @@ public class StrategyFromPaperTest {
     }
 
     @Test
-    void lastHintBadCaseThreeTest(){
+    void lastHintBadCaseThreeTest() {
         oneBadHint();
-        HalfPlaneHint secondHint;
+        HalfPlaneHint secondHint = new HalfPlaneHint(getPAposForMyBadHint(), new Coordinate(-4, 3));
+        SearchPath searcherMove = strat.move(secondHint);
+        Point[] correctPoints = new Point[]{
+                //scan ss'd'd
+                GEOMETRY_FACTORY.createPoint(getSForMyBadHint()),
+                GEOMETRY_FACTORY.createPoint(getDForMyBadHint()),
+                GEOMETRY_FACTORY.createPoint(getDAposForMyBadHint()),
+                GEOMETRY_FACTORY.createPoint(getSAposForMyBadHint()),
+                //scan m'k'km
+                GEOMETRY_FACTORY.createPoint(getMForMyBadHint()),
+                GEOMETRY_FACTORY.createPoint(getKForMyBadHint()),
+                GEOMETRY_FACTORY.createPoint(getKAposForMyBadHint()),
+                GEOMETRY_FACTORY.createPoint(getMAposForMyBadHint()),
+                // go to the center of the new rectangle
+                JTSUtils.createPoint(2, -2)
+        };
+        assertPoints(searcherMove.getPoints(), correctPoints);
+    }
+
+    @Test
+    void lastHintBadCaseFourTest() {
+        oneBadHint();
+        HalfPlaneHint secondHint = new HalfPlaneHint(getPAposForMyBadHint(), new Coordinate(-0.5, 4));
+        SearchPath searcherMove = strat.move(secondHint);
+        Point[] correctPoints = new Point[]{
+                //scan ss'd'd
+                GEOMETRY_FACTORY.createPoint(getSForMyBadHint()),
+                GEOMETRY_FACTORY.createPoint(getDForMyBadHint()),
+                GEOMETRY_FACTORY.createPoint(getDAposForMyBadHint()),
+                GEOMETRY_FACTORY.createPoint(getSAposForMyBadHint()),
+                //scan gg'h'h
+                GEOMETRY_FACTORY.createPoint(getGForMyBadHint()),
+                GEOMETRY_FACTORY.createPoint(getHForMyBadHint()),
+                GEOMETRY_FACTORY.createPoint(getHAposForMyBadHint()),
+                GEOMETRY_FACTORY.createPoint(getGAposForMyBadHint()),
+                // go to the center of the new rectangle
+                JTSUtils.createPoint(-2, 2)
+        };
+        assertPoints(searcherMove.getPoints(), correctPoints);
+    }
+
+    void assertCaseFive(SearchPath searcherMove) {
+        Point[] correctPoints = new Point[]{
+                //scan gg'h'h
+                GEOMETRY_FACTORY.createPoint(getGForMyBadHint()),
+                GEOMETRY_FACTORY.createPoint(getHForMyBadHint()),
+                GEOMETRY_FACTORY.createPoint(getHAposForMyBadHint()),
+                GEOMETRY_FACTORY.createPoint(getGAposForMyBadHint()),
+                // go to the center of the new rectangle
+                JTSUtils.createPoint(0, 2)
+        };
+        assertPoints(searcherMove.getPoints(), correctPoints);
+    }
+
+    @Test
+    void lastHintBadCaseFiveTest1() {
+        oneBadHint();
+        HalfPlaneHint secondHint = new HalfPlaneHint(getPAposForMyBadHint(), new Coordinate(2.5, 4));
+        SearchPath searcherMove = strat.move(secondHint);
+        assertCaseFive(searcherMove);
+    }
+
+    @Test
+    void lastHintBadCaseFiveTest2() {
+        oneBadHint();
+        HalfPlaneHint secondHint = new HalfPlaneHint(getPAposForMyBadHint(), new Coordinate(4, 3));
+        SearchPath searcherMove = strat.move(secondHint);
+        assertCaseFive(searcherMove);
+    }
+
+    @Test
+    void lastHintBadCaseFiveTest3() {
+        oneBadHint();
+        HalfPlaneHint secondHint = new HalfPlaneHint(getPAposForMyBadHint(), new Coordinate(4, 0.5));
+        SearchPath searcherMove = strat.move(secondHint);
+        assertCaseFive(searcherMove);
+    }
+
+    @Test
+    void lastHintBadCaseSixTest() {
+        oneBadHint();
+        HalfPlaneHint secondHint = new HalfPlaneHint(getPAposForMyBadHint(), new Coordinate(4, -0.5));
+        SearchPath searcherMove = strat.move(secondHint);
+        Point[] correctPoints = new Point[]{JTSUtils.createPoint(0, (getJForMyBadHint().y + 4) / 2)};
+        assertPoints(searcherMove.getPoints(), correctPoints);
     }
 }
