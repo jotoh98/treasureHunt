@@ -121,8 +121,8 @@ public class GameField {
 
                 //now recompute all the intersections of Hints and the Bounding Circle
                 for (AngleHint hint : givenHints) {
-                    possibleArea = new GeometryItem<>(testHint(hint), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
 
+                    commitHint(hint);
                 }
                 extensions++;
                 distToBoundary = boundingCircleSize - currentPlayersPosition.distance(startingPoint);
@@ -235,6 +235,7 @@ public class GameField {
     public Geometry commitHint(AngleHint hint){
         Geometry newPossibleArea = testHint(hint);
         this.possibleArea = new GeometryItem<>(newPossibleArea, GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
+        givenHints.add(hint);
         return newPossibleArea;
     }
 
