@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.treasure.hunt.view.custom.CoinProgress?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<StackPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="600.0" prefWidth="800.0"
+           xmlns="http://javafx.com/javafx/11.0.1" fx:controller="com.treasure.hunt.view.plot.PlotController">
+    <VBox>
+        <children>
+            <LineChart fx:id="lineChart" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                       VBox.vgrow="ALWAYS">
+                <xAxis>
+                    <NumberAxis fx:id="xAxis" side="BOTTOM"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis fx:id="yAxis" side="LEFT"/>
+                </yAxis>
+            </LineChart>
+        </children>
+    </VBox>
+    <CoinProgress fx:id="coinProgress"/>
+</StackPane>
+
