@@ -85,15 +85,15 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         move.getStatusMessageItemsToBeRemoved().addAll(statusMessageItemsToBeRemovedNextMove);
         statusMessageItemsToBeRemovedNextMove.clear();
 
-        //update status messages:
-        StatusMessageItem goodStatusMessage = new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY, "good");
-        move.getStatusMessageItemsToBeAdded().add(goodStatusMessage);
-
         StatusMessageItem lastHintQualityStatus;
         switch (lastHintQuality) {
             case bad:
-                lastHintQualityStatus = new StatusMessageItem(StatusMessageType.BEFORE_PREVIOUS_QUALITY, "bad");
-                break;
+                lastHintQuality = HintQuality.none;
+                move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.BEFORE_PREVIOUS_QUALITY,
+                        "bad"));
+                move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY,
+                        "none"));
+                return addState(lastHintBadSubroutine.lastHintBadSubroutine(hint, previousHint, move));
             case good:
                 lastHintQualityStatus = new StatusMessageItem(StatusMessageType.BEFORE_PREVIOUS_QUALITY, "good");
                 break;
@@ -106,21 +106,20 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         move.getStatusMessageItemsToBeAdded().add(lastHintQualityStatus);
 
         if (rectangleNotLargeEnough()) {
+            lastHintQuality = HintQuality.none;
+            move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY,
+                    "none"));
             return addState(incrementPhase(move));
         }
-        //now analyse the hint:
-        if (lastHintQuality == HintQuality.bad) {
-            return addState(lastHintBadSubroutine.
-                    lastHintBadSubroutine(hint, previousHint, move));
-        }
-        lastHintQuality = HintQuality.good; //If the current hint isn't good, the hint quality is set below again
 
-        LineSegment hintLine = new LineSegment(hint.getCenter(),
-                hint.getRight());
+        //now analyse the hint:
+        LineSegment hintLine = hint.getHalfPlaneLine();
 
         Point[] horizontalSplit = splitRectangleHorizontally(searchAreaCornerA, searchAreaCornerB,
                 searchAreaCornerC, searchAreaCornerD, hint, hintLine, true);
         if (horizontalSplit != null) {
+            lastHintQuality = HintQuality.good;
+            move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY, "good"));
             searchAreaCornerA = horizontalSplit[0];
             searchAreaCornerB = horizontalSplit[1];
             searchAreaCornerC = horizontalSplit[2];
@@ -132,6 +131,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Point[] verticalSplit = splitRectangleVertically(searchAreaCornerA, searchAreaCornerB,
                 searchAreaCornerC, searchAreaCornerD, hint, hintLine, true);
         if (verticalSplit != null) {
+            lastHintQuality = HintQuality.good;
+            move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY, "good"));
             searchAreaCornerA = verticalSplit[0];
             searchAreaCornerB = verticalSplit[1];
             searchAreaCornerC = verticalSplit[2];
@@ -141,13 +142,13 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                     searchAreaCornerC, searchAreaCornerD, move));
         }
         // when none of this cases takes place, the hint is bad (as defined in the paper). This gets handled here:
-        move.getStatusMessageItemsToBeAdded().remove(goodStatusMessage);
-        move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY, "bad"));
+        lastHintQuality = HintQuality.bad;
+        move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY,
+                "bad"));
 
         Point destination = GEOMETRY_FACTORY.createPoint(twoStepsOrthogonal(hint,
                 centerOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD)));
         move.addPoint(destination);
-        lastHintQuality = HintQuality.bad;
         return addState(move);
     }
 
