@@ -26,7 +26,7 @@ class LastHintBadSubroutine {
     private HalfPlaneHint.Direction x2Apos;
     private int basicTransformation;
     private Coordinate[] rect;
-    private LineSegment AB, AD, BC, CD, L1Apos, L1DoubleApos, L2Apos, AsApos, ppApos, mAposKApos, hAposGApos, pAposK;
+    private LineSegment AB, AD, BC, CD, L1Apos, L1DoubleApos, L2Apos, ppApos, mAposKApos, hAposGApos, pAposK;
     private Coordinate p, pApos, a, d, e, dApos, f, j, jApos, t, m, mApos, k, kApos, g, gApos, h, hApos, s, sApos;
     private Coordinate A, B, C, D;
     private StrategyFromPaper strategy;
@@ -45,11 +45,8 @@ class LastHintBadSubroutine {
      * Initializes the various variables.
      * T is added to variable-names where the variables got transformed to match a basicTransformation
      * (e.g. the current hint in its transformed state is called curHintT)
-     *
-     * @param curHint
-     * @param lastBadHint
      */
-    private void initializeVariables(HalfPlaneHint curHint, HalfPlaneHint lastBadHint) {
+    private void initializeVariables(HalfPlaneHint currentHint, HalfPlaneHint lastBadHint) {
         rect = new Coordinate[]{strategy.searchAreaCornerA.getCoordinate(), strategy.searchAreaCornerB.getCoordinate(),
                 strategy.searchAreaCornerC.getCoordinate(), strategy.searchAreaCornerD.getCoordinate()};
 
@@ -71,8 +68,7 @@ class LastHintBadSubroutine {
         AD = new LineSegment(A, D);
         BC = new LineSegment(B, C);
         CD = new LineSegment(C, D);
-        L1Apos = new LineSegment(lastHintT.getCenter(),
-                lastHintT.getRight());
+        L1Apos = lastHintT.getHalfPlaneLine();
         L1DoubleApos = new LineSegment(
                 lastHintT.getCenter().getX() + pToPAposX,
                 lastHintT.getCenter().getY() + pToPAposY,
@@ -88,7 +84,7 @@ class LastHintBadSubroutine {
         }
         dApos = null;
         if (d != null) {
-            dApos = twoStepsOrthogonal(lastBadHint, d);
+            dApos = twoStepsOrthogonal(lastHintT, d);
         }
 
         f = lineWayIntersection(L1DoubleApos, AB);
@@ -110,13 +106,13 @@ class LastHintBadSubroutine {
         h = new Coordinate(p.getX(), D.getY());
         hApos = new Coordinate(pApos.getX(), D.getY());
 
-        AsApos = new LineSegment(A.getX(), A.getY(),
+        LineSegment AsApos = new LineSegment(A.getX(), A.getY(),
                 A.getX() + pToPAposX, A.getY() + pToPAposY);
         // the line from A to s gets constructed by using the line from p to p' (pApos)
         s = new Coordinate(L1Apos.lineIntersection(AsApos));
         sApos = new Coordinate(L1DoubleApos.lineIntersection(AsApos));
 
-        HalfPlaneHint curHintT = phiHint(basicTransformation, rect, curHint);
+        HalfPlaneHint curHintT = phiHint(basicTransformation, rect, currentHint);
 
         x2Apos = curHintT.getDirection();
         L2Apos = new LineSegment(curHintT.getCenter(),
@@ -274,16 +270,13 @@ class LastHintBadSubroutine {
      * The function equals the "else"-part of the first if-condition in Algorithm 3 (Function ReduceRectangle(R))
      * in the paper.
      *
-     * @param curHint
-     * @param lastBadHint
-     * @param move
      * @return The move to scan various areas so that A,B,C and D can be updated to a smaller rectangle (or the treasure
      * is found)
      */
-    SearchPath lastHintBadSubroutine(HalfPlaneHint curHint,
+    SearchPath lastHintBadSubroutine(HalfPlaneHint currentHint,
                                      HalfPlaneHint lastBadHint, SearchPath move) {
 
-        initializeVariables(curHint, lastBadHint);
+        initializeVariables(currentHint, lastBadHint);
         int caseIndex = -1;
 
         // here begins line 24 of the ReduceRectangle routine from the paper:
@@ -367,9 +360,6 @@ class LastHintBadSubroutine {
      * Returns true if line is clockwise between between1 (included) and between2 (excluded).
      * Its taken for granted that line between1 and between2 meet in one Point.
      *
-     * @param line
-     * @param between1
-     * @param between2
      * @return if line is clockwise between between1 (included) and between2 (excluded)
      */
     private boolean lineBetweenClockwise(LineSegment line, LineSegment between1, LineSegment between2) {

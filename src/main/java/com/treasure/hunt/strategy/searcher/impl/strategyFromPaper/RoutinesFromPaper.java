@@ -29,7 +29,7 @@ public class RoutinesFromPaper {
     }
 
     /**
-     * @param k the distance from P1 to P2
+     * @param k the distance from P1 to P2 (rounded down)
      * @return An Array of Points on P1P2, which have distance one to one another and reach from P1 to P2 at minimum
      */
     static private Point[] lineOfPointsWithDistanceOne(int k, Coordinate P1, Coordinate P2) {
@@ -100,7 +100,7 @@ public class RoutinesFromPaper {
      * Returns the result of rho, defined rectangle, applied on hint.
      *
      * @param rectangle the rectangle defining rho
-     * @param hint used as input in rho
+     * @param hint      used as input in rho
      * @return the result of rho(hint)
      */
     static HalfPlaneHint rhoHint(Coordinate[] rectangle, HalfPlaneHint hint) {
@@ -123,7 +123,7 @@ public class RoutinesFromPaper {
      * Returns the result of rho, defined by rectangle, applied on P.
      *
      * @param rectangle the rectangle defining rho
-     * @param P    used as input in rho
+     * @param P         used as input in rho
      * @return the result of rho(P)
      */
     static Coordinate rhoPoint(Coordinate[] rectangle, Coordinate P) {
@@ -187,7 +187,7 @@ public class RoutinesFromPaper {
     /**
      * Returns the result of sigma_i defined by rectangle, applied on the points in rectangle.
      *
-     * @param i    the index of sigma
+     * @param i         the index of sigma
      * @param rectangle the rectangle sigma is defined by and applied on
      * @return sigma_i(rectangle) with sigma being defined by rectangle
      */
@@ -227,7 +227,7 @@ public class RoutinesFromPaper {
     /**
      * Returns the result of phi, defined by rectangle, with index i, applied on rectangle.
      *
-     * @param i    the index of phi
+     * @param i         the index of phi
      * @param rectangle the rectangle phi is defined by and applied on
      * @return phi_i(rectangle), with phi being defined by rectangle
      */
@@ -240,9 +240,9 @@ public class RoutinesFromPaper {
     }
 
     /**
-     * @param i    the index of phi
+     * @param i         the index of phi
      * @param rectangle the rectangle defining phi
-     * @param P    the point phi is applied on
+     * @param P         the point phi is applied on
      * @return phi_i(P), with phi being defined by rectangle
      */
     static Coordinate phiPoint(int i, Coordinate[] rectangle, Coordinate P) {
@@ -260,9 +260,9 @@ public class RoutinesFromPaper {
     /**
      * Returns the result of phi, defined by rectangle, with index i, applied on hint.
      *
-     * @param i    the index of phi
+     * @param i         the index of phi
      * @param rectangle the rectangle defining phi
-     * @param hint the hint that is used as input in phi
+     * @param hint      the hint that is used as input in phi
      * @return phi_i(hint), with phi being defined by rectangle
      */
     static HalfPlaneHint phiHint(int i, Coordinate[] rectangle, HalfPlaneHint hint) {
@@ -284,9 +284,9 @@ public class RoutinesFromPaper {
     /**
      * Calculates the inverse of the phi operation defined by rectangle and applies it on P.
      *
-     * @param i    the index of phi
+     * @param i         the index of phi
      * @param rectangle the rectangle defining phi (and therefore also the inverse of phi)
-     * @param P    the point the inverse of phi gets as input
+     * @param P         the point the inverse of phi gets as input
      * @return the result of the inverse of phi_i applied on P, with phi being defined by rectangle
      */
     static Coordinate phiPointInverse(int i, Coordinate[] rectangle, Coordinate P) {
@@ -306,7 +306,7 @@ public class RoutinesFromPaper {
      * Calculate phi_basicTrans, with phi being defined by the rectangle phiRect
      * Then adds the steps of the rectangleScan of phi_basicTrans(ABCD) to the searchPath.
      *
-     * @param strategy   the strategy whose specificRectangleScan should be used
+     * @param strategy the strategy whose specificRectangleScan should be used
      * @return the input searchPath, rectangleScan applied to it
      */
     static SearchPath rectangleScanPhiReverse(int basicTrans, Coordinate[] phiRect, Coordinate A, Coordinate B,
@@ -352,7 +352,7 @@ public class RoutinesFromPaper {
      * Inverts the by rectangle defined phi_i, and calculates and returns the inverse points of the points in toTransform.
      *
      * @param i           the index of phi
-     * @param rectangle        the rectangle defining phi (and therefore also the inverse of phi)
+     * @param rectangle   the rectangle defining phi (and therefore also the inverse of phi)
      * @param toTransform the input for the inverse of phi
      * @return the inverse of phi_i defined by rectangle, applied on toTransform
      */
