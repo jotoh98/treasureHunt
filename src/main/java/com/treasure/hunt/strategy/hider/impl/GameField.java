@@ -67,17 +67,28 @@ public class GameField {
      */
     private double boundingCircleSize = 100.0; // starting size and extensionDelta
     private double boundingCircleExtensionDelta = 100;
-    private double circleExtensionDistance = 5.0; // if player is within circleExtensionDistance, the bounding Circle will be extended
+    // if player is within circleExtensionDistance from boundingCircle, the bounding Circle will be extended
+    private double circleExtensionDistance = 5.0;
     private int maxExtensions = 10;
     private int extensions = 0;
     @Setter
     private double searcherScoutRadius = 1.0;
 
-    public GameField() {
 
+    public void moveTreasure(Point newTreasureLocation) throws ImpossibleTreasureLocationException {
+        for( AngleHint hint : givenHints){
+            if ( ! hint.getGeometryAngle().inView(newTreasureLocation.getCoordinate())) throw new ImpossibleTreasureLocationException("you've supplied a treasure location, which is inconsistent with a previously given Hint");
+        }
+
+        // needed since the buffer is normally drawn with  generosity {searcherScoutRadius + 0.1}
+        Coordinate[] visitedCoords = visitedPoints.stream().map(p -> p.getCoordinate()).toArray(Coordinate[]::new);
+        LineString walkedPath = gf.createLineString(visitedCoords);
+
+        if (walkedPath.buffer(searcherScoutRadius).covers(newTreasureLocation)) throw new ImpossibleTreasureLocationException("you've supplied a treasure location, which is inconsistent the checked area the player has already visited");
+
+        favoredTreasureLocation = new GeometryItem<>(newTreasureLocation, GeometryType.WORST_CONSTANT, favoredTreasureLocationStyle);
+        log.info("new treasure location at" + favoredTreasureLocation.getObject());
     }
-
-
 
     public void init(Point searcherStartPosition, Point treasureLocation) {
         log.info("GameField init");
@@ -85,9 +96,14 @@ public class GameField {
         startingPoint = searcherStartPosition;
         currentPlayersPosition = startingPoint;
         favoredTreasureLocation = new GeometryItem<>(treasureLocation, GeometryType.WORST_CONSTANT, favoredTreasureLocationStyle);
+        log.info(treasureLocation.toString());
+        log.info(searcherStartPosition.toString());
+
+        //TODO make this customizable by Preference
+        //this.boundingCircleSize = treasureLocation.distance(searcherStartPosition) * 2;
 
         Circle c = new Circle(startingPoint.getCoordinate(), boundingCircleSize, gf);
-        boundingCircle = new GeometryItem<>(c, GeometryType.BOUNDING_CIRCE);
+        boundingCircle = new GeometryItem<>(c, GeometryType.BOUNDING_CIRCE, boundingCircleStyle);
 
         possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{c}, gf), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
 
@@ -130,6 +146,7 @@ public class GameField {
         }
     }
 
+
     /**
      * Updates the GameField's state with a new Players SearchPath
      *
@@ -143,8 +160,8 @@ public class GameField {
         List<Point> newMovementPoints = searchPath.getPoints();
 
         //int prevNumberOfPoints = visitedPoints.size();
-        log.debug("supplied searchpath " + searchPath.getPoints());
-        log.debug("new points to add" + newMovementPoints);
+        log.debug("supplied searchpath " + newMovementPoints);
+
         this.visitedPoints.addAll(newMovementPoints);
 
         log.debug("total Walked Path " + visitedPoints.toString());
@@ -165,7 +182,6 @@ public class GameField {
         checkedArea = new GeometryItem<>(checkedPoly, GeometryType.NO_TREASURE, checkedAreaStyle);
         possibleArea = new GeometryItem<>(possible, GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
     }
-
 
 
     /**
@@ -208,9 +224,8 @@ public class GameField {
         Geometry possibleAreaWithNewHint = possibleArea.getObject().intersection(arc);
         Geometry newPossibleArea = possibleArea.getObject().intersection(arc).difference(this.checkedArea.getObject());
 
-        log.info("are they equal " + possibleAreaWithNewHint.equals(newPossibleArea));
-        log.info("intersection and Dif GEOMETRIES" + newPossibleArea.getNumGeometries());
-        log.info("intersection GEOMETRIES " + possibleAreaWithNewHint.getNumGeometries());
+        assert possibleAreaWithNewHint.equals(newPossibleArea);
+        assert newPossibleArea.getNumGeometries() == 1;
 
 
 
@@ -226,6 +241,7 @@ public class GameField {
 
     }
 
+
     /**
      * Finally commits the hint
      *
@@ -238,6 +254,7 @@ public class GameField {
         givenHints.add(hint);
         return newPossibleArea;
     }
+
 
     public boolean isWithinGameField(Point p){
         return boundingCircle.getObject().covers(p);
@@ -275,7 +292,7 @@ public class GameField {
                 log.debug("new best Const " + bestCalc.getValue() + " at " + bestCalc.getKey() + " at line (" + edges[currentCoordinateIndex - 1] + ", " + edges[currentCoordinateIndex] + ")");
             }
         }
-
+        //sort for constant
         worstEdgePoints.sort(new Comparator<Pair<Coordinate, Double>>() {
             @Override
             public int compare(Pair<Coordinate, Double> coordinateDoublePair, Pair<Coordinate, Double> t1) {
@@ -287,6 +304,7 @@ public class GameField {
         log.info("best overall calculated constant is" + bestCalc.getValue() + " at " + bestCalc.getKey().toString());
         return worstEdgePoints;
     }
+
 
     /**
      * Alternate to {@sampleMaxConstantPointOnLineSegment}
@@ -419,50 +437,16 @@ public class GameField {
 
     }
 
+
     private double evaluateConstantFunction(Coordinate player, Coordinate pointToEvaluate, Coordinate origin) {
         return player.distance(pointToEvaluate) / origin.distance(pointToEvaluate);
     }
+
 
     private double evalSecondDerivOfConstFunction(double x, double a, double b) {
         double firstTerm = (8 * x * (Math.pow(a, 2.0) * x - a * Math.pow(x, 2.0) + a + (b - 2) * b * x)) / Math.pow(Math.pow(x, 2.0) + 1, 3);
         double secondTerm = (2 * (Math.pow(a, 2.0) - 2 * a * x + (b - 2) * b)) / Math.pow(Math.pow(x, 2.0) + 1, 2.0);
         return firstTerm - secondTerm;
-    }
-
-    /**
-     * TODO: get out of WIP, maybe just throw away
-     * Helper method to fix some instability issues; still WIP
-     * RobustLineIntersector does not recognize a point along a segment to be on the segment...
-     * <p>
-     * computes the intersection between a Ray / Half-Line  and a segment, afterwards projects it onto the segment vector if sufficiently close
-     * so that the LineIntersector recognizes the intersection to be on the segment argument
-     *
-     * @param line    interpreted as Line
-     * @param segment interpreted as Segment
-     * @return intersection / null if no intersection exists
-     */
-    public Coordinate computeIntersectionOnBoundary(LineSegment line, LineSegment segment) {
-        double eps = 0.0000000001;
-        Coordinate intersection = line.lineIntersection(segment);
-        if (intersection == null) {
-            return null;
-        }
-        if (line.projectionFactor(intersection) < 0) {
-            return null;
-        }
-        if (intersection.distance(segment.p0) < eps) {
-
-            return segment.p0;
-        }
-        if (intersection.distance(segment.p1) < eps) {
-
-            return segment.p1;
-        }
-        if (segment.distance(intersection) < eps) {
-            return intersection; // segment.closestPoint(intersection);
-        }
-
-        return null;
     }
 
     // TODO cleanup
