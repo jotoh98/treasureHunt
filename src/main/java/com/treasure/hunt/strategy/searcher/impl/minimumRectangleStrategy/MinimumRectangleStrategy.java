@@ -18,7 +18,7 @@ import org.locationtech.jts.geom.Polygon;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.UpdateMinimalPolygon.getNewPolygon;
+import static com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.HintIntersection.intersectHints;
 
 /**
  * @author Rank
@@ -103,7 +103,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
             do {
                 phase++;
                 updatePhaseHints();
-                newPolygon = getNewPolygon(obtainedHints, phaseHints);
+                newPolygon = intersectHints(obtainedHints, phaseHints);
             }
             while (newPolygon == null);
             currentPolygon = newPolygon;
@@ -149,8 +149,35 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
     @Override
     protected SearchPath specificRectangleScan(Coordinate rectangleCorner1, Coordinate rectangleCorner2,
                                                Coordinate rectangleCorner3, Coordinate rectangleCorner4, SearchPath move) {
-        return RoutinesFromPaper.rectangleScan(rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4,
+        return rectangleScanMinimal(rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4,
                 move);
+        //return RoutinesFromPaper.rectangleScan(rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4,
+        //move);
+    }
+
+    private SearchPath rectangleScanMinimal(Coordinate rectangleCorner1, Coordinate rectangleCorner2,
+                                            Coordinate rectangleCorner3, Coordinate rectangleCorner4, SearchPath move) {
+        TransformForAxisParallelism transformerForRectangleAxisParallelism =
+                new TransformForAxisParallelism(new LineSegment(rectangleCorner1, rectangleCorner2));
+        ArrayList<HalfPlaneHint> rectangleToScanHints = new ArrayList<>(4);
+        rectangleToScanHints.add(new HalfPlaneHint(rectangleCorner2, rectangleCorner1));
+        rectangleToScanHints.add(new HalfPlaneHint(rectangleCorner3, rectangleCorner2));
+        rectangleToScanHints.add(new HalfPlaneHint(rectangleCorner4, rectangleCorner3));
+        rectangleToScanHints.add(new HalfPlaneHint(rectangleCorner1, rectangleCorner4));
+        Polygon newPolygonToScan = intersectHints(obtainedHints, rectangleToScanHints);
+        if (newPolygonToScan == null || newPolygonToScan.getArea() == 0) {
+            return move;
+        }
+        Polygon newPolygonToScanTransformed = transformerForRectangleAxisParallelism.toInternal(newPolygonToScan);
+        Coordinate[] envelopeToScanTransformedPoints = newPolygonToScanTransformed.getEnvelope().getCoordinates();
+
+        RoutinesFromPaper.rectangleScan(
+                transformerForRectangleAxisParallelism.toExternal(envelopeToScanTransformedPoints[0]),
+                transformerForRectangleAxisParallelism.toExternal(envelopeToScanTransformedPoints[1]),
+                transformerForRectangleAxisParallelism.toExternal(envelopeToScanTransformedPoints[2]),
+                transformerForRectangleAxisParallelism.toExternal(envelopeToScanTransformedPoints[3]), move
+        );
+        return move;
     }
 
     private Coordinate[] intersectionOfTwoAxisParallelRectangles(Coordinate firstRectangleCorner1,
@@ -212,24 +239,8 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
     }
 
     private void scanCurrentRectangle(SearchPath move, HalfPlaneHint hint) {
-        LineSegment hintLine = hint.getHalfPlaneLine();
-        Point[] verticalSplitRectangle = splitRectangleVertically(searchAreaCornerA, searchAreaCornerB,
-                searchAreaCornerC, searchAreaCornerD, hint, hintLine, false);
-        Point[] horizontalSplitRectangle = splitRectangleHorizontally(searchAreaCornerA, searchAreaCornerB,
-                searchAreaCornerC, searchAreaCornerD, hint, hintLine, false);
-
-        if (verticalSplitRectangle != null) {
-            RoutinesFromPaper.rectangleScan(verticalSplitRectangle[0], verticalSplitRectangle[1],
-                    verticalSplitRectangle[2], verticalSplitRectangle[3], move);
-            return;
-        }
-        if (horizontalSplitRectangle != null) {
-            RoutinesFromPaper.rectangleScan(horizontalSplitRectangle[0], horizontalSplitRectangle[1],
-                    horizontalSplitRectangle[2], horizontalSplitRectangle[3], move);
-            return;
-        }
-        RoutinesFromPaper.rectangleScan(searchAreaCornerA, searchAreaCornerB,
-                searchAreaCornerC, searchAreaCornerD, move);
+        rectangleScanMinimal(searchAreaCornerA.getCoordinate(), searchAreaCornerB.getCoordinate(),
+                searchAreaCornerC.getCoordinate(), searchAreaCornerD.getCoordinate(), move);
     }
 
     private void setABCDinStrategy() {

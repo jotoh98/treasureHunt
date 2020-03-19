@@ -14,7 +14,7 @@ import java.util.List;
  * @author Rank
  */
 
-public class UpdateMinimalPolygon {
+public class HintIntersection {
     /**
      * Tests if the intersection of hintOne and hintTwo lies in all other half-planes of the hints in otherHintsOne,
      * and otherHintsTwo.
@@ -58,25 +58,25 @@ public class UpdateMinimalPolygon {
      *
      * @return the new polygon if it isn't empty, null otherwise
      */
-    static Polygon getNewPolygon(List<HalfPlaneHint> obtainedHints, ArrayList<HalfPlaneHint> phaseHints) {
+    static Polygon intersectHints(List<HalfPlaneHint> hintListOne, List<HalfPlaneHint> hintListTwo) {
         ArrayList<Coordinate> newPolygonCorners;
 
         newPolygonCorners = new ArrayList<>();
 
-        for (HalfPlaneHint hintOne : obtainedHints) {
-            for (HalfPlaneHint hintTwo : obtainedHints) {
+        for (HalfPlaneHint hintOne : hintListOne) {
+            for (HalfPlaneHint hintTwo : hintListOne) {
                 addIntersectionIfInPoly(hintOne, hintTwo,
-                        obtainedHints, phaseHints,  newPolygonCorners);
+                        hintListOne, hintListTwo,  newPolygonCorners);
             }
-            for (HalfPlaneHint hintTwo : phaseHints) {
+            for (HalfPlaneHint hintTwo : hintListTwo) {
                 addIntersectionIfInPoly(hintOne, hintTwo,
-                        obtainedHints, phaseHints,  newPolygonCorners);
+                        hintListOne, hintListTwo,  newPolygonCorners);
             }
         }
-        for (HalfPlaneHint hintOne : phaseHints) {
-            for (HalfPlaneHint hintTwo : phaseHints) {
+        for (HalfPlaneHint hintOne : hintListTwo) {
+            for (HalfPlaneHint hintTwo : hintListTwo) {
                 addIntersectionIfInPoly(hintOne, hintTwo,
-                        obtainedHints, phaseHints,  newPolygonCorners);
+                        hintListOne, hintListTwo,  newPolygonCorners);
             }
         }
 
