@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -219,19 +219,26 @@ extends <a href="Ray.html" title="class in com.treasure.hunt.jts.geom">Ray</a></
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#intersection(org.locationtech.jts.geom.LineSegment)">intersection</a></span>&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;line)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#intersection(com.treasure.hunt.jts.geom.Line)">intersection</a></span>&#8203;(<a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>&nbsp;line)</code></th>
+<td class="colLast">
+<div class="block">Intersect two infinite <a href="Line.html" title="class in com.treasure.hunt.jts.geom"><code>Line</code></a>s.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#intersection(org.locationtech.jts.geom.LineSegment)">intersection</a></span>&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;lineSegment)</code></th>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#leftOfPivot(org.locationtech.jts.geom.Coordinate)">leftOfPivot</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rightOfPivot(org.locationtech.jts.geom.Coordinate)">rightOfPivot</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>java.awt.Shape</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toShape(com.treasure.hunt.jts.awt.AdvancedShapeWriter)">toShape</a></span>&#8203;(<a href="../awt/AdvancedShapeWriter.html" title="class in com.treasure.hunt.jts.awt">AdvancedShapeWriter</a>&nbsp;shapeWriter)</code></th>
 </tr>
@@ -311,10 +318,26 @@ extends <a href="Ray.html" title="class in com.treasure.hunt.jts.geom">Ray</a></
 <ul class="blockList">
 <li class="blockList">
 <h4>intersection</h4>
-<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Coordinate&nbsp;intersection&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;line)</pre>
+<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Coordinate&nbsp;intersection&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;lineSegment)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="Ray.html#intersection(org.locationtech.jts.geom.LineSegment)">intersection</a></code>&nbsp;in class&nbsp;<code><a href="Ray.html" title="class in com.treasure.hunt.jts.geom">Ray</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="intersection(com.treasure.hunt.jts.geom.Line)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>intersection</h4>
+<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Coordinate&nbsp;intersection&#8203;(<a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>&nbsp;line)</pre>
+<div class="block">Intersect two infinite <a href="Line.html" title="class in com.treasure.hunt.jts.geom"><code>Line</code></a>s.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>line</code> - infinite line to intersect this infinite line with</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>intersection between two infinite lines, if there is none: null</dd>
 </dl>
 </li>
 </ul>

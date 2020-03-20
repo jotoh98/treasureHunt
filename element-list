@@ -22,6 +22,7 @@ com.treasure.hunt.strategy.searcher.impl.strategyFromPaper
 com.treasure.hunt.utils
 com.treasure.hunt.view
 com.treasure.hunt.view.custom
+com.treasure.hunt.view.plot
 com.treasure.hunt.view.settings
 com.treasure.hunt.view.utils
 com.treasure.hunt.view.widget
