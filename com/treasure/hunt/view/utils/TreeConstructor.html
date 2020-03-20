@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9};
+var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -90,13 +90,13 @@ loadScripts(document, 'script');</script>
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -133,33 +133,28 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">TreeConstructor</span>
 extends java.lang.Object</pre>
+<div class="block">Constructs an object tree primarily used for the list of turns in the game.
+ The tree is formed in a recursive way by invoking <a href="#getTree(com.treasure.hunt.game.Turn)"><code>getTree(Turn)</code></a>.
+ New items and leafs can be implemented by writing new <code>createItem()</code> methods according to the scheme:
+ <pre><code>
+ public static TreeItem&lt;String&gt; createItem(Object object) {
+      //choose a good root representation for the object
+      TreeItem&lt;String&gt; root = [create_root_for_object];
+
+      //if there are members
+      foreach(Object member: object) {
+          root.getChildren().add(createItem(member));
+      }
+
+      return root;
+ }
+ </code></pre></div>
 </li>
 </ul>
 </div>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<section role="region">
-<ul class="blockList">
-<li class="blockList"><a id="constructor.summary">
-<!--   -->
-</a>
-<h3>Constructor Summary</h3>
-<table class="memberSummary">
-<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Constructor</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">TreeConstructor</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-</table>
-</li>
-</ul>
-</section>
 <!-- ========== METHOD SUMMARY =========== -->
 <section role="region">
 <ul class="blockList">
@@ -177,53 +172,87 @@ extends java.lang.Object</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static javafx.scene.control.TreeItem&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createItem(com.treasure.hunt.game.Turn)">createItem</a></span>&#8203;(<a href="../../game/Turn.html" title="class in com.treasure.hunt.game">Turn</a>&nbsp;turn)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Create the tree item for a turn.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static javafx.scene.control.TreeItem&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createItem(com.treasure.hunt.jts.geom.GeometryAngle)">createItem</a></span>&#8203;(<a href="../../jts/geom/GeometryAngle.html" title="class in com.treasure.hunt.jts.geom">GeometryAngle</a>&nbsp;angle)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Creates a tree item for a geometry angle.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>static &lt;T&gt;&nbsp;javafx.scene.control.TreeItem&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createItem(com.treasure.hunt.strategy.geom.GeometryItem)">createItem</a></span>&#8203;(<a href="../../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;T&gt;&nbsp;geometryItem)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Creates a tree item for a geometry item.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>static javafx.scene.control.TreeItem&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createItem(com.treasure.hunt.strategy.geom.GeometryStyle)">createItem</a></span>&#8203;(<a href="../../strategy/geom/GeometryStyle.html" title="class in com.treasure.hunt.strategy.geom">GeometryStyle</a>&nbsp;geometryStyle)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Creates a tree item for a geometry style.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>static javafx.scene.control.TreeItem&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createItem(com.treasure.hunt.strategy.geom.GeometryType)">createItem</a></span>&#8203;(<a href="../../strategy/geom/GeometryType.html" title="enum in com.treasure.hunt.strategy.geom">GeometryType</a>&nbsp;geometryType)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Creates a tree item for a geometry type.</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>static javafx.scene.control.TreeItem&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createItem(com.treasure.hunt.strategy.hint.Hint)">createItem</a></span>&#8203;(<a href="../../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;hint)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Get the tree item for a hint.</div>
+</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>static javafx.scene.control.TreeItem&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createItem(com.treasure.hunt.strategy.searcher.SearchPath)">createItem</a></span>&#8203;(<a href="../../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;path)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Creates a tree item for a search path.</div>
+</td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>static javafx.scene.control.TreeItem&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createItem(java.lang.String,java.lang.Object...)">createItem</a></span>&#8203;(java.lang.String&nbsp;format,
           java.lang.Object...&nbsp;args)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Creates a leaf tree item for a format string.</div>
+</td>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>static javafx.scene.control.TreeItem&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createItem(org.locationtech.jts.geom.Coordinate)">createItem</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Creates a leaf tree item for a coordinate.</div>
+</td>
 </tr>
 <tr id="i9" class="rowColor">
+<td class="colFirst"><code>static javafx.scene.control.TreeItem&lt;java.lang.String&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createItem(org.locationtech.jts.geom.Geometry)">createItem</a></span>&#8203;(org.locationtech.jts.geom.Geometry&nbsp;geometry)</code></th>
+<td class="colLast">
+<div class="block">Creates a tree item for a geometry.</div>
+</td>
+</tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>static javafx.scene.control.TreeItem&lt;java.lang.String&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createItem(org.locationtech.jts.geom.LineSegment)">createItem</a></span>&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;lineSegment)</code></th>
+<td class="colLast">
+<div class="block">Creates a tree item for a line segment.</div>
+</td>
+</tr>
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static javafx.scene.control.TreeView&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTree(com.treasure.hunt.game.Turn)">getTree</a></span>&#8203;(<a href="../../game/Turn.html" title="class in com.treasure.hunt.game">Turn</a>&nbsp;turn)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Create the tree root for a turn.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -242,25 +271,6 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<section role="region">
-<ul class="blockList">
-<li class="blockList"><a id="constructor.detail">
-<!--   -->
-</a>
-<h3>Constructor Detail</h3>
-<a id="&lt;init&gt;()">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>TreeConstructor</h4>
-<pre>public&nbsp;TreeConstructor()</pre>
-</li>
-</ul>
-</li>
-</ul>
-</section>
 <!-- ============ METHOD DETAIL ========== -->
 <section role="region">
 <ul class="blockList">
@@ -275,6 +285,15 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getTree</h4>
 <pre class="methodSignature">public static&nbsp;javafx.scene.control.TreeView&lt;java.lang.String&gt;&nbsp;getTree&#8203;(<a href="../../game/Turn.html" title="class in com.treasure.hunt.game">Turn</a>&nbsp;turn)</pre>
+<div class="block">Create the tree root for a turn.
+ Its root is invisible and this roots only purpose is to hold the turns fields.
+ It utilises <a href="#createItem(com.treasure.hunt.game.Turn)"><code>createItem(Turn)</code></a>.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>turn</code> - the object trees root turn</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>root tree view with the object tree of the turn</dd>
+</dl>
 </li>
 </ul>
 <a id="createItem(com.treasure.hunt.game.Turn)">
@@ -284,6 +303,19 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>createItem</h4>
 <pre class="methodSignature">public static&nbsp;javafx.scene.control.TreeItem&lt;java.lang.String&gt;&nbsp;createItem&#8203;(<a href="../../game/Turn.html" title="class in com.treasure.hunt.game">Turn</a>&nbsp;turn)</pre>
+<div class="block">Create the tree item for a turn.
+ Its children are the items for the turn's fields:
+ <ul>
+     <li>treasure location (<a href="#createItem(org.locationtech.jts.geom.Coordinate)"><code>createItem(Coordinate)</code></a>)</li>
+     <li>hint (<a href="#createItem(com.treasure.hunt.strategy.hint.Hint)"><code>createItem(Hint)</code></a>)</li>
+     <li>search path (<a href="#createItem(com.treasure.hunt.strategy.searcher.SearchPath)"><code>createItem(SearchPath)</code></a>)</li>
+ </ul></div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>turn</code> - turn to display</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>root tree item for the turn object tree</dd>
+</dl>
 </li>
 </ul>
 <a id="createItem(com.treasure.hunt.strategy.hint.Hint)">
@@ -293,6 +325,17 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>createItem</h4>
 <pre class="methodSignature">public static&nbsp;javafx.scene.control.TreeItem&lt;java.lang.String&gt;&nbsp;createItem&#8203;(<a href="../../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;hint)</pre>
+<div class="block">Get the tree item for a hint.
+ Here, we differentiate between <a href="../../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a>, <a href="../../strategy/hint/impl/CircleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>CircleHint</code></a>, etc. and use the corresponding methods.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>hint</code> - hint, which is printed in the tree item</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>root tree item for a hint and its members</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="#createItem(com.treasure.hunt.jts.geom.GeometryAngle)"><code>createItem(GeometryAngle)</code></a>, 
+<a href="#createItem(org.locationtech.jts.geom.Coordinate)"><code>createItem(Coordinate)</code></a></dd>
+</dl>
 </li>
 </ul>
 <a id="createItem(com.treasure.hunt.strategy.searcher.SearchPath)">
@@ -302,6 +345,21 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>createItem</h4>
 <pre class="methodSignature">public static&nbsp;javafx.scene.control.TreeItem&lt;java.lang.String&gt;&nbsp;createItem&#8203;(<a href="../../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;path)</pre>
+<div class="block">Creates a tree item for a search path.
+ The children are tree items for the paths fields:
+ <ul>
+     <li>list of way points (<a href="#createItem(org.locationtech.jts.geom.Coordinate)"><code>createItem(Coordinate)</code></a>)</li>
+     <li>list of additional geometry items (<a href="#createItem(com.treasure.hunt.strategy.geom.GeometryItem)"><code>createItem(GeometryItem)</code></a>)</li>
+ </ul></div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>path</code> - search path to create the tree item for</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>root tree item for a search path</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="#createItem(org.locationtech.jts.geom.Coordinate)"><code>createItem(Coordinate)</code></a>, 
+<a href="#createItem(com.treasure.hunt.strategy.geom.GeometryItem)"><code>createItem(GeometryItem)</code></a></dd>
+</dl>
 </li>
 </ul>
 <a id="createItem(com.treasure.hunt.jts.geom.GeometryAngle)">
@@ -311,15 +369,16 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>createItem</h4>
 <pre class="methodSignature">public static&nbsp;javafx.scene.control.TreeItem&lt;java.lang.String&gt;&nbsp;createItem&#8203;(<a href="../../jts/geom/GeometryAngle.html" title="class in com.treasure.hunt.jts.geom">GeometryAngle</a>&nbsp;angle)</pre>
-</li>
-</ul>
-<a id="createItem(org.locationtech.jts.geom.Coordinate)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>createItem</h4>
-<pre class="methodSignature">public static&nbsp;javafx.scene.control.TreeItem&lt;java.lang.String&gt;&nbsp;createItem&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</pre>
+<div class="block">Creates a tree item for a geometry angle.
+ The children are tree items for the angles defining points: <i>left, center &amp; right</i> using <a href="#createItem(org.locationtech.jts.geom.Coordinate)"><code>createItem(Coordinate)</code></a>.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>angle</code> - angle to print as a tree item</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>root tree item for a geometry angle</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="#createItem(org.locationtech.jts.geom.Coordinate)"><code>createItem(Coordinate)</code></a></dd>
+</dl>
 </li>
 </ul>
 <a id="createItem(com.treasure.hunt.strategy.geom.GeometryItem)">
@@ -329,6 +388,64 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>createItem</h4>
 <pre class="methodSignature">public static&nbsp;&lt;T&gt;&nbsp;javafx.scene.control.TreeItem&lt;java.lang.String&gt;&nbsp;createItem&#8203;(<a href="../../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;T&gt;&nbsp;geometryItem)</pre>
+<div class="block">Creates a tree item for a geometry item.
+ The children are tree items for the items fields:
+ <ul>
+      <li>object (<a href="#createItem(java.lang.String,java.lang.Object...)"><code>createItem(String, Object...)</code></a>, <a href="#createItem(org.locationtech.jts.geom.Geometry)"><code>createItem(Geometry)</code></a>, <a href="#createItem(org.locationtech.jts.geom.LineSegment)"><code>createItem(LineSegment)</code></a>  )})</li>
+      <li>geometry type (<a href="#createItem(com.treasure.hunt.strategy.geom.GeometryType)"><code>createItem(GeometryType)</code></a></li>
+      <li>geometry style (<a href="#createItem(com.treasure.hunt.strategy.geom.GeometryStyle)"><code>createItem(GeometryStyle)</code></a></li>
+ </ul></div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>T</code> - type of the object wrapped in the geometry item</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>geometryItem</code> - geometry item to print as a tree item</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>root tree item representing a geometry item</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryItem</code></a>, 
+<a href="../../strategy/geom/GeometryType.html" title="enum in com.treasure.hunt.strategy.geom"><code>GeometryType</code></a>, 
+<a href="../../strategy/geom/GeometryStyle.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryStyle</code></a></dd>
+</dl>
+</li>
+</ul>
+<a id="createItem(org.locationtech.jts.geom.LineSegment)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>createItem</h4>
+<pre class="methodSignature">public static&nbsp;javafx.scene.control.TreeItem&lt;java.lang.String&gt;&nbsp;createItem&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;lineSegment)</pre>
+<div class="block">Creates a tree item for a line segment.
+ The name is derived by the <code>Class.getSimpleName()</code> method. The children are tree items for the two
+ line segment points <code>LineSegment.p0</code> and <code>LineSegment.p1</code>.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>lineSegment</code> - line segment to print as a tree item</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>root tree item representing a line segment</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="#createItem(java.lang.String,java.lang.Object...)"><code>createItem(String, Object...)</code></a></dd>
+</dl>
+</li>
+</ul>
+<a id="createItem(org.locationtech.jts.geom.Geometry)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>createItem</h4>
+<pre class="methodSignature">public static&nbsp;javafx.scene.control.TreeItem&lt;java.lang.String&gt;&nbsp;createItem&#8203;(org.locationtech.jts.geom.Geometry&nbsp;geometry)</pre>
+<div class="block">Creates a tree item for a geometry.
+ The children are tree items for the geometry's coordinates.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>geometry</code> - geometry to print as a tree item</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>root tree item representing a geometry</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="#createItem(org.locationtech.jts.geom.Coordinate)"><code>createItem(Coordinate)</code></a></dd>
+</dl>
 </li>
 </ul>
 <a id="createItem(com.treasure.hunt.strategy.geom.GeometryStyle)">
@@ -338,6 +455,16 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>createItem</h4>
 <pre class="methodSignature">public static&nbsp;javafx.scene.control.TreeItem&lt;java.lang.String&gt;&nbsp;createItem&#8203;(<a href="../../strategy/geom/GeometryStyle.html" title="class in com.treasure.hunt.strategy.geom">GeometryStyle</a>&nbsp;geometryStyle)</pre>
+<div class="block">Creates a tree item for a geometry style.
+ The children are all the separate fields of the style.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>geometryStyle</code> - style to print as a tree item</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>root tree item representing a geometry style</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="#createItem(java.lang.String,java.lang.Object...)"><code>createItem(String, Object...)</code></a></dd>
+</dl>
 </li>
 </ul>
 <a id="createItem(com.treasure.hunt.strategy.geom.GeometryType)">
@@ -347,6 +474,34 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>createItem</h4>
 <pre class="methodSignature">public static&nbsp;javafx.scene.control.TreeItem&lt;java.lang.String&gt;&nbsp;createItem&#8203;(<a href="../../strategy/geom/GeometryType.html" title="enum in com.treasure.hunt.strategy.geom">GeometryType</a>&nbsp;geometryType)</pre>
+<div class="block">Creates a tree item for a geometry type.
+ The children are all the separate fields of the type.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>geometryType</code> - type to print as a tree item</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>root tree item representing a geometry type</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="#createItem(java.lang.String,java.lang.Object...)"><code>createItem(String, Object...)</code></a></dd>
+</dl>
+</li>
+</ul>
+<a id="createItem(org.locationtech.jts.geom.Coordinate)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>createItem</h4>
+<pre class="methodSignature">public static&nbsp;javafx.scene.control.TreeItem&lt;java.lang.String&gt;&nbsp;createItem&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</pre>
+<div class="block">Creates a leaf tree item for a coordinate.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>coordinate</code> - coordinate to print as a tree item</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>leaf tree item representing a coordinate</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="#print(org.locationtech.jts.geom.Coordinate)"><code>print(Coordinate)</code></a></dd>
+</dl>
 </li>
 </ul>
 <a id="createItem(java.lang.String,java.lang.Object...)">
@@ -357,6 +512,16 @@ extends java.lang.Object</pre>
 <h4>createItem</h4>
 <pre class="methodSignature">public static&nbsp;javafx.scene.control.TreeItem&lt;java.lang.String&gt;&nbsp;createItem&#8203;(java.lang.String&nbsp;format,
                                                                          java.lang.Object...&nbsp;args)</pre>
+<div class="block">Creates a leaf tree item for a format string.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>format</code> - a format string</dd>
+<dd><code>args</code> - arguments for the format string</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>leaf tree item representing the formatted string</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><code>String.format(String, Object...)</code></dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -412,13 +577,13 @@ extends java.lang.Object</pre>
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
