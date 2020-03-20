@@ -51,6 +51,10 @@ public class SelectionService {
 
     @SneakyThrows
     public void handleClickEvent(MouseEvent mouseEvent, PointTransformation transformation, GameManager gameManager) {
+        if (gameManager == null) {
+            return;
+        }
+
         Coordinate coordinate = transformation.revert(mouseEvent.getX(), mouseEvent.getY());
 
         if (currentGameManager != gameManager) {
