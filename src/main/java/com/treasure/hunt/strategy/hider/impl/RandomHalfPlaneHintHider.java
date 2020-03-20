@@ -19,7 +19,11 @@ import org.locationtech.jts.math.Vector2D;
  * @author Rank
  */
 @Preference(name = "Ungabunga", value = 6969)
+@Preference(name = RandomHalfPlaneHintHider.TREASURE_DISTANCE, value = 6969)
 public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
+    public static final String TREASURE_DISTANCE = "TREASURE_DISTANCE";
+    double xmax = 1000;
+    double ymax = 1000;
     HalfPlaneHint lastHint = null;
     private Point treasurePos = null;
 
@@ -56,15 +60,9 @@ public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
      */
     @Override
     public Point getTreasureLocation() {
-        if (treasurePos == null) {
-            treasurePos = JTSUtils.GEOMETRY_FACTORY.createPoint(
-                    Vector2D.create(
-                            PreferenceService.getInstance().getPreference(RandomAngleHintHider.TREASURE_DISTANCE, 200).doubleValue(), 0)
-                            .rotate(2 * Math.PI * Math.random())
-                            .toCoordinate()
-            );
-        }
-
+        double distance = PreferenceService.getInstance().getPreference(TREASURE_DISTANCE, 100).doubleValue();
+        Coordinate treasure = Vector2D.create(Math.random() * distance, 0).rotate(2 * Math.PI * Math.random()).translate(new Coordinate());
+        treasurePos = JTSUtils.GEOMETRY_FACTORY.createPoint(treasure);
         return treasurePos;
     }
 }

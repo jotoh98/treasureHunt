@@ -41,4 +41,26 @@ public class ListUtils {
         }
         return ret;
     }
+
+    public static double standardDeviation(List<Number> table) {
+        // Step 1:
+        double mean = table.stream().mapToDouble(Number::doubleValue).average().getAsDouble();
+        double temp = 0;
+
+        for (int i = 0; i < table.size(); i++) {
+            double val = table.get(i).doubleValue();
+
+            // Step 2:
+            double squrDiffToMean = Math.pow(val - mean, 2);
+
+            // Step 3:
+            temp += squrDiffToMean;
+        }
+
+        // Step 4:
+        double meanOfDiffs = temp / (double) (table.size());
+
+        // Step 5:
+        return Math.sqrt(meanOfDiffs);
+    }
 }
