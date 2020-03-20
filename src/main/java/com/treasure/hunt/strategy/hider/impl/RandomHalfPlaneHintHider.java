@@ -7,7 +7,6 @@ import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.Preference;
-import com.treasure.hunt.utils.Preferences;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
@@ -19,9 +18,7 @@ import org.locationtech.jts.math.Vector2D;
  *
  * @author Rank
  */
-@Preferences({
-        @Preference(name = RandomAngleHintHider.TREASURE_DISTANCE, value = 200)
-})
+@Preference(name = "Ungabunga", value = 6969)
 public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
     HalfPlaneHint lastHint = null;
     private Point treasurePos = null;
