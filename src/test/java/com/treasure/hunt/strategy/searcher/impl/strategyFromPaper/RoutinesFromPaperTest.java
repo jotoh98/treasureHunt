@@ -55,6 +55,21 @@ public class RoutinesFromPaperTest {
     }
 
     @Test
+    public void testBasicTransformation2(){
+        Coordinate[] testRectangle = new Coordinate[]{
+                new Coordinate(4748.7729876546655, 8192.0),
+                new Coordinate(4752.857933732405, 8192.0),
+                new Coordinate(4752.857933732405, 8187.334718411631),
+                new Coordinate(4748.7729876546655, 8187.334718411464)
+        };
+        HalfPlaneHint testHint = new HalfPlaneHint(
+                new Coordinate(4750.815460694, 8189.667359206001),
+                new Coordinate(4751.637576194589, 8189.098038467145)
+        );
+        testRectHint(testRectangle, testHint, 0);
+    }
+
+    @Test
     public void testPhiRectangle() {
         Coordinate[] rect = new Coordinate[]{new Coordinate(-4, 4), new Coordinate(4, 4),
                 new Coordinate(4, -4), new Coordinate(-4, -4)};
