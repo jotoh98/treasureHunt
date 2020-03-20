@@ -374,14 +374,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         return getAdditional();
     }
 
-    public static Stream<GeometryItem<?>> filter(Stream<GeometryItem<?>> itemStream) {
-        return ListUtils.filterStream(itemStream,
-                GeometryPipeline::filterOverride,
-                GeometryPipeline::assignMultiStyles,
-                GeometryPipeline::sortZIndex
-        );
-    }
-
     /**
      * Get visible geometry items.
      * The visible {@link Turn}s determine which {@link GeometryItem} are visible.
@@ -403,6 +395,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
 
         final Stream<GeometryItem<?>> items = Stream.concat(subListGeometries, additional.values().stream());
 
-        return filter(items);
+        return GeometryPipeline.pipe(items);
     }
 }
