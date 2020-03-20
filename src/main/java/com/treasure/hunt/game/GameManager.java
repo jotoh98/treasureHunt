@@ -152,7 +152,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
                         return Stream.of(itemsOfType.get(itemsOfType.size() - 1));
                     }
                 })
-                .filter(statusMessageItem -> turns.stream().noneMatch(turn ->
+                .filter(statusMessageItem -> getVisibleTurns().stream().noneMatch(turn ->
                         turn.getHint() != null && turn.getHint().getStatusMessageItemsToBeRemoved().contains(statusMessageItem) ||
                                 turn.getSearchPath() != null && turn.getSearchPath().getStatusMessageItemsToBeRemoved().contains(statusMessageItem)
                 ))
