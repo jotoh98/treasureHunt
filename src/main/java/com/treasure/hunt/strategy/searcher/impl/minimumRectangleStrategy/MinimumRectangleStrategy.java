@@ -10,15 +10,13 @@ import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper;
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StrategyFromPaper;
 import com.treasure.hunt.utils.JTSUtils;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.LineSegment;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.HintIntersection.intersectHints;
+import static com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.ExcludedAreasUtils.intersectHints;
+import static com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.ExcludedAreasUtils.visitedPolygon;
 
 /**
  * @author Rank
@@ -37,7 +35,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
      * according to all obtained hints.
      * If this List is empty, the treasure is not in the current search rectangle.
      */
-    private Polygon currentPolygon;
+    private Geometry currentMultiPolygon;
     /**
      * This are not real obtained hints.
      * This hints are just the borders of the current phase rectangle interpreted as hints.
@@ -45,6 +43,14 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
      * hole phase rectangle lies in the treasure area.
      */
     private ArrayList<HalfPlaneHint> phaseHints;
+    /**
+     * The polygon the player already has seen because he was there.
+     */
+    private Polygon visitedPolygon; // stored in internal coordinates
+    /**
+     * The lastLocation of the previous move
+     */
+    private Point lastLocation; // in internal coordinates
 
     /**
      * @param searcherStartPosition the {@link Searcher} starting position,
@@ -63,7 +69,8 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
             phaseHints.add(null);
         }
         obtainedHints = new ArrayList<>();
-        currentPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon();
+        currentMultiPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon();
+        visitedPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon();
     }
 
     /**
@@ -88,6 +95,8 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         if (firstMoveWithHint) {
             firstMoveWithHint = false;
             transformer = new TransformForAxisParallelism(hint, realSearcherStartPosition);
+            lastLocation = JTSUtils.createPoint(0, 0); // the point the searcher moved to in the previous move
+            visitedPolygon.union(visitedPolygon(lastLocation, new SearchPath()));
         }
 
         obtainedHints.add(transformer.toInternal(hint));
@@ -99,33 +108,52 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
             currentHint = transformer.toInternal(hint);
             SearchPath move = new SearchPath();
             scanCurrentRectangle(move, currentHint);
-            Polygon newPolygon;
+            Geometry newMultiPolygon;
             do {
                 phase++;
                 updatePhaseHints();
-                newPolygon = intersectHints(obtainedHints, phaseHints);
+                newMultiPolygon = intersectHints(obtainedHints, phaseHints);
+                if (newMultiPolygon != null) {
+                    newMultiPolygon = newMultiPolygon.difference(visitedPolygon);
+                }
             }
-            while (newPolygon == null);
-            currentPolygon = newPolygon;
+            while (newMultiPolygon == null || newMultiPolygon.getArea() == 0);
+            currentMultiPolygon = newMultiPolygon;
 
             setABCDinStrategy();
             GeometricUtils.moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC,
                     searchAreaCornerD, move);
-            return addState(transformer.toExternal(move));
+            return returnHandling(move);
         } else {
-            return addState(transformer.toExternal(
-                    super.move(transformer.toInternal(hint))));
+            return returnHandling(super.move(transformer.toInternal(hint)));
         }
     }
 
-    @Override
-    protected SearchPath addState(SearchPath move) {
+    /**
+     * This method has to be called directly before move(HalfPlaneHint) returns
+     * In this method, three things are accomplished:
+     * 1. the internal fields are updated (visitedPolygon, lastLocation)
+     * 2. the move is transformed in the external coordinates
+     * 3. the state of the current rectangle is added to the move
+     *
+     * @param move
+     * @return
+     */
+    protected SearchPath returnHandling(SearchPath move) {
+        // update internal state of this strategy
+        visitedPolygon = (Polygon) visitedPolygon.union(visitedPolygon(lastLocation, move));
+        lastLocation = move.getLastPoint();
+
+        // the move is transformed in external coordinates
+        move = transformer.toExternal(move);
+
+        // add state of the current rectangle to move
         if (transformer == null) {
             return super.addState(move);
         }
         // add polygon
-        if (currentPolygon != null) {
-            move.addAdditionalItem(new GeometryItem<>(transformer.toExternal(currentPolygon),
+        if (currentMultiPolygon != null) {
+            move.addAdditionalItem(new GeometryItem<>(transformer.toExternal(currentMultiPolygon),
                     GeometryType.CURRENT_POLYGON));
         }
 
@@ -151,8 +179,6 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
                                                Coordinate rectangleCorner3, Coordinate rectangleCorner4, SearchPath move) {
         return rectangleScanMinimal(rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4,
                 move);
-        //return RoutinesFromPaper.rectangleScan(rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4,
-        //move);
     }
 
     private SearchPath rectangleScanMinimal(Coordinate rectangleCorner1, Coordinate rectangleCorner2,
@@ -169,7 +195,13 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
             return move;
         }
         Polygon newPolygonToScanTransformed = transformerForRectangleAxisParallelism.toInternal(newPolygonToScan);
-        Coordinate[] envelopeToScanTransformedPoints = newPolygonToScanTransformed.getEnvelope().getCoordinates();
+        visitedPolygon = (Polygon) visitedPolygon.union(visitedPolygon(lastLocation, move));
+        Geometry newAreaToScanTransformed = newPolygonToScanTransformed.difference(visitedPolygon);
+        if(newAreaToScanTransformed.getArea()==0){
+            return move;
+        }
+
+        Coordinate[] envelopeToScanTransformedPoints = newAreaToScanTransformed.getEnvelope().getCoordinates();
 
         RoutinesFromPaper.rectangleScan(
                 transformerForRectangleAxisParallelism.toExternal(envelopeToScanTransformedPoints[0]),
@@ -178,50 +210,6 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
                 transformerForRectangleAxisParallelism.toExternal(envelopeToScanTransformedPoints[3]), move
         );
         return move;
-    }
-
-    private Coordinate[] intersectionOfTwoAxisParallelRectangles(Coordinate firstRectangleCorner1,
-                                                                 Coordinate firstRectangleCorner3,
-                                                                 Coordinate secondRectangleCorner1,
-                                                                 Coordinate secondRectangleCorner3
-    ) {
-        Coordinate[] intersection = new Coordinate[4];
-        intersection[0] = new Coordinate();
-        intersection[1] = new Coordinate();
-        intersection[2] = new Coordinate();
-        intersection[3] = new Coordinate();
-
-        if (firstRectangleCorner1.x > secondRectangleCorner1.x) {
-            intersection[0].x = firstRectangleCorner1.x;
-            intersection[3].x = firstRectangleCorner1.x;
-        } else {
-            intersection[0].x = secondRectangleCorner1.x;
-            intersection[3].x = secondRectangleCorner1.x;
-        }
-
-        if (firstRectangleCorner1.y > secondRectangleCorner1.y) {
-            intersection[0].y = secondRectangleCorner1.y;
-            intersection[1].y = secondRectangleCorner1.y;
-        } else {
-            intersection[0].y = firstRectangleCorner1.y;
-            intersection[1].y = firstRectangleCorner1.y;
-        }
-
-        if (firstRectangleCorner3.x > secondRectangleCorner3.x) {
-            intersection[1].x = secondRectangleCorner3.x;
-            intersection[2].x = secondRectangleCorner3.x;
-        } else {
-            intersection[1].x = firstRectangleCorner3.x;
-            intersection[2].x = firstRectangleCorner3.x;
-        }
-        if (firstRectangleCorner3.y > secondRectangleCorner3.y) {
-            intersection[2].y = firstRectangleCorner3.y;
-            intersection[3].y = firstRectangleCorner3.y;
-        } else {
-            intersection[2].y = secondRectangleCorner3.y;
-            intersection[3].y = secondRectangleCorner3.y;
-        }
-        return intersection;
     }
 
     private Coordinate[] searchRectangle() {
@@ -244,14 +232,12 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
     }
 
     private void setABCDinStrategy() {
-        Coordinate[] coordinatesABCD = currentPolygon.getEnvelope().getCoordinates();
+        Coordinate[] coordinatesABCD = currentMultiPolygon.getEnvelope().getCoordinates();
         searchAreaCornerA = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[1]);
         searchAreaCornerB = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[2]);
         searchAreaCornerC = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[3]);
         searchAreaCornerD = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[0]);
         lastHintQuality = StrategyFromPaper.HintQuality.none;
     }
-
-
 }
 

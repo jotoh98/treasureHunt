@@ -3,10 +3,7 @@ package com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.LineSegment;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.*;
 import org.locationtech.jts.geom.util.AffineTransformation;
 
 /**
@@ -23,8 +20,8 @@ public class TransformForAxisParallelism {
      * Creates a transformer where the HalfPlaneHint hint in internal coordinates is parallel to the x-axis and shows
      * upwards and the internalCenterInExternalRepresentation is the point (0,0) in internal coordinates.
      *
-     * @param hint
-     * @param internalCenterInExternalRepresentation
+     * @param hint                                   the internal x-axis is parallel to
+     * @param internalCenterInExternalRepresentation the internal center (point (0,0)) in external coordinates
      */
     public TransformForAxisParallelism(HalfPlaneHint hint, Point internalCenterInExternalRepresentation) {
         this.internalCenterInExternalRepresentation = internalCenterInExternalRepresentation;
@@ -93,6 +90,10 @@ public class TransformForAxisParallelism {
 
     Polygon toExternal(Polygon polygon) {
         return (Polygon) toExternalWithStartPointDisplacement.transform(polygon);
+    }
+
+    Geometry toExternal(Geometry geometry) {
+        return toExternalWithStartPointDisplacement.transform(geometry);
     }
 
     Point toExternal(Point point) {
