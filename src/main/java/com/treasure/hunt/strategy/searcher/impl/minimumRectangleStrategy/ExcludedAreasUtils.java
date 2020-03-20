@@ -1,20 +1,21 @@
 package com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy;
 
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.*;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * Utility functions to exclude areas which do not need to be looked at (areas already visited and areas which are
+ * excluded by hints)
+ *
  * @author Rank
  */
 
-public class HintIntersection {
+public class ExcludedAreasUtils {
     /**
      * Tests if the intersection of hintOne and hintTwo lies in all other half-planes of the hints in otherHintsOne,
      * and otherHintsTwo.
@@ -66,17 +67,17 @@ public class HintIntersection {
         for (HalfPlaneHint hintOne : hintListOne) {
             for (HalfPlaneHint hintTwo : hintListOne) {
                 addIntersectionIfInPoly(hintOne, hintTwo,
-                        hintListOne, hintListTwo,  newPolygonCorners);
+                        hintListOne, hintListTwo, newPolygonCorners);
             }
             for (HalfPlaneHint hintTwo : hintListTwo) {
                 addIntersectionIfInPoly(hintOne, hintTwo,
-                        hintListOne, hintListTwo,  newPolygonCorners);
+                        hintListOne, hintListTwo, newPolygonCorners);
             }
         }
         for (HalfPlaneHint hintOne : hintListTwo) {
             for (HalfPlaneHint hintTwo : hintListTwo) {
                 addIntersectionIfInPoly(hintOne, hintTwo,
-                        hintListOne, hintListTwo,  newPolygonCorners);
+                        hintListOne, hintListTwo, newPolygonCorners);
             }
         }
 
@@ -93,5 +94,21 @@ public class HintIntersection {
         }
 
         return (Polygon) newPolygon;
+    }
+
+    static Geometry visitedPolygon(Point lastLocation, SearchPath move) {
+        if (lastLocation == null || move == null) {
+            throw new IllegalArgumentException("lastLocation or move is null");
+        }
+        Coordinate[] movesCoordinates = new Coordinate[move.getPoints().size() + 1];
+        movesCoordinates[0] = lastLocation.getCoordinate();
+        for (int i = 0; i < move.getPoints().size(); i++) {
+            movesCoordinates[i + 1] = move.getPoints().get(i).getCoordinate();
+        }
+        if (movesCoordinates.length == 1) {
+            return JTSUtils.GEOMETRY_FACTORY.createPoint(movesCoordinates[0]).buffer(1);
+        }
+        LineString path = JTSUtils.GEOMETRY_FACTORY.createLineString(movesCoordinates);
+        return path.buffer(1);
     }
 }
