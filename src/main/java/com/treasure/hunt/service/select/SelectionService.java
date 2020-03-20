@@ -91,8 +91,6 @@ public class SelectionService {
 
             geometryItemSelected = null;
             geometrySelected = null;
-
-            EventBusUtils.LOG_LABEL_EVENT.trigger("No item found within reasonable range.");
             return;
         }
 
@@ -111,8 +109,6 @@ public class SelectionService {
     }
 
     private void selectItem(GameManager gameManager, GeometryItem<? extends Geometry> geometryItem) {
-        EventBusUtils.LOG_LABEL_EVENT.trigger("Item selected");
-
         geometryItemSelected = geometryItem;
         geometrySelected = geometryItemSelected.getObject();
         EventBusUtils.GEOMETRY_ITEM_SELECTED.trigger(geometryItemSelected);
