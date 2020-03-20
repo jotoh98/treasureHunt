@@ -57,6 +57,7 @@ dependencies {
     compile("org.openjfx:javafx-controls:${javafxVersion}:${javafxPlatform}")
     compile("org.openjfx:javafx-graphics:${javafxVersion}:${javafxPlatform}")
     compile("org.openjfx:javafx-fxml:${javafxVersion}:${javafxPlatform}")
+    compile("org.openjfx:javafx-swing:${javafxVersion}:${javafxPlatform}")
 }
 
 project.version = project.projVersion.replace('v', '')
@@ -75,7 +76,7 @@ test {
 
 javafx {
     version = "${javafxVersion}"
-    modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.graphics']
+    modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.swing']
     /**
      * https://github.com/openjfx/javafx-gradle-plugin
      * JavaFX modules require native binaries for each platform. The plugin only includes binaries for the platform
