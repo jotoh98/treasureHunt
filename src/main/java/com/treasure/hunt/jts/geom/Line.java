@@ -58,7 +58,7 @@ public class Line extends Ray {
     /**
      * Intersect the infinite {@link Line} with a {@link LineSegment}.
      *
-     * @param line segment to intersect ray with
+     * @param lineSegment segment to intersect ray with
      * @return intersection between infinite line and segment, if there is none: null
      */
     @Override

@@ -22,15 +22,15 @@ import java.util.stream.Stream;
  * This implementation holds a coordinate representation of this line. It evaluates coordinates of being inside by
  * computing a normal vector pointing out of the inner half space and a corresponding double scalar to scale the half
  * plane away from the origin.</p>
- * <hr/>
+ * <hr>
  * <p>Now we want to explore, how we compute a vector laying inside the inner half space in {@link #inside(Vector2D)}:</p>
  * <p>So we state that <i>a</i> is the normal vector pointing out of the inner half space, <i>b</i> is the scalar and
  * <i>x</i> is the vector to test.</p>
  * <p>If evaluation is strict, the test evaluates true, if</p>
- * <center>&lang; a, x &rang; > b.</center>
+ * &lang; a, x &rang; &gt; b.
  * <p>Else, it already evaluates true, if the following statement is true:</p>
- * <center>&lang; a, x &rang; &ge; b.</center>
- * <hr/>
+ * &lang; a, x &rang; &ge; b.
+ * <hr>
  * <p>The half plane is represented as an infinite line in coordinate form. To perform {@link #inside(Vector2D)}, we
  * compute the corresponding normal vector and scalar. For two coordinates <i>c1</i> and <i>c2</i>, the inner half space
  * lies on the <u>right-hand-side</u> of the vector from <i>c1</i> to <i>c2</i>.</p>
@@ -41,7 +41,7 @@ public class HalfPlane extends Line {
 
     /**
      * Strict decides whether or not to include points on the threshold line.
-     * If strict is true, points on the line (&lang; a, x &rang; = b) will be excluded (&lang; a, x &rang; > b), otherwise,
+     * If strict is true, points on the line (&lang; a, x &rang; = b) will be excluded (&lang; a, x &rang; &gt; b), otherwise,
      * these will be included (&lang; a, x &rang; &ge; b) by the {@link HalfPlane#inside(Coordinate)} method.
      *
      * @see HalfPlane#inside(Coordinate)
@@ -129,11 +129,11 @@ public class HalfPlane extends Line {
     }
 
     /**
-     * Evaluates, if a location vector of a point lies in the inner half space.<br/>
+     * Evaluates, if a location vector of a point lies in the inner half space.<br>
      * For strict half planes, it must satisfy the following condition:
-     * <center>&lang; a, x &rang; > b,</center>
+     * &lang; a, x &rang; &ge; b,
      * otherwise, it tests the condition:
-     * <center>&lang; a, x &rang; &ge; b.</center>
+     * &lang; a, x &rang; &ge; b.
      *
      * @param x location vector to test
      * @return whether the point lays in the inner half space
