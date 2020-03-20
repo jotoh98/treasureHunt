@@ -12,6 +12,7 @@ import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.EventBusUtils;
 import com.treasure.hunt.utils.ListUtils;
+import com.treasure.hunt.view.plot.PlotSettingsController;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
@@ -19,9 +20,15 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,6 +37,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.List;
@@ -305,5 +313,27 @@ public class StatisticTableController {
                 .map(strings -> strings.toArray(String[]::new))
                 .collect(Collectors.toList()));
         writer.close();
+    }
+
+    public void onPlot() throws IOException {
+
+        Stage stage = new Stage(StageStyle.DECORATED);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setTitle("Statistic Plot");
+
+        Class<? extends GameEngine> selectedGameEngine = gameEngineList.getSelectionModel().getSelectedItem();
+        Class<? extends Searcher> selectedSearcher = searcherList.getSelectionModel().getSelectedItem();
+        Class<? extends Hider> selectedHider = hiderList.getSelectionModel().getSelectedItem();
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/plotSettings.fxml"));
+        GridPane root = fxmlLoader.load();
+        PlotSettingsController plotSettingsController = fxmlLoader.getController();
+        plotSettingsController.setData(selectedGameEngine, selectedSearcher, selectedHider);
+
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        scene.getStylesheets().add(getClass().getResource("/layout/style.css").toExternalForm());
+
+        stage.show();
     }
 }

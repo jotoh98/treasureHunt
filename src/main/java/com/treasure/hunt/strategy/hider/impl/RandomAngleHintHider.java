@@ -21,10 +21,12 @@ import static org.locationtech.jts.algorithm.Angle.interiorAngle;
  * @author dorianreineccius
  */
 @Preference(name = RandomAngleHintHider.TREASURE_DISTANCE, value = 100)
-@Preference(name = RandomAngleHintHider.HINT_MAX_ANGLE, value = Math.PI)
+@Preference(name = RandomAngleHintHider.ANGLE_UPPER_BOUND, value = 2 * Math.PI)
+@Preference(name = RandomAngleHintHider.ANGLE_LOWER_BOUND, value = Math.PI)
 public class RandomAngleHintHider implements Hider<AngleHint> {
     public static final String TREASURE_DISTANCE = "TREASURE_DISTANCE";
-    public static final String HINT_MAX_ANGLE = "HINT_MAX_ANGLE";
+    public static final String ANGLE_UPPER_BOUND = "ANGLE_UPPER_BOUND";
+    public static final String ANGLE_LOWER_BOUND = "ANGLE_LOWER_BOUND";
     private Point treasurePosition;
 
     /**
@@ -45,9 +47,10 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
     @Override
     public AngleHint move(SearchPath searchPath) {
         Coordinate searcherPos = searchPath.getLastPoint().getCoordinate();
+        double upperBound = PreferenceService.getInstance().getPreference(ANGLE_UPPER_BOUND, Math.PI * 2).doubleValue();
+        double lowerBound = PreferenceService.getInstance().getPreference(ANGLE_LOWER_BOUND, 0).doubleValue();
 
-        double maxAngle = PreferenceService.getInstance().getPreference(HINT_MAX_ANGLE, 2 * Math.PI).doubleValue();
-        GeometryAngle angle = JTSUtils.validRandomAngle(searcherPos, treasurePosition.getCoordinate(), maxAngle);
+        GeometryAngle angle = JTSUtils.validRandomAngle(searcherPos, treasurePosition.getCoordinate(), upperBound, lowerBound);
         double angleDegree = interiorAngle(angle.getRight(), angle.getCenter(), angle.getLeft());
 
         AngleHint angleHint = new AngleHint(
