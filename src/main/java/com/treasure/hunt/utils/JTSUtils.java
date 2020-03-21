@@ -33,6 +33,10 @@ public final class JTSUtils {
         return GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
     }
 
+    public static Point createPoint(Coordinate p) {
+        return createPoint(p.x, p.x);
+    }
+
     /**
      * @param a the begin of the {@link LineString}.
      * @param b the end of the {@link LineString}.
@@ -199,11 +203,17 @@ public final class JTSUtils {
      * @return a valid {@link GeometryAngle}, randomly generated.
      */
     public static GeometryAngle validRandomAngle(Coordinate searcher, Coordinate treasure, double maxExtend) {
-        if (maxExtend <= 0) {
+        return validRandomAngle(searcher, treasure, maxExtend, 0);
+    }
+
+    public static GeometryAngle validRandomAngle(Coordinate searcher, Coordinate treasure, double maxExtend, double minExtend) {
+
+        if (maxExtend <= 0 || minExtend < 0 || minExtend >= maxExtend) {
             return null;
         }
+
         double givenAngle = Angle.angle(searcher, treasure);
-        double extend = Math.random() * maxExtend;
+        double extend = minExtend + Math.random() * (maxExtend - minExtend);
         double start = givenAngle - extend * Math.random();
         return new GeometryAngle(GEOMETRY_FACTORY, searcher, start, extend);
     }
@@ -212,5 +222,15 @@ public final class JTSUtils {
         return geometries.stream()
                 .map(Geometry::getCoordinate)
                 .collect(Collectors.toList());
+    }
+
+    public static Polygon toPolygon(Envelope envelope) {
+        return GEOMETRY_FACTORY.createPolygon(new Coordinate[]{
+                new Coordinate(envelope.getMinX(), envelope.getMinY()),
+                new Coordinate(envelope.getMaxX(), envelope.getMinY()),
+                new Coordinate(envelope.getMaxX(), envelope.getMaxY()),
+                new Coordinate(envelope.getMinX(), envelope.getMaxY()),
+                new Coordinate(envelope.getMinX(), envelope.getMinY()),
+        });
     }
 }

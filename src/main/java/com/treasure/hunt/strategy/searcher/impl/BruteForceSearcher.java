@@ -3,6 +3,7 @@ package com.treasure.hunt.strategy.searcher.impl;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
+import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Point;
 
 /**
@@ -27,13 +28,13 @@ public class BruteForceSearcher implements Searcher<Hint> {
         SearchPath searchPath = new SearchPath();
         for (int i = 0; i < limit; i++) {
             y += ++lineSegmentDistance;
-            searchPath.addPoint(x, y);
+            searchPath.addPoint(JTSUtils.createPoint(x, y));
             x += lineSegmentDistance;
-            searchPath.addPoint(x, y);
+            searchPath.addPoint(JTSUtils.createPoint(x, y));
             y -= ++lineSegmentDistance;
-            searchPath.addPoint(x, y);
+            searchPath.addPoint(JTSUtils.createPoint(x, y));
             x -= lineSegmentDistance;
-            searchPath.addPoint(x, y);
+            searchPath.addPoint(JTSUtils.createPoint(x, y));
         }
         return searchPath;
     }

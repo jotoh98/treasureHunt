@@ -1,7 +1,11 @@
 package com.treasure.hunt.analysis;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Value;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This defines a component, we want to analyze in our simulation.
@@ -11,22 +15,23 @@ import lombok.Value;
 @Value
 public class StatisticObject {
     StatisticInfo statisticInfo;
-    Object value;
+    Number value;
 
-    public enum StatisticInfo {
-        TRACE_LENGTH("Trace length",
+    @EqualsAndHashCode(of = "name")
+    public static class StatisticInfo {
+        public static final StatisticInfo TRACE_LENGTH = new StatisticInfo("Trace length",
                 "If finished: Length of searchers path; if unfinished: Length of searchers path plus the direct route from searchers last point to treasure",
-                Double.class),
-        SOLUTION_QUOTIENT("Solution quotient",
+                Double.class);
+        public static final StatisticInfo SOLUTION_QUOTIENT = new StatisticInfo("Solution quotient",
                 "The Quotient of the optimum solution and the trace length",
-                Double.class),
-        HINT_TRACE_LENGTH_RATION("Hint-trace-length-ratio",
+                Double.class);
+        public static final StatisticInfo HINT_TRACE_LENGTH_RATION = new StatisticInfo("Hint-trace-length-ratio",
                 "The quotient of hint requests and trace length",
-                Double.class),
-        HINT_REQUEST("Hint-requests",
+                Double.class);
+        public static final StatisticInfo HINT_REQUEST = new StatisticInfo("Hint-requests",
                 "Number of requested hints",
-                Double.class),
-        OPTIMAL_SOLUTION("Optimal solution",
+                Double.class);
+        public static final StatisticInfo OPTIMAL_SOLUTION = new StatisticInfo("Optimal solution",
                 "The euclidean distance between treasure and searchers start position.",
                 Double.class);
         @Getter
@@ -40,6 +45,10 @@ public class StatisticObject {
             this.name = name;
             this.description = description;
             this.type = type;
+        }
+
+        public static List<StatisticInfo> getAllStatisticInfo() {
+            return Arrays.asList(TRACE_LENGTH, SOLUTION_QUOTIENT, HINT_TRACE_LENGTH_RATION, HINT_REQUEST, OPTIMAL_SOLUTION);
         }
     }
 }

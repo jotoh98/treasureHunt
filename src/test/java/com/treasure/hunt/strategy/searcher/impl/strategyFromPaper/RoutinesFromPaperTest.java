@@ -1,7 +1,9 @@
 package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
-import org.junit.Test;
+import com.treasure.hunt.strategy.searcher.SearchPath;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 
 import java.util.Arrays;
@@ -10,6 +12,11 @@ import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.Routine
 import static com.treasure.hunt.utils.JTSUtils.doubleEqual;
 
 public class RoutinesFromPaperTest {
+
+    @BeforeEach
+    void setUp(){
+
+    }
 
     private void testRectHint(Coordinate[] rect, HalfPlaneHint hint, int basicTrans) {
         int testBasicTrans = getBasicTransformation(rect, hint);
@@ -116,5 +123,43 @@ public class RoutinesFromPaperTest {
                         new Coordinate(-30, 26)
                 }
         );
+    }
+
+    private void testRectangleScan(Coordinate[] rectangleToTest, Coordinate[] stepsExpectedResult) {
+        SearchPath result = rectangleScan(rectangleToTest[0], rectangleToTest[1], rectangleToTest[2],
+                rectangleToTest[3], new SearchPath());
+
+        if (result.getPoints().size() != stepsExpectedResult.length) {
+            throw new AssertionError("The number of steps should be " + stepsExpectedResult.length + " " +
+                    "but equals " + result.getPoints().size());
+        }
+
+        for (int i = 0; i < stepsExpectedResult.length; i++) {
+            result.getPoints().get(i).getPrecisionModel().makePrecise(stepsExpectedResult[i]);
+            if (!result.getPoints().get(i).getCoordinate().equals2D(
+                    stepsExpectedResult[i])) {
+                throw new AssertionError("The coordinate " + result.getPoints().get(i) + " does" +
+                        " not equal the expected coordinate " + stepsExpectedResult[i]);
+            }
+        }
+    }
+
+    @Test
+    public void rectangleScanTest() {
+        Coordinate[] rectangleToTest = new Coordinate[]{
+                new Coordinate(0, 1), new Coordinate(2, 1), new Coordinate(2, -100),
+                new Coordinate(0, -100)
+        };
+        Coordinate[] stepsExpectedResult = new Coordinate[]{
+                new Coordinate(0, 1), new Coordinate(0, -100), new Coordinate(1, -100),
+                new Coordinate(1, 1), new Coordinate(2, 1), new Coordinate(2, -100)
+        };
+        testRectangleScan(rectangleToTest, stepsExpectedResult);
+
+        rectangleToTest = new Coordinate[]{
+                new Coordinate(2, 1), new Coordinate(2, -100), new Coordinate(0, -100),
+                new Coordinate(0, 1)
+        };
+        testRectangleScan(rectangleToTest, stepsExpectedResult);
     }
 }

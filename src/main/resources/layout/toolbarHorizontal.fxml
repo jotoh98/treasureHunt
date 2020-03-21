@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.*?>
 <HBox
         xmlns:fx="http://javafx.com/fxml/1"
-        fx:id="toolbar"
         xmlns="http://javafx.com/javafx/11"
         fx:controller="com.treasure.hunt.view.ToolbarController"
         styleClass="toolbar"
-/>
+>
+    <children>
+        <HBox fx:id="first">
+        </HBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <HBox fx:id="second">
+        </HBox>
+    </children>
+</HBox>

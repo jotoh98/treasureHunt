@@ -24,12 +24,11 @@ import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.Geometr
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.rectangleScan;
 import static com.treasure.hunt.utils.JTSUtils.*;
 
-
 /**
  * This implements the strategy from the paper:
  * {@literal Treasure Hunt in the Plane with Angular Hints}
  *
- * @author bsen
+ * @author Rank
  */
 public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     /**
@@ -49,7 +48,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     protected HalfPlaneHint previousHint;
     protected HalfPlaneHint currentHint;
     protected HintQuality lastHintQuality = HintQuality.none;
-    protected LastHintBadSubroutine lastHintBadSubroutine = new LastHintBadSubroutine();
+    protected LastHintBadSubroutine lastHintBadSubroutine = new LastHintBadSubroutine(this);
     Point start; // the initial position of the player
     List<StatusMessageItem> statusMessageItemsToBeRemovedNextMove = new ArrayList<>();
 
@@ -112,7 +111,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         //now analyse the hint:
         if (lastHintQuality == HintQuality.bad) {
             return addState(lastHintBadSubroutine.
-                    lastHintBadSubroutine(this, hint, previousHint, move));
+                    lastHintBadSubroutine(hint, previousHint, move));
         }
         lastHintQuality = HintQuality.good; //If the current hint isn't good, the hint quality is set below again
 
@@ -120,7 +119,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                 hint.getRight());
 
         Point[] horizontalSplit = splitRectangleHorizontally(searchAreaCornerA, searchAreaCornerB,
-                searchAreaCornerC, searchAreaCornerD, hint, hintLine);
+                searchAreaCornerC, searchAreaCornerD, hint, hintLine, true);
         if (horizontalSplit != null) {
             searchAreaCornerA = horizontalSplit[0];
             searchAreaCornerB = horizontalSplit[1];
@@ -131,7 +130,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                     searchAreaCornerC, searchAreaCornerD, move));
         }
         Point[] verticalSplit = splitRectangleVertically(searchAreaCornerA, searchAreaCornerB,
-                searchAreaCornerC, searchAreaCornerD, hint, hintLine);
+                searchAreaCornerC, searchAreaCornerD, hint, hintLine, true);
         if (verticalSplit != null) {
             searchAreaCornerA = verticalSplit[0];
             searchAreaCornerB = verticalSplit[1];
@@ -149,7 +148,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                 centerOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD)));
         move.addPoint(destination);
         lastHintQuality = HintQuality.bad;
-        previousHint = hint;
         return addState(move);
     }
 
@@ -259,8 +257,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     }
 
     /**
-     * If the hint-line goes through AD and BC and the hint is good (i.e. the hint divides one side of the rectangle in
-     * two parts such that both are bigger or equal to 1), the biggest axis parallel-rectangle which
+     * If the checkIfHintGood is true and the hint is bad (i.e. does not divide one side of the rectangle ABCD
+     * in two parts such that both are bigger or equal to 1), null is returned.
+     * If the hint-line goes through AD and BC, the biggest axis parallel-rectangle which
      * lies in ABCD and where the treasure could be located due to the information gained by the hint, is returned.
      * Otherwise the return value is null.
      *
@@ -269,71 +268,102 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * @param C
      * @param D
      * @param hint
+     * @param checkIfHintGood
      * @return
      */
-    private Point[] splitRectangleHorizontally(Point A, Point B, Point C, Point D, HalfPlaneHint hint,
-                                               LineSegment hintLine) {
+    protected Point[] splitRectangleHorizontally(Point A, Point B, Point C, Point D, HalfPlaneHint hint,
+                                                 LineSegment hintLine, boolean checkIfHintGood) {
         LineSegment BC = new LineSegment(searchAreaCornerB.getCoordinate(), searchAreaCornerC.getCoordinate());
         LineSegment AD = new LineSegment(searchAreaCornerA.getCoordinate(), searchAreaCornerD.getCoordinate());
 
         Coordinate intersectionADHint = JTSUtils.lineWayIntersection(hintLine, AD);
         Coordinate intersectionBCHint = JTSUtils.lineWayIntersection(hintLine, BC);
 
-        if (intersectionADHint == null || intersectionBCHint == null) { //todo impl like in splitVertical
+        if (intersectionADHint == null || intersectionBCHint == null ||
+                (checkIfHintGood && (
+                        intersectionADHint.distance(A.getCoordinate()) < 1
+                                || intersectionADHint.distance(D.getCoordinate()) < 1
+                                || intersectionBCHint.distance(B.getCoordinate()) < 1
+                                || intersectionBCHint.distance(C.getCoordinate()) < 1))
+        ) {
             return null;
         }
 
         if (hint.getDirection() == up) {
-            if ((intersectionADHint.getY() - D.getY()) >= 1) {
+            Coordinate newC = intersectionBCHint;
+            Coordinate newD = intersectionADHint;
+            return new Point[]{A, B, GEOMETRY_FACTORY.createPoint(newC), GEOMETRY_FACTORY.createPoint(newD)};
+        }
+
+        if (hint.getDirection() == down) {
+            Coordinate newA = intersectionADHint;
+            Coordinate newB = intersectionBCHint;
+            return new Point[]{GEOMETRY_FACTORY.createPoint(newA), GEOMETRY_FACTORY.createPoint(newB), C, D};
+        }
+
+        if (hint.pointsUpwards()) {
+            if (intersectionADHint.distance(D.getCoordinate())
+                    >= intersectionBCHint.distance(C.getCoordinate())) {
+                Coordinate newD = new Coordinate(D.getX(), intersectionBCHint.getY());
                 Coordinate newC = intersectionBCHint;
+                return new Point[]{A, B, GEOMETRY_FACTORY.createPoint(newC), GEOMETRY_FACTORY.createPoint(newD)};
+            } else {
+                Coordinate newC = new Coordinate(C.getX(), intersectionADHint.getY());
                 Coordinate newD = intersectionADHint;
                 return new Point[]{A, B, GEOMETRY_FACTORY.createPoint(newC), GEOMETRY_FACTORY.createPoint(newD)};
             }
         }
-
-        if (hint.getDirection() == down) {
-            if ((A.getY() - intersectionADHint.getY()) >= 1) {
-                Coordinate newA = intersectionADHint;
+        if (hint.pointsDownwards()) {
+            if (intersectionADHint.distance(A.getCoordinate()) >= intersectionBCHint.distance(B.getCoordinate())) {
+                Coordinate newA = new Coordinate(A.getX(), intersectionBCHint.getY());
                 Coordinate newB = intersectionBCHint;
                 return new Point[]{GEOMETRY_FACTORY.createPoint(newA), GEOMETRY_FACTORY.createPoint(newB), C, D};
-            }
-        }
-
-        if (hint.pointsUpwards()) {
-            if (intersectionADHint.distance(D.getCoordinate()) >= 1
-                    && intersectionBCHint.distance(C.getCoordinate()) >= 1) {
-                if (intersectionADHint.distance(D.getCoordinate())
-                        >= intersectionBCHint.distance(C.getCoordinate())) {
-                    Coordinate newD = new Coordinate(D.getX(), intersectionBCHint.getY());
-                    Coordinate newC = intersectionBCHint;
-                    return new Point[]{A, B, GEOMETRY_FACTORY.createPoint(newC), GEOMETRY_FACTORY.createPoint(newD)};
-                } else {
-                    Coordinate newC = new Coordinate(C.getX(), intersectionADHint.getY());
-                    Coordinate newD = intersectionADHint;
-                    return new Point[]{A, B, GEOMETRY_FACTORY.createPoint(newC), GEOMETRY_FACTORY.createPoint(newD)};
-                }
-            }
-        }
-        if (hint.pointsDownwards()) {
-            if (intersectionADHint.distance(A.getCoordinate()) >= 1
-                    && intersectionBCHint.distance(B.getCoordinate()) >= 1) {
-                if (intersectionADHint.distance(A.getCoordinate()) >= intersectionBCHint.distance(B.getCoordinate())) {
-                    Coordinate newA = new Coordinate(A.getX(), intersectionBCHint.getY());
-                    Coordinate newB = intersectionBCHint;
-                    return new Point[]{GEOMETRY_FACTORY.createPoint(newA), GEOMETRY_FACTORY.createPoint(newB), C, D};
-                } else {
-                    Coordinate newB = new Coordinate(B.getX(), intersectionADHint.getY());
-                    Coordinate newA = intersectionADHint;
-                    return new Point[]{GEOMETRY_FACTORY.createPoint(newA), GEOMETRY_FACTORY.createPoint(newB), C, D};
-                }
+            } else {
+                Coordinate newB = new Coordinate(B.getX(), intersectionADHint.getY());
+                Coordinate newA = intersectionADHint;
+                return new Point[]{GEOMETRY_FACTORY.createPoint(newA), GEOMETRY_FACTORY.createPoint(newB), C, D};
             }
         }
         return null;
     }
 
     /**
-     * If the hint-line goes through AB and CD and the hint is good (i.e. the hint divides one side of the rectangle in
-     * two parts such that the smaller one is bigger or equal to 1), the biggest axis-parallel rectangle which
+     * A specific rectangle scanner for this strategy, in case of StrategyFromPaper, the standard rectangleScanSpecificForStrategy from
+     * RoutinesFromPaper is used (this method is required for the MinimumRectangleStrategy which inherits from this class.)
+     *
+     * @param rectangleCorner1
+     * @param rectangleCorner2
+     * @param rectangleCorner3
+     * @param rectangleCorner4
+     * @param move
+     * @return
+     */
+    protected SearchPath specificRectangleScan(Coordinate rectangleCorner1, Coordinate rectangleCorner2,
+                                               Coordinate rectangleCorner3, Coordinate rectangleCorner4, SearchPath move) {
+        return rectangleScan(rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4, move);
+    }
+
+    /**
+     * A specific rectangle scanner for this strategy, in case of StrategyFromPaper, the standard rectangleScanSpecificForStrategy from
+     * RoutinesFromPaper is used (this method is required for the MinimumRectangleStrategy which inherits from this class.)
+     *
+     * @param rectangleCorner1
+     * @param rectangleCorner2
+     * @param rectangleCorner3
+     * @param rectangleCorner4
+     * @param move
+     * @return
+     */
+    protected SearchPath specificRectangleScan(Point rectangleCorner1, Point rectangleCorner2,
+                                               Point rectangleCorner3, Point rectangleCorner4, SearchPath move) {
+        return specificRectangleScan(rectangleCorner1.getCoordinate(), rectangleCorner2.getCoordinate(),
+                rectangleCorner3.getCoordinate(), rectangleCorner4.getCoordinate(), move);
+    }
+
+    /**
+     * If the checkIfHintGood is true and the hint is bad (i.e. does not divide one side of the rectangle ABCD
+     * in two parts such that both are bigger or equal to 1), null is returned.
+     * If the hint-line goes through AB and CD, the biggest axis-parallel rectangle which
      * lies in ABCD and where the treasure could be located due to the information gained by the hint, is returned.
      * Otherwise the return value is null.
      *
@@ -342,23 +372,25 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * @param C
      * @param D
      * @param hint
+     * @param checkIfHintGood
      * @return
      */
-    private Point[] splitRectangleVertically(Point A, Point B, Point C, Point D, HalfPlaneHint hint,
-                                             LineSegment hintLine) {
+    protected Point[] splitRectangleVertically(Point A, Point B, Point C, Point D, HalfPlaneHint hint,
+                                               LineSegment hintLine, boolean checkIfHintGood) {
         LineSegment AB = new LineSegment(searchAreaCornerA.getCoordinate(), searchAreaCornerB.getCoordinate());
         LineSegment CD = new LineSegment(searchAreaCornerC.getCoordinate(), searchAreaCornerD.getCoordinate());
 
         Coordinate intersectionABHint = lineWayIntersection(hintLine, AB);
         Coordinate intersectionCDHint = lineWayIntersection(hintLine, CD);
 
-        // checks if the hint is good (i.e. if the hint divides one side of the rectangles in into two parts such that
-        // the smaller one is bigger or equal to 1)
-        if (intersectionABHint == null || intersectionCDHint == null
-                || (intersectionABHint.distance(A.getCoordinate()) < 1
-                || intersectionABHint.distance(B.getCoordinate()) < 1
-                || intersectionCDHint.distance(C.getCoordinate()) < 1
-                || intersectionCDHint.distance(D.getCoordinate()) < 1)) {
+        // checks if the hint is good, if checkIfHintGood is true
+        if (intersectionABHint == null || intersectionCDHint == null ||
+                (checkIfHintGood &&
+                        (intersectionABHint.distance(A.getCoordinate()) < 1
+                                || intersectionABHint.distance(B.getCoordinate()) < 1
+                                || intersectionCDHint.distance(C.getCoordinate()) < 1
+                                || intersectionCDHint.distance(D.getCoordinate()) < 1))
+        ) {
             return null;
         }
 
@@ -404,7 +436,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Point oldC = searchAreaCornerC;
         Point oldD = searchAreaCornerD;
         setRectToPhase();
-        rectangleScan(oldA, oldB, oldC, oldD, move);
+        specificRectangleScan(oldA, oldB, oldC, oldD, move);
         move.addPoint(centerOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD));
         return move;
     }
