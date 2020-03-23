@@ -122,9 +122,10 @@ public class GameEngine {
      * Let the {@link GameEngine#hider} give its {@link Hint}.
      */
     protected void hiderMove() {
-        lastHint = hider.move(lastSearchPath);
-        assert (lastHint != null);
-        verifyHint(lastHint, treasurePos);
+        Hint newHint = hider.move(lastSearchPath);
+        assert (newHint != null);
+        verifyHint(newHint, treasurePos);
+        lastHint = newHint;
     }
 
     /**
@@ -145,7 +146,6 @@ public class GameEngine {
     /**
      * TODO implement:
      * AngleHints must be of angle [0, 180] !?
-     * CircleHints must contain each other !?
      * Verifies whether the {@link Hint} {@code hint} given by the {@link Hider} followed the rules.
      *
      * @param hint             {@link Hint} to be verified
@@ -158,11 +158,19 @@ public class GameEngine {
             }
         }
         if (hint instanceof CircleHint) {
-            Circle circle = ((CircleHint) hint).getCircle();
-            if (!circle.contains(treasurePosition.getCoordinate())) {
+            Circle lastCircleHint = ((CircleHint) hint).getCircle();
+            Circle newCircleHint = ((CircleHint) hint).getCircle();
+            // check, whether the CircleHint contains the treasure.
+            if (!newCircleHint.contains(treasurePosition.getCoordinate())) {
                 throw new IllegalArgumentException("The CircleHint does not contain the treasure.\n" +
-                        "It says, " + circle.getRadius() + " around " + circle.getCenter() + ", " +
-                        "but was " + circle.getCenter().distance(treasurePosition.getCoordinate()));
+                        "It says, " + newCircleHint.getRadius() + " around " + newCircleHint.getCenter() + ", " +
+                        "but was " + newCircleHint.getCenter().distance(treasurePosition.getCoordinate()));
+            }
+            // check, whether the current CircleHint lies completely in the previous.
+            if (lastHint != null) {
+                if (lastCircleHint.getRadius() > (lastCircleHint.distance(newCircleHint) + newCircleHint.getRadius())) {
+                    throw new IllegalArgumentException("New CircleHint does not completely lie in the last Circle Hint.");
+                }
             }
         }
     }
