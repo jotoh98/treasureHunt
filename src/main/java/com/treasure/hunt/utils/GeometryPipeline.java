@@ -70,4 +70,19 @@ public class GeometryPipeline {
                     return Stream.empty();
                 });
     }
+
+    /**
+     * Combine and apply all filters on the geometry items.
+     *
+     * @param stream geometry items to be filtered
+     * @return filtered geometry items
+     */
+    public static Stream<GeometryItem<?>> pipe(Stream<GeometryItem<?>> stream) {
+        return ListUtils.filterStream(
+                stream,
+                GeometryPipeline::filterOverride,
+                GeometryPipeline::assignMultiStyles,
+                GeometryPipeline::sortZIndex
+        );
+    }
 }

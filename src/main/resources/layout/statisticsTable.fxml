@@ -17,6 +17,8 @@
                        minWidth="-Infinity" text="rounds"/>
                 <Button fx:id="runMultipleButton" mnemonicParsing="false" onAction="#onSeriesRun"
                         text="Run multiple games"/>
+                <Button fx:id="superPlot" onAction="#onPlot" text="Create custom plot"/>
+
                 <CoinProgress fx:id="progressIndicator" progress="0.0" visible="false" prefHeight="30" prefWidth="30"/>
                 <Button mnemonicParsing="false" onAction="#onSeriesLoad" text="Load series file"/>
                 <HBox alignment="TOP_RIGHT" spacing="8.0" HBox.hgrow="ALWAYS">

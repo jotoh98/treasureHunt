@@ -4,6 +4,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Value;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * This defines a component, we want to analyze in our simulation.
  *
@@ -42,6 +45,10 @@ public class StatisticObject {
             this.name = name;
             this.description = description;
             this.type = type;
+        }
+
+        public static List<StatisticInfo> getAllStatisticInfo() {
+            return Arrays.asList(TRACE_LENGTH, SOLUTION_QUOTIENT, HINT_TRACE_LENGTH_RATION, HINT_REQUEST, OPTIMAL_SOLUTION);
         }
     }
 }

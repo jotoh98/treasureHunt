@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Trostorff, Daniel
@@ -63,6 +64,20 @@ public class Statistic {
         return getHintRequests() / traceLength;
     }
 
+    public static List<Number> filterBy(List<StatisticsWithId> list, StatisticObject.StatisticInfo info) {
+        return list
+                .stream()
+                .flatMap(statisticsWithId -> statisticsWithId.getStatisticObjects().stream())
+                .filter(statisticObject ->
+                        statisticObject
+                                .getStatisticInfo()
+                                .equals(info)
+                )
+                .map(StatisticObject::getValue)
+                .collect(Collectors.toList());
+
+    }
+
     public List<StatisticObject> calculate(List<Turn> turns) {
         this.turns = new ArrayList<>(turns);
         ArrayList<StatisticObject> statisticObjects = new ArrayList<>(Arrays.asList(
@@ -83,6 +98,8 @@ public class Statistic {
                 .forEach((key, value) -> statisticObjects.add(new StatisticObject(new StatisticObject.StatisticInfo(key, "Imprted from preferences", Number.class), value)));
         return statisticObjects;
     }
+
+
 }
 
 

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<GridPane xmlns:fx="http://javafx.com/fxml/1" hgap="10.0" minWidth="400.0" vgap="10.0"
+          xmlns="http://javafx.com/javafx/11.0.1" fx:controller="com.treasure.hunt.view.plot.PlotSettingsController">
+   <rowConstraints>
+      <RowConstraints minHeight="10.0" prefHeight="30.0"/>
+      <RowConstraints minHeight="10.0" prefHeight="30.0"/>
+      <RowConstraints minHeight="10.0" prefHeight="30.0"/>
+      <RowConstraints minHeight="10.0" prefHeight="30.0"/>
+      <RowConstraints minHeight="10.0" prefHeight="30.0"/>
+      <RowConstraints minHeight="10.0" prefHeight="30.0"/>
+      <RowConstraints minHeight="10.0" prefHeight="30.0"/>
+      <RowConstraints minHeight="10.0" prefHeight="30.0"/>
+      <RowConstraints minHeight="10.0" prefHeight="30.0"/>
+      <RowConstraints minHeight="10.0" prefHeight="30.0"/>
+   </rowConstraints>
+   <columnConstraints>
+      <ColumnConstraints minWidth="10.0"/>
+      <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+   </columnConstraints>
+   <children>
+      <Label text="Select evaluating statistic"/>
+      <Label text="Select upper bound" GridPane.rowIndex="4"/>
+      <Label text="Select lower bound" GridPane.rowIndex="3"/>
+      <Label text="Select mutable preference" GridPane.rowIndex="2"/>
+      <Label text="Select step size" GridPane.rowIndex="5"/>
+      <Label text="Accuracy of series-runs ( rounds )" GridPane.rowIndex="7"/>
+      <Button mnemonicParsing="false" onAction="#onSubmit" text="Submit Settings" GridPane.rowIndex="9"/>
+      <CheckBox fx:id="savePNGCheckBox" mnemonicParsing="false" text="Save PNG" GridPane.columnIndex="1"
+                GridPane.rowIndex="6"/>
+      <Label text="Save as PNG file?" GridPane.rowIndex="6"/>
+      <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="9">
+         <children>
+            <Button alignment="TOP_CENTER" mnemonicParsing="false" onAction="#onCancel" text="Cancel"/>
+         </children>
+      </HBox>
+      <ComboBox fx:id="selectStatistic" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
+                GridPane.hgrow="ALWAYS"/>
+      <ComboBox fx:id="selectPreference" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
+                GridPane.hgrow="ALWAYS" GridPane.rowIndex="2"/>
+      <TextField fx:id="lowerBound" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+      <TextField fx:id="upperBound" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+      <TextField fx:id="stepSize" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+      <TextField fx:id="seriesAccuracy" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+      <Label text="Evaluation type" GridPane.rowIndex="1"/>
+      <ComboBox fx:id="selectAggregationTypeCombo" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
+                GridPane.hgrow="ALWAYS" GridPane.rowIndex="1"/>
+      <Label text="ERROR" textFill="RED" GridPane.columnSpan="2147483647" GridPane.rowIndex="8" fx:id="errorLabel"/>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+   </padding>
+</GridPane>
