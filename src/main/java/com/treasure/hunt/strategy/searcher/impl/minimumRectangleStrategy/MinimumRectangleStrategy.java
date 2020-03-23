@@ -2,6 +2,8 @@ package com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
+import com.treasure.hunt.strategy.geom.StatusMessageItem;
+import com.treasure.hunt.strategy.geom.StatusMessageType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
@@ -19,6 +21,42 @@ import static com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.
 import static com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.ExcludedAreasUtils.visitedPolygon;
 
 /**
+ * The strategy MinimumRectangleStrategy works similar to the strategy from the paper
+ * "Deterministic Treasure Hunt in the Plane with Angular Hints" from Sébastien Bouchard et al..
+ * We will call the strategy from the paper S in the following text.
+ * S gets improved by this strategy.
+ * Like S, this strategy has phases 1,2,... in which it searches the treasure in rectangles
+ * of the side length 2^i.
+ * These rectangles are also centered in the start position of the searcher.
+ * But in contrast to S, in this strategy the phase rectangles aren't oriented in order to be axis
+ * parallel, but the rectangle is rotated in order to have one side that is parallel
+ * to the first gotten hint.
+ * By that, already half of the phase rectangle can be ignored.
+ * Phase rectangles are indicated by yellow in the visualisation.
+ * When the phase gets increased (and at the start of the strategy), the intersection I of all
+ * halfplanes of all hints and the current phase rectangle is created.
+ * The difference D of I and all already seen areas is created.
+ * D is visualized in green.
+ * Then the minimum rectangle which has sides parallel to the phase rectangle and where D is
+ * inside, is formed and S is applied on it as long as the phase is not increased.
+ * The area where the treasure is currently searched is visualized by red.
+ * Then the procedure gets repeated with the new phase.
+ * Also when applying RectangleScan, this strategy does reduce the rectangle to be  scanned,
+ * by ignoring some areas it has already seen and areas which can be ignored due to hints.
+ * <p>
+ * An annotation to the implementation:
+ * The implementation works on two different coordinate systems:
+ * 1. the "external" coordinate system: There all coordinates are represented as in the world around this strategy,
+ * i.e. the when move() returns, this gets interpreted by the game engine so all coordinates used in the return value
+ * are by definition in external coordinates.
+ * Also the strategy gets hints which are represented in external coordinates
+ * 2. the "internal" coordinate system: Since the strategy from the paper can only work on axis-parallel phase rectangles,
+ * the real phase rectangle gets rotated around the center of it in order to be easily processed by the strategy
+ * from the paper. For simplification the rectangle also gets shifted so that the center matches (0,0).
+ * By rotating and shifting the external coordinates in that manner, the internal coordinate system is created.
+ * The two coordinate systems can be translated in one another by using the TransformForAxisParallelism instance
+ * transformer.
+ *
  * @author Rank
  */
 
@@ -29,20 +67,20 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
     /**
      * received after the last update of the phase's rectangle
      */
-    private List<HalfPlaneHint> obtainedHints;
+    private List<HalfPlaneHint> obtainedHints; // stored in internal coordinates
     /**
      * This points represent the polygon where the treasure must lie in if it is in the current search rectangle,
      * according to all obtained hints.
      * If this List is empty, the treasure is not in the current search rectangle.
      */
-    private Geometry currentMultiPolygon;
+    private Geometry currentMultiPolygon; // stored in internal coordinates
     /**
      * This are not real obtained hints.
      * This hints are just the borders of the current phase rectangle interpreted as hints.
-     * All hintslines go from one corner of the current phase rectangle to another and show in a direction that the
+     * All hintlines go from one corner of the current phase rectangle to another and show in a direction that the
      * hole phase rectangle lies in the treasure area.
      */
-    private ArrayList<HalfPlaneHint> phaseHints;
+    private ArrayList<HalfPlaneHint> phaseHints; // stored in internal coordinates
     /**
      * The polygon the player already has seen because he was there.
      */
@@ -50,7 +88,9 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
     /**
      * The lastLocation of the previous move
      */
-    private Point lastLocation; // in internal coordinates
+    private Point lastLocation; // stored in internal coordinates
+
+    private ArrayList<StatusMessageItem> statusMessagesToBeRemovedNextMoveInMinimumRectangleStrategy = new ArrayList<>();
 
     /**
      * @param searcherStartPosition the {@link Searcher} starting position,
@@ -71,6 +111,8 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         obtainedHints = new ArrayList<>();
         currentMultiPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon();
         visitedPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon();
+
+
     }
 
     /**
@@ -83,6 +125,32 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
     public SearchPath move() {
         SearchPath move = new SearchPath();
         move.addPoint(realSearcherStartPosition);
+        StatusMessageItem beginningStatusMessage = new StatusMessageItem(StatusMessageType.EXPLANATION_STRATEGY,
+                "The strategy MinimumRectangleStrategy works similar to the strategy from the paper \n" +
+                        "\"Deterministic Treasure Hunt in the Plane with Angular Hints\" from Sébastien Bouchard et " +
+                        "al..\nWe will call the strategy from the paper S in the following text.\n" +
+                        "S gets improved by this strategy.\n" +
+                        "Like S, this strategy has phases 1,2,... in which it searches the treasure in rectangles \n" +
+                        "of the side length 2^i.\n" +
+                        "These rectangles are also centered in the start position of the searcher.\n" +
+                        "But in contrast to S, in this strategy the phase rectangles aren't oriented in order to be axis\n" +
+                        "parallel, but the rectangle is rotated in order to have one side that is parallel \n" +
+                        "to the first gotten hint.\n" +
+                        "By that, already half of the phase rectangle can be ignored.\n" +
+                        "Phase rectangles are indicated by yellow in the visualisation.\n" +
+                        "When the phase gets increased (and at the start of the strategy), the intersection I of all " +
+                        "\nhalfplanes of all hints and the current phase rectangle is created.\n" +
+                        "The difference D of I and all already seen areas is created.\n" +
+                        "D is visualized in green.\n" +
+                        "Then the minimum rectangle which has sides parallel to the phase rectangle and where D is\n" +
+                        "inside, is formed and S is applied on it as long as the phase is not increased.\n" +
+                        "The area where the treasure is currently searched is visualized by red.\n" +
+                        "Then the procedure gets repeated with the new phase.\n\n" +
+                        "Also when applying RectangleScan, this strategy does reduce the rectangle to be  scanned,\n" +
+                        "by ignoring some areas it has already seen and areas which can be ignored due to hints."
+        );
+        move.getStatusMessageItemsToBeAdded().add(beginningStatusMessage);
+        statusMessagesToBeRemovedNextMoveInMinimumRectangleStrategy.add(beginningStatusMessage);
         return move;
     }
 
@@ -131,13 +199,14 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
 
     /**
      * This method has to be called directly before move(HalfPlaneHint) returns
-     * In this method, three things are accomplished:
+     * In this method, several things are accomplished:
      * 1. the internal fields are updated (visitedPolygon, lastLocation)
      * 2. the move is transformed in the external coordinates
      * 3. the state of the current rectangle is added to the move
+     * 4. the status messages which have to be removed, get removed
      *
-     * @param move
-     * @return
+     * @param move the move which is done this draw in internal coordinates
+     * @return the transformed move with added state and removed status messages
      */
     protected SearchPath returnHandling(SearchPath move) {
         // update internal state of this strategy
@@ -169,6 +238,9 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
                     GeometryType.HALF_PLANE_LINE_BROWN));
         }
 
+        // remove status messages
+        move.getStatusMessageItemsToBeRemoved().addAll(statusMessagesToBeRemovedNextMoveInMinimumRectangleStrategy);
+
         // add search rectangle and phase rectangle
         return super.addState(move, transformer.toExternal(searchRectangle()),
                 transformer.toExternal(phaseRectangle(phase)));
@@ -196,8 +268,13 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         }
         Polygon newPolygonToScanTransformed = transformerForRectangleAxisParallelism.toInternal(newPolygonToScan);
         visitedPolygon = (Polygon) visitedPolygon.union(visitedPolygon(lastLocation, move));
-        Geometry newAreaToScanTransformed = newPolygonToScanTransformed.difference(visitedPolygon);
-        if(newAreaToScanTransformed.getArea()==0){
+        Geometry newAreaToScanTransformed;
+        try {
+            newAreaToScanTransformed = newPolygonToScanTransformed.difference(visitedPolygon);
+        } catch (TopologyException e) {
+            newAreaToScanTransformed = newPolygonToScanTransformed;
+        }
+        if (newAreaToScanTransformed.getArea() == 0) {
             return move;
         }
 
