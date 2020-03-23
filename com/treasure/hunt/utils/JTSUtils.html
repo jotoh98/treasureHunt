@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9};
+var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -190,29 +190,36 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>static org.locationtech.jts.algorithm.ConvexHull</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createConvexHull(java.util.List)">createConvexHull</a></span>&#8203;(java.util.List&lt;org.locationtech.jts.geom.Coordinate&gt;&nbsp;coordinates)</code></th>
+<td class="colLast">
+<div class="block">Get the <code>ConvexHull</code> for a list of <code>Coordinate</code>s.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static org.locationtech.jts.geom.LineString</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createLineString(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">createLineString</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;a,
                 org.locationtech.jts.geom.Point&nbsp;b)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static org.locationtech.jts.geom.Point</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createPoint(double,double)">createPoint</a></span>&#8203;(double&nbsp;x,
            double&nbsp;y)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static org.locationtech.jts.geom.Point</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createPoint(org.locationtech.jts.geom.Coordinate)">createPoint</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;p)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#doubleEqual(double,double)">doubleEqual</a></span>&#8203;(double&nbsp;a,
            double&nbsp;b)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static java.util.List&lt;org.locationtech.jts.geom.Coordinate&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBoundaryIntersections(com.treasure.hunt.jts.awt.CanvasBoundary,org.locationtech.jts.geom.LineSegment)">getBoundaryIntersections</a></span>&#8203;(<a href="../jts/awt/CanvasBoundary.html" title="class in com.treasure.hunt.jts.awt">CanvasBoundary</a>&nbsp;boundary,
                         org.locationtech.jts.geom.LineSegment&nbsp;infinite)</code></th>
@@ -220,12 +227,12 @@ extends java.lang.Object</pre>
 <div class="block">Get the intersections between the infinite line and the visual boundary.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static java.util.List&lt;org.locationtech.jts.geom.Coordinate&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCoordinateList(java.util.List)">getCoordinateList</a></span>&#8203;(java.util.List&lt;? extends org.locationtech.jts.geom.Geometry&gt;&nbsp;geometries)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static org.locationtech.jts.geom.Coordinate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lineWayIntersection(org.locationtech.jts.geom.LineSegment,org.locationtech.jts.geom.LineSegment)">lineWayIntersection</a></span>&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;line,
                    org.locationtech.jts.geom.LineSegment&nbsp;segment)</code></th>
@@ -234,29 +241,29 @@ extends java.lang.Object</pre>
  (if one exists).</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static org.locationtech.jts.geom.Coordinate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#middleOfAngleHint(com.treasure.hunt.strategy.hint.impl.AngleHint)">middleOfAngleHint</a></span>&#8203;(<a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&nbsp;angleHint)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static org.locationtech.jts.geom.Coordinate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#middleOfAngleHint(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate)">middleOfAngleHint</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;right,
                  org.locationtech.jts.geom.Coordinate&nbsp;center,
                  org.locationtech.jts.geom.Coordinate&nbsp;left)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static org.locationtech.jts.math.Vector2D</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#negateX(org.locationtech.jts.math.Vector2D)">negateX</a></span>&#8203;(org.locationtech.jts.math.Vector2D&nbsp;vector)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>static org.locationtech.jts.math.Vector2D</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#negateY(org.locationtech.jts.math.Vector2D)">negateY</a></span>&#8203;(org.locationtech.jts.math.Vector2D&nbsp;vector)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>static org.locationtech.jts.geom.Coordinate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#normalizedCoordinate(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate)">normalizedCoordinate</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;fixed,
                     org.locationtech.jts.geom.Coordinate&nbsp;floating)</code></th>
@@ -264,19 +271,19 @@ extends java.lang.Object</pre>
 <div class="block">Get the coordinate 1 length-unit away from fixed <code>Coordinate</code> in vector (fixed to floating) direction.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>static org.locationtech.jts.math.Vector2D</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#normalizedVector(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate)">normalizedVector</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;from,
                 org.locationtech.jts.geom.Coordinate&nbsp;to)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#pointInAngle(com.treasure.hunt.jts.geom.GeometryAngle,org.locationtech.jts.geom.Coordinate)">pointInAngle</a></span>&#8203;(<a href="../jts/geom/GeometryAngle.html" title="class in com.treasure.hunt.jts.geom">GeometryAngle</a>&nbsp;geometryAngle,
             org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#pointInAngle(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate)">pointInAngle</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;right,
             org.locationtech.jts.geom.Coordinate&nbsp;center,
@@ -287,25 +294,25 @@ extends java.lang.Object</pre>
  which is defined by <code>right</code>, <code>center</code> and <code>left</code>.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#signsEqual(org.locationtech.jts.math.Vector2D,org.locationtech.jts.math.Vector2D)">signsEqual</a></span>&#8203;(org.locationtech.jts.math.Vector2D&nbsp;v0,
           org.locationtech.jts.math.Vector2D&nbsp;v1)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>static org.locationtech.jts.geom.Polygon</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toPolygon(org.locationtech.jts.geom.Envelope)">toPolygon</a></span>&#8203;(org.locationtech.jts.geom.Envelope&nbsp;envelope)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>static <a href="../jts/geom/GeometryAngle.html" title="class in com.treasure.hunt.jts.geom">GeometryAngle</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#validRandomAngle(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,double)">validRandomAngle</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;searcher,
                 org.locationtech.jts.geom.Coordinate&nbsp;treasure,
                 double&nbsp;maxExtend)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>static <a href="../jts/geom/GeometryAngle.html" title="class in com.treasure.hunt.jts.geom">GeometryAngle</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#validRandomAngle(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,double,double)">validRandomAngle</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;searcher,
                 org.locationtech.jts.geom.Coordinate&nbsp;treasure,
@@ -659,7 +666,7 @@ extends java.lang.Object</pre>
 <a id="getBoundaryIntersections(com.treasure.hunt.jts.awt.CanvasBoundary,org.locationtech.jts.geom.LineSegment)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getBoundaryIntersections</h4>
 <pre class="methodSignature">public static&nbsp;java.util.List&lt;org.locationtech.jts.geom.Coordinate&gt;&nbsp;getBoundaryIntersections&#8203;(<a href="../jts/awt/CanvasBoundary.html" title="class in com.treasure.hunt.jts.awt">CanvasBoundary</a>&nbsp;boundary,
@@ -671,6 +678,22 @@ extends java.lang.Object</pre>
 <dd><code>infinite</code> - infinite line</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the intersections between the infinite line extension and the boundary <code>LineSegment</code>s</dd>
+</dl>
+</li>
+</ul>
+<a id="createConvexHull(java.util.List)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>createConvexHull</h4>
+<pre class="methodSignature">public static&nbsp;org.locationtech.jts.algorithm.ConvexHull&nbsp;createConvexHull&#8203;(java.util.List&lt;org.locationtech.jts.geom.Coordinate&gt;&nbsp;coordinates)</pre>
+<div class="block">Get the <code>ConvexHull</code> for a list of <code>Coordinate</code>s.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>coordinates</code> - the list of coordinates</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the convex hull for the list of coordinates</dd>
 </dl>
 </li>
 </ul>
