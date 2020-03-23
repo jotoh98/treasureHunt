@@ -3,12 +3,18 @@ package com.treasure.hunt.strategy.hider.impl;
 import com.treasure.hunt.game.mods.hideandseek.HideAndSeekHider;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.utils.Preference;
 import javafx.util.Pair;
+import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
 import java.util.List;
 
+@Slf4j
+@Preference(name = StatisticalHider.HintSize_Preference, value = 180)
+@Preference(name = StatisticalHider.TreasureLocationX_Preference, value = 70)
+@Preference(name = StatisticalHider.TreasureLocationY_Preference, value = 70)
 public class MobileTreasureHider extends StatisticalHider implements HideAndSeekHider<AngleHint> {
 
     @Override

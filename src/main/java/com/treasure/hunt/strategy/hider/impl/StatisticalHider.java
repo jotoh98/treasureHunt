@@ -1,10 +1,12 @@
 package com.treasure.hunt.strategy.hider.impl;
 
+import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.geom.*;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
+import com.treasure.hunt.utils.Preference;
 import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.algorithm.Angle;
@@ -28,23 +30,28 @@ public abstract class StatisticalHider{
     protected Point startingPoint;
     protected Geometry currentPossibleArea;
 
+    //possible Measurements
     protected double centroidDistanceToTreasure;
     protected double absoluteAreaCutoff;
     protected double relativeAreaCutoff;
     protected double counterStrategyGeometryCutoff;
     protected double distanceFromNormalAngleRay;
 
-    protected Point treasure;
+    public static final String HintSize_Preference = "preferred hint size";
+    public static final String TreasureLocationX_Preference = "preferred x-Value treasure";
+    public static final String TreasureLocationY_Preference = "preferred y-Value treasure";
 
-    //Todo make this a preference
-    protected double preferredHintSize = 180;
+    protected Point treasure;
+    protected double preferredHintSize;
 
     public void init(Point searcherStartPosition) {
+        log.info("hider init");
         this.gameField = new GameField();
         startingPoint = searcherStartPosition;
 
-        Random rand = new Random();
-        treasure = gf.createPoint(new Coordinate(Math.random() * 250 ,Math.random() * 250));
+        PreferenceService pS = PreferenceService.getInstance();
+        treasure = gf.createPoint(new Coordinate(pS.getPreference(TreasureLocationX_Preference, 70).doubleValue(), pS.getPreference(TreasureLocationY_Preference,70).doubleValue()));
+        preferredHintSize = pS.getPreference( HintSize_Preference , 180 ).doubleValue();
 
         gameField.init(searcherStartPosition, treasure);
         this.currentPossibleArea = gameField.getPossibleArea();
@@ -178,7 +185,7 @@ public abstract class StatisticalHider{
         return stats;
     }
 
-    /**
+    /**Todo: if hint is 180degree make it an explicit HalfPlaneHint
      * Generates {samples} evenly spaced angles
      *
      * @param samples determines how many Hints are returned

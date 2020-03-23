@@ -4,21 +4,17 @@ import com.treasure.hunt.strategy.geom.*;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.utils.JTSUtils;
+import com.treasure.hunt.utils.Preference;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Point;
 
-import java.awt.*;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-
 @Slf4j
+@Preference(name = StatisticalHider.HintSize_Preference, value = 180)
+@Preference(name = StatisticalHider.TreasureLocationX_Preference, value = 70)
+@Preference(name = StatisticalHider.TreasureLocationY_Preference, value = 70)
 public class FixedTreasureHider extends StatisticalHider implements Hider<AngleHint> {
 
     @Override
