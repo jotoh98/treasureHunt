@@ -3,7 +3,6 @@ package com.treasure.hunt.view;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.jts.awt.PointTransformation;
 import com.treasure.hunt.jts.geom.Grid;
-import com.treasure.hunt.jts.geom.HalfPlane;
 import com.treasure.hunt.service.select.SelectionService;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
@@ -124,10 +123,6 @@ public class CanvasController {
                     .addListener(observable1 -> drawShapes());
 
             this.gameManager.get().addAdditional("grid", new GeometryItem<>(new Grid(), GeometryType.GRID));
-            HalfPlane from = HalfPlane.from(Vector2D.create(1, 0), 1);
-            this.gameManager.get().addAdditional("halfplane", new GeometryItem<>(from, GeometryType.HALF_PLANE));
-
-            System.out.println(from.toString());
 
             this.gameManager.get().getAdditional()
                     .addListener((InvalidationListener) change -> drawShapes());
