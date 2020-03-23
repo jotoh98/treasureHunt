@@ -116,6 +116,10 @@
     -fx-text-fill: white;
 }
 
+.text-field, .combo-box{
+    -fx-text-fill: white;
+}
+
 .table-view:focused {
     -fx-background-color: transparent;
 }
