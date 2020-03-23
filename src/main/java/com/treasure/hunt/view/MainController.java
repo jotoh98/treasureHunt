@@ -257,8 +257,8 @@ public class MainController {
     }
 
     private void addWidgets() {
-        Widget<PointInspectorController, ?> pointInspectorWidget = new Widget<>("/layout/pointInspector.fxml");
-        pointInspectorWidget.getController().init(gameManager);
+        Widget<ClickInspectorController, ?> pointInspectorWidget = new Widget<>("/layout/clickedInspector.fxml");
+        pointInspectorWidget.getController().init();
         insertWidget(SplitPaneLocation.LEFT_LOWER, "Inspector", pointInspectorWidget.getComponent());
 
         Widget<BeatWidgetController, ?> beatWidget = new Widget<>("/layout/beatWidget.fxml");
