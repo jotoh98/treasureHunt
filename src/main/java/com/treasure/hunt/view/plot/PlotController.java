@@ -44,7 +44,7 @@ public class PlotController {
             GameManager newGameManager = new GameManager(selectedSearcher, selectedHider, selectedGameEngine);
 
             StatisticsWithIdsAndPath currentStatistics = SeriesService.getInstance().runSeriesAndSaveToFile(settings.getSeriesAccuracyValue(), newGameManager, a -> {
-            }, null, false, true);
+            }, null, false, true, settings.getMaxSteps());
 
             List<Number> statisticValues = Statistic.filterBy(currentStatistics.getStatisticsWithIds(), settings.getStatisticInfo());
             computedValues.add(new Pair<>(currentStatisticValue, settings.getType().getAggregation().apply(statisticValues).doubleValue()));
