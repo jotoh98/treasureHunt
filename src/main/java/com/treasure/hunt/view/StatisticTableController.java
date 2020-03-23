@@ -1,5 +1,6 @@
-package com.treasure.hunt.view.widget;
+package com.treasure.hunt.view;
 
+import com.opencsv.CSVWriter;
 import com.treasure.hunt.analysis.StatisticObject;
 import com.treasure.hunt.analysis.StatisticsWithId;
 import com.treasure.hunt.analysis.StatisticsWithIdsAndPath;
@@ -10,6 +11,8 @@ import com.treasure.hunt.service.io.SeriesService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.EventBusUtils;
+import com.treasure.hunt.utils.ListUtils;
+import com.treasure.hunt.view.plot.PlotSettingsController;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
@@ -17,16 +20,30 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class StatisticTableController {
@@ -78,7 +95,7 @@ public class StatisticTableController {
         averageColumn.setCellValueFactory(param -> {
             List<StatisticObject> value = param.getValue().getValue();
             return new SimpleObjectProperty<>(value.stream().map(StatisticObject::getValue)
-                    .mapToDouble(valueOfStatistic -> (double) valueOfStatistic)
+                    .mapToDouble(Number::doubleValue)
                     .average().getAsDouble());
         });
         averageColumn.setText("average");
@@ -88,7 +105,7 @@ public class StatisticTableController {
         minColumn.setCellValueFactory(param -> {
             List<StatisticObject> value = param.getValue().getValue();
             return new SimpleObjectProperty<>(value.stream().map(StatisticObject::getValue)
-                    .mapToDouble(valueOfStatistic -> (double) valueOfStatistic)
+                    .mapToDouble(Number::doubleValue)
                     .min().getAsDouble());
         });
         minColumn.setText("min");
@@ -98,7 +115,7 @@ public class StatisticTableController {
         maxColumn.setCellValueFactory(param -> {
             List<StatisticObject> value = param.getValue().getValue();
             return new SimpleObjectProperty<>(value.stream().map(StatisticObject::getValue)
-                    .mapToDouble(valueOfStatistic -> (double) valueOfStatistic)
+                    .mapToDouble(Number::doubleValue)
                     .max().getAsDouble());
         });
         maxColumn.setText("max");
@@ -134,35 +151,19 @@ public class StatisticTableController {
 
         statisticsMeasureHashMap.keySet()
                 .forEach(statisticInfo -> {
-                    TableColumn statisticColumnWithOutType;
-                    if (statisticInfo.getType() != Double.class) {
-                        TableColumn<StatisticsWithId, String> statisticColumn = new TableColumn<>();
-                        statisticColumn.setCellValueFactory(param -> {
-                            StatisticsWithId value = param.getValue();
-                            List<StatisticObject> statisticObjects = value.getStatisticObjects();
-                            Optional<StatisticObject> first = statisticObjects.stream()
-                                    .filter(statisticObject -> statisticObject.getStatisticInfo().equals(statisticInfo))
-                                    .findFirst();
-                            StatisticObject statisticObject = first.orElseThrow();
-                            return new SimpleStringProperty(statisticObject.getValue().toString());
-                        });
-                        statisticColumnWithOutType = statisticColumn;
-                    } else {
-                        TableColumn<StatisticsWithId, Double> statisticColumn = new TableColumn<>();
-                        statisticColumn.setCellValueFactory(param -> {
-                            StatisticsWithId value = param.getValue();
-                            List<StatisticObject> statisticObjects = value.getStatisticObjects();
-                            Optional<StatisticObject> first = statisticObjects.stream()
-                                    .filter(statisticObject -> statisticObject.getStatisticInfo().equals(statisticInfo))
-                                    .findFirst();
-                            StatisticObject statisticObject = first.orElseThrow();
-                            return new SimpleObjectProperty<>((Double) statisticObject.getValue());
-                        });
-                        statisticColumnWithOutType = statisticColumn;
-                    }
+                    TableColumn<StatisticsWithId, Double> statisticColumn = new TableColumn<>();
+                    statisticColumn.setCellValueFactory(param -> {
+                        StatisticsWithId value = param.getValue();
+                        List<StatisticObject> statisticObjects = value.getStatisticObjects();
+                        Optional<StatisticObject> first = statisticObjects.stream()
+                                .filter(statisticObject -> statisticObject.getStatisticInfo().equals(statisticInfo))
+                                .findFirst();
+                        StatisticObject statisticObject = first.orElseThrow();
+                        return new SimpleObjectProperty<>(statisticObject.getValue().doubleValue());
+                    });
 
-                    instanceStatisticsTableView.getColumns().add(statisticColumnWithOutType);
-                    statisticColumnWithOutType.setText(statisticInfo.getName());
+                    instanceStatisticsTableView.getColumns().add(statisticColumn);
+                    statisticColumn.setText(statisticInfo.getName());
                 });
     }
 
@@ -235,10 +236,7 @@ public class StatisticTableController {
                         log.error("Game Series run failed", throwable);
                         return null;
                     })
-                    .thenRun(() -> Platform.runLater(() -> {
-                                progressIndicator.setVisible(false);
-
-                            }
+                    .thenRun(() -> Platform.runLater(() -> progressIndicator.setVisible(false)
                     ));
         } catch (
                 Exception e) {
@@ -250,5 +248,92 @@ public class StatisticTableController {
 
     public void onSeriesLoad() {
         SeriesService.getInstance().readStatistics();
+    }
+
+
+    public void copyClipboard() {
+        StringSelection stringSelection = new StringSelection(generateCopyString());
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, null);
+    }
+
+    public String generateCopyString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        instanceStatisticsTableView.getColumns()
+                .forEach(statisticsWithIdTableColumn -> stringBuilder.append(statisticsWithIdTableColumn.getText()).append("\t"));
+
+        stringBuilder.append("\n");
+
+        instanceStatisticsTableView.getItems().forEach(
+                statisticsWithId -> {
+                    stringBuilder.append(statisticsWithId.getId()).append("\t");
+                    statisticsWithId.getStatisticObjects().forEach(
+                            statisticObject -> stringBuilder.append(statisticObject.getValue()).append("\t")
+                    );
+                    stringBuilder.append("\n");
+                }
+        );
+        return stringBuilder.toString();
+    }
+
+    @SneakyThrows
+    public void exportCSV() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialFileName("table.csv");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("A CSV file (*.csv)", "*.csv");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        File dest = fileChooser.showSaveDialog(instanceStatisticsTableView.getScene().getWindow());
+
+        if (dest == null) {
+            return;
+        }
+
+        CSVWriter writer = new CSVWriter(new FileWriter(dest));
+        List<List<String>> table = new ArrayList<>();
+        table.add(new ArrayList<>(Arrays.asList(" ")));
+        table.get(0).addAll(instanceStatisticsTableView.getItems()
+                .stream()
+                .map(statisticsWithId -> Integer.toString(statisticsWithId.getId()))
+                .collect(Collectors.toList()));
+
+        for (StatisticObject.StatisticInfo statisticInfo : statisticsMeasureHashMap.keySet()) {
+            List<String> row = new ArrayList<>();
+            row.add(statisticInfo.getName());
+            row.addAll(statisticsMeasureHashMap.get(statisticInfo)
+                    .stream()
+                    .map(statisticObject -> statisticObject.getValue().toString())
+                    .collect(Collectors.toList()));
+            table.add(row);
+        }
+        table = ListUtils.transpose(table);
+        writer.writeAll(table
+                .stream()
+                .map(strings -> strings.toArray(String[]::new))
+                .collect(Collectors.toList()));
+        writer.close();
+    }
+
+    public void onPlot() throws IOException {
+
+        Stage stage = new Stage(StageStyle.DECORATED);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setTitle("Statistic Plot");
+
+        Class<? extends GameEngine> selectedGameEngine = gameEngineList.getSelectionModel().getSelectedItem();
+        Class<? extends Searcher> selectedSearcher = searcherList.getSelectionModel().getSelectedItem();
+        Class<? extends Hider> selectedHider = hiderList.getSelectionModel().getSelectedItem();
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/plotSettings.fxml"));
+        GridPane root = fxmlLoader.load();
+        PlotSettingsController plotSettingsController = fxmlLoader.getController();
+        plotSettingsController.setData(selectedGameEngine, selectedSearcher, selectedHider);
+
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        scene.getStylesheets().add(getClass().getResource("/layout/style.css").toExternalForm());
+
+        stage.show();
     }
 }

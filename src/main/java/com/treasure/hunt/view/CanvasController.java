@@ -3,11 +3,17 @@ package com.treasure.hunt.view;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.jts.awt.PointTransformation;
 import com.treasure.hunt.jts.geom.Grid;
+import com.treasure.hunt.jts.geom.HalfPlane;
+import com.treasure.hunt.service.select.SelectionService;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
+import com.treasure.hunt.utils.EventBusUtils;
 import com.treasure.hunt.utils.Renderer;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
@@ -32,11 +38,11 @@ public class CanvasController {
     private Vector2D dragStart = new Vector2D();
     private Vector2D offsetBackup = new Vector2D();
 
+    private BooleanProperty dragged = new SimpleBooleanProperty(false);
+
     public void initialize() {
         makeCanvasResizable();
-        renderer = new Renderer(canvas.getGraphicsContext2D(), transformation);
-
-        renderer.addAdditional("grid", new GeometryItem<>(new Grid(), GeometryType.GRID));
+        renderer = new Renderer(canvas, transformation);
         transformation.getScaleProperty().addListener(invalidation -> drawShapes());
         transformation.getOffsetProperty().addListener(invalidation -> drawShapes());
     }
@@ -53,7 +59,7 @@ public class CanvasController {
             if (gameManager.isNull().get()) {
                 return;
             }
-            renderer.render(gameManager.get());
+            renderer.render(gameManager.get().getVisibleGeometries());
         });
     }
 
@@ -63,6 +69,9 @@ public class CanvasController {
         }
         offsetBackup = transformation.getOffsetProperty().get();
         dragStart = Vector2D.create(mouseEvent.getX(), mouseEvent.getY());
+
+        dragged.set(false);
+        EventBusUtils.INNER_POP_UP_EVENT_CLOSE.trigger();
     }
 
     /**
@@ -79,6 +88,21 @@ public class CanvasController {
         }
         Vector2D dragOffset = Vector2D.create(mouseEvent.getX(), mouseEvent.getY()).subtract(dragStart);
         transformation.setOffset(dragOffset.add(offsetBackup));
+        dragged.set(true);
+    }
+
+    /**
+     * Handler for when the mouse press event on the canvas ends.
+     * We determine that if if we didn't dragged the mouse moving the canvas rendering,
+     * we can fire a click selection event.
+     *
+     * @param mouseEvent event of the lifted mouse position
+     */
+    public void onMouseLifted(MouseEvent mouseEvent) {
+        if (!dragged.get()) {
+            SelectionService.getInstance().handleClickEvent(mouseEvent, transformation, gameManager.get());
+        }
+        dragged.set(false);
     }
 
     public void onCanvasZoom(ScrollEvent scrollEvent) {
@@ -99,6 +123,14 @@ public class CanvasController {
             this.gameManager.get().getViewIndex()
                     .addListener(observable1 -> drawShapes());
 
+            this.gameManager.get().addAdditional("grid", new GeometryItem<>(new Grid(), GeometryType.GRID));
+            HalfPlane from = HalfPlane.from(Vector2D.create(1, 0), 1);
+            this.gameManager.get().addAdditional("halfplane", new GeometryItem<>(from, GeometryType.HALF_PLANE));
+
+            System.out.println(from.toString());
+
+            this.gameManager.get().getAdditional()
+                    .addListener((InvalidationListener) change -> drawShapes());
         });
     }
 }

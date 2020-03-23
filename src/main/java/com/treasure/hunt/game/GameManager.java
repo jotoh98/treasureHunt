@@ -8,12 +8,13 @@ import com.esotericsoftware.kryo.io.Output;
 import com.google.common.annotations.VisibleForTesting;
 import com.treasure.hunt.analysis.StatisticObject;
 import com.treasure.hunt.strategy.geom.GeometryItem;
-import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.geom.StatusMessageItem;
 import com.treasure.hunt.strategy.geom.StatusMessageType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.AsyncUtils;
+import com.treasure.hunt.utils.GeometryPipeline;
+import com.treasure.hunt.utils.ListUtils;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -22,6 +23,7 @@ import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -32,13 +34,10 @@ import sun.reflect.ReflectionFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -57,6 +56,10 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     @VisibleForTesting
     @Getter
     ObservableList<Turn> turns = FXCollections.observableArrayList();
+
+    @Getter
+    private ObservableMap<String, GeometryItem<?>> additional = FXCollections.observableHashMap();
+
     @Getter
     private volatile BooleanProperty beatThreadRunning = new SimpleBooleanProperty(false);
     private GameEngine gameEngine;
@@ -149,7 +152,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
                         return Stream.of(itemsOfType.get(itemsOfType.size() - 1));
                     }
                 })
-                .filter(statusMessageItem -> turns.stream().noneMatch(turn ->
+                .filter(statusMessageItem -> getVisibleTurns().stream().noneMatch(turn ->
                         turn.getHint() != null && turn.getHint().getStatusMessageItemsToBeRemoved().contains(statusMessageItem) ||
                                 turn.getSearchPath() != null && turn.getSearchPath().getStatusMessageItemsToBeRemoved().contains(statusMessageItem)
                 ))
@@ -215,50 +218,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      */
     public boolean latestStepViewed() {
         return turns.size() - 1 == viewIndex.get();
-    }
-
-    /**
-     * @param excludeOverrideItems if true Geometry items that are set to be overridable only the last item is returned and later deleted items are removed
-     * @return The whole List of geometryItems of the gameHistory
-     */
-    public List<GeometryItem<?>> getGeometryItems(Boolean excludeOverrideItems) {
-
-        List<Turn> visible = getVisibleTurns();
-
-        //TODO: move to #151-rendering-pipeline
-        ArrayList<GeometryItem<?>> geometryItems = IntStream
-                .range(0, visible.size())
-                .boxed()
-                .flatMap(index -> {
-                    Point lastMove = null;
-                    if (index > 0) {
-                        lastMove = visible.get(index - 1).getSearchPath().getLastPoint();
-                    }
-                    return visible.get(index).getGeometryItems(lastMove).stream();
-                })
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        if (!excludeOverrideItems) {
-            return geometryItems;
-        }
-        Map<GeometryType, List<GeometryItem<?>>> itemsByType = geometryItems.stream()
-                .collect(Collectors.groupingBy(GeometryItem::getGeometryType));
-
-        return itemsByType.keySet()
-                .stream()
-                .flatMap(type -> {
-                    List<GeometryItem<?>> itemsOfType = itemsByType.get(type);
-                    if (!type.isOverride()) {
-                        return itemsOfType.stream();
-                    } else {
-                        return Stream.of(itemsOfType.get(itemsOfType.size() - 1));
-                    }
-                })
-                .filter(geometryItem -> turns.stream().noneMatch(turn ->
-                        turn.getHint() != null && turn.getHint().getGeometryItemsToBeRemoved().contains(geometryItem) ||
-                                turn.getSearchPath() != null && turn.getSearchPath().getGeometryItemsToBeRemoved().contains(geometryItem)
-                ))
-                .collect(Collectors.toList());
     }
 
     /**
@@ -339,6 +298,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         kryo.writeObject(output, new ArrayList<>(turns));
         output.writeInt(viewIndex.get());
         output.writeBoolean(finishedProperty.get());
+        kryo.writeObject(output, new HashMap<>(additional));
     }
 
     /**
@@ -351,6 +311,9 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         turns = FXCollections.observableArrayList(kryo.readObject(input, ArrayList.class));
         viewIndex = new SimpleIntegerProperty(input.readInt());
         finishedProperty = new SimpleBooleanProperty(input.readBoolean());
+        HashMap hashMap = kryo.readObject(input, HashMap.class);
+        additional = FXCollections.observableHashMap();
+        additional.putAll(hashMap);
         setBindings();
     }
 
@@ -381,7 +344,57 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         gameManager.turns = FXCollections.observableArrayList(turns);
         gameManager.viewIndex = new SimpleIntegerProperty(viewIndex.get());
         gameManager.finishedProperty = new SimpleBooleanProperty(finishedProperty.get());
+        gameManager.additional = FXCollections.observableHashMap();
+        gameManager.additional.putAll(additional);
         gameManager.setBindings();
         return gameManager;
+    }
+
+
+    /**
+     * Add an additional {@link GeometryItem} to the rendering queue.
+     *
+     * @param key  name of the additional item
+     * @param item the additional item
+     */
+    public void addAdditional(String key, GeometryItem<?> item) {
+        additional.put(key, item);
+    }
+
+    /**
+     * Remove an additional {@link GeometryItem} from the rendering queue.
+     *
+     * @param key name of the additional item to be removed
+     */
+    public void removeAdditional(String key) {
+        additional.remove(key);
+    }
+
+    public Map<String, GeometryItem<?>> getAdditionals() {
+        return getAdditional();
+    }
+
+    /**
+     * Get visible geometry items.
+     * The visible {@link Turn}s determine which {@link GeometryItem} are visible.
+     *
+     * @return stream of visible geometry items
+     */
+    public Stream<GeometryItem<?>> getVisibleGeometries() {
+        List<Turn> visibleSubList = turns.subList(0, viewIndex.get() + 1);
+
+        Stream<GeometryItem<?>> subListGeometries = Stream.empty();
+
+        if (visibleSubList.size() == 1) {
+            subListGeometries = visibleSubList.get(0).getGeometryItems(null).stream();
+        } else if (visibleSubList.size() > 1) {
+            subListGeometries = ListUtils
+                    .consecutive(visibleSubList, (prev, next) -> next.getGeometryItems(prev.getSearchPath().getLastPoint()))
+                    .flatMap(Collection::stream);
+        }
+
+        final Stream<GeometryItem<?>> items = Stream.concat(subListGeometries, additional.values().stream());
+
+        return GeometryPipeline.pipe(items);
     }
 }

@@ -28,6 +28,8 @@ import java.awt.geom.Point2D;
 public class PointTransformation implements org.locationtech.jts.awt.PointTransformation {
 
     private static final double INITIAL_SCALE = 25.0;
+    public static final double MIN_SCALE = 1e-4;
+    public static final double MAX_SCALE = 10;
 
     /**
      * The scale translates the source coordinates multiplicative in {@link PointTransformation#transform(Coordinate)}.
@@ -120,7 +122,13 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
      */
     public void scaleRelative(double gamma, Vector2D point) {
         double newScale = scaleProperty.get() * gamma;
-        if (newScale > 1e-4 && newScale < 100) {
+        if (newScale < MIN_SCALE || newScale > MAX_SCALE) {
+            newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, newScale));
+            gamma = scaleProperty.get() / newScale;
+            scaleOffset(gamma, point);
+            setScale(newScale);
+        }
+        if (newScale > MIN_SCALE && newScale < MAX_SCALE) {
             scaleOffset(gamma, point);
             setScale(newScale);
         }

@@ -4,13 +4,17 @@ import com.google.common.util.concurrent.AtomicDouble;
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.service.io.FileService;
+import com.treasure.hunt.service.settings.Session;
+import com.treasure.hunt.service.settings.SettingsService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.EventBusUtils;
 import com.treasure.hunt.utils.ReflectionUtils;
 import com.treasure.hunt.utils.Requires;
+import com.treasure.hunt.view.settings.SettingsWindow;
 import com.treasure.hunt.view.widget.*;
 import javafx.application.Platform;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -18,20 +22,21 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
+import javafx.geometry.Orientation;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.util.Pair;
 import javafx.util.StringConverter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author jotoh
@@ -42,9 +47,9 @@ public class MainController {
     @Getter
     private final ObjectProperty<GameManager> gameManager = new SimpleObjectProperty<>();
     public SplitPane mainSplitPane;
-    public Pane leftWidgetBar;
-    public Pane rightWidgetBar;
-    public Pane bottomWidgetBar;
+    public SplitPane leftWidgetBar;
+    public SplitPane rightWidgetBar;
+    public SplitPane bottomWidgetBar;
     public VBox rightToolbar;
     public VBox leftToolbar;
     public HBox bottomToolbar;
@@ -62,6 +67,8 @@ public class MainController {
     public ComboBox<Class<? extends GameEngine>> gameEngineList;
     public Button startGameButton;
     public Label logLabel;
+    public Group popupGroup;
+    public StackPane mainRoot;
     @FXML
     private NavigationController stepViewNavigatorController;
     @FXML
@@ -78,6 +85,9 @@ public class MainController {
     private ToolbarController rightToolbarController;
     @FXML
     private ToolbarController bottomToolbarController;
+    private BooleanBinding leftVisibleBinding;
+    private BooleanBinding rightVisibleBinding;
+    private BooleanBinding bottomVisibleBinding;
 
     public void initialize() {
         canvasController.setGameManager(gameManager);
@@ -92,17 +102,74 @@ public class MainController {
         addBindingsToGameManager();
         listenToGameMangerLoad();
         listenToLogLabelEvent();
+        bindWidgetControllers();
         addGameIndependentWidgets();
+        bindAbsoluteSplitPane(mainSplitPane);
+        bindAbsoluteSplitPane(mainVerticalSplitPane);
+        setUpPopUpPane();
+        insertSessionConfiguration();
+        EventBusUtils.INNER_POP_UP_EVENT.addListener(this::newInnerPopUp);
+        EventBusUtils.INNER_POP_UP_EVENT_CLOSE.addListener(this::closePopUp);
+    }
+
+    private void bindWidgetControllers() {
+        leftWidgetBarController.bindToggleGroups(leftToolbarController);
+        rightWidgetBarController.bindToggleGroups(rightToolbarController);
+        bottomWidgetBarController.bindToggleGroups(bottomToolbarController);
+    }
+
+    private void closePopUp(Void aVoid) {
+        popupGroup.setVisible(false);
+    }
+
+    private void newInnerPopUp(Pair<Node, Pair<Double, Double>> args) {
+        Bounds boundsInLocal = mainRoot.getBoundsInLocal();
+        Bounds bounds = mainRoot.localToScreen(boundsInLocal);
+        popupGroup.setTranslateX(args.getValue().getKey() - bounds.getMinX());
+        popupGroup.setTranslateY(args.getValue().getValue() - bounds.getMinY());
+        popupGroup.setVisible(true);
+        popupGroup.getChildren().addAll(args.getKey());
+    }
+
+    private void setUpPopUpPane() {
+        popupGroup.managedProperty().bind(popupGroup.visibleProperty());
+    }
+
+    public void saveSession() {
+        if (SettingsService.getInstance().getSettings().isPreserveConfiguration()) {
+            Session session = SettingsService.getInstance().getSession();
+            session.setSearcher(searcherList.getSelectionModel().getSelectedItem());
+            session.setHider(hiderList.getSelectionModel().getSelectedItem());
+            session.setEngine(gameEngineList.getSelectionModel().getSelectedItem());
+        }
+    }
+
+    private void insertSessionConfiguration() {
+        if (SettingsService.getInstance().getSettings().isPreserveConfiguration()) {
+            Session session = SettingsService.getInstance().getSession();
+            searcherList.getSelectionModel().select(session.getSearcher());
+            hiderList.getSelectionModel().select(session.getHider());
+            gameEngineList.getSelectionModel().select(session.getEngine());
+        }
     }
 
     private void addGameIndependentWidgets() {
+
         Widget<StatisticTableController, ?> statisticsTableWidget = new Widget<>("/layout/statisticsTable.fxml");
         statisticsTableWidget.getController().init(gameManager, searcherList, hiderList, gameEngineList);
-        insertWidget(SplitPaneLocation.SOUTH, "Statistics", statisticsTableWidget.getComponent(), false);
+        insertWidget(SplitPaneLocation.BOTTOM_LEFT, "Statistics", statisticsTableWidget.getComponent(), false);
 
         Widget<SaveAndLoadController, ?> saveAndLoadWidget = new Widget<>("/layout/saveAndLoad.fxml");
         saveAndLoadWidget.getController().init(gameManager);
-        insertWidget(SplitPaneLocation.WEST, "Save & Load", saveAndLoadWidget.getComponent(), true);
+        insertWidget(SplitPaneLocation.LEFT_UPPER, "Save & Load", saveAndLoadWidget.getComponent(), true);
+
+        Widget<PreferencesWidgetController, ?> preferencesWidgetControllerPaneWidget = new Widget<>("/layout/preferencesWidget.fxml");
+        preferencesWidgetControllerPaneWidget.getController().init(
+                searcherList.getSelectionModel().selectedItemProperty(),
+                hiderList.getSelectionModel().selectedItemProperty(),
+                gameEngineList.getSelectionModel().selectedItemProperty()
+        );
+        insertWidget(SplitPaneLocation.LEFT_LOWER, "Preferences", preferencesWidgetControllerPaneWidget.getComponent(), true);
     }
 
     private void listenToLogLabelEvent() {
@@ -134,63 +201,54 @@ public class MainController {
     }
 
     private void bindWidgetBarVisibility() {
-        mainSplitPane.getItems().remove(0);
-        mainSplitPane.getItems().remove(1);
+        leftVisibleBinding = leftToolbarController.visibleBinding();
+        rightVisibleBinding = rightToolbarController.visibleBinding();
+        bottomVisibleBinding = bottomToolbarController.visibleBinding();
 
-        widgetBarVisibility(true, leftToolbarController);
-        widgetBarVisibility(false, rightToolbarController);
-        bottomBarVisibility();
+        bindWidgetBarVisibility(leftVisibleBinding, mainSplitPane, leftWidgetBar, true);
+        bindWidgetBarVisibility(rightVisibleBinding, mainSplitPane, rightWidgetBar, false);
+        bindWidgetBarVisibility(bottomVisibleBinding, mainVerticalSplitPane, bottomWidgetBar, false);
     }
 
-    private void widgetBarVisibility(boolean left, ToolbarController toolbarController) {
-        final ObservableList<SplitPane.Divider> dividers = mainSplitPane.getDividers();
-        AtomicReference<Node> savedBar = new AtomicReference<>(leftWidgetBar);
+    private void bindWidgetBarVisibility(BooleanBinding visibleBinding, SplitPane wrapper, SplitPane widgetBar, boolean first) {
+        final ObservableList<Node> items = wrapper.getItems();
+        final AtomicDouble dividerPosition = new AtomicDouble(first ? .2 : .8);
 
-        AtomicDouble leftSplit = new AtomicDouble(.2);
-        AtomicDouble rightSplit = new AtomicDouble(.8);
-
-        if (!left) {
-            savedBar.set(rightWidgetBar);
-        }
-
-        toolbarController.getToggleGroup().selectedToggleProperty().addListener((observableValue, oldItem, newItem) -> {
-            final int readPosition = left ? 0 : mainSplitPane.getItems().size() - 1;
-
-            if (newItem == null) {
-                if (left) {
-                    leftSplit.set(mainSplitPane.getDividerPositions()[0]);
+        visibleBinding.addListener((observable, wasVisible, isVisible) -> {
+            if (wasVisible == isVisible) {
+                return;
+            }
+            if (!isVisible) {
+                int dividerIndex = first || items.size() < 3 ? 0 : 1;
+                dividerPosition.set(wrapper.getDividerPositions()[dividerIndex]);
+                items.remove(widgetBar);
+            } else if (!items.contains(widgetBar)) {
+                if (first) {
+                    items.add(0, widgetBar);
+                    wrapper.setDividerPosition(0, dividerPosition.get());
                 } else {
-                    rightSplit.set(mainSplitPane.getDividerPositions()[mainSplitPane.getDividers().size() - 1]);
-                }
-                savedBar.set(mainSplitPane.getItems().get(readPosition));
-                mainSplitPane.getItems().remove(readPosition);
-            } else if (oldItem == null) {
-                if (left) {
-                    mainSplitPane.getItems().add(0, savedBar.get());
-                    dividers.get(0).setPosition(leftSplit.get());
-                } else {
-                    mainSplitPane.getItems().add(savedBar.get());
-                    dividers.get(readPosition).setPosition(rightSplit.get());
+                    items.add(widgetBar);
+                    wrapper.setDividerPosition(items.size() < 3 ? 0 : 1, dividerPosition.get());
                 }
             }
         });
+
+        if (!visibleBinding.get()) {
+            items.remove(widgetBar);
+        }
     }
 
-    private void bottomBarVisibility() {
-        mainVerticalSplitPane.getItems().remove(1);
-        AtomicDouble slider = new AtomicDouble(.2);
-        bottomToolbarController
-                .getToggleGroup()
-                .selectedToggleProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (newValue == null) {
-                        slider.set(mainVerticalSplitPane.getDividerPositions()[0]);
-                        mainVerticalSplitPane.getItems().remove(1);
-                    } else if (oldValue == null) {
-                        mainVerticalSplitPane.getItems().add(bottomWidgetBar);
-                        mainVerticalSplitPane.setDividerPosition(0, slider.get());
-                    }
-                });
+    private void bindAbsoluteSplitPane(SplitPane splitPane) {
+        (splitPane.getOrientation() == Orientation.VERTICAL ? splitPane.heightProperty() : splitPane.widthProperty()).addListener(
+                (observable, oldWidth, newWidth) -> splitPane.getDividers().forEach(
+                        divider -> {
+                            if (oldWidth.doubleValue() == 0 || newWidth.doubleValue() == 0) {
+                                return;
+                            }
+                            divider.setPosition(oldWidth.doubleValue() / newWidth.doubleValue() * divider.getPosition());
+                        }
+                )
+        );
     }
 
     private void addToolbarStyleClasses() {
@@ -199,25 +257,29 @@ public class MainController {
     }
 
     private void addWidgets() {
-        Widget<PointInspectorController, ?> pointInspectorWidget = new Widget<>("/layout/pointInspector.fxml");
-        pointInspectorWidget.getController().init(gameManager);
-        insertWidget(SplitPaneLocation.WEST, "Inspector", pointInspectorWidget.getComponent());
+        Widget<ClickInspectorController, ?> pointInspectorWidget = new Widget<>("/layout/clickedInspector.fxml");
+        pointInspectorWidget.getController().init();
+        insertWidget(SplitPaneLocation.LEFT_LOWER, "Inspector", pointInspectorWidget.getComponent());
 
         Widget<BeatWidgetController, ?> beatWidget = new Widget<>("/layout/beatWidget.fxml");
         beatWidget.getController().init(gameManager);
-        insertWidget(SplitPaneLocation.WEST, "Game controls", beatWidget.getComponent());
+        insertWidget(SplitPaneLocation.LEFT_LOWER, "Game controls", beatWidget.getComponent());
 
         Widget<StatisticsWidgetController, ?> statisticsWidget = new Widget<>("/layout/statisticsWidget.fxml");
         statisticsWidget.getController().init(gameManager);
-        insertWidget(SplitPaneLocation.WEST, "Statistics", statisticsWidget.getComponent());
+        insertWidget(SplitPaneLocation.LEFT_UPPER, "Statistics", statisticsWidget.getComponent());
 
         Widget<StatusMessageWidgetController, ?> statusWidget = new Widget<>("/layout/statusMessageWidget.fxml");
         statusWidget.getController().init(gameManager);
-        insertWidget(SplitPaneLocation.EAST, "Status", statusWidget.getComponent());
+        insertWidget(SplitPaneLocation.RIGHT_UPPER, "Status", statusWidget.getComponent());
 
         Widget<ScaleController, ?> scaleWidget = new Widget<>("/layout/scaling.fxml");
         scaleWidget.getController().init(canvasController);
-        insertWidget(SplitPaneLocation.EAST, "Navigator", scaleWidget.getComponent());
+        insertWidget(SplitPaneLocation.RIGHT_LOWER, "Navigator", scaleWidget.getComponent());
+
+        Widget<HistoryController, ?> historyWidget = new Widget<>("/layout/history.fxml");
+        historyWidget.getController().init(gameManager);
+        insertWidget(SplitPaneLocation.RIGHT_UPPER, "History", historyWidget.getComponent());
     }
 
     private void setListStringConverters() {
@@ -333,25 +395,38 @@ public class MainController {
         );
     }
 
-    private void insertWidget(SplitPaneLocation toolbar, String buttonText, Pane widgetBox) {
+    private void insertWidget(SplitPaneLocation toolbar, String buttonText, Region widgetBox) {
         insertWidget(toolbar, buttonText, widgetBox, false);
     }
 
-    private void insertWidget(SplitPaneLocation toolbar, String buttonText, Pane widgetBox, boolean selected) {
+    private void insertWidget(SplitPaneLocation location, String buttonText, Region widgetBox, boolean selected) {
+        boolean first = location == SplitPaneLocation.BOTTOM_LEFT || location == SplitPaneLocation.LEFT_UPPER || location == SplitPaneLocation.RIGHT_UPPER;
+        selectToolbarController(location).addButton(first, buttonText, selected, widgetBox);
+        selectWidgetController(location).addWidget(first, widgetBox);
+    }
 
-        switch (toolbar) {
-            case WEST:
-                leftToolbarController.addButton(buttonText, selected, widgetBox);
-                leftWidgetBarController.addWidget(widgetBox);
-                break;
-            case EAST:
-                rightToolbarController.addButton(buttonText, selected, widgetBox);
-                rightWidgetBarController.addWidget(widgetBox);
-                break;
-            case SOUTH:
-                bottomToolbarController.addButton(buttonText, selected, widgetBox);
-                bottomWidgetBarController.addWidget(widgetBox);
+    private WidgetBarController selectWidgetController(SplitPaneLocation location) {
+        switch (location) {
+            case LEFT_UPPER:
+            case LEFT_LOWER:
+                return leftWidgetBarController;
+            case RIGHT_UPPER:
+            case RIGHT_LOWER:
+                return rightWidgetBarController;
         }
+        return bottomWidgetBarController;
+    }
+
+    private ToolbarController selectToolbarController(SplitPaneLocation location) {
+        switch (location) {
+            case LEFT_UPPER:
+            case LEFT_LOWER:
+                return leftToolbarController;
+            case RIGHT_UPPER:
+            case RIGHT_LOWER:
+                return rightToolbarController;
+        }
+        return bottomToolbarController;
     }
 
     public void onStartButtonClicked() {
@@ -392,9 +467,20 @@ public class MainController {
         FileService.getInstance().loadGameManager();
     }
 
+    public void openPreferences() {
+        try {
+            SettingsWindow.show();
+        } catch (Exception e) {
+            log.error("Could not open the settings", e);
+        }
+    }
+
     private enum SplitPaneLocation {
-        EAST,
-        SOUTH,
-        WEST
+        LEFT_UPPER,
+        LEFT_LOWER,
+        RIGHT_UPPER,
+        RIGHT_LOWER,
+        BOTTOM_LEFT,
+        BOTTOM_RIGHT
     }
 }

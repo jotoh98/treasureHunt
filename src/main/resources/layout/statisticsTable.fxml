@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.treasure.hunt.view.custom.CoinProgress?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import java.lang.String?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-      minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1"
-      fx:controller="com.treasure.hunt.view.widget.StatisticTableController">
+<VBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="Infinity" minHeight="-Infinity"
+      minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1"
+      fx:controller="com.treasure.hunt.view.StatisticTableController">
     <children>
         <HBox alignment="CENTER_LEFT" fillHeight="false" prefHeight="30.0" prefWidth="600.0" spacing="10.0"
               VBox.vgrow="NEVER">
@@ -17,8 +17,16 @@
                        minWidth="-Infinity" text="rounds"/>
                 <Button fx:id="runMultipleButton" mnemonicParsing="false" onAction="#onSeriesRun"
                         text="Run multiple games"/>
-                <ProgressIndicator fx:id="progressIndicator" progress="0.0" visible="false"/>
+                <Button fx:id="superPlot" onAction="#onPlot" text="Create custom plot"/>
+
+                <CoinProgress fx:id="progressIndicator" progress="0.0" visible="false" prefHeight="30" prefWidth="30"/>
                 <Button mnemonicParsing="false" onAction="#onSeriesLoad" text="Load series file"/>
+                <HBox alignment="TOP_RIGHT" spacing="8.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#exportCSV" text="CSV Export"/>
+                        <Button mnemonicParsing="false" onAction="#copyClipboard" text="📋 Copy Table"/>
+                    </children>
+                </HBox>
             </children>
             <styleClass>
                 <String fx:value="toolbar"/>

@@ -88,7 +88,10 @@ public class SeriesService {
         int totalWorkLoad = rounds * (writeGameManger ? 9 : 6);
 
         AtomicInteger workLoadDone = new AtomicInteger();
-        ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(selectedFile));
+        ZipOutputStream zipOutputStream = null;
+        if (selectedFile != null) {
+            zipOutputStream = new ZipOutputStream(new FileOutputStream(selectedFile));
+        }
         ExecutorService executorService = AsyncUtils.newExhaustingThreadPoolExecutor();
         List<CompletableFuture<Void>> runFutures = new ArrayList<>(SMALL_ROUND_SIZE);
         List<StatisticsWithId> statisticsWithIds = new ArrayList<>(rounds);
@@ -111,18 +114,24 @@ public class SeriesService {
         CompletableFuture<Void> allRunsFinished = CompletableFuture.allOf(runFutures.toArray(new CompletableFuture[runFutures.size()]));
         allRunsFinished.join();
         runFutures.clear();
-        writeStatisticsFile(statisticsWithIds, zipOutputStream);
 
-        zipOutputStream.close();
-        return new StatisticsWithIdsAndPath(selectedFile.toPath(), statisticsWithIds);
+        if (zipOutputStream != null) {
+            writeStatisticsFile(statisticsWithIds, zipOutputStream);
+            zipOutputStream.close();
+        }
+        return new StatisticsWithIdsAndPath(selectedFile == null ? null : selectedFile.toPath(), statisticsWithIds);
     }
 
     @NotNull
     private Consumer<GameManager> writeGameManagerAndSaveStats(boolean writeGameManger, Consumer<Double> progressConsumer, int totalWorkLoad, AtomicInteger workLoadDone, ZipOutputStream zipOutputStream, List<StatisticsWithId> statisticsWithIds) {
         return gameManagerCopy -> {
+            int id = statisticsWithIds.size();
+            statisticsWithIds.add(new StatisticsWithId(id, gameManagerCopy.getStatistics().get()));
+            if (zipOutputStream == null) {
+                return;
+            }
             synchronized (zipOutputStream) {
-                int id = statisticsWithIds.size();
-                statisticsWithIds.add(new StatisticsWithId(id, gameManagerCopy.getStatistics().get()));
+
                 try {
                     if (writeGameManger) {
                         writeGameManager(id, progressConsumer, workLoadDone, totalWorkLoad, zipOutputStream, gameManagerCopy);

@@ -10,6 +10,6 @@
     <padding>
         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
     </padding>
-    <Slider fx:id="slider" max="10.0" min="0.00000001" showTickMarks="true" value="1.0"/>
+    <Slider fx:id="slider" max="10.0" min="0.00001" showTickMarks="true" value="1.0"/>
     <TextField fx:id="textField" alignment="CENTER_RIGHT" prefWidth="71.0" text="100%" onAction="#onEnter"/>
 </VBox>

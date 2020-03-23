@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
-<?import javafx.scene.layout.Pane?>
-<Pane xmlns:fx="http://javafx.com/fxml/1" fx:id="widgetBar" maxHeight="1.7976931348623157E308"
-      xmlns="http://javafx.com/javafx/11" fx:controller="com.treasure.hunt.view.WidgetBarController"/>
+<?import javafx.scene.control.SplitPane?>
+<SplitPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308"
+           xmlns="http://javafx.com/javafx/11" fx:controller="com.treasure.hunt.view.WidgetBarController"
+           fx:id="widgetBar" orientation="VERTICAL" styleClass="widget-bar"/>
