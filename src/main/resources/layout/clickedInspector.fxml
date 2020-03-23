@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/11.0.1"
+      fx:controller="com.treasure.hunt.view.widget.ClickInspectorController">
+    <children>
+        <TreeView fx:id="inspectorView" prefHeight="200.0" prefWidth="200.0" showRoot="false" VBox.vgrow="ALWAYS"/>
+    </children>
+</VBox>

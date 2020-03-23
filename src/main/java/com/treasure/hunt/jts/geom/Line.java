@@ -58,13 +58,13 @@ public class Line extends Ray {
     /**
      * Intersect the infinite {@link Line} with a {@link LineSegment}.
      *
-     * @param line segment to intersect ray with
+     * @param lineSegment segment to intersect ray with
      * @return intersection between infinite line and segment, if there is none: null
      */
     @Override
-    public Coordinate intersection(LineSegment line) {
-        final Coordinate coordinate = lineIntersection(line);
-        if (coordinate != null && line.distance(coordinate) < 1e-7) {
+    public Coordinate intersection(LineSegment lineSegment) {
+        final Coordinate coordinate = lineIntersection(lineSegment);
+        if (coordinate != null && lineSegment.distance(coordinate) < 1e-7) {
             return coordinate;
         }
         return null;

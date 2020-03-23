@@ -347,9 +347,12 @@
     -fx-background-color: REQUIRED_RED;
 }
 
-.titled-pane * {
-    -fx-border-width: 0;
-    -fx-border-radius: 0;
+.tree-view {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.tree-view * {
     -fx-background-color: BACKGROUND_COLOR;
     -fx-fill: lightgrey;
 }
