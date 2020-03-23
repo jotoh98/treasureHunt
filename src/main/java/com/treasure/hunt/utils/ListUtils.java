@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -42,6 +43,28 @@ public class ListUtils {
         return ret;
     }
 
+    public static <T> boolean anyMatch(T[] list, Predicate<T> predicate) {
+        for (T item : list) {
+            if (predicate.test(item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static <T> boolean allMatch(T[] list, Predicate<T> predicate) {
+        for (T item : list) {
+            if (!predicate.test(item)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static <T> boolean noneMatch(T[] list, Predicate<T> predicate) {
+        return allMatch(list, predicate.negate());
+    }
+  
     public static double standardDeviation(List<Number> table) {
         // Step 1:
         double mean = table.stream().mapToDouble(Number::doubleValue).average().getAsDouble();

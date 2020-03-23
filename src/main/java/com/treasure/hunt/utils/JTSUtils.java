@@ -1,11 +1,13 @@
 package com.treasure.hunt.utils;
 
+import com.treasure.hunt.jts.awt.CanvasBoundary;
 import com.treasure.hunt.jts.geom.GeometryAngle;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.math.Vector2D;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -228,5 +230,23 @@ public final class JTSUtils {
                 new Coordinate(envelope.getMinX(), envelope.getMaxY()),
                 new Coordinate(envelope.getMinX(), envelope.getMinY()),
         });
+    }
+
+    /**
+     * Get the intersections between the infinite line and the visual boundary.
+     *
+     * @param boundary boundary supplying the border {@link LineSegment}s
+     * @param infinite infinite line
+     * @return the intersections between the infinite line extension and the boundary {@link LineSegment}s
+     */
+    public static List<Coordinate> getBoundaryIntersections(CanvasBoundary boundary, LineSegment infinite) {
+        final ArrayList<Coordinate> intersections = new ArrayList<>();
+        boundary.toLineSegments().forEach(boundarySegment -> {
+            final Coordinate intersection = infinite.intersection(boundarySegment);
+            if (intersection != null) {
+                intersections.add(intersection);
+            }
+        });
+        return intersections;
     }
 }
