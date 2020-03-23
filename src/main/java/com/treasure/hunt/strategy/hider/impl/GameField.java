@@ -46,7 +46,7 @@ public class GameField {
     private Point startingPoint;
     private Point currentPlayersPosition;
     private List<AngleHint> givenHints = new ArrayList<>();
-    private GeometryFactory gf = JTSUtils.GEOMETRY_FACTORY;
+    private GeometryFactory geometryFactory = JTSUtils.GEOMETRY_FACTORY;
     private double walkedPathLength = 0.0;
     private List<Point> visitedPoints = new ArrayList<>();
 
@@ -82,7 +82,7 @@ public class GameField {
 
         // needed since the buffer is normally drawn with  generosity {searcherScoutRadius + 0.1}
         Coordinate[] visitedCoords = visitedPoints.stream().map(p -> p.getCoordinate()).toArray(Coordinate[]::new);
-        LineString walkedPath = gf.createLineString(visitedCoords);
+        LineString walkedPath = geometryFactory.createLineString(visitedCoords);
 
         if (walkedPath.buffer(searcherScoutRadius).covers(newTreasureLocation)) throw new ImpossibleTreasureLocationException("you've supplied a treasure location, which is inconsistent the checked area the player has already visited");
 
@@ -91,7 +91,7 @@ public class GameField {
     }
 
     public void init(Point searcherStartPosition, Point treasureLocation) {
-        log.info("GameField init");
+        log.debug("GameField init");
 
         startingPoint = searcherStartPosition;
         currentPlayersPosition = startingPoint;
@@ -99,19 +99,17 @@ public class GameField {
         log.info(treasureLocation.toString());
         log.info(searcherStartPosition.toString());
 
-        //TODO make this customizable by Preference
-        //this.boundingCircleSize = treasureLocation.distance(searcherStartPosition) * 2;
+        //TODO make this customizable by Preference, see issue #244s
 
-        Circle c = new Circle(startingPoint.getCoordinate(), boundingCircleSize, gf);
-        boundingCircle = new GeometryItem<>(c, GeometryType.BOUNDING_CIRCE, boundingCircleStyle);
 
-        possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{c}, gf), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
+        Circle circle = new Circle(startingPoint.getCoordinate(), boundingCircleSize, geometryFactory);
+        boundingCircle = new GeometryItem<>(circle, GeometryType.BOUNDING_CIRCE, boundingCircleStyle);
+
+        possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{circle}, geometryFactory), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
 
         visitedPoints.add(startingPoint);
         SearchPath startingPath = new SearchPath(startingPoint);
         commitPlayerMovement(startingPath);
-
-
     }
 
     public Geometry getPossibleArea(){
@@ -132,8 +130,8 @@ public class GameField {
 
                 boundingCircleSize += boundingCircleExtensionDelta;
                 log.info("extending Bounding Area by " + boundingCircleSize + "to " + boundingCircleSize);
-                boundingCircle = new GeometryItem<>(new Circle(startingPoint.getCoordinate(), boundingCircleSize, gf), GeometryType.BOUNDING_CIRCE, boundingCircleStyle);
-                possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{boundingCircle.getObject()}, gf), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
+                boundingCircle = new GeometryItem<>(new Circle(startingPoint.getCoordinate(), boundingCircleSize, geometryFactory), GeometryType.BOUNDING_CIRCE, boundingCircleStyle);
+                possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{boundingCircle.getObject()}, geometryFactory), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
 
                 //now recompute all the intersections of Hints and the Bounding Circle
                 for (AngleHint hint : givenHints) {
@@ -156,24 +154,20 @@ public class GameField {
         currentPlayersPosition = searchPath.getLastPoint();
         adaptBoundingCircle();
 
-
         List<Point> newMovementPoints = searchPath.getPoints();
-
-        //int prevNumberOfPoints = visitedPoints.size();
-        log.debug("supplied searchpath " + newMovementPoints);
-
+        log.trace("supplied searchpath " + newMovementPoints);
         this.visitedPoints.addAll(newMovementPoints);
 
-        log.debug("total Walked Path " + visitedPoints.toString());
+        log.trace("total Walked Path " + visitedPoints.toString());
         Polygon checkedPoly;
         if (visitedPoints.size() > 1) {
 
             Coordinate[] visitedCoords = visitedPoints.stream().map(p -> p.getCoordinate()).toArray(Coordinate[]::new);
-            LineString walkedPath = gf.createLineString(visitedCoords);
+            LineString walkedPath = geometryFactory.createLineString(visitedCoords);
             checkedPoly = (Polygon) walkedPath.buffer(searcherScoutRadius + 0.1); //0.1 to just be outside the searchers radius
             this.walkedPathLength = walkedPath.getLength();
         } else {
-            log.debug("1 point visited so far");
+            log.trace("1 point visited so far");
 
             checkedPoly = (Polygon) startingPoint.buffer(searcherScoutRadius + 0.1);
         }
@@ -201,10 +195,10 @@ public class GameField {
 
         double rightAngle = Angle.angle(angle.getCenter(), angle.getRight());
         double extend = angle.extend();
-        log.info("testing Angle of size size: " + Angle.toDegrees(extend));
+        log.trace("testing Angle of size size: " + Angle.toDegrees(extend));
 
         // Use Arc for Angle Representation
-        GeometricShapeFactory shapeFactory = new GeometricShapeFactory(gf);
+        GeometricShapeFactory shapeFactory = new GeometricShapeFactory(geometryFactory);
         shapeFactory.setNumPoints(4);
         shapeFactory.setCentre(angle.getCenter());
         shapeFactory.setSize(boundingCircleSize * 8);
@@ -219,7 +213,7 @@ public class GameField {
 
         Coordinate[] arcArray = new Coordinate[arCoords.size()];
         arcArray = arCoords.toArray(arcArray);
-        Polygon arc = gf.createPolygon(arcArray);
+        Polygon arc = geometryFactory.createPolygon(arcArray);
 
         Geometry possibleAreaWithNewHint = possibleArea.getObject().intersection(arc);
         Geometry newPossibleArea = possibleArea.getObject().intersection(arc).difference(this.checkedArea.getObject());
@@ -251,7 +245,9 @@ public class GameField {
     public Geometry commitHint(AngleHint hint){
         Geometry newPossibleArea = testHint(hint);
         this.possibleArea = new GeometryItem<>(newPossibleArea, GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
-        givenHints.add(hint);
+        if(! givenHints.contains(hint)){
+            givenHints.add(hint);
+        }
         return newPossibleArea;
     }
 
@@ -269,7 +265,7 @@ public class GameField {
     public List<Pair<Coordinate, Double>> getWorstPointsOnAllEdges() {
         assert this.possibleArea.getObject().getNumGeometries() == 1 : "more than one geom";
         Coordinate[] edges = this.possibleArea.getObject().getCoordinates();
-        log.info("Sampling " + edges.length + " edges in run " + visitedPoints.size());
+        log.trace("Sampling " + edges.length + " edges in run " + visitedPoints.size());
         Pair<Coordinate, Double> bestSampled = new Pair(this.favoredTreasureLocation.getObject().getCoordinate(), this.favoredTreasureLocation.getObject().getCoordinate().distance(this.currentPlayersPosition.getCoordinate()) / this.favoredTreasureLocation.getObject().getCoordinate().distance(this.startingPoint.getCoordinate()));
         Pair<Coordinate, Double> bestCalc = new Pair(this.favoredTreasureLocation.getObject().getCoordinate(), this.favoredTreasureLocation.getObject().getCoordinate().distance(this.currentPlayersPosition.getCoordinate()) / this.favoredTreasureLocation.getObject().getCoordinate().distance(this.startingPoint.getCoordinate()));
         Pair<Coordinate, Double> sampledOnEdge;
@@ -281,15 +277,15 @@ public class GameField {
             calcOnEdge = calcMaxConstantPointOnSegment(edges[currentCoordinateIndex - 1], edges[currentCoordinateIndex], this.currentPlayersPosition.getCoordinate());
             worstEdgePoints.add(calcOnEdge);
             sampledOnEdge = sampleMaxConstantPointOnLineSegment(edges[currentCoordinateIndex - 1], edges[currentCoordinateIndex], this.currentPlayersPosition.getCoordinate());
-            log.info("line (" + edges[currentCoordinateIndex - 1] + ", " + edges[currentCoordinateIndex] + ")");
-            log.info("Calc " + calcOnEdge);
-            log.info("Samp " + sampledOnEdge);
+            log.trace("line (" + edges[currentCoordinateIndex - 1] + ", " + edges[currentCoordinateIndex] + ")");
+            log.trace("Calc " + calcOnEdge);
+            log.trace("Samp " + sampledOnEdge);
             if (sampledOnEdge.getValue() > bestSampled.getValue()) {
                 bestSampled = sampledOnEdge;
             }
             if (calcOnEdge.getValue() > bestCalc.getValue()) {
                 bestCalc = calcOnEdge;
-                log.debug("new best Const " + bestCalc.getValue() + " at " + bestCalc.getKey() + " at line (" + edges[currentCoordinateIndex - 1] + ", " + edges[currentCoordinateIndex] + ")");
+                log.trace("new best Const " + bestCalc.getValue() + " at " + bestCalc.getKey() + " at line (" + edges[currentCoordinateIndex - 1] + ", " + edges[currentCoordinateIndex] + ")");
             }
         }
         //sort for constant
@@ -299,9 +295,9 @@ public class GameField {
                 return coordinateDoublePair.getValue().compareTo(t1.getValue());
             }
         }.reversed());
-        log.info("worst Point List:" + worstEdgePoints.size() + "first element: " + worstEdgePoints.get(0));
-        log.info("best overall Sampled constant is" + bestSampled.getValue() + " at " + bestSampled.getKey().toString());
-        log.info("best overall calculated constant is" + bestCalc.getValue() + " at " + bestCalc.getKey().toString());
+        log.trace("worst Point List:" + worstEdgePoints.size() + "first element: " + worstEdgePoints.get(0));
+        log.trace("best overall Sampled constant is" + bestSampled.getValue() + " at " + bestSampled.getKey().toString());
+        log.debug("best overall calculated constant is" + bestCalc.getValue() + " at " + bestCalc.getKey().toString());
         return worstEdgePoints;
     }
 
@@ -317,9 +313,9 @@ public class GameField {
      */
     private Pair<Coordinate, Double> calcMaxConstantPointOnSegment(Coordinate p1, Coordinate p2, Coordinate player) {
         LineSegment unscaled = new LineSegment(p1, p2);
-        //log.debug("Calculating on " + unscaled);
+
         Point origin = startingPoint;
-        assert origin.equals( gf.createPoint(new Coordinate(0, 0))); // origin assumed to be (0,0)
+        assert origin.equals( geometryFactory.createPoint(new Coordinate(0, 0))); // origin assumed to be (0,0)
 
         Coordinate projection = unscaled.project(origin.getCoordinate());
         double scalingFactor = 1.0 / projection.distance(origin.getCoordinate());
@@ -422,17 +418,17 @@ public class GameField {
             bestCoordinate = scalingTransform.getInverse().transform(bestCoordinate, bestCoordinate);
 
             //bit hacky but needed to make bestCoordinate lie on the LineString
-            log.debug("Distance from " + bestCoordinate + "to " + unscaled + " : " + unscaled.distance(bestCoordinate)); // are in the range of 10e-16
+            log.trace("Distance from " + bestCoordinate + "to " + unscaled + " : " + unscaled.distance(bestCoordinate)); // are in the range of 10e-16
             bestCoordinate = unscaled.project(bestCoordinate);
-            log.debug("after projection; Distance from " + bestCoordinate + "to " + unscaled + " : " + unscaled.distance(bestCoordinate)); // stays in the 10e-16 range
+            log.trace("after projection; Distance from " + bestCoordinate + "to " + unscaled + " : " + unscaled.distance(bestCoordinate)); // stays in the 10e-16 range
 
         } catch (NoninvertibleTransformationException e) {
-            //log.info("Non invertible, but it should be!");
-            e.printStackTrace();
+            log.error("Non invertible, but it should be!" , e);
+
         }
-        log.info("Final Point after InverseTransformation: " + bestCoordinate);
-        log.info("player pos:" + player);
-        log.info("origin pos " + origin.getCoordinate());
+        log.trace("Final Point after InverseTransformation: " + bestCoordinate);
+        log.trace("player pos:" + player);
+        log.trace("origin pos " + origin.getCoordinate());
         return new Pair<>(bestCoordinate, evaluateConstantFunction(player, bestCoordinate, origin.getCoordinate()));
 
     }
@@ -479,10 +475,7 @@ public class GameField {
                 log.trace("new Best Point found on Linesegment at " + step + "/" + samples + "with C=" + constant);
             }
         }
-
         return bestPoint;
     }
-
-
 
 }

@@ -8,7 +8,7 @@ import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 
-public class AngleHintStat {
+public class AngleHintStatistic {
 
     @Getter
     private AngleHint hint;
@@ -20,22 +20,26 @@ public class AngleHintStat {
     private double absoluteAreaCutoff;
     @Getter
     private double relativeAreaCutoff;
-    @Getter@Setter
+    @Getter
+    @Setter
     private double distanceFromNormalAngleLineToTreasure;
-    @Getter@Setter
+    @Getter
+    @Setter
     private double distanceFromResultingCentroidToTreasure;
-    @Getter@Setter
+    @Getter
+    @Setter
     private Pair<Coordinate, Double> worstConstantPoint = new Pair(new Coordinate(0,0),  0.0);
-    @Getter@Setter
+    @Getter
+    @Setter
     double rating;
 
 
-    public AngleHintStat(AngleHint hint){
+    public AngleHintStatistic(AngleHint hint){
         this.hint = hint;
 
     }
 
-    public AngleHintStat(AngleHint hint, Geometry areaBefore, Geometry areaAfter){
+    public AngleHintStatistic(AngleHint hint, Geometry areaBefore, Geometry areaAfter){
         this.hint = hint;
         this.areaBeforeHint = areaBefore;
         this.areaAfterHint = areaAfter;

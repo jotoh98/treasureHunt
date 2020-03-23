@@ -2,12 +2,9 @@ package com.treasure.hunt.strategy.hider.impl;
 
 import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.geom.*;
-import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
-import com.treasure.hunt.utils.Preference;
-import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.*;
@@ -19,7 +16,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -84,7 +80,7 @@ public abstract class StatisticalHider{
      */
     public AngleHint eval(List<AngleHint> hints) {
 
-        List<AngleHintStat> stats = new ArrayList<>();
+        List<AngleHintStatistic> stats = new ArrayList<>();
         for( AngleHint hint: hints){
 
             Geometry before = this.currentPossibleArea;
@@ -92,7 +88,7 @@ public abstract class StatisticalHider{
             Geometry after = gameField.testHint(hint);
 
 
-            AngleHintStat hs = new AngleHintStat(hint,before,after); // autofills the absolute/relative area cutoffs
+            AngleHintStatistic hs = new AngleHintStatistic(hint,before,after); // autofills the absolute/relative area cutoffs
 
             //calc some Statistics
             fillDistanceToNormalLine(hs);
@@ -105,9 +101,9 @@ public abstract class StatisticalHider{
         stats = filterForValidHints(stats);
         log.debug("#of hints after filtering for InView Predicate" + stats.size());
 
-        stats.sort(Comparator.comparingDouble(AngleHintStat::getRating).reversed());
+        stats.sort(Comparator.comparingDouble(AngleHintStatistic::getRating).reversed());
 
-        AngleHintStat returnHint = stats.get(0);
+        AngleHintStatistic returnHint = stats.get(0);
 
         log.info("eval angleHint");
         log.info(returnHint.toString());
@@ -130,20 +126,20 @@ public abstract class StatisticalHider{
     }
 
     /**
-     * Rates the Given Hint with a custom function, saves the result in the AngleHintStat - Wrapper and returns the result
+     * Rates the Given Hint with a custom function, saves the result in the AngleHintStatistic - Wrapper and returns the result
      * @param ahs The AngleHint - Wrapper , in which the result is saved
      * @return the rating of the hint
      */
-    protected abstract double rateHint(AngleHintStat ahs);
+    protected abstract double rateHint(AngleHintStatistic ahs);
 
     /**
-     * Inspects the given Hint in AngleHintStat and computes the distance between the angle-bisector and the treasure.
-     * The result is written into the corresponding AngleHintStat
+     * Inspects the given Hint in AngleHintStatistic and computes the distance between the angle-bisector and the treasure.
+     * The result is written into the corresponding AngleHintStatistic
      *
-     * @param ahs the AngleHintStat Wrapper containing the Hint
+     * @param ahs the AngleHintStatistic Wrapper containing the Hint
      * @return the distance
      */
-    protected double fillDistanceToNormalLine(AngleHintStat ahs){
+    protected double fillDistanceToNormalLine(AngleHintStatistic ahs){
         Coordinate center = ahs.getHint().getGeometryAngle().getCenter();
         Coordinate middlePoint = JTSUtils.middleOfAngleHint(ahs.getHint());
         LineSegment normalLine = new LineSegment(center,middlePoint);
@@ -154,13 +150,13 @@ public abstract class StatisticalHider{
     }
 
     /**
-     * Inspects the given Hint in AngleHintStat and computes the distance between the angle-bisector and the treasure.
-     * The result is written into the corresponding AngleHintStat
+     * Inspects the given Hint in AngleHintStatistic and computes the distance between the angle-bisector and the treasure.
+     * The result is written into the corresponding AngleHintStatistic
      *
-     * @param ahs the AngleHintStat Wrapper containing the Hint
+     * @param ahs the AngleHintStatistic Wrapper containing the Hint
      * @return the distance
      */
-    protected double fillDistanceToCentroid(AngleHintStat ahs){
+    protected double fillDistanceToCentroid(AngleHintStatistic ahs){
         Geometry after = ahs.getAreaAfterHint();
         Point centroid = after.getCentroid();
         log.info("Centroid " + centroid);
@@ -179,7 +175,7 @@ public abstract class StatisticalHider{
      * @param stats the List of AngleHintStats to filter
      * @return
      */
-    protected List<AngleHintStat> filterForValidHints(List<AngleHintStat> stats){
+    protected List<AngleHintStatistic> filterForValidHints(List<AngleHintStatistic> stats){
         stats = stats.stream().filter(hint -> hint.getHint().getGeometryAngle().inView(treasure.getCoordinate())).collect(Collectors.toList());
         log.debug("remaining possible Hints" + stats.size());
         return stats;

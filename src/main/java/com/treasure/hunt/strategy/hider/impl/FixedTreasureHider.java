@@ -1,14 +1,9 @@
 package com.treasure.hunt.strategy.hider.impl;
 
-import com.treasure.hunt.strategy.geom.*;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
-import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.Preference;
 import lombok.extern.slf4j.Slf4j;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Point;
 
 @Slf4j
@@ -18,7 +13,7 @@ import org.locationtech.jts.geom.Point;
 public class FixedTreasureHider extends StatisticalHider implements Hider<AngleHint> {
 
     @Override
-    protected double rateHint(AngleHintStat ahs){
+    protected double rateHint(AngleHintStatistic ahs){
         double rating = 0;
 
         rating += 10 * ( 1 / ahs.getRelativeAreaCutoff());

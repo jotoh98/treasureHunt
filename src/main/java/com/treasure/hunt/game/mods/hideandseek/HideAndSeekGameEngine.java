@@ -19,6 +19,7 @@ public class HideAndSeekGameEngine extends GameEngine {
     public HideAndSeekGameEngine(Searcher searcher, Hider hider) {
         super(searcher, hider);
     }
+
     public HideAndSeekGameEngine(Searcher searcher, Hider hider, Coordinate coordinate) {
         super(searcher, hider, coordinate);
     }

@@ -8,7 +8,6 @@ import org.locationtech.jts.geom.Coordinate;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class HintEvaluator {
 
-    private List<AngleHintStat> hints;
+    private List<AngleHintStatistic> hints;
     private List<Pair<Coordinate, Pair<Double, Double>>> treasurePointsOfInterest; //Coordinate, Constant, Angle under PlayerPosition
     private Coordinate playerPosition;
     private Coordinate origin = new Coordinate(0,0);
@@ -54,7 +53,7 @@ public class HintEvaluator {
         }
 
 
-        //AngleHintStat ahs = new AngleHintStat(hint, currentArea, areaAfter);
+        //AngleHintStatistic ahs = new AngleHintStatistic(hint, currentArea, areaAfter);
        // hints.add(ahs);
     }
 
@@ -92,7 +91,7 @@ public class HintEvaluator {
         log.info("worst Coordinate is " + treasurePointsOfInterest.get(0));
 
         //for each hint assign the best treasure in view
-        for (AngleHintStat hintStat : hints) {
+        for (AngleHintStatistic hintStat : hints) {
             for (Pair<Coordinate, Pair<Double, Double>> p : treasurePointsOfInterest) {
                 if (hintStat.getHint().getGeometryAngle().inView(p.getKey())) {
                     Pair<Coordinate, Double> worstPointForHint = new Pair<>(p.getKey(), p.getValue().getKey());
@@ -106,12 +105,12 @@ public class HintEvaluator {
         // now apply decision in reverse order of importance
 
         // sort for Area
-        hints.sort(Comparator.comparingDouble(AngleHintStat::getRelativeAreaCutoff));
+        hints.sort(Comparator.comparingDouble(AngleHintStatistic::getRelativeAreaCutoff));
 
         // sort for Worst Point
-        Comparator<AngleHintStat> worstPointComparator = new Comparator<AngleHintStat>() {
+        Comparator<AngleHintStatistic> worstPointComparator = new Comparator<AngleHintStatistic>() {
             @Override
-            public int compare(AngleHintStat angleHintStat1, AngleHintStat angleHintStat2) {
+            public int compare(AngleHintStatistic angleHintStat1, AngleHintStatistic angleHintStat2) {
                 double diff = angleHintStat1.getWorstConstantPoint().getValue() - angleHintStat2.getWorstConstantPoint().getValue();
                 if(diff == 0){
                     return 0;
@@ -125,7 +124,7 @@ public class HintEvaluator {
         hints.sort(worstPointComparator.reversed());
 
         log.info("the hints in order" + hints.toString());
-        AngleHintStat ahs = hints.get(0);
+        AngleHintStatistic ahs = hints.get(0);
         log.info(ahs.toString());
 
         return ahs.getHint();

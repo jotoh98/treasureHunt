@@ -55,7 +55,7 @@ public class MobileTreasureHider extends StatisticalHider implements HideAndSeek
 
 
     @Override
-    protected double rateHint(AngleHintStat ahs) {
+    protected double rateHint(AngleHintStatistic ahs) {
         double rating = 0;
 
         rating += 10 * ( 1 / ahs.getRelativeAreaCutoff());
