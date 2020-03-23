@@ -24,6 +24,8 @@ public final class JTSUtils {
      */
     public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(1000000000));
 
+    public static final double DISTANCE_ZERO = 1e-10;
+
     private JTSUtils() {
     }
 

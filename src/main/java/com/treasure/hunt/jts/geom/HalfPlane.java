@@ -4,8 +4,8 @@ import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
 import com.treasure.hunt.jts.awt.CanvasBoundary;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.ListUtils;
-import org.decimal4j.util.DoubleRounder;
 import org.locationtech.jts.algorithm.ConvexHull;
+import org.locationtech.jts.algorithm.Orientation;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineSegment;
@@ -23,7 +23,7 @@ import java.util.stream.Stream;
  * computing a normal vector pointing out of the inner half space and a corresponding double scalar to scale the half
  * plane away from the origin.</p>
  * <hr>
- * <p>Now we want to explore, how we compute a vector laying inside the inner half space in {@link #inside(Vector2D)}:</p>
+ * <p>Now we want to explore, how we compute a vector laying inside the inner half space in {@link #inside(Coordinate)}:</p>
  * <p>So we state that <i>a</i> is the normal vector pointing out of the inner half space, <i>b</i> is the scalar and
  * <i>x</i> is the vector to test.</p>
  * <p>If evaluation is strict, the test evaluates true, if</p>
@@ -31,11 +31,11 @@ import java.util.stream.Stream;
  * <p>Else, it already evaluates true, if the following statement is true:</p>
  * &lang; a, x &rang; &ge; b.
  * <hr>
- * <p>The half plane is represented as an infinite line in coordinate form. To perform {@link #inside(Vector2D)}, we
+ * <p>The half plane is represented as an infinite line in coordinate form. To perform {@link #inside(Coordinate)}, we
  * compute the corresponding normal vector and scalar. For two coordinates <i>c1</i> and <i>c2</i>, the inner half space
  * lies on the <u>right-hand-side</u> of the vector from <i>c1</i> to <i>c2</i>.</p>
  *
- * @see #inside(Vector2D)
+ * @see #inside(Coordinate)
  */
 public class HalfPlane extends Line {
 
@@ -50,7 +50,7 @@ public class HalfPlane extends Line {
 
     /**
      * Default constructor.
-     * The half plane divides the space in two sections. The side, that the method {@link #inside(Vector2D)} evaluates true on
+     * The half plane divides the space in two sections. The side, that the method {@link #inside(Coordinate)} evaluates true on
      * is on the right side of the vector from c1 to c2.
      *
      * @param c1     first coordinate the half planes line is going through
@@ -73,7 +73,6 @@ public class HalfPlane extends Line {
         this(c1, c2, false);
     }
 
-
     /**
      * Construct a HalfPlane with its normal vector and its scalar.
      * The vector and scalar are the matrix representation components of the half plane.
@@ -82,7 +81,7 @@ public class HalfPlane extends Line {
      * @param normal normal vector of the half plane pointing outwards
      * @param scalar scalar for translating the half plane away from the origin point
      * @return a half plane in coordinate representation
-     * @see #inside(Vector2D)
+     * @see #inside(Coordinate)
      */
     public static HalfPlane from(Vector2D normal, double scalar) {
         if (normal.getX() == 0 && normal.getY() == 0) {
@@ -99,59 +98,21 @@ public class HalfPlane extends Line {
     }
 
     /**
-     * Directional vector of the divider line.
-     *
-     * @return divider direction vector
-     */
-    public Vector2D getDirection() {
-        return Vector2D.create(p0, p1);
-    }
-
-    /**
-     * Compute the normal vector for evaluating {@link #inside(Vector2D)}.
-     * The normal vector is the directional vector rotated clockwise by 90&deg;.
-     *
-     * @return half plane normal vector
-     */
-    public Vector2D getNormalVector() {
-        return getDirection().rotateByQuarterCircle(-1);
-    }
-
-    /**
-     * Compute the scalar for evaluating {@link #inside(Vector2D)}.
-     *
-     * @return evaluation scalar
-     */
-    public double getScalar() {
-        final Vector2D vector = getNormalVector();
-        return vector.getX() * p0.x + vector.getY() * p0.y;
-
-    }
-
-    /**
      * Evaluates, if a location vector of a point lies in the inner half space.<br>
      * For strict half planes, it must satisfy the following condition:
      * &lang; a, x &rang; &gt; b,
      * otherwise, it tests the condition:
      * &lang; a, x &rang; &ge; b.
      *
-     * @param x location vector to test
-     * @return whether the point lays in the inner half space
-     */
-    public boolean inside(Vector2D x) {
-        final double dotProduct = DoubleRounder.round(x.dot(getNormalVector()), 10);
-        final double scalar = DoubleRounder.round(getScalar(), 10);
-        return strict ? dotProduct > scalar : dotProduct >= scalar;
-    }
-
-    /**
-     * Convenience method for {@link #inside(Vector2D)}.
-     *
      * @param c coordinate to test
      * @return whether the coordinate lays in the inner half space
      */
     public boolean inside(Coordinate c) {
-        return inside(Vector2D.create(c));
+        if (inLine(c)) {
+            return true;
+        }
+        final int index = Orientation.index(p0, p1, c);
+        return strict ? index < 0 : index <= 0;
     }
 
     public boolean inside(LineSegment lineSegment) {
@@ -194,7 +155,12 @@ public class HalfPlane extends Line {
         return null;
     }
 
-    public boolean equals(HalfPlane other) {
-        return p0.equals2D(other.p0) && p1.equals2D(other.p1);
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof HalfPlane) {
+            HalfPlane other = (HalfPlane) o;
+            return p0.equals2D(other.p0) && p1.equals2D(other.p1);
+        }
+        return false;
     }
 }
