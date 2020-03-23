@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -147,6 +147,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">Ray</span>
 extends org.locationtech.jts.geom.LineSegment
 implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.geom">Shapeable</a></pre>
+<div class="block"><p>The Ray class is a line segment with one side being infinitely long.</p>
+ <br>
+ <p>It has an internal <code>LineSegment</code> representation with one <code>Coordinate</code> being
+ the start of the ray and the second <code>Coordinate</code> being a point one length-unit away
+ from the start in the direction of the ray.</p></div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../serialized-form.html#com.treasure.hunt.jts.geom.Ray">Serialized Form</a></dd>
@@ -188,10 +193,21 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate)">Ray</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;p0,
-   org.locationtech.jts.geom.Coordinate&nbsp;p1)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">Ray</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate)">Ray</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;start,
+   org.locationtech.jts.geom.Coordinate&nbsp;target)</code></th>
 <td class="colLast">
-<div class="block">The constructor.</div>
+<div class="block">Ray constructor from two coordinates.</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.math.Vector2D)">Ray</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;start,
+   org.locationtech.jts.math.Vector2D&nbsp;direction)</code></th>
+<td class="colLast">
+<div class="block">Ray constructor from a start coordinate and a direction vector.</div>
 </td>
 </tr>
 </table>
@@ -213,17 +229,68 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>double</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLength()">getLength</a></span>()</code></th>
+<td class="colFirst"><code>org.locationtech.jts.math.Vector2D</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDirection()">getDirection</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#intersection(org.locationtech.jts.geom.LineSegment)">intersection</a></span>&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;line)</code></th>
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLength()">getLength</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Get the rays length, which is positive infinite by definition.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#inLine(org.locationtech.jts.geom.Coordinate)">inLine</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</code></th>
+<td class="colLast">
+<div class="block">Checks if a coordinate lays in the infinite line.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#inRay(org.locationtech.jts.geom.Coordinate)">inRay</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</code></th>
+<td class="colLast">
+<div class="block">Checks, if a given <code>Coordinate</code> lays in the ray.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#inSegment(org.locationtech.jts.geom.Coordinate)">inSegment</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#intersection(com.treasure.hunt.jts.geom.Line)">intersection</a></span>&#8203;(<a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>&nbsp;line)</code></th>
+<td class="colLast">
+<div class="block">Intersect ray with <a href="Line.html" title="class in com.treasure.hunt.jts.geom"><code>Line</code></a></div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#intersection(com.treasure.hunt.jts.geom.Ray)">intersection</a></span>&#8203;(<a href="Ray.html" title="class in com.treasure.hunt.jts.geom">Ray</a>&nbsp;ray)</code></th>
+<td class="colLast">
+<div class="block">Intersect ray with <a href="Ray.html" title="class in com.treasure.hunt.jts.geom"><code>Ray</code></a></div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#intersection(org.locationtech.jts.geom.LineSegment)">intersection</a></span>&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;line)</code></th>
+<td class="colLast">
+<div class="block">Intersect ray with <code>LineSegment</code></div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#intersects(org.locationtech.jts.geom.LineSegment)">intersects</a></span>&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;line)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>java.awt.Shape</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toShape(com.treasure.hunt.jts.awt.AdvancedShapeWriter)">toShape</a></span>&#8203;(<a href="../awt/AdvancedShapeWriter.html" title="class in com.treasure.hunt.jts.awt">AdvancedShapeWriter</a>&nbsp;shapeWriter)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Convert the ray to a line shape, if it lays inside of the visual boundary.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -259,17 +326,42 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <a id="&lt;init&gt;(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate)">
 <!--   -->
 </a>
+<ul class="blockList">
+<li class="blockList">
+<h4>Ray</h4>
+<pre>public&nbsp;Ray&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;start,
+           org.locationtech.jts.geom.Coordinate&nbsp;target)</pre>
+<div class="block">Ray constructor from two coordinates.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>start</code> - ray starting coordinate</dd>
+<dd><code>target</code> - ray direction coordinate</dd>
+</dl>
+</li>
+</ul>
+<a id="&lt;init&gt;(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.math.Vector2D)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>Ray</h4>
+<pre>public&nbsp;Ray&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;start,
+           org.locationtech.jts.math.Vector2D&nbsp;direction)</pre>
+<div class="block">Ray constructor from a start coordinate and a direction vector.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>start</code> - ray starting coordinate</dd>
+<dd><code>direction</code> - ray direction vector</dd>
+</dl>
+</li>
+</ul>
+<a id="&lt;init&gt;()">
+<!--   -->
+</a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>Ray</h4>
-<pre>public&nbsp;Ray&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;p0,
-           org.locationtech.jts.geom.Coordinate&nbsp;p1)</pre>
-<div class="block">The constructor.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>p0</code> - the first <code>Coordinate</code> of this ray.</dd>
-<dd><code>p1</code> - the second <code>Coordinate</code> of this ray.</dd>
-</dl>
+<pre>public&nbsp;Ray()</pre>
 </li>
 </ul>
 </li>
@@ -282,6 +374,31 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a id="inRay(org.locationtech.jts.geom.Coordinate)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>inRay</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;inRay&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</pre>
+<div class="block">Checks, if a given <code>Coordinate</code> lays in the ray.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>coordinate</code> - coordinate to check</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>whether point lays in ray or not</dd>
+</dl>
+</li>
+</ul>
+<a id="inSegment(org.locationtech.jts.geom.Coordinate)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>inSegment</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;inSegment&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</pre>
+</li>
+</ul>
 <a id="intersection(org.locationtech.jts.geom.LineSegment)">
 <!--   -->
 </a>
@@ -289,10 +406,56 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <li class="blockList">
 <h4>intersection</h4>
 <pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Coordinate&nbsp;intersection&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;line)</pre>
+<div class="block">Intersect ray with <code>LineSegment</code></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>intersection</code>&nbsp;in class&nbsp;<code>org.locationtech.jts.geom.LineSegment</code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>line</code> - segment to intersect ray with</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>intersection between segment and ray, if there is none: null</dd>
 </dl>
+</li>
+</ul>
+<a id="intersection(com.treasure.hunt.jts.geom.Ray)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>intersection</h4>
+<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Coordinate&nbsp;intersection&#8203;(<a href="Ray.html" title="class in com.treasure.hunt.jts.geom">Ray</a>&nbsp;ray)</pre>
+<div class="block">Intersect ray with <a href="Ray.html" title="class in com.treasure.hunt.jts.geom"><code>Ray</code></a></div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>ray</code> - ray to intersect ray with</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>intersection between two ray, if there is none: null</dd>
+</dl>
+</li>
+</ul>
+<a id="intersection(com.treasure.hunt.jts.geom.Line)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>intersection</h4>
+<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Coordinate&nbsp;intersection&#8203;(<a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>&nbsp;line)</pre>
+<div class="block">Intersect ray with <a href="Line.html" title="class in com.treasure.hunt.jts.geom"><code>Line</code></a></div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>line</code> - infinite line to intersect ray with</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>intersection between ray and infinite line, if there is none: null</dd>
+</dl>
+</li>
+</ul>
+<a id="intersects(org.locationtech.jts.geom.LineSegment)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>intersects</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;intersects&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;line)</pre>
 </li>
 </ul>
 <a id="getLength()">
@@ -302,27 +465,56 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <li class="blockList">
 <h4>getLength</h4>
 <pre class="methodSignature">public&nbsp;double&nbsp;getLength()</pre>
+<div class="block">Get the rays length, which is positive infinite by definition.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>getLength</code>&nbsp;in class&nbsp;<code>org.locationtech.jts.geom.LineSegment</code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the rays length = positive infinite</dd>
 </dl>
 </li>
 </ul>
 <a id="toShape(com.treasure.hunt.jts.awt.AdvancedShapeWriter)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>toShape</h4>
 <pre class="methodSignature">public&nbsp;java.awt.Shape&nbsp;toShape&#8203;(<a href="../awt/AdvancedShapeWriter.html" title="class in com.treasure.hunt.jts.awt">AdvancedShapeWriter</a>&nbsp;shapeWriter)</pre>
+<div class="block">Convert the ray to a line shape, if it lays inside of the visual boundary.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="Shapeable.html#toShape(com.treasure.hunt.jts.awt.AdvancedShapeWriter)">toShape</a></code>&nbsp;in interface&nbsp;<code><a href="Shapeable.html" title="interface in com.treasure.hunt.jts.geom">Shapeable</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>shapeWriter</code> - the <code>ShapeWriter</code> we use, to convert <code>this</code> into a <code>Shape</code>.</dd>
+<dd><code>shapeWriter</code> - writer for shapes, holds the visual boundary</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>A shape, <code>this</code> is converted into.</dd>
+<dd>line shape, or if not visible, null</dd>
 </dl>
+</li>
+</ul>
+<a id="inLine(org.locationtech.jts.geom.Coordinate)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>inLine</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;inLine&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</pre>
+<div class="block">Checks if a coordinate lays in the infinite line.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>coordinate</code> - coordinate to check</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>whether or not the coordinate lays in the infinite line</dd>
+</dl>
+</li>
+</ul>
+<a id="getDirection()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getDirection</h4>
+<pre class="methodSignature">public&nbsp;org.locationtech.jts.math.Vector2D&nbsp;getDirection()</pre>
 </li>
 </ul>
 </li>
