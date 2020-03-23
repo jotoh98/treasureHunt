@@ -100,6 +100,14 @@ public class GeometryAngle extends LineString implements Shapeable {
         return new Vector2D(getCenter(), getLeft());
     }
 
+    public Ray leftRay(){
+        return new Ray(getCenter().copy(),getLeft().copy());
+    }
+
+    public Ray rightRay(){
+        return new Ray(getCenter().copy(),getRight().copy());
+    }
+
     public double rightAngle() {
         return org.locationtech.jts.algorithm.Angle.angle(getCenter(), getRight());
     }
