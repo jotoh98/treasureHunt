@@ -159,11 +159,10 @@ public class GameEngine {
         }
         if (hint instanceof CircleHint) {
             Circle circle = ((CircleHint) hint).getCircle();
-            double distance = circle.getCenter().distance(treasurePosition.getCoordinate());
-            if (circle.getRadius() < distance) {
+            if (!circle.contains(treasurePosition.getCoordinate())) {
                 throw new IllegalArgumentException("The CircleHint does not contain the treasure.\n" +
                         "It says, " + circle.getRadius() + " around " + circle.getCenter() + ", " +
-                        "but was " + distance);
+                        "but was " + circle.getCenter().distance(treasurePosition.getCoordinate()));
             }
         }
     }
