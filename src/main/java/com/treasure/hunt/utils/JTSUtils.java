@@ -72,7 +72,6 @@ public final class JTSUtils {
 
     public static boolean doubleEqual(double a, double b) {
         return (0 == GEOMETRY_FACTORY.getPrecisionModel().makePrecise(a - b));
-
     }
 
     /**

@@ -1,31 +1,26 @@
 package com.treasure.hunt.strategy.hint.impl;
 
+import com.treasure.hunt.jts.geom.HalfPlane;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import lombok.Getter;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
-import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.math.Vector2D;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.down;
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.up;
-import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
 
 /**
  * @author bsen
  */
 
 public class HalfPlaneHint extends AngleHint {
-    static final double visual_extent = 1000;
-    private LineString halfPlaneLine = null;
-    @Getter
+    private HalfPlane halfPlaneTheTreasureIsNotIn = null;
     /**
-     *
      * when the line indicated by anglePointLeft and anglePointRight is not horizontal,
      * right and left indicate where the target is (right indicates the target is in positive x-Direction
      * in relationship to the line)
@@ -33,6 +28,7 @@ public class HalfPlaneHint extends AngleHint {
      * to the line (the up and down enumerators are only used when the line is horizontal)
      * left and down respectively
      */
+    @Getter
     private Direction direction;
 
     public HalfPlaneHint(Coordinate center, Coordinate right) {
@@ -149,26 +145,11 @@ public class HalfPlaneHint extends AngleHint {
         return geometryAngle.getLeft();
     }
 
-    public LineString getHalfPlaneLineGeometry() {
-        if (halfPlaneLine == null) {
-            Vector2D leftToRight = new Vector2D(getCenter(), getRight());
-            Vector2D rightToLeft = new Vector2D(getRight(), getCenter());
-
-            leftToRight = leftToRight.multiply(visual_extent / leftToRight.length());
-            rightToLeft = rightToLeft.multiply(visual_extent / rightToLeft.length());
-
-            Coordinate extendedL = new Coordinate(
-                    getRight().x + rightToLeft.getX(),
-                    getRight().y + rightToLeft.getY()
-            );
-            Coordinate extendedR = new Coordinate(
-                    getCenter().x + leftToRight.getX(),
-                    getCenter().y + leftToRight.getY()
-            );
-            Coordinate[] line = new Coordinate[]{extendedL, extendedR};
-            halfPlaneLine = GEOMETRY_FACTORY.createLineString(line);
+    public HalfPlane getHalfPlaneTheTreasureIsNotIn() {
+        if (halfPlaneTheTreasureIsNotIn == null) {
+            halfPlaneTheTreasureIsNotIn = new HalfPlane(getCenter(), getRight(), false);
         }
-        return halfPlaneLine;
+        return halfPlaneTheTreasureIsNotIn;
     }
 
     public LineSegment getHalfPlaneLine() {
@@ -189,7 +170,7 @@ public class HalfPlaneHint extends AngleHint {
     @Override
     public List<GeometryItem<?>> getGeometryItems() {
         List<GeometryItem<?>> output = new ArrayList<>();
-        output.add(new GeometryItem(getHalfPlaneLineGeometry(), GeometryType.HALF_PLANE_LINE));
+        output.add(new GeometryItem(getHalfPlaneTheTreasureIsNotIn(), GeometryType.HALF_PLANE_LINE));
         return output;
     }
 

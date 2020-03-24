@@ -248,11 +248,11 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         }
         //add hints
         if (currentHint != null) {
-            move.addAdditionalItem(new GeometryItem<>(currentHint.getHalfPlaneLineGeometry(),
+            move.addAdditionalItem(new GeometryItem<>(currentHint.getHalfPlaneTheTreasureIsNotIn(),
                     GeometryType.HALF_PLANE_LINE_BLUE));
         }
         if (previousHint != null) {
-            move.addAdditionalItem(new GeometryItem<>(previousHint.getHalfPlaneLineGeometry(),
+            move.addAdditionalItem(new GeometryItem<>(previousHint.getHalfPlaneTheTreasureIsNotIn(),
                     GeometryType.HALF_PLANE_LINE_BROWN));
         }
         return addState(move, curCoords, currentPhaseRectangle());

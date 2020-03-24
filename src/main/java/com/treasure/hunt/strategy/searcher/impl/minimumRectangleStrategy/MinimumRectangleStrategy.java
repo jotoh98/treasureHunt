@@ -111,8 +111,6 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         obtainedHints = new ArrayList<>();
         currentMultiPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon();
         visitedPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon();
-
-
     }
 
     /**
@@ -229,12 +227,12 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         //add current and previous hint
         if (currentHint != null) {
             move.addAdditionalItem(new GeometryItem<>(
-                    transformer.toExternal(currentHint).getHalfPlaneLineGeometry(),
+                    transformer.toExternal(currentHint).getHalfPlaneTheTreasureIsNotIn(),
                     GeometryType.HALF_PLANE_LINE_BLUE));
         }
         if (previousHint != null) {
             move.addAdditionalItem(new GeometryItem<>(
-                    transformer.toExternal(previousHint).getHalfPlaneLineGeometry(),
+                    transformer.toExternal(previousHint).getHalfPlaneTheTreasureIsNotIn(),
                     GeometryType.HALF_PLANE_LINE_BROWN));
         }
 
