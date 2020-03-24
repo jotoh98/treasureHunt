@@ -132,7 +132,7 @@ public class Ray extends LineSegment implements Shapeable {
      * @return whether or not the coordinate lays in the infinite line
      */
     public boolean inLine(Coordinate coordinate) {
-        return distancePerpendicular(coordinate) < JTSUtils.DISTANCE_ZERO;
+        return JTSUtils.doubleEqual(distancePerpendicular(coordinate), 0);
     }
 
     /**
@@ -152,7 +152,7 @@ public class Ray extends LineSegment implements Shapeable {
      * @return whether point lays in segment or not
      */
     public boolean inSegment(Coordinate coordinate) {
-        return distance(coordinate) < JTSUtils.DISTANCE_ZERO;
+        return JTSUtils.doubleEqual(distance(coordinate), 0);
     }
 
     /**

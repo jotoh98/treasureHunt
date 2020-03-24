@@ -42,7 +42,7 @@ class RayTest {
 
     private void assertIntersects(Coordinate intersection) {
         Assertions.assertNotNull(intersection);
-        Assertions.assertTrue(intersection.distance(new Coordinate(1, 0)) < JTSUtils.DISTANCE_ZERO);
+        Assertions.assertTrue(JTSUtils.doubleEqual(intersection.distance(new Coordinate(1, 0)), 0));
     }
 
     @Test
