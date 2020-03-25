@@ -30,6 +30,12 @@ public class HalfPlaneHint extends AngleHint {
      */
     @Getter
     private Direction direction;
+    private boolean visualisation = true;
+
+    public HalfPlaneHint(Coordinate center, Coordinate right, boolean visualisation) {
+        this(center, right);
+        this.visualisation = visualisation;
+    }
 
     public HalfPlaneHint(Coordinate center, Coordinate right) {
         super(right, center, new Coordinate(2 * center.x - right.x, 2 * center.y - right.y));
@@ -169,9 +175,13 @@ public class HalfPlaneHint extends AngleHint {
      */
     @Override
     public List<GeometryItem<?>> getGeometryItems() {
-        List<GeometryItem<?>> output = new ArrayList<>();
-        output.add(new GeometryItem(getHalfPlaneTheTreasureIsNotIn(), GeometryType.HALF_PLANE_LINE));
-        return output;
+        if (visualisation) {
+            List<GeometryItem<?>> output = new ArrayList<>();
+            output.add(new GeometryItem(getHalfPlaneTheTreasureIsNotIn(), GeometryType.HALF_PLANE_ORANGE));
+            return output;
+        } else {
+            return new ArrayList<>(0);
+        }
     }
 
     public Coordinate getLowerHintPoint() {

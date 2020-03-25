@@ -17,9 +17,9 @@ public enum GeometryType {
 
     // HalfPlaneHint
     HALF_PLANE(true, "the treasure is not here", true),
-    HALF_PLANE_LINE(true, "half plane line", true),
-    HALF_PLANE_LINE_BLUE(true, "half plane line", true),
-    HALF_PLANE_LINE_BROWN(true, "half plane line", true),
+    HALF_PLANE_ORANGE(true, "half plane line", true), // todo add better description
+    HALF_PLANE_RED(true, "half plane line", true),// todo add better description
+    HALF_PLANE_LIGHT_RED(true, "half plane line", true),// todo add better description
 
     // treasure/no-treasure (areas)
     TREASURE(true, "treasure", true),
@@ -40,6 +40,7 @@ public enum GeometryType {
     CURRENT_PHASE(false, "current phase", true),
     CURRENT_RECTANGLE(true, "current rectangle", true),
     CURRENT_POLYGON(true, "current polygon", true),
+    L1_DOUBLE_APOS(true, "L1''", true),
 
     STANDARD(true, ""),
     CURRENT_WAY_POINT(true, "Current way point", true),

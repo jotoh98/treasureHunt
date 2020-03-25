@@ -1,9 +1,13 @@
 package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 
+import com.treasure.hunt.jts.geom.Line;
+import com.treasure.hunt.strategy.geom.GeometryItem;
+import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.geom.StatusMessageItem;
 import com.treasure.hunt.strategy.geom.StatusMessageType;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 
@@ -25,7 +29,7 @@ class LastHintBadSubroutine {
      */
     private HalfPlaneHint.Direction x2Apos;
     private int basicTransformation;
-    private Coordinate[] rect;
+    private Coordinate[] currentRectangle;
     private LineSegment AB, AD, BC, CD, L1Apos, L1DoubleApos, L2Apos, ppApos, mAposKApos, hAposGApos, pAposK;
     private Coordinate p, pApos, a, d, e, dApos, f, j, jApos, t, m, mApos, k, kApos, g, gApos, h, hApos, s, sApos;
     private Coordinate A, B, C, D;
@@ -47,17 +51,17 @@ class LastHintBadSubroutine {
      * (e.g. the current hint in its transformed state is called curHintT)
      */
     private void initializeVariables(HalfPlaneHint currentHint, HalfPlaneHint lastBadHint) {
-        rect = new Coordinate[]{strategy.searchAreaCornerA.getCoordinate(), strategy.searchAreaCornerB.getCoordinate(),
+        currentRectangle = new Coordinate[]{strategy.searchAreaCornerA.getCoordinate(), strategy.searchAreaCornerB.getCoordinate(),
                 strategy.searchAreaCornerC.getCoordinate(), strategy.searchAreaCornerD.getCoordinate()};
 
-        basicTransformation = getBasicTransformation(rect, lastBadHint);
+        basicTransformation = getBasicTransformation(currentRectangle, lastBadHint);
 
-        Coordinate[] transformedRect = phiRectangle(basicTransformation, rect);
+        Coordinate[] transformedRect = phiRectangle(basicTransformation, currentRectangle);
         A = transformedRect[0];
         B = transformedRect[1];
         C = transformedRect[2];
         D = transformedRect[3];
-        lastHintT = phiHint(basicTransformation, rect, lastBadHint);
+        lastHintT = phiHint(basicTransformation, currentRectangle, lastBadHint);
 
         p = centerOfRectangle(transformedRect);
         pApos = twoStepsOrthogonal(lastHintT, p);
@@ -112,7 +116,7 @@ class LastHintBadSubroutine {
         s = new Coordinate(L1Apos.lineIntersection(AsApos));
         sApos = new Coordinate(L1DoubleApos.lineIntersection(AsApos));
 
-        HalfPlaneHint curHintT = phiHint(basicTransformation, rect, currentHint);
+        HalfPlaneHint curHintT = phiHint(basicTransformation, currentRectangle, currentHint);
 
         x2Apos = curHintT.getDirection();
         L2Apos = new LineSegment(curHintT.getCenter(),
@@ -230,6 +234,7 @@ class LastHintBadSubroutine {
         // definitions of the used points get joint so that one gets a coherent status message
         switch (caseIndex) {
             case 1:
+                addL1DoubleApos(move);
                 statusMessage = statusMessage.concat(L1DoubleAposDef + fDef + tDef +
                         "\n The search rectangle is reduced to f" + transformedRectangle[1] + transformedRectangle[2]
                         + "t.");
@@ -240,15 +245,18 @@ class LastHintBadSubroutine {
                         + "is reduced to g" + transformedRectangle[1] + transformedRectangle[2] + "h.");
                 break;
             case 3:
+                addL1DoubleApos(move);
                 statusMessage = statusMessage.concat(L1DoubleAposDef + "\n" + sDef + sAposDef + dDef + dAposDef + "\n"
                         + pDef + "\n" + mDef + kDef + mAposDef + kAposDef + hDef + "\n The rectangles ss'd'd and m'k'km"
                         + " get scanned and the search rectangle is reduced to pk" + transformedRectangle[2] + "h."
                 );
                 break;
             case 4:
-                statusMessage = statusMessage.concat(sDef + sAposDef + dDef + dAposDef + "\n" + pDef + "\n" + gDef +
-                        hDef + gAposDef + hAposDef + "\n" + mDef + "\n The rectangles ss'd'd and gg'h'h get " +
-                        "scanned and the search rectangle is reduced to " + transformedRectangle[0] + "gpm.");
+                addL1DoubleApos(move);
+                statusMessage = statusMessage.concat(L1DoubleAposDef + "\n" + sDef + sAposDef + dDef + dAposDef + "\n"
+                        + pDef + "\n" + gDef + hDef + gAposDef + hAposDef + "\n" + mDef
+                        + "\n The rectangles ss'd'd and gg'h'h get scanned and the search rectangle is reduced to "
+                        + transformedRectangle[0] + "gpm.");
                 break;
             case 5:
                 statusMessage = statusMessage.concat(pDef + "\n" + gDef + hDef + gAposDef + hAposDef + "\n" + mDef +
@@ -256,13 +264,24 @@ class LastHintBadSubroutine {
                         transformedRectangle[0] + transformedRectangle[1] + "km.");
                 break;
             case 6:
+                addL1DoubleApos(move);
                 statusMessage = statusMessage.concat(L1DoubleAposDef + "\n" + jDef + jAposDef +
                         "\n The search rectangle is reduced to " + transformedRectangle[0] + transformedRectangle[1] +
                         "jj'.");
-        }
+        }//todo schreiben warum hintquality none ist
         StatusMessageItem explanation = new StatusMessageItem(StatusMessageType.EXPLANATION_MOVEMENT, statusMessage);
         move.getStatusMessageItemsToBeAdded().add(explanation);
         strategy.statusMessageItemsToBeRemovedNextMove.add(explanation);
+    }
+
+    private void addL1DoubleApos(SearchPath move) {
+        move.addAdditionalItem(
+                new GeometryItem<>(new Line(
+                        RoutinesFromPaper.phiPointInverse(basicTransformation, currentRectangle, L1DoubleApos.p0),
+                        RoutinesFromPaper.phiPointInverse(basicTransformation, currentRectangle, L1DoubleApos.p1)
+                ), GeometryType.L1_DOUBLE_APOS));
+        strategy.geometryItemsToBeAddedNextMove.add(new GeometryItem<>(JTSUtils.GEOMETRY_FACTORY.createPolygon(),
+                GeometryType.L1_DOUBLE_APOS));
     }
 
     /**
@@ -286,15 +305,15 @@ class LastHintBadSubroutine {
                 lineBetweenClockwise(L2Apos, L1DoubleApos, ppApos)
         ) {
             caseIndex = 1;
-            newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
+            newRectangle = phiOtherRectangleInverse(basicTransformation, currentRectangle,
                     new Coordinate[]{f, B, C, t});
         }
         if (x2Apos == right &&
                 lineBetweenClockwise(L2Apos, ppApos, mAposKApos)
         ) {
             caseIndex = 2;
-            move = rectangleScanPhiReverse(basicTransformation, rect, mApos, kApos, k, m, move, strategy);
-            newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
+            move = rectangleScanPhiReverse(basicTransformation, currentRectangle, mApos, kApos, k, m, move, strategy);
+            newRectangle = phiOtherRectangleInverse(basicTransformation, currentRectangle,
                     new Coordinate[]{g, B, C, h});
         }
         if ((x2Apos == left || x2Apos == down) &&
@@ -302,11 +321,11 @@ class LastHintBadSubroutine {
         ) {
             caseIndex = 3;
             // rectangleScan(phi_reverse(k, (s, s', d', d))
-            move = rectangleScanPhiReverse(basicTransformation, rect, s, sApos, dApos, d, move, strategy);
+            move = rectangleScanPhiReverse(basicTransformation, currentRectangle, s, sApos, dApos, d, move, strategy);
             // rectangleScan(phi_reverse(k, (m', k', k, m))
-            move = rectangleScanPhiReverse(basicTransformation, rect, mApos, kApos, k, m, move, strategy);
+            move = rectangleScanPhiReverse(basicTransformation, currentRectangle, mApos, kApos, k, m, move, strategy);
             // newRectangle := pkCh
-            newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
+            newRectangle = phiOtherRectangleInverse(basicTransformation, currentRectangle,
                     new Coordinate[]{p, k, C, h});
         }
         if (x2Apos == left &&
@@ -314,11 +333,11 @@ class LastHintBadSubroutine {
         ) {
             caseIndex = 4;
             // rectangleScan(phi_reverse(k, (s, s', d', d))
-            move = rectangleScanPhiReverse(basicTransformation, rect, s, sApos, dApos, d, move, strategy);
+            move = rectangleScanPhiReverse(basicTransformation, currentRectangle, s, sApos, dApos, d, move, strategy);
             // rectangleScan(phi_reverse(k, (g, g', h', h))
-            move = rectangleScanPhiReverse(basicTransformation, rect, g, gApos, hApos, h, move, strategy);
+            move = rectangleScanPhiReverse(basicTransformation, currentRectangle, g, gApos, hApos, h, move, strategy);
             // newRectangle := Agpm
-            newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
+            newRectangle = phiOtherRectangleInverse(basicTransformation, currentRectangle,
                     new Coordinate[]{A, g, p, m});
         }
         if ((x2Apos == left &&
@@ -331,9 +350,9 @@ class LastHintBadSubroutine {
         ) {
             caseIndex = 5;
             // rectangleScan(phireverse(k, (g, g', h', h))
-            move = rectangleScanPhiReverse(basicTransformation, rect, g, gApos, hApos, h, move, strategy);
+            move = rectangleScanPhiReverse(basicTransformation, currentRectangle, g, gApos, hApos, h, move, strategy);
             // newRectangle := ABkm
-            newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
+            newRectangle = phiOtherRectangleInverse(basicTransformation, currentRectangle,
                     new Coordinate[]{A, B, k, m});
         }
         if (x2Apos == right &&
@@ -341,10 +360,12 @@ class LastHintBadSubroutine {
         ) {
             caseIndex = 6;
             // newRectangle := ABjj'
-            newRectangle = phiOtherRectangleInverse(basicTransformation, rect,
+            newRectangle = phiOtherRectangleInverse(basicTransformation, currentRectangle,
                     new Coordinate[]{A, B, j, jApos});
         }
         addCaseDescriptionToStatus(move, basicTransformation, caseIndex, strategy);
+        System.out.println("basic transformation: " + basicTransformation); // todo rm
+        System.out.println("case index: " + caseIndex);// todo rm
 
         strategy.searchAreaCornerA = GEOMETRY_FACTORY.createPoint(newRectangle[0]);
         strategy.searchAreaCornerB = GEOMETRY_FACTORY.createPoint(newRectangle[1]);

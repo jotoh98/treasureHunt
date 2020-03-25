@@ -51,6 +51,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     protected LastHintBadSubroutine lastHintBadSubroutine = new LastHintBadSubroutine(this);
     Point start; // the initial position of the player
     List<StatusMessageItem> statusMessageItemsToBeRemovedNextMove = new ArrayList<>();
+    List<GeometryItem> geometryItemsToBeAddedNextMove = new ArrayList<>();
 
     /**
      * {@inheritDoc}
@@ -84,6 +85,11 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         // remove old status messages
         move.getStatusMessageItemsToBeRemoved().addAll(statusMessageItemsToBeRemovedNextMove);
         statusMessageItemsToBeRemovedNextMove.clear();
+        // add new geometry items
+        for (GeometryItem item : geometryItemsToBeAddedNextMove) {
+            move.addAdditionalItem(item);
+        }
+        geometryItemsToBeAddedNextMove.clear();
 
         StatusMessageItem lastHintQualityStatus;
         switch (lastHintQuality) {
@@ -249,11 +255,11 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         //add hints
         if (currentHint != null) {
             move.addAdditionalItem(new GeometryItem<>(currentHint.getHalfPlaneTheTreasureIsNotIn(),
-                    GeometryType.HALF_PLANE_LINE_BLUE));
+                    GeometryType.HALF_PLANE_RED));
         }
         if (previousHint != null) {
             move.addAdditionalItem(new GeometryItem<>(previousHint.getHalfPlaneTheTreasureIsNotIn(),
-                    GeometryType.HALF_PLANE_LINE_BROWN));
+                    GeometryType.HALF_PLANE_LIGHT_RED));
         }
         return addState(move, curCoords, currentPhaseRectangle());
     }
