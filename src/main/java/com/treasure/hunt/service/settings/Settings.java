@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class Settings {
-    @PrefName(prefName = "Preserve configuration", prefDesc = "Saves the strategy configuration after program exit.")
+    @UserSetting(name = "Preserve configuration", desc = "Saves the strategy configuration after program exit.")
     private boolean preserveConfiguration = true;
 
-    @PrefName(prefName = "Decimal places", prefDesc = "Amount of decimal places to display")
+    @UserSetting(name = "Decimal places", desc = "Amount of decimal places to display")
     private int decimalPlaces = 12;
 }
