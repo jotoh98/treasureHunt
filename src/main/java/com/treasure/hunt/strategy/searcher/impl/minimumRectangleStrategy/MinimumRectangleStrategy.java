@@ -228,12 +228,12 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         if (currentHint != null) {
             move.addAdditionalItem(new GeometryItem<>(
                     transformer.toExternal(currentHint).getHalfPlaneTheTreasureIsNotIn(),
-                    GeometryType.HALF_PLANE_RED));
+                    GeometryType.HALF_PLANE_PREVIOUS_LIGHT_RED));
         }
         if (previousHint != null) {
             move.addAdditionalItem(new GeometryItem<>(
                     transformer.toExternal(previousHint).getHalfPlaneTheTreasureIsNotIn(),
-                    GeometryType.HALF_PLANE_LIGHT_RED));
+                    GeometryType.HALF_PLANE_BEFORE_PREVIOUS_ORANGE));
         }
 
         // remove status messages

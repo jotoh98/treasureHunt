@@ -177,7 +177,7 @@ public class HalfPlaneHint extends AngleHint {
     public List<GeometryItem<?>> getGeometryItems() {
         if (visualisation) {
             List<GeometryItem<?>> output = new ArrayList<>();
-            output.add(new GeometryItem(getHalfPlaneTheTreasureIsNotIn(), GeometryType.HALF_PLANE_ORANGE));
+            output.add(new GeometryItem(getHalfPlaneTheTreasureIsNotIn(), GeometryType.HALF_PLANE_CURRENT_RED));
             return output;
         } else {
             return new ArrayList<>(0);

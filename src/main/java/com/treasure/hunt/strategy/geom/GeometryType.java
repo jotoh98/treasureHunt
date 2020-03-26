@@ -17,9 +17,9 @@ public enum GeometryType {
 
     // HalfPlaneHint
     HALF_PLANE(true, "the treasure is not here", true),
-    HALF_PLANE_ORANGE(false, "half plane line", true), // todo add better description
-    HALF_PLANE_RED(true, "half plane line", true),// todo add better description
-    HALF_PLANE_LIGHT_RED(true, "half plane line", true),// todo add better description
+    HALF_PLANE_CURRENT_RED(false, "current half plane hint", true),
+    HALF_PLANE_PREVIOUS_LIGHT_RED(true, "previous half plane hint", true),
+    HALF_PLANE_BEFORE_PREVIOUS_ORANGE(true, "the half plane hint received before the previous half plane hint", true),
 
     // treasure/no-treasure (areas)
     TREASURE(true, "treasure", true),
