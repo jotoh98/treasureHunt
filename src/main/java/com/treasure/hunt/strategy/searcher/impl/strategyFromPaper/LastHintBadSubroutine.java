@@ -147,25 +147,25 @@ class LastHintBadSubroutine {
                 transformedRectangleString = "ABCD";
                 break;
             case 1:
-                transformedRectangleString = "DABC";
+                transformedRectangleString = "BCDA";//"DABC";
                 break;
             case 2:
                 transformedRectangleString = "CDAB";
                 break;
             case 3:
-                transformedRectangleString = "BCDA";
+                transformedRectangleString = "DABC";//"BCDA";
                 break;
             case 4:
                 transformedRectangleString = "BADC";
                 break;
             case 5:
-                transformedRectangleString = "ADCB";
+                transformedRectangleString = "CBAD";//"ADCB";
                 break;
             case 6:
                 transformedRectangleString = "DCBA";
                 break;
             case 7:
-                transformedRectangleString = "CBAD";
+                transformedRectangleString = "ADCB";
                 break;
             default:
                 throw new AssertionError("basicTransformation should be in {0 ,1 ,2 ,3 ,4 ,5 ,6 ,7} " +
@@ -178,7 +178,7 @@ class LastHintBadSubroutine {
     private void addCaseDescriptionToStatus(SearchPath move, int basicTransformation, int caseIndex,
                                             StrategyFromPaper strategy) {
         String[] transformedRectangle = getLettersOfTransformedRectangle(basicTransformation);
-        String statusMessage = "Let ABCD be the previous rectangle's corners, with\n" +// TODO vllt noch schreiben, wie das rectangle gezeichnet wird (Farbe)
+        String statusMessage = "Let ABCD be the previous rectangle's corners, with\n" +
                 "A being the corner on the top left,\n" +
                 "B being the corner on the top right,\n" +
                 "C being the corner on the bottom right and\n" +
@@ -192,9 +192,10 @@ class LastHintBadSubroutine {
         // the defining Strings for the variables:
         String L1DoubleAposDef = "Let L1'' be the line parallel to the line of H3, and going through the point where " +
                 "the player was when he received H2.\n" +
+                "This line gets visualized in blue.\n" +
                 "(The name is taken out of the paper)\n";
 
-        String pDef = "Let p be the piont where H3 was received.\n";
+        String pDef = "Let p be the point where H3 was received.\n";
         String pAposDef = "Let p' be the point where H2 was received.\n";
 
         String mDef = "Let m be the orthogonal projection of p onto segment " + transformedRectangle[0] +
@@ -221,14 +222,14 @@ class LastHintBadSubroutine {
                 transformedRectangle[2] + ".\n";
         String dAposDef = "Let d' be the orthogonal projection of d onto line L1''.\n";
 
-        String jDef = "Let j be the intersection of L1'' and segment  " + transformedRectangle[0] +
-                transformedRectangle[1] + ".\n";
+        String jDef = "Let j be the intersection of L1'' and segment  " + transformedRectangle[1] +
+                transformedRectangle[2] + ".\n";
         String jAposDef = "Let j' be the orthogonal projeciton of j onto segment " + transformedRectangle[0] +
                 transformedRectangle[3] + ".\n";
 
         String fDef = "Let f be the intersection of L1'' and the segment " + transformedRectangle[0]
                 + transformedRectangle[1] + ".\n";
-        String tDef = "Let t be the orthogonal projection of f to the opposite side of the previous rectangle.\n";
+        String tDef = "Let t be the orthogonal projection of f on the opposite side of the previous rectangle.\n";
 
         // now the rectangles that are scanned, the rectangle the search rectangle is reduced to and the
         // definitions of the used points get joint so that one gets a coherent status message
@@ -268,7 +269,7 @@ class LastHintBadSubroutine {
                 statusMessage = statusMessage.concat(L1DoubleAposDef + "\n" + jDef + jAposDef +
                         "\n The search rectangle is reduced to " + transformedRectangle[0] + transformedRectangle[1] +
                         "jj'.");
-        }//todo schreiben warum hintquality none ist
+        }
         StatusMessageItem explanation = new StatusMessageItem(StatusMessageType.EXPLANATION_MOVEMENT, statusMessage);
         move.getStatusMessageItemsToBeAdded().add(explanation);
         strategy.statusMessageItemsToBeRemovedNextMove.add(explanation);
@@ -307,16 +308,14 @@ class LastHintBadSubroutine {
             caseIndex = 1;
             newRectangle = phiOtherRectangleInverse(basicTransformation, currentRectangle,
                     new Coordinate[]{f, B, C, t});
-        }
-        if (x2Apos == right &&
+        } else if (x2Apos == right &&
                 lineBetweenClockwise(L2Apos, ppApos, mAposKApos)
         ) {
             caseIndex = 2;
             move = rectangleScanPhiReverse(basicTransformation, currentRectangle, mApos, kApos, k, m, move, strategy);
             newRectangle = phiOtherRectangleInverse(basicTransformation, currentRectangle,
                     new Coordinate[]{g, B, C, h});
-        }
-        if ((x2Apos == left || x2Apos == down) &&
+        } else if ((x2Apos == left || x2Apos == down) &&
                 lineBetweenClockwise(L2Apos, mAposKApos, L1DoubleApos)
         ) {
             caseIndex = 3;
@@ -327,8 +326,7 @@ class LastHintBadSubroutine {
             // newRectangle := pkCh
             newRectangle = phiOtherRectangleInverse(basicTransformation, currentRectangle,
                     new Coordinate[]{p, k, C, h});
-        }
-        if (x2Apos == left &&
+        } else if (x2Apos == left &&
                 lineBetweenClockwise(L2Apos, L1DoubleApos, hAposGApos)
         ) {
             caseIndex = 4;
@@ -339,8 +337,7 @@ class LastHintBadSubroutine {
             // newRectangle := Agpm
             newRectangle = phiOtherRectangleInverse(basicTransformation, currentRectangle,
                     new Coordinate[]{A, g, p, m});
-        }
-        if ((x2Apos == left &&
+        } else if ((x2Apos == left &&
                 lineBetweenClockwise(L2Apos, hAposGApos, ppApos)) ||
                 (x2Apos == left &&
                         lineBetweenClockwise(L2Apos, ppApos, mAposKApos)) ||
@@ -354,8 +351,7 @@ class LastHintBadSubroutine {
             // newRectangle := ABkm
             newRectangle = phiOtherRectangleInverse(basicTransformation, currentRectangle,
                     new Coordinate[]{A, B, k, m});
-        }
-        if (x2Apos == right &&
+        } else if (x2Apos == right &&
                 lineBetweenClockwise(L2Apos, pAposK, L1DoubleApos)
         ) {
             caseIndex = 6;
@@ -364,8 +360,6 @@ class LastHintBadSubroutine {
                     new Coordinate[]{A, B, j, jApos});
         }
         addCaseDescriptionToStatus(move, basicTransformation, caseIndex, strategy);
-        System.out.println("basic transformation: " + basicTransformation); // todo rm
-        System.out.println("case index: " + caseIndex);// todo rm
 
         strategy.searchAreaCornerA = GEOMETRY_FACTORY.createPoint(newRectangle[0]);
         strategy.searchAreaCornerB = GEOMETRY_FACTORY.createPoint(newRectangle[1]);

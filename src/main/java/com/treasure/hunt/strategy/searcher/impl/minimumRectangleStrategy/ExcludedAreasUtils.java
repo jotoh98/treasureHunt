@@ -92,7 +92,6 @@ public class ExcludedAreasUtils {
         if (newPolygon.getArea() == 0) {
             return null;
         }
-
         return (Polygon) newPolygon;
     }
 

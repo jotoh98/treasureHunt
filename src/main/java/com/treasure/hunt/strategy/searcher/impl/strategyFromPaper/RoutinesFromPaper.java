@@ -69,7 +69,7 @@ public class RoutinesFromPaper {
 
         if (k == 0) {
             searchPath.addPoint(JTSUtils.GEOMETRY_FACTORY.createPoint(A));
-            searchPath.addPoint(JTSUtils.GEOMETRY_FACTORY.createPoint(C));
+            searchPath.addPoint(JTSUtils.GEOMETRY_FACTORY.createPoint(D));
             return searchPath;
         }
 

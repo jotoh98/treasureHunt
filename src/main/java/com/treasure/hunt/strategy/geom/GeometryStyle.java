@@ -30,7 +30,7 @@ public class GeometryStyle {
                 GeometryType.SEARCHER_LAST_MOVE, new GeometryStyle(true, new Color(0x007A1D)),
                 GeometryType.HALF_PLANE, new GeometryStyle(true, new Color(0x777777), new Color(0x22777777, true)),
                 GeometryType.HALF_PLANE_ORANGE, new GeometryStyle(true, new Color(0x11ff711f, true), new Color(0x11ff711f, true)),
-                GeometryType.HALF_PLANE_RED, new GeometryStyle(true, new Color(0x11e00000, true), new Color(0x11e00000, true))
+                GeometryType.HALF_PLANE_RED, new GeometryStyle(true, new Color(0x15ff0000, true), new Color(0x15ff0000, true))
         ));
         defaultsMapAdd.put(GeometryType.CURRENT_POLYGON, new GeometryStyle(true, new Color(0x00e099)));
         defaultsMapAdd.put(GeometryType.HALF_PLANE_LIGHT_RED, new GeometryStyle(true, new Color(0x11ff3333, true), new Color(0x11ff3333, true)));

@@ -17,7 +17,7 @@ public enum GeometryType {
 
     // HalfPlaneHint
     HALF_PLANE(true, "the treasure is not here", true),
-    HALF_PLANE_ORANGE(true, "half plane line", true), // todo add better description
+    HALF_PLANE_ORANGE(false, "half plane line", true), // todo add better description
     HALF_PLANE_RED(true, "half plane line", true),// todo add better description
     HALF_PLANE_LIGHT_RED(true, "half plane line", true),// todo add better description
 

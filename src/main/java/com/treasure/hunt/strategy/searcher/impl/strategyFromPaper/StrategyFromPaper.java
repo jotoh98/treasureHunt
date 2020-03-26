@@ -25,8 +25,23 @@ import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.Routine
 import static com.treasure.hunt.utils.JTSUtils.*;
 
 /**
- * This implements the strategy from the paper:
- * {@literal Treasure Hunt in the Plane with Angular Hints}
+ * This strategy implements the strategy from the paper "Deterministic Treasure Hunt in the Plane with Angular Hints"
+ * from Bouchard et al.
+ *
+ * Generally this strategy works in phases i=1, 2, ... in which it searchers the treasure in rectangles of the side
+ * length 2^i.
+ * The rectangles are centered in the start position of the searcher and are axis parallel.
+ * We will call the rectangle of the current phase the phase rectangle.
+ * The strategy uses a second rectangle, called the current rectangle, which equals the phase rectangle at the beginning
+ * of each phase.
+ * In some draws (most draws) the searcher can exclude a part of the current rectangle by using areas seen and the current hint
+ * gotten and lower its area.
+ * The previous rectangle is the current rectangle from the previous draw.
+ * When the current rectangle is small enough, the rectangle gets scanned which means the player walks a route in such a way
+ * that it sees all points of the current rectangle.
+ * When this happens the phase is incremented and the current rectangle is again set to the phase rectangle.
+ *
+ * For more information please look in the paper.
  *
  * @author Rank
  */
@@ -49,6 +64,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     protected HalfPlaneHint currentHint;
     protected HintQuality lastHintQuality = HintQuality.none;
     protected LastHintBadSubroutine lastHintBadSubroutine = new LastHintBadSubroutine(this);
+    protected StatusMessageItem visualisationMessage;
+    protected StatusMessageItem explainingStrategyMessage;
     Point start; // the initial position of the player
     List<StatusMessageItem> statusMessageItemsToBeRemovedNextMove = new ArrayList<>();
     List<GeometryItem> geometryItemsToBeAddedNextMove = new ArrayList<>();
@@ -62,15 +79,42 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         setRectToPhase();
         currentHint = null;
         previousHint = null;
-    }
-
-    protected void init(Point startPosition, int w, int h) {
-        init(startPosition);
+        visualisationMessage = new StatusMessageItem(StatusMessageType.EXPLANATION_VISUALISATION_SEARCHER,
+                "The previous hint is visualized by a red area which covers the area the treasure is not in.\n" +
+                        "The hint before the previous hint is visualized by a lighter red area which covers the area the treasure is not in.\n" +
+                        "\n" +
+                        "The phase rectangle is visualized in a dark green color.\n" +
+                        "The current rectangle is visualized in a lighter green color.\n" +
+                        "\n" +
+                        "When L1'' is needed (it will be explained when it is), this line is visualized in blue.");
+        explainingStrategyMessage = new StatusMessageItem(StatusMessageType.EXPLANATION_STRATEGY,
+                "This strategy implements the strategy from the paper \"Deterministic Treasure Hunt in the Plane with Angular Hints\"\n" +
+                        "from Bouchard et al.\n" +
+                        "\n" +
+                        "Generally this strategy works in phases i=1, 2, ... in which it searchers the treasure in rectangles of the side \n" +
+                        "length 2^i.\n" +
+                        "The rectangles are centered in the start position of the searcher and are axis parallel.\n" +
+                        "We will call the rectangle of the current phase the phase rectangle.\n" +
+                        "The strategy uses a second rectangle, called the current rectangle, which equals the phase rectangle at the beginning\n" +
+                        "of each phase. \n" +
+                        "In some draws (most draws) the searcher can exclude a part of the current rectangle by using areas seen and the current hint\n" +
+                        "gotten and lower its area.\n" +
+                        "The previous rectangle is the current rectangle from the previous draw.\n" +
+                        "When the current rectangle is small enough, the rectangle gets scanned which means the player walks a route in such a way \n" +
+                        "that it sees all points of the current rectangle. \n" +
+                        "When this happens the phase is incremented and the current rectangle is again set to the phase rectangle.\n" +
+                        "\n" +
+                        "For more information please look in the paper."
+                );
     }
 
     @Override
     public SearchPath move() {
         SearchPath move = new SearchPath();
+        move.getStatusMessageItemsToBeAdded().add(visualisationMessage);
+        move.getStatusMessageItemsToBeAdded().add(explainingStrategyMessage);
+        statusMessageItemsToBeRemovedNextMove.add(visualisationMessage);
+        statusMessageItemsToBeRemovedNextMove.add(explainingStrategyMessage);
         setRectToPhase();
         return (addState(incrementPhase(move)));
     }
@@ -98,7 +142,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                 move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.BEFORE_PREVIOUS_QUALITY,
                         "bad"));
                 move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY,
-                        "none"));
+                        "none, because the hint before this hint was bad."));
                 return addState(lastHintBadSubroutine.lastHintBadSubroutine(hint, previousHint, move));
             case good:
                 lastHintQualityStatus = new StatusMessageItem(StatusMessageType.BEFORE_PREVIOUS_QUALITY, "good");
@@ -111,10 +155,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         }
         move.getStatusMessageItemsToBeAdded().add(lastHintQualityStatus);
 
-        if (rectangleNotLargeEnough()) {// todo schreiben warum hintquality none ist
+        if (rectangleNotLargeEnough()) {
             lastHintQuality = HintQuality.none;
             move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY,
-                    "none"));
+                    "none, because the previous rectangle was small enough to be scanned directly."));
             return addState(incrementPhase(move));
         }
 

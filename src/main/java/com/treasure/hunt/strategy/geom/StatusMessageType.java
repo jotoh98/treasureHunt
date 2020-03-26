@@ -11,7 +11,12 @@ public enum StatusMessageType {
     EXPLANATION_MOVEMENT("An explanation for the movement of the searcher", true, false,
             "An explanation for the movement of the searcher"),
     EXPLANATION_STRATEGY("An explanation for the general idea of the strategy", true, false,
-            "An explanation for the general idea of the strategy");
+            "An explanation for the general idea of the strategy"),
+    EXPLANATION_VISUALISATION_SEARCHER("An explanation for the visualisation used by the searcher", true,
+            false, "An explanation for the visualisation used by the searcher"),
+    // hider:
+    EXPLANATION_VISUALISATION_HIDER("An explanation for the visualisation used by the hider", true,
+            true, "An explanation for the visualisation used by the hider");
 
     @Getter
     private final String name;
