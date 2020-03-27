@@ -5,6 +5,7 @@ import com.treasure.hunt.strategy.geom.*;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
+import com.treasure.hunt.utils.Preference;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.*;
@@ -69,7 +70,6 @@ public abstract class StatisticalHider{
         this.currentPossibleArea = gameField.getPossibleArea();
         // return Hint
         return hint;
-
     }
 
     /**
@@ -81,13 +81,10 @@ public abstract class StatisticalHider{
     public AngleHint eval(List<AngleHint> hints) {
 
         List<AngleHintStatistic> stats = new ArrayList<>();
-        for( AngleHint hint: hints){
-
-            Geometry before = this.currentPossibleArea;
-            log.info("current possibleArea size " + before.getArea());
+        Geometry before = this.currentPossibleArea;
+        log.info("current possibleArea size " + before.getArea());
+        for(AngleHint hint: hints){
             Geometry after = gameField.testHint(hint);
-
-
             AngleHintStatistic hs = new AngleHintStatistic(hint,before,after); // autofills the absolute/relative area cutoffs
 
             //calc some Statistics
@@ -105,7 +102,7 @@ public abstract class StatisticalHider{
 
         AngleHintStatistic returnHint = stats.get(0);
 
-        log.info("eval angleHint");
+        log.info("evaluated angleHint");
         log.info(returnHint.toString());
 
         //add some status information
@@ -159,7 +156,6 @@ public abstract class StatisticalHider{
     protected double fillDistanceToCentroid(AngleHintStatistic ahs){
         Geometry after = ahs.getAreaAfterHint();
         Point centroid = after.getCentroid();
-        log.info("Centroid " + centroid);
 
         GeometryStyle centroidStyle = new GeometryStyle(true, new Color(244,149,41));
         GeometryItem<Point> centroidItem = new GeometryItem(centroid, GeometryType.CENTROID , centroidStyle);
@@ -181,14 +177,14 @@ public abstract class StatisticalHider{
         return stats;
     }
 
-    /**Todo: if hint is 180degree make it an explicit HalfPlaneHint
-     * Generates {samples} evenly spaced angles
+    /** Todo: if hint is 180degree make it an explicit HalfPlaneHint/ hack it such that StrategyFromPaper recieves a halfplaneHint
+     * Generates {@code samples } evenly spaced {@link com.treasure.hunt.strategy.hint.impl} .
+     * Generated hints are not always exactly the preferred hint Size, the diverge about 3 * e-13
      *
      * @param samples determines how many Hints are returned
-     * @return
+     * @return a List of {@code samples} {@link com.treasure.hunt.strategy.hint.impl.AngleHint}
      */
     protected List<AngleHint> generateHints(int samples, Point hintCenter) {
-
         final double twoPi = Math.PI * 2;
 
         AngleHint hint;
@@ -212,11 +208,13 @@ public abstract class StatisticalHider{
 
 
         } else {
+            log.info("generating " + samples + " hints of size " +  PreferenceService.getInstance().getPreference(HintSize_Preference, 180).doubleValue());
+
 
             for (int i = 0; i < samples; i++) {
                 double rightAngle = twoPi * (((double) i) / samples);
                 double leftAngle = rightAngle + Angle.toRadians(preferredHintSize);
-                log.info("");
+
                 double dX_right = Math.cos(rightAngle);
                 double dY_right = Math.sin(rightAngle);
                 double dX_left = Math.cos(leftAngle);
@@ -225,7 +223,7 @@ public abstract class StatisticalHider{
                 Point left = gf.createPoint(new Coordinate(hintCenter.getX() + dX_left, hintCenter.getY() + dY_left));
 
                 hint = new AngleHint(right.getCoordinate(), hintCenter.getCoordinate(), left.getCoordinate());
-                log.info("ANGLESIZE: " +  Angle.toDegrees(hint.getGeometryAngle().extend()));
+
                 hints.add(hint);
             }
         }

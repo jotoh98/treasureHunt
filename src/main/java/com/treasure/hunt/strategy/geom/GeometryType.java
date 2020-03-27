@@ -37,6 +37,7 @@ public enum GeometryType {
     BOUNDING_CIRCE(false, "bounding circle", true),
     OUTER_CIRCLE(false, "outer circle", true),
     WORST_CONSTANT(false, "Point with worst Constant",true),
+    INNER_BUFFER(true,"inner buffer area", true),
     CENTROID(true, "Centroid of remaining possible Area", true),
 
     // StrategyFromPaper
@@ -48,7 +49,6 @@ public enum GeometryType {
     CURRENT_WAY_POINT(true, "Current way point", true),
     GRID(true, "Grid", false),
     HIGHLIGHTER(true, "Highlighter", true);
-
 
     @Getter
     private final String displayName;
