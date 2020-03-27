@@ -164,7 +164,7 @@ public class GameField {
     /**
      * Updates the GameField's state with a new Players SearchPath
      *
-     *  this method assumes that the the searcher cannot fly --> e.g. For 2 visited points,
+     *  this method assumes that the the searcher cannot fly, e.g. For 2 visited points,
      *  all points on the line between them are counted as checked,
      *  and of those point, all points within a distance of searcherScoutRadius are checked as well
      *
