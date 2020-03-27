@@ -64,7 +64,6 @@ public class MobileTreasureHider extends StatisticalHider implements HideAndSeek
     private Point generateNewTreasureLocation() {
         List<Pair<Coordinate, Double>> possibleTreasures = gameField.getWorstPointsOnAllEdges();
 
-        possibleTreasures.stream().
         // Todo refine treasure placement , maybe minDistance
         return gf.createPoint(possibleTreasures.get(0).getKey());
     }
