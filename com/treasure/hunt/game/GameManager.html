@@ -194,7 +194,7 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.util.concurrent.CompletableFuture&lt;java.lang.Void&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beat()">beat</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beat(java.lang.Integer)">beat</a></span>&#8203;(java.lang.Integer&nbsp;maxSteps)</code></th>
 <td class="colLast">
 <div class="block">This simulates the whole game, until its finished.</div>
 </td>
@@ -208,8 +208,9 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.util.concurrent.CompletableFuture&lt;java.lang.Void&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beat(javafx.beans.property.ReadOnlyObjectProperty,java.lang.Boolean)">beat</a></span>&#8203;(javafx.beans.property.ReadOnlyObjectProperty&lt;java.lang.Double&gt;&nbsp;delay,
-    java.lang.Boolean&nbsp;executeNextOnJavaFxThread)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beat(javafx.beans.property.ReadOnlyObjectProperty,java.lang.Boolean,java.lang.Integer)">beat</a></span>&#8203;(javafx.beans.property.ReadOnlyObjectProperty&lt;java.lang.Double&gt;&nbsp;delay,
+    java.lang.Boolean&nbsp;executeNextOnJavaFxThread,
+    java.lang.Integer&nbsp;maxSteps)</code></th>
 <td class="colLast">
 <div class="block">This simulates the whole game, until its finished.</div>
 </td>
@@ -410,13 +411,13 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <div class="block">Works only for stepView &gt; 0</div>
 </li>
 </ul>
-<a id="beat()">
+<a id="beat(java.lang.Integer)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>beat</h4>
-<pre class="methodSignature">public&nbsp;java.util.concurrent.CompletableFuture&lt;java.lang.Void&gt;&nbsp;beat()</pre>
+<pre class="methodSignature">public&nbsp;java.util.concurrent.CompletableFuture&lt;java.lang.Void&gt;&nbsp;beat&#8203;(java.lang.Integer&nbsp;maxSteps)</pre>
 <div class="block">This simulates the whole game, until its finished.</div>
 </li>
 </ul>
@@ -466,18 +467,19 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <div class="block"><code>executeNextOnJavaFxThread</code> defaults to <code>true</code>.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="#beat(javafx.beans.property.ReadOnlyObjectProperty,java.lang.Boolean)"><code>beat(ReadOnlyObjectProperty, Boolean)</code></a></dd>
+<dd><a href="#beat(javafx.beans.property.ReadOnlyObjectProperty,java.lang.Boolean,java.lang.Integer)"><code>beat(ReadOnlyObjectProperty, Boolean, Integer)</code></a></dd>
 </dl>
 </li>
 </ul>
-<a id="beat(javafx.beans.property.ReadOnlyObjectProperty,java.lang.Boolean)">
+<a id="beat(javafx.beans.property.ReadOnlyObjectProperty,java.lang.Boolean,java.lang.Integer)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>beat</h4>
 <pre class="methodSignature">public&nbsp;java.util.concurrent.CompletableFuture&lt;java.lang.Void&gt;&nbsp;beat&#8203;(javafx.beans.property.ReadOnlyObjectProperty&lt;java.lang.Double&gt;&nbsp;delay,
-                                                                   java.lang.Boolean&nbsp;executeNextOnJavaFxThread)</pre>
+                                                                   java.lang.Boolean&nbsp;executeNextOnJavaFxThread,
+                                                                   java.lang.Integer&nbsp;maxSteps)</pre>
 <div class="block">This simulates the whole game, until its finished.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>

@@ -204,19 +204,21 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#runSeries(java.lang.Integer,com.treasure.hunt.game.GameManager,java.util.function.Consumer)">runSeries</a></span>&#8203;(java.lang.Integer&nbsp;rounds,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#runSeries(java.lang.Integer,com.treasure.hunt.game.GameManager,java.util.function.Consumer,java.lang.Integer)">runSeries</a></span>&#8203;(java.lang.Integer&nbsp;rounds,
          <a href="../../game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a>&nbsp;gameManager,
-         java.util.function.Consumer&lt;java.lang.Double&gt;&nbsp;progressConsumer)</code></th>
+         java.util.function.Consumer&lt;java.lang.Double&gt;&nbsp;progressConsumer,
+         java.lang.Integer&nbsp;maxSteps)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../../analysis/StatisticsWithIdsAndPath.html" title="class in com.treasure.hunt.analysis">StatisticsWithIdsAndPath</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#runSeriesAndSaveToFile(java.lang.Integer,com.treasure.hunt.game.GameManager,java.util.function.Consumer,java.io.File,boolean,boolean)">runSeriesAndSaveToFile</a></span>&#8203;(java.lang.Integer&nbsp;rounds,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#runSeriesAndSaveToFile(java.lang.Integer,com.treasure.hunt.game.GameManager,java.util.function.Consumer,java.io.File,boolean,boolean,java.lang.Integer)">runSeriesAndSaveToFile</a></span>&#8203;(java.lang.Integer&nbsp;rounds,
                       <a href="../../game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a>&nbsp;gameManager,
                       java.util.function.Consumer&lt;java.lang.Double&gt;&nbsp;progressConsumer,
                       java.io.File&nbsp;selectedFile,
                       boolean&nbsp;alreadyInitialed,
-                      boolean&nbsp;writeGameManger)</code></th>
+                      boolean&nbsp;writeGameManger,
+                      java.lang.Integer&nbsp;maxSteps)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -288,7 +290,7 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public static&nbsp;<a href="SeriesService.html" title="class in com.treasure.hunt.service.io">SeriesService</a>&nbsp;getInstance()</pre>
 </li>
 </ul>
-<a id="runSeries(java.lang.Integer,com.treasure.hunt.game.GameManager,java.util.function.Consumer)">
+<a id="runSeries(java.lang.Integer,com.treasure.hunt.game.GameManager,java.util.function.Consumer,java.lang.Integer)">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -296,10 +298,11 @@ extends java.lang.Object</pre>
 <h4>runSeries</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;runSeries&#8203;(java.lang.Integer&nbsp;rounds,
                       <a href="../../game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a>&nbsp;gameManager,
-                      java.util.function.Consumer&lt;java.lang.Double&gt;&nbsp;progressConsumer)</pre>
+                      java.util.function.Consumer&lt;java.lang.Double&gt;&nbsp;progressConsumer,
+                      java.lang.Integer&nbsp;maxSteps)</pre>
 </li>
 </ul>
-<a id="runSeriesAndSaveToFile(java.lang.Integer,com.treasure.hunt.game.GameManager,java.util.function.Consumer,java.io.File,boolean,boolean)">
+<a id="runSeriesAndSaveToFile(java.lang.Integer,com.treasure.hunt.game.GameManager,java.util.function.Consumer,java.io.File,boolean,boolean,java.lang.Integer)">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -310,7 +313,8 @@ extends java.lang.Object</pre>
                                                        java.util.function.Consumer&lt;java.lang.Double&gt;&nbsp;progressConsumer,
                                                        java.io.File&nbsp;selectedFile,
                                                        boolean&nbsp;alreadyInitialed,
-                                                       boolean&nbsp;writeGameManger)</pre>
+                                                       boolean&nbsp;writeGameManger,
+                                                       java.lang.Integer&nbsp;maxSteps)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>rounds</code> - amount of runs</dd>
