@@ -95,6 +95,37 @@ public class ExcludedAreasUtils {
         return (Polygon) newPolygon;
     }
 
+    static Polygon reduceConvexPolygon(Polygon convexPolygon, HalfPlaneHint halfPlaneHint) {
+        if (convexPolygon == null || halfPlaneHint == null) {
+            throw new IllegalArgumentException("Arguments must not be null");
+        }
+        Coordinate[] coordinatesFromPolygon = convexPolygon.getCoordinates();
+        ArrayList<Coordinate> newPolygonCorners = new ArrayList<>();
+        for (int i = 0; i < coordinatesFromPolygon.length - 1; i++) {
+            if (halfPlaneHint.inHalfPlane(coordinatesFromPolygon[i])) {
+                newPolygonCorners.add(coordinatesFromPolygon[i]);
+            }
+        }
+        ArrayList<Coordinate> intersections = JTSUtils.convexPolygonLineIntersection(convexPolygon, halfPlaneHint.getHalfPlaneLine());//convexPolygon.intersection(halfPlaneHint.getHalfPlaneLineString());
+        if (intersections.size() > 0) {
+            if (intersections.size() != 2) {
+                throw new IllegalArgumentException("the intersection has more than 2 points or only 1 point");
+            }
+            newPolygonCorners.add(intersections.get(0));
+            newPolygonCorners.add(intersections.get(1));
+        }
+        if (newPolygonCorners.size() < 3) {
+            return null;
+        }
+        newPolygonCorners.add(newPolygonCorners.get(0));
+        Polygon newPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon(newPolygonCorners.toArray(new Coordinate[]{}));
+        newPolygon = (Polygon) newPolygon.convexHull();
+        if (newPolygon.getArea() == 0) {
+            return null;
+        }
+        return newPolygon;
+    }
+
     static Geometry visitedPolygon(Point lastLocation, SearchPath move) {
         if (lastLocation == null || move == null) {
             throw new IllegalArgumentException("lastLocation or move is null");

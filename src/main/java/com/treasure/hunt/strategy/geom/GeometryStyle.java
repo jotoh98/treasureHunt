@@ -32,7 +32,7 @@ public class GeometryStyle {
                 GeometryType.HALF_PLANE_CURRENT_RED, new GeometryStyle(true, new Color(0x33ff0000, true), new Color(0x33ff0000, true)),
                 GeometryType.HALF_PLANE_PREVIOUS_LIGHT_RED, new GeometryStyle(true, new Color(0x18ff0000, true), new Color(0x18ff0000, true))
         ));
-        defaultsMapAdd.put(GeometryType.CURRENT_POLYGON, new GeometryStyle(true, new Color(0x00e099)));
+        defaultsMapAdd.put(GeometryType.CURRENT_POLYGON, new GeometryStyle(true, new Color(0x40E0D0)));
         defaultsMapAdd.put(GeometryType.HALF_PLANE_BEFORE_PREVIOUS_ORANGE, new GeometryStyle(true, new Color(0x11ff9933, true), new Color(0x11ff9933, true)));
         defaultsMapAdd.put(GeometryType.WAY_POINT_LINE, new GeometryStyle(true, new Color(0xFFFFFF)));
         defaultsMapAdd.put(GeometryType.HIGHLIGHTER, new GeometryStyle(true, Color.GREEN, Integer.MAX_VALUE));

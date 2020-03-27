@@ -21,7 +21,7 @@ import static org.locationtech.jts.algorithm.Angle.normalizePositive;
 /**
  * @author Rank
  */
-class LastHintBadSubroutine {
+public class LastHintBadSubroutine {
     /**
      * Variable names are equivalent to the paper, but since a', d', etc. is not a valid variable name in Java,
      * Apos gets added to the variable name in such cases (apos for apostrophe).
@@ -293,7 +293,7 @@ class LastHintBadSubroutine {
      * @return The move to scan various areas so that A,B,C and D can be updated to a smaller rectangle (or the treasure
      * is found)
      */
-    SearchPath lastHintBadSubroutine(HalfPlaneHint currentHint,
+    public SearchPath lastHintBadSubroutine(HalfPlaneHint currentHint,
                                      HalfPlaneHint lastBadHint, SearchPath move) {
 
         initializeVariables(currentHint, lastBadHint);
@@ -365,10 +365,7 @@ class LastHintBadSubroutine {
         strategy.searchAreaCornerB = GEOMETRY_FACTORY.createPoint(newRectangle[1]);
         strategy.searchAreaCornerC = GEOMETRY_FACTORY.createPoint(newRectangle[2]);
         strategy.searchAreaCornerD = GEOMETRY_FACTORY.createPoint(newRectangle[3]);
-        strategy.lastHintQuality = StrategyFromPaper.HintQuality.none;
-
-        return moveToCenterOfRectangle(strategy.searchAreaCornerA, strategy.searchAreaCornerB,
-                strategy.searchAreaCornerC, strategy.searchAreaCornerD, move);
+        return move;
     }
 
     /**

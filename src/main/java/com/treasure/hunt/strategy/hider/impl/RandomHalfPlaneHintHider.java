@@ -29,8 +29,6 @@ public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
     private boolean firstMove = true;
     private boolean secondMove = true;
 
-    private int moveIndex = 0; // just for testing
-
     /**
      * @param searcherStartPosition the {@link Searcher} starting position,
      *                              he will initialized on.
@@ -68,22 +66,6 @@ public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
                 newHint.getStatusMessageItemsToBeRemoved().add(visualisationMessage);
             }
         }
-        //test todo rm
-        StatusMessageItem statusTestOne = new StatusMessageItem(StatusMessageType.ANGLE_HINT_DEGREE, "this is a status message");
-        StatusMessageItem statusTestTwo = new StatusMessageItem(StatusMessageType.ANGLE_HINT_DEGREE, "this is a status message");
-        switch (moveIndex) {
-            case 0:
-                newHint.getStatusMessageItemsToBeAdded().add(statusTestOne);
-                break;
-            case 1:
-                newHint.getStatusMessageItemsToBeRemoved().add(statusTestOne);
-                break;
-            case 2:
-                newHint.getStatusMessageItemsToBeAdded().add(statusTestTwo);
-                break;
-        }
-        moveIndex++;
-        //test end
         lastHint = newHint;
         return newHint;
     }

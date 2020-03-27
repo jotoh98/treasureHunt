@@ -70,6 +70,26 @@ public final class JTSUtils {
         return intersection;
     }
 
+    /**
+     * Tests wether the convex polygon polygon intersects with the line line and returns the intersecting coordinates
+     * if it does.
+     *
+     * @param polygon a {@link Polygon}
+     * @param line    a {@link LineSegment}
+     * @return an ArrayList of the intersecting coordinates if they exist, a empty ArrayList otherwise
+     */
+    public static ArrayList<Coordinate> convexPolygonLineIntersection(Polygon polygon, LineSegment line) {
+        ArrayList<Coordinate> result = new ArrayList<>();
+        Coordinate[] coordinatesPolygon = polygon.getCoordinates();
+        for (int i = 0; i < coordinatesPolygon.length - 1 && result.size() < 3; i++) {
+            Coordinate intersection = lineWayIntersection(line, new LineSegment(coordinatesPolygon[i], coordinatesPolygon[i + 1]));
+            if (intersection != null) {
+                result.add(intersection);
+            }
+        }
+        return result;
+    }
+
     public static boolean doubleEqual(double a, double b) {
         return (0 == GEOMETRY_FACTORY.getPrecisionModel().makePrecise(a - b));
     }

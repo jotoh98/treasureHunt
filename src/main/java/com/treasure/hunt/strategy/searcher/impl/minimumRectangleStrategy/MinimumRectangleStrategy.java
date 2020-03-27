@@ -9,6 +9,7 @@ import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils;
+import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.LastHintBadSubroutine;
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper;
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StrategyFromPaper;
 import com.treasure.hunt.utils.JTSUtils;
@@ -19,10 +20,12 @@ import java.util.List;
 
 import static com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.ExcludedAreasUtils.intersectHints;
 import static com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.ExcludedAreasUtils.visitedPolygon;
+import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
+import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
 
 /**
  * The strategy MinimumRectangleStrategy works similar to the strategy from the paper
- * "Deterministic Treasure Hunt in the Plane with Angular Hints" from Sébastien Bouchard et al..
+ * "Deterministic Treasure Hunt in the Plane with Angular Hints" from Bouchard et al..
  * We will call the strategy from the paper S in the following text.
  * S gets improved by this strategy.
  * Like S, this strategy has phases 1,2,... in which it searches the treasure in rectangles
@@ -81,6 +84,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
      * hole phase rectangle lies in the treasure area.
      */
     private ArrayList<HalfPlaneHint> phaseHints; // stored in internal coordinates
+    private Polygon hintPolygon;
     /**
      * The polygon the player already has seen because he was there.
      */
@@ -89,6 +93,8 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
      * The lastLocation of the previous move
      */
     private Point lastLocation; // stored in internal coordinates
+    private HintQuality currentHintQuality = HintQuality.none;
+    private LastHintBadSubroutine lastHintBadSubroutine = new LastHintBadSubroutine(this);
 
     private ArrayList<StatusMessageItem> statusMessagesToBeRemovedNextMoveInMinimumRectangleStrategy = new ArrayList<>();
 
@@ -149,6 +155,18 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         );
         move.getStatusMessageItemsToBeAdded().add(beginningStatusMessage);
         statusMessagesToBeRemovedNextMoveInMinimumRectangleStrategy.add(beginningStatusMessage);
+        StatusMessageItem visualisationMessage = new StatusMessageItem(StatusMessageType.EXPLANATION_VISUALISATION_SEARCHER,
+                "The previous hint is visualized by a red area which covers the area the treasure is not in.\n" +
+                        "The hint before the previous hint is visualized by a orange area which covers the area the treasure is not in.\n" +
+                        "\n" +
+                        "The phase rectangle is visualized in a dark green color.\n" +
+                        "The current rectangle is visualized in a lighter green color.\n" +
+                        "\n" +
+                        "The polygon (or multiple polygons) where the treasure can lie in when it is in the current phase is drawn at the\n" +
+                        "beginning of each phase and is of turquoise color."
+        );
+        move.getStatusMessageItemsToBeAdded().add(visualisationMessage);
+        statusMessagesToBeRemovedNextMoveInMinimumRectangleStrategy.add(visualisationMessage);
         return move;
     }
 
@@ -164,35 +182,114 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
             lastLocation = JTSUtils.createPoint(0, 0); // the point the searcher moved to in the previous move
             visitedPolygon.union(visitedPolygon(lastLocation, new SearchPath()));
         }
+        previousHintQuality = currentHintQuality;
+        HalfPlaneHint hintInInternal = transformer.toInternal(hint);
+        previousHint = currentHint;
+        currentHint = hintInInternal;
+        obtainedHints.add(hintInInternal);
+        SearchPath move = new SearchPath();
 
-        obtainedHints.add(transformer.toInternal(hint));
-
-        if (rectangleNotLargeEnough()) {
-            if (currentHint != null) {
-                previousHint = currentHint;
+        if (previousHintQuality == HintQuality.bad) {
+            currentHintQuality = HintQuality.none;
+            move = lastHintBadSubroutine.lastHintBadSubroutine(currentHint, previousHint,
+                    move);
+            updateVisitedPolygon(move);
+            reducePolygons();
+            if (currentMultiPolygon != null && currentMultiPolygon.getArea() != 0) {// otherwise, the phase is increased
+                return returnHandling(GeometricUtils.moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB,
+                        searchAreaCornerC, searchAreaCornerD, move));
             }
-            currentHint = transformer.toInternal(hint);
-            SearchPath move = new SearchPath();
-            scanCurrentRectangle(move, currentHint);
-            Geometry newMultiPolygon;
-            do {
-                phase++;
-                updatePhaseHints();
-                newMultiPolygon = intersectHints(obtainedHints, phaseHints);
-                if (newMultiPolygon != null) {
-                    newMultiPolygon = newMultiPolygon.difference(visitedPolygon);
+        } else {
+            if (!hintIsGood(currentHint) && !rectangleNotLargeEnough()) {
+                currentHintQuality = HintQuality.bad;
+                Point destination = GEOMETRY_FACTORY.createPoint(GeometricUtils.twoStepsOrthogonal(currentHint,
+                        lastLocation));
+                move.addPoint(destination);
+                return returnHandling(move);
+            }
+            reducePolygons();
+        }
+
+        if (rectangleNotLargeEnough() || currentMultiPolygon == null || currentMultiPolygon.getArea() == 0) {
+            currentHintQuality = HintQuality.none;
+            return returnHandling(setNewPhaseAndMove(move));
+        } else {
+            return returnHandling(goodHintSubroutine());
+        }
+    }
+
+    void reducePolygons() {
+        if (hintPolygon != null) {
+            hintPolygon = ExcludedAreasUtils.reduceConvexPolygon(hintPolygon, currentHint);
+            if (hintPolygon == null) {
+                currentMultiPolygon = null;
+            } else {
+                currentMultiPolygon = hintPolygon.difference(visitedPolygon);
+                if (currentMultiPolygon.getArea() != 0) {
+                    setABCDinStrategy();
                 }
             }
-            while (newMultiPolygon == null || newMultiPolygon.getArea() == 0);
-            currentMultiPolygon = newMultiPolygon;
-
-            setABCDinStrategy();
-            GeometricUtils.moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC,
-                    searchAreaCornerD, move);
-            return returnHandling(move);
-        } else {
-            return returnHandling(super.move(transformer.toInternal(hint)));
         }
+    }
+
+    SearchPath goodHintSubroutine() {
+        SearchPath move = new SearchPath();
+        currentHintQuality = HintQuality.good;
+        GeometricUtils.moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC,
+                searchAreaCornerD, move);
+        return move;
+    }
+
+    SearchPath setNewPhaseAndMove(SearchPath move) {
+        scanCurrentRectangle(move, currentHint);
+        Geometry newMultiPolygon = null;
+        do {
+            phase++;
+            updatePhaseHints();
+            hintPolygon = intersectHints(obtainedHints, phaseHints);
+            if (hintPolygon != null) {
+                newMultiPolygon = hintPolygon.difference(visitedPolygon);
+            }
+        }
+        while (newMultiPolygon == null || newMultiPolygon.getArea() == 0);
+        currentMultiPolygon = newMultiPolygon;
+
+        setABCDinStrategy();
+        GeometricUtils.moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC,
+                searchAreaCornerD, move);
+        return move;
+    }
+
+    boolean hintIsGood(HalfPlaneHint hintInInternal) {
+        LineSegment hintLine = hintInInternal.getHalfPlaneLine();
+        LineSegment AB = new LineSegment(searchAreaCornerA.getCoordinate(), searchAreaCornerB.getCoordinate());
+        LineSegment BC = new LineSegment(searchAreaCornerB.getCoordinate(), searchAreaCornerC.getCoordinate());
+        LineSegment CD = new LineSegment(searchAreaCornerC.getCoordinate(), searchAreaCornerD.getCoordinate());
+        LineSegment AD = new LineSegment(searchAreaCornerA.getCoordinate(), searchAreaCornerD.getCoordinate());
+        Coordinate intersectionADHint = lineWayIntersection(hintLine, AD);
+        Coordinate intersectionBCHint = lineWayIntersection(hintLine, BC);
+        Coordinate intersectionABHint = lineWayIntersection(hintLine, AB);
+        Coordinate intersectionCDHint = lineWayIntersection(hintLine, CD);
+        if ((intersectionABHint == null || intersectionCDHint == null ||
+                ((intersectionABHint.distance(searchAreaCornerA.getCoordinate()) < 1
+                        || intersectionABHint.distance(searchAreaCornerB.getCoordinate()) < 1
+                        || intersectionCDHint.distance(searchAreaCornerC.getCoordinate()) < 1
+                        || intersectionCDHint.distance(searchAreaCornerD.getCoordinate()) < 1))) &&
+                (intersectionADHint == null || intersectionBCHint == null ||
+                        ((intersectionADHint.distance(searchAreaCornerA.getCoordinate()) < 1
+                                || intersectionADHint.distance(searchAreaCornerD.getCoordinate()) < 1
+                                || intersectionBCHint.distance(searchAreaCornerB.getCoordinate()) < 1
+                                || intersectionBCHint.distance(searchAreaCornerC.getCoordinate()) < 1))
+                )
+        ) {
+            return false;
+        }
+        return true;
+    }
+
+
+    void updateVisitedPolygon(SearchPath move) {// lastLocation has to be set right
+        visitedPolygon = (Polygon) visitedPolygon.union(visitedPolygon(lastLocation, move));
     }
 
     /**
@@ -207,8 +304,8 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
      * @return the transformed move with added state and removed status messages
      */
     protected SearchPath returnHandling(SearchPath move) {
-        // update internal state of this strategy
-        visitedPolygon = (Polygon) visitedPolygon.union(visitedPolygon(lastLocation, move));
+        // update the visited polygon and the last location
+        updateVisitedPolygon(move);
         lastLocation = move.getLastPoint();
 
         // the move is transformed in external coordinates
@@ -238,6 +335,38 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
 
         // remove status messages
         move.getStatusMessageItemsToBeRemoved().addAll(statusMessagesToBeRemovedNextMoveInMinimumRectangleStrategy);
+        // add hint-qualities to the move
+        StatusMessageItem lastHintQualityStatus;
+        switch (previousHintQuality) {
+            case bad:
+                lastHintQualityStatus = new StatusMessageItem(StatusMessageType.BEFORE_PREVIOUS_QUALITY, "bad");
+                break;
+            case good:
+                lastHintQualityStatus = new StatusMessageItem(StatusMessageType.BEFORE_PREVIOUS_QUALITY, "good");
+                break;
+            case none:
+                lastHintQualityStatus = new StatusMessageItem(StatusMessageType.BEFORE_PREVIOUS_QUALITY, "none");
+                break;
+            default:
+                throw new AssertionError("The hint before the previous hint has no quality value");
+        }
+        move.getStatusMessageItemsToBeAdded().add(lastHintQualityStatus);
+
+        StatusMessageItem currentHintQualityStatus;
+        switch (previousHintQuality) {
+            case bad:
+                currentHintQualityStatus = new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY, "bad");
+                break;
+            case good:
+                currentHintQualityStatus = new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY, "good");
+                break;
+            case none:
+                currentHintQualityStatus = new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY, "none");
+                break;
+            default:
+                throw new AssertionError("The hint before the previous hint has no quality value");
+        }
+        move.getStatusMessageItemsToBeAdded().add(currentHintQualityStatus);
 
         // add search rectangle and phase rectangle
         return super.addState(move, transformer.toExternal(searchRectangle()),
@@ -312,7 +441,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         searchAreaCornerB = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[2]);
         searchAreaCornerC = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[3]);
         searchAreaCornerD = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[0]);
-        lastHintQuality = StrategyFromPaper.HintQuality.none;
+        previousHintQuality = StrategyFromPaper.HintQuality.none;
     }
 }
 

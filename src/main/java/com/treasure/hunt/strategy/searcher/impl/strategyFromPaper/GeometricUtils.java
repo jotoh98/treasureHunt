@@ -24,7 +24,7 @@ public class GeometricUtils {
         }
     }
 
-    static Point centerOfRectangle(Point P1, Point P2, Point P3, Point P4) {
+    public static Point centerOfRectangle(Point P1, Point P2, Point P3, Point P4) {
         LineString line13 = JTSUtils.createLineString(P1, P3);
         return line13.getCentroid();
     }
@@ -109,11 +109,11 @@ public class GeometricUtils {
         return rectRes;
     }
 
-    static Coordinate twoStepsOrthogonal(HalfPlaneHint hint, Point P) {
+    public static Coordinate twoStepsOrthogonal(HalfPlaneHint hint, Point P) {
         return twoStepsOrthogonal(hint, P.getCoordinate());
     }
 
-    static Coordinate twoStepsOrthogonal(HalfPlaneHint hint, Coordinate cur_pos) {
+    public static Coordinate twoStepsOrthogonal(HalfPlaneHint hint, Coordinate cur_pos) {
         Vector2D hintVector = new Vector2D(hint.getCenter(),
                 hint.getRight());
 

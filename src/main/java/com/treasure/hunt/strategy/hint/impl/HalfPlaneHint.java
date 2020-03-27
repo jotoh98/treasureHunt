@@ -3,10 +3,12 @@ package com.treasure.hunt.strategy.hint.impl;
 import com.treasure.hunt.jts.geom.HalfPlane;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
+import com.treasure.hunt.utils.JTSUtils;
 import lombok.Getter;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
+import org.locationtech.jts.geom.LineString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -160,6 +162,10 @@ public class HalfPlaneHint extends AngleHint {
 
     public LineSegment getHalfPlaneLine() {
         return new LineSegment(getCenter(), getRight());
+    }
+
+    public LineString getHalfPlaneLineString() {
+        return JTSUtils.GEOMETRY_FACTORY.createLineString(new Coordinate[]{getCenter(), getRight()});
     }
 
     public boolean inHalfPlane(Coordinate coordinate) {

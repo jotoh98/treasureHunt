@@ -26,8 +26,8 @@ import static com.treasure.hunt.utils.JTSUtils.*;
 
 /**
  * This strategy implements the strategy from the paper "Deterministic Treasure Hunt in the Plane with Angular Hints"
- * from Bouchard et al.
- *
+ * from Bouchard et al..
+ * <p>
  * Generally this strategy works in phases i=1, 2, ... in which it searchers the treasure in rectangles of the side
  * length 2^i.
  * The rectangles are centered in the start position of the searcher and are axis parallel.
@@ -40,7 +40,7 @@ import static com.treasure.hunt.utils.JTSUtils.*;
  * When the current rectangle is small enough, the rectangle gets scanned which means the player walks a route in such a way
  * that it sees all points of the current rectangle.
  * When this happens the phase is incremented and the current rectangle is again set to the phase rectangle.
- *
+ * <p>
  * For more information please look in the paper.
  *
  * @author Rank
@@ -62,7 +62,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     protected Point searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD;
     protected HalfPlaneHint previousHint;
     protected HalfPlaneHint currentHint;
-    protected HintQuality lastHintQuality = HintQuality.none;
+    protected HintQuality previousHintQuality = HintQuality.none;
     protected LastHintBadSubroutine lastHintBadSubroutine = new LastHintBadSubroutine(this);
     protected StatusMessageItem visualisationMessage;
     protected StatusMessageItem explainingStrategyMessage;
@@ -89,7 +89,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                         "When L1'' is needed (it will be explained when it is), this line is visualized in blue.");
         explainingStrategyMessage = new StatusMessageItem(StatusMessageType.EXPLANATION_STRATEGY,
                 "This strategy implements the strategy from the paper \"Deterministic Treasure Hunt in the Plane with Angular Hints\"\n" +
-                        "from Bouchard et al.\n" +
+                        "from Bouchard et al..\n" +
                         "\n" +
                         "Generally this strategy works in phases i=1, 2, ... in which it searchers the treasure in rectangles of the side \n" +
                         "length 2^i.\n" +
@@ -105,7 +105,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                         "When this happens the phase is incremented and the current rectangle is again set to the phase rectangle.\n" +
                         "\n" +
                         "For more information please look in the paper."
-                );
+        );
     }
 
     @Override
@@ -136,14 +136,17 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         geometryItemsToBeAddedNextMove.clear();
 
         StatusMessageItem lastHintQualityStatus;
-        switch (lastHintQuality) {
+        switch (previousHintQuality) {
             case bad:
-                lastHintQuality = HintQuality.none;
+                previousHintQuality = HintQuality.none;
                 move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.BEFORE_PREVIOUS_QUALITY,
                         "bad"));
                 move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY,
                         "none, because the hint before this hint was bad."));
-                return addState(lastHintBadSubroutine.lastHintBadSubroutine(hint, previousHint, move));
+                SearchPath lastHintBadSteps = lastHintBadSubroutine.lastHintBadSubroutine(hint, previousHint, move);
+                moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD,
+                        lastHintBadSteps);
+                return addState(lastHintBadSteps);
             case good:
                 lastHintQualityStatus = new StatusMessageItem(StatusMessageType.BEFORE_PREVIOUS_QUALITY, "good");
                 break;
@@ -156,7 +159,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         move.getStatusMessageItemsToBeAdded().add(lastHintQualityStatus);
 
         if (rectangleNotLargeEnough()) {
-            lastHintQuality = HintQuality.none;
+            previousHintQuality = HintQuality.none;
             move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY,
                     "none, because the previous rectangle was small enough to be scanned directly."));
             return addState(incrementPhase(move));
@@ -168,7 +171,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Point[] horizontalSplit = splitRectangleHorizontally(searchAreaCornerA, searchAreaCornerB,
                 searchAreaCornerC, searchAreaCornerD, hint, hintLine);
         if (horizontalSplit != null) {
-            lastHintQuality = HintQuality.good;
+            previousHintQuality = HintQuality.good;
             move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY, "good"));
             searchAreaCornerA = horizontalSplit[0];
             searchAreaCornerB = horizontalSplit[1];
@@ -181,7 +184,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Point[] verticalSplit = splitRectangleVertically(searchAreaCornerA, searchAreaCornerB,
                 searchAreaCornerC, searchAreaCornerD, hint, hintLine);
         if (verticalSplit != null) {
-            lastHintQuality = HintQuality.good;
+            previousHintQuality = HintQuality.good;
             move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY, "good"));
             searchAreaCornerA = verticalSplit[0];
             searchAreaCornerB = verticalSplit[1];
@@ -192,7 +195,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                     searchAreaCornerC, searchAreaCornerD, move));
         }
         // when none of this cases takes place, the hint is bad (as defined in the paper). This gets handled here:
-        lastHintQuality = HintQuality.bad;
+        previousHintQuality = HintQuality.bad;
         move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY,
                 "bad"));
 
