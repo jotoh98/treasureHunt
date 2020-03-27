@@ -112,6 +112,14 @@
     -fx-text-fill: white;
 }
 
+.table-view .table-cell {
+    -fx-text-fill: white;
+}
+
+.text-field, .combo-box{
+    -fx-text-fill: white;
+}
+
 .table-view:focused {
     -fx-background-color: transparent;
 }
@@ -347,9 +355,12 @@
     -fx-background-color: REQUIRED_RED;
 }
 
-.titled-pane * {
-    -fx-border-width: 0;
-    -fx-border-radius: 0;
+.tree-view {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.tree-view * {
     -fx-background-color: BACKGROUND_COLOR;
     -fx-fill: lightgrey;
 }

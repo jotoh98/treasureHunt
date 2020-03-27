@@ -55,6 +55,7 @@ public class StatisticTableController {
     public ComboBox<Class<? extends Searcher>> searcherList;
     public ComboBox<Class<? extends Hider>> hiderList;
     public ComboBox<Class<? extends GameEngine>> gameEngineList;
+    public Spinner<Integer> maxStepsSpinner;
     HashMap<StatisticObject.StatisticInfo, List<StatisticObject>> statisticsMeasureHashMap = new HashMap<>();
     private Path path;
     private ObjectProperty<GameManager> gameManager;
@@ -67,6 +68,10 @@ public class StatisticTableController {
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100000, 1000, 100);
         roundSpinner.setEditable(true);
         roundSpinner.setValueFactory(valueFactory);
+        SpinnerValueFactory<Integer> valueFactoryMax =
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100000, 1500, 100);
+        maxStepsSpinner.setEditable(true);
+        maxStepsSpinner.setValueFactory(valueFactoryMax);
         progressIndicator.managedProperty().bind(progressIndicator.visibleProperty());
 
         EventBusUtils.STATISTICS_LOADED_EVENT.addListener(statisticsWithIds -> Platform.runLater(() -> {
@@ -229,7 +234,7 @@ public class StatisticTableController {
                     SeriesService.getInstance().runSeries(roundSpinner.getValue(), newGameManager, aDouble ->
                             Platform.runLater(() ->
                                     progressIndicator.setProgress(aDouble)
-                            )
+                            ), maxStepsSpinner.getValue()==0? null : maxStepsSpinner.getValue()
                     )
             )
                     .exceptionally(throwable -> {

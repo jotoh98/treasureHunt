@@ -48,7 +48,8 @@ public enum GeometryType {
     STANDARD(true, ""),
     CURRENT_WAY_POINT(true, "Current way point", true),
     GRID(true, "Grid", false),
-    HIGHLIGHTER(true, "Highlighter", true);
+    HIGHLIGHTER(true, "Highlighter", true),
+    POLYHEDRON(true, "Polyhedron", true);
 
     @Getter
     private final String displayName;

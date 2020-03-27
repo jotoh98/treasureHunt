@@ -28,7 +28,7 @@ public class GeometryStyle {
                 GeometryType.CURRENT_PHASE, new GeometryStyle(true, Color.YELLOW),
                 GeometryType.CURRENT_RECTANGLE, new GeometryStyle(true, Color.RED),
                 GeometryType.SEARCHER_LAST_MOVE, new GeometryStyle(true, new Color(0x007A1D)),
-                GeometryType.HALF_PLANE, new GeometryStyle(true, new Color(0x505050), new Color(0x505050)),
+                GeometryType.HALF_PLANE, new GeometryStyle(true, new Color(0x777777), new Color(0x22777777, true)),
                 GeometryType.HALF_PLANE_LINE, new GeometryStyle(true, new Color(0x000000)),
                 GeometryType.HALF_PLANE_LINE_BLUE, new GeometryStyle(true, Color.BLUE)
         ));
