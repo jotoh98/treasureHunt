@@ -30,6 +30,7 @@ public class PlotSettingsController {
     public TextField seriesAccuracy;
     public ComboBox<StatisticAggregation> selectAggregationTypeCombo;
     public Label errorLabel;
+    public TextField maxStepField;
     private Class<? extends GameEngine> selectedGameEngine;
     private Class<? extends Searcher> selectedSearcher;
     private Class<? extends Hider> selectedHider;
@@ -95,7 +96,15 @@ public class PlotSettingsController {
             error("Choose a Preference");
             return;
         }
-        Settings settings = new Settings(aggregationTypeComboValue, statisticValue, preferenceValue, lowerBoundValue, upperBoundValue, stepSizeValue, seriesAccuracyValue, savePNGCheckBox.isSelected());
+
+        Integer maxSteps = null;
+        try{
+            maxSteps = Integer.parseInt(maxStepField.getText());
+        }catch (Exception ignored){
+
+        }
+
+        Settings settings = new Settings(aggregationTypeComboValue, statisticValue, preferenceValue, lowerBoundValue, upperBoundValue, stepSizeValue, seriesAccuracyValue, maxSteps,  savePNGCheckBox.isSelected());
         openPlotController(settings);
 
     }
@@ -196,6 +205,7 @@ public class PlotSettingsController {
         double upperBoundValue;
         double stepSizeValue;
         int seriesAccuracyValue;
+        Integer maxSteps;
         boolean savePNG;
     }
 

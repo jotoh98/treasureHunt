@@ -15,6 +15,9 @@
                 <Spinner fx:id="roundSpinner"/>
                 <Label maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity"
                        minWidth="-Infinity" text="rounds"/>
+                <Spinner fx:id="maxStepsSpinner"/>
+                <Label maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity"
+                       minWidth="-Infinity" text="Max steps till exit"/>
                 <Button fx:id="runMultipleButton" mnemonicParsing="false" onAction="#onSeriesRun"
                         text="Run multiple games"/>
                 <Button fx:id="superPlot" onAction="#onPlot" text="Create custom plot"/>
