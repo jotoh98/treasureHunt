@@ -1,15 +1,16 @@
 package com.treasure.hunt.strategy.hider.impl;
 
+import com.treasure.hunt.service.preferences.Preference;
+import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
-import com.treasure.hunt.utils.Preference;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Point;
 
 @Slf4j
-@Preference(name = StatisticalHider.HintSize_Preference, value = 180)
-@Preference(name = StatisticalHider.TreasureLocationX_Preference, value = 70)
-@Preference(name = StatisticalHider.TreasureLocationY_Preference, value = 70)
+@Preference(name = PreferenceService.HintSize_Preference, value = 180)
+@Preference(name = PreferenceService.TreasureLocationX_Preference, value = 70)
+@Preference(name = PreferenceService.TreasureLocationY_Preference, value = 70)
 public class FixedTreasureHider extends StatisticalHider implements Hider<AngleHint> {
 
     @Override

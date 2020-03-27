@@ -2,10 +2,11 @@ package com.treasure.hunt.strategy.hider.impl;
 
 import com.treasure.hunt.game.mods.hideandseek.HideAndSeekHider;
 import com.treasure.hunt.jts.geom.Line;
+import com.treasure.hunt.service.preferences.Preference;
+import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.geom.*;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
-import com.treasure.hunt.utils.Preference;
 import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
@@ -20,9 +21,9 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 @Slf4j
-@Preference(name = StatisticalHider.HintSize_Preference, value = 180)
-@Preference(name = StatisticalHider.TreasureLocationX_Preference, value = 70)
-@Preference(name = StatisticalHider.TreasureLocationY_Preference, value = 70)
+@Preference(name = PreferenceService.HintSize_Preference, value = 180)
+@Preference(name = PreferenceService.TreasureLocationX_Preference, value = 70)
+@Preference(name = PreferenceService.TreasureLocationY_Preference, value = 70)
 @Preference(name = GameField.CircleExtension_Preference, value = 0)
 public class MobileTreasureHider extends StatisticalHider implements HideAndSeekHider<AngleHint> {
 
@@ -63,6 +64,7 @@ public class MobileTreasureHider extends StatisticalHider implements HideAndSeek
     private Point generateNewTreasureLocation() {
         List<Pair<Coordinate, Double>> possibleTreasures = gameField.getWorstPointsOnAllEdges();
 
+        possibleTreasures.stream().
         // Todo refine treasure placement , maybe minDistance
         return gf.createPoint(possibleTreasures.get(0).getKey());
     }

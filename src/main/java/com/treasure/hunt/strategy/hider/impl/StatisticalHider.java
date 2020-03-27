@@ -5,7 +5,6 @@ import com.treasure.hunt.strategy.geom.*;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
-import com.treasure.hunt.utils.Preference;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.*;
@@ -34,9 +33,7 @@ public abstract class StatisticalHider{
     protected double counterStrategyGeometryCutoff;
     protected double distanceFromNormalAngleRay;
 
-    public static final String HintSize_Preference = "preferred hint size";
-    public static final String TreasureLocationX_Preference = "preferred x-Value treasure";
-    public static final String TreasureLocationY_Preference = "preferred y-Value treasure";
+
 
     protected Point treasure;
     protected double preferredHintSize;
@@ -47,8 +44,8 @@ public abstract class StatisticalHider{
         startingPoint = searcherStartPosition;
 
         PreferenceService pS = PreferenceService.getInstance();
-        treasure = gf.createPoint(new Coordinate(pS.getPreference(TreasureLocationX_Preference, 70).doubleValue(), pS.getPreference(TreasureLocationY_Preference,70).doubleValue()));
-        preferredHintSize = pS.getPreference( HintSize_Preference , 180 ).doubleValue();
+        treasure = gf.createPoint(new Coordinate(pS.getPreference(PreferenceService.TreasureLocationX_Preference, 70).doubleValue(), pS.getPreference(PreferenceService.TreasureLocationY_Preference,70).doubleValue()));
+        preferredHintSize = pS.getPreference( PreferenceService.HintSize_Preference , 180 ).doubleValue();
 
         gameField.init(searcherStartPosition, treasure);
         this.currentPossibleArea = gameField.getPossibleArea();
@@ -209,7 +206,7 @@ public abstract class StatisticalHider{
 
 
         } else {
-            log.info("generating " + samples + " hints of size " +  PreferenceService.getInstance().getPreference(HintSize_Preference, 180).doubleValue());
+            log.info("generating " + samples + " hints of size " +  PreferenceService.getInstance().getPreference(PreferenceService.HintSize_Preference, 180).doubleValue());
 
 
             for (int i = 0; i < samples; i++) {
