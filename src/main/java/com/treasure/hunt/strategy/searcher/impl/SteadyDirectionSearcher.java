@@ -1,5 +1,7 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
+import com.treasure.hunt.game.mods.hideandseek.HideAndSeekHider;
+import com.treasure.hunt.game.mods.hideandseek.HideAndSeekSearcher;
 import com.treasure.hunt.jts.geom.GeometryAngle;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
@@ -22,7 +24,7 @@ import java.util.Queue;
  *
  */
 @Slf4j
-public class SteadyDirectionSearcher implements Searcher<AngleHint> {
+public class SteadyDirectionSearcher implements Searcher<AngleHint>, HideAndSeekSearcher<AngleHint> {
 
     private Point startPosition;
     private Point currentPosition;
