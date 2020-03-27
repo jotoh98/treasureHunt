@@ -82,6 +82,10 @@ public final class JTSUtils {
      */
     public static Coordinate middleOfAngleHint(AngleHint angleHint) {
         GeometryAngle angle = angleHint.getGeometryAngle();
+        return middleOfGeometryAngle(angle);
+    }
+
+    public static Coordinate middleOfGeometryAngle(GeometryAngle angle){
         return angle
                 .rightVector()
                 .rotate(angle.extend() / 2)
