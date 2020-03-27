@@ -53,6 +53,7 @@ public class GameField {
     private GeometryFactory geometryFactory = JTSUtils.GEOMETRY_FACTORY;
     private double walkedPathLength = 0.0;
     private List<Point> visitedPoints = new ArrayList<>();
+    private boolean treasureMovedthisTurn = false;
 
 
     private GeometryItem<Geometry> possibleArea;
@@ -80,15 +81,14 @@ public class GameField {
     @Setter
     private double searcherScoutRadius = 1.0;
 
-
     public void moveTreasure(Point newTreasureLocation) throws ImpossibleTreasureLocationException {
+        treasureMovedthisTurn = true;
         for( AngleHint hint : givenHints){
             if ( ! hint.getGeometryAngle().inView(newTreasureLocation.getCoordinate())) {
                 log.debug("Hint invalid");
                 throw new ImpossibleTreasureLocationException("you've supplied a treasure location, which is inconsistent with a previously given Hint: " + hint.getGeometryAngle().toString());
             }
         }
-
         // needed since the buffer is normally drawn with  generosity {searcherScoutRadius + 0.1}
         Coordinate[] visitedCoords = visitedPoints.stream().map(p -> p.getCoordinate()).toArray(Coordinate[]::new);
         LineString walkedPath = geometryFactory.createLineString(visitedCoords);
@@ -111,7 +111,6 @@ public class GameField {
         log.info(treasureLocation.toString());
         log.info(searcherStartPosition.toString());
 
-        //TODO make this customizable by Preference, see issue #244s
         Circle circle;
         if(PreferenceService.getInstance().getPreference(GameField.CircleExtension_Preference, 0).intValue() == 1){
             boundingCircleSize = ((maxExtensions-1) * boundingCircleExtensionDelta) +boundingCircleSize;
@@ -209,7 +208,10 @@ public class GameField {
       * @return the resulting Geometry
       **/
     public Geometry testHint(AngleHint hint) {
-        hint.addAdditionalItem(innerBufferItem);
+        if(treasureMovedthisTurn){
+            hint.addAdditionalItem(innerBufferItem);
+        }
+
         GeometryAngle angle = hint.getGeometryAngle();
 
         double rightAngle = Angle.angle(angle.getCenter(), angle.getRight());
@@ -285,6 +287,7 @@ public class GameField {
         if(! givenHints.contains(hint)){
             givenHints.add(hint);
         }
+        treasureMovedthisTurn = false;
         return newPossibleArea;
     }
 

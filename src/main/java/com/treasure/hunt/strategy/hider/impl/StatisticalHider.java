@@ -172,12 +172,13 @@ public abstract class StatisticalHider{
      * @return
      */
     protected List<AngleHintStatistic> filterForValidHints(List<AngleHintStatistic> stats){
+
         stats = stats.stream().filter(hint -> hint.getHint().getGeometryAngle().inView(treasure.getCoordinate())).collect(Collectors.toList());
-        log.debug("remaining possible Hints" + stats.size());
+        log.debug("remaining possible Hints" + stats.size()); // hint: its always half the amount
         return stats;
     }
 
-    /** Todo: if hint is 180degree make it an explicit HalfPlaneHint/ hack it such that StrategyFromPaper recieves a halfplaneHint
+    /** Todo: if hint is 180degree make it an explicit HalfPlaneHint/ hack it such that StrategyFromPaper receives a halfplaneHint
      * Generates {@code samples } evenly spaced {@link com.treasure.hunt.strategy.hint.impl} .
      * Generated hints are not always exactly the preferred hint Size, the diverge about 3 * e-13
      *
