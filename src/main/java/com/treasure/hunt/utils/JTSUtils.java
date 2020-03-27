@@ -2,6 +2,7 @@ package com.treasure.hunt.utils;
 
 import com.treasure.hunt.jts.awt.CanvasBoundary;
 import com.treasure.hunt.jts.geom.GeometryAngle;
+import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.algorithm.ConvexHull;
@@ -262,5 +263,13 @@ public final class JTSUtils {
                 coordinates.toArray(Coordinate[]::new),
                 JTSUtils.GEOMETRY_FACTORY
         );
+    }
+
+    public static Point shuffleTreasure() {
+        double distance = PreferenceService.getInstance()
+                .getPreference(PreferenceService.MAX_TREASURE_DISTANCE, 100)
+                .doubleValue();
+        Coordinate treasure = Vector2D.create(Math.random() * distance, 0).rotate(2 * Math.PI * Math.random()).translate(new Coordinate());
+        return JTSUtils.GEOMETRY_FACTORY.createPoint(treasure);
     }
 }
