@@ -66,7 +66,6 @@ public class GameEngine {
 
     /**
      * initialize searcher and treasure positions.
-     *
      * @return a {@link Turn}, since the initialization must be displayed.
      */
     public Turn init() {

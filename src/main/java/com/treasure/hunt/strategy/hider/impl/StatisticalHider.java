@@ -18,8 +18,19 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * An abstract hider which implements methods to play a basic game
+ * It also supplies methods to judge a given hint by generating statistics about the hint and saving them in {@link StatisticalHider}
+ *
+ * How these hints are rated is up to the {@link StatisticalHider} subclasses by implementing the {@link #rateHint(AngleHintStatistic)} method
+ */
 @Slf4j
 public abstract class StatisticalHider{
+    //todo use em
+    public static final String getRelativeAreaCutoffWeight_Preference = "relative area cutoff weight";
+    public static final String DistanceFromNormalAngleLineToTreasureWeight_Preference = "distance to angle bisector line weight";
+    public static final String DistanceFromResultingCentroidToTreasureWeight_Preference = "distance to centroid weight";
+
     protected GameField gameField;
     protected GeometryFactory gf = JTSUtils.GEOMETRY_FACTORY;
 
@@ -39,12 +50,12 @@ public abstract class StatisticalHider{
     protected double preferredHintSize;
 
     public void init(Point searcherStartPosition) {
-        log.info("hider init");
+        log.info("StatisticalHider init");
         this.gameField = new GameField();
         startingPoint = searcherStartPosition;
 
         PreferenceService pS = PreferenceService.getInstance();
-        treasure = gf.createPoint(new Coordinate(pS.getPreference(PreferenceService.TreasureLocationX_Preference, 70).doubleValue(), pS.getPreference(PreferenceService.TreasureLocationY_Preference,70).doubleValue()));
+        treasure = JTSUtils.shuffleTreasure();
         preferredHintSize = pS.getPreference( PreferenceService.HintSize_Preference , 180 ).doubleValue();
 
         gameField.init(searcherStartPosition, treasure);
@@ -91,15 +102,15 @@ public abstract class StatisticalHider{
             stats.add(hs);
             rateHint(hs);
         }
-        log.debug("#of hints" + stats.size());
+        log.trace("#of hints" + stats.size());
         stats = filterForValidHints(stats);
-        log.debug("#of hints after filtering for InView Predicate" + stats.size());
+        log.trace("#of hints after filtering for InView Predicate" + stats.size());
 
         stats.sort(Comparator.comparingDouble(AngleHintStatistic::getRating).reversed());
 
         AngleHintStatistic returnHint = stats.get(0);
 
-        log.info("evaluated angleHint");
+        log.info("angleHint with the best rating");
         log.info(returnHint.toString());
 
         //add some status information

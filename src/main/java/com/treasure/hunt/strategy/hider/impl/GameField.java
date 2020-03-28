@@ -53,7 +53,7 @@ public class GameField {
     private GeometryFactory geometryFactory = JTSUtils.GEOMETRY_FACTORY;
     private double walkedPathLength = 0.0;
     private List<Point> visitedPoints = new ArrayList<>();
-    private boolean treasureMovedthisTurn = false;
+
 
 
     private GeometryItem<Geometry> possibleArea;
@@ -64,6 +64,7 @@ public class GameField {
     private GeometryStyle checkedAreaStyle = new GeometryStyle(true, new Color(0x1E90FF));
     private GeometryItem<Point> favoredTreasureLocation;
     private GeometryStyle favoredTreasureLocationStyle = new GeometryStyle(true, new Color(0x800080));
+    @Getter
     private GeometryItem<Polygon> innerBufferItem;
     private GeometryStyle innerBufferStyle = new GeometryStyle(true, new Color(255, 0, 33));
     /*
@@ -81,8 +82,13 @@ public class GameField {
     @Setter
     private double searcherScoutRadius = 1.0;
 
+    /**Asks the Gamefield to move the treasure to the speciefied new location
+     *
+     * @param newTreasureLocation the new treasure location
+     * @throws ImpossibleTreasureLocationException is thrown when newTreasureLocation is not within the checked area or violates a previously given hint
+     */
     public void moveTreasure(Point newTreasureLocation) throws ImpossibleTreasureLocationException {
-        treasureMovedthisTurn = true;
+
         for( AngleHint hint : givenHints){
             if ( ! hint.getGeometryAngle().inView(newTreasureLocation.getCoordinate())) {
                 log.debug("Hint invalid");
@@ -102,6 +108,11 @@ public class GameField {
         log.info("new treasure location at" + favoredTreasureLocation.getObject());
     }
 
+    /** Initializes the Gamefield with its initial values
+     *
+     * @param searcherStartPosition the position, the player starts at
+     * @param treasureLocation the postition, the player wants to reach
+     */
     public void init(Point searcherStartPosition, Point treasureLocation) {
         log.debug("GameField init");
 
@@ -130,6 +141,10 @@ public class GameField {
         commitPlayerMovement(startingPath);
     }
 
+    /** returns the possible area in which the treasure could be
+     *
+     * @return
+     */
     public Geometry getPossibleArea(){
         return this.possibleArea.getObject();
     }
@@ -208,10 +223,6 @@ public class GameField {
       * @return the resulting Geometry
       **/
     public Geometry testHint(AngleHint hint) {
-        if(treasureMovedthisTurn){
-            hint.addAdditionalItem(innerBufferItem);
-        }
-
         GeometryAngle angle = hint.getGeometryAngle();
 
         double rightAngle = Angle.angle(angle.getCenter(), angle.getRight());
@@ -271,12 +282,10 @@ public class GameField {
         hint.addAdditionalItem(boundingCircle);
 
         return resultingPossibleArea;
-
     }
 
-
     /**
-     * Finally commits the hint
+     * Finally commits the hint and integrates it with the current possibleArea
      *
      * @param hint the Hint to be integrated
      * @return the resulting Area in which the Treasure could be
@@ -287,11 +296,16 @@ public class GameField {
         if(! givenHints.contains(hint)){
             givenHints.add(hint);
         }
-        treasureMovedthisTurn = false;
+
         return newPossibleArea;
     }
 
-
+    /** Returns whether the specified point lies within the possible Area,
+     * treasure could live in
+     *
+     * @param p
+     * @return
+     */
     public boolean isWithinGameField(Point p){
         return boundingCircle.getObject().covers(p);
     }
@@ -364,7 +378,7 @@ public class GameField {
 
 
     /**
-     * Alternate to {@sampleMaxConstantPointOnLineSegment}
+     * Alternate to {@link this.sampleMaxConstantPointOnLineSegment}
      * Calculates the Point on the boundarySegment described by p1,p2 of the possible Area which results in the largest Constant of PathMin * C = PathActual
      *
      * @param p1     the Start of the Segment v
@@ -423,10 +437,10 @@ public class GameField {
             log.trace(" extremum1 : " + extremum1);
             log.trace(" extremum2 : " + extremum2);
             //now plug into 2nd Derivative to see who is Max and whos Min
-            if (evalSecondDerivOfConstFunction(extremum1, a, b) < 0) {
+            if (evalSecondDerivativeOfConstFunction(extremum1, a, b) < 0) {
                 log.trace("Extremum 1 is a maxima");
                 maximum = extremum1;
-            } else if (evalSecondDerivOfConstFunction(extremum2, a, b) < 0) {
+            } else if (evalSecondDerivativeOfConstFunction(extremum2, a, b) < 0) {
                 log.trace("Extremum 2 is a maxima");
                 maximum = extremum2;
             } else {
@@ -500,13 +514,12 @@ public class GameField {
     }
 
 
-    private double evalSecondDerivOfConstFunction(double x, double a, double b) {
+    private double evalSecondDerivativeOfConstFunction(double x, double a, double b) {
         double firstTerm = (8 * x * (Math.pow(a, 2.0) * x - a * Math.pow(x, 2.0) + a + (b - 2) * b * x)) / Math.pow(Math.pow(x, 2.0) + 1, 3);
         double secondTerm = (2 * (Math.pow(a, 2.0) - 2 * a * x + (b - 2) * b)) / Math.pow(Math.pow(x, 2.0) + 1, 2.0);
         return firstTerm - secondTerm;
     }
 
-    // TODO cleanup
     /**
      * Samples for the Point on the boundarySegment described by p1,p2 of the possible Area which results in the largest Constant of PathMin * C = PathActual
      *
