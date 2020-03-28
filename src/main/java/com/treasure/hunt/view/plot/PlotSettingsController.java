@@ -6,8 +6,6 @@ import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.service.preferences.Preference;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -19,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class PlotSettingsController {
     public CheckBox savePNGCheckBox;
@@ -34,6 +33,11 @@ public class PlotSettingsController {
     private Class<? extends GameEngine> selectedGameEngine;
     private Class<? extends Searcher> selectedSearcher;
     private Class<? extends Hider> selectedHider;
+    private Consumer<Settings> settingsConsumer;
+
+    public void init(Consumer<Settings> consumer) {
+        settingsConsumer = consumer;
+    }
 
     public void onSubmit() throws IOException {
         double lowerBoundValue;
@@ -105,16 +109,8 @@ public class PlotSettingsController {
         }
 
         Settings settings = new Settings(aggregationTypeComboValue, statisticValue, preferenceValue, lowerBoundValue, upperBoundValue, stepSizeValue, seriesAccuracyValue, maxSteps,  savePNGCheckBox.isSelected());
-        openPlotController(settings);
+        settingsConsumer.accept(settings);
 
-    }
-
-    private void openPlotController(Settings settings) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/plot.fxml"));
-        Parent plot = fxmlLoader.load();
-        PlotController plotController = fxmlLoader.getController();
-        plotController.setData(settings, selectedGameEngine, selectedSearcher, selectedHider);
-        errorLabel.getScene().setRoot(plot);
     }
 
     public void onCancel() {
