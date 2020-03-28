@@ -16,15 +16,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * The idea is to maintain a square or search area of variable size,
+ * The idea is to maintain a square called search area of variable size,
  * given a hint one use Geometry.intersection() to exclude area.
  * Hints need to be transformed into objects of class Geometry. (see createPolygonHintFrom(GeometryAngle hint))
- * At a given moment one can extend the search area for example: area < constant
+ * At a given moment one can extend the search area for example: area smaller constant
  * the next position will be calculated dependent of the interior point of the search area (see nextPosition())
  */
 
 @Slf4j
-public class PolygonStrategy implements Searcher<AngleHint> {
+public class PolygonStrategy
+        implements Searcher<AngleHint> {
 
     Geometry searchArea;
     double currentSearchFieldDim = 4;
@@ -45,9 +46,8 @@ public class PolygonStrategy implements Searcher<AngleHint> {
     @Override
     public SearchPath move(AngleHint hint) {
         hints.add(hint.getGeometryAngle().copy());
-
         Geometry polyHint = createPolygonHintFrom(hint.getGeometryAngle());
-        if (searchArea.getArea() < Math.pow(2, 8)) {
+        if (searchArea.getArea() < Math.pow(2, 4) && currentSearchFieldDim < Math.pow(2, 20)) {
             extendSearchSquare();
         }
         searchArea = searchArea.intersection(polyHint);
@@ -60,11 +60,10 @@ public class PolygonStrategy implements Searcher<AngleHint> {
     /***
      *
      * @param hint a geometry angle which will be used to create a intersectable (Geometry.intersect()) hint for the search area
-     * @return a square intersected with given hint. The initiale square is centered at 0,0 and of dim 2*currentSearchFieldDim
+     * @return a square intersected with given hint. The initial square is centered at 0,0 and of dim 2*currentSearchFieldDim
      */
     public Geometry createPolygonHintFrom(GeometryAngle hint) {
-        List<Coordinate> vertices = new ArrayList<>();
-        vertices.addAll(Arrays.stream(createSquare(currentSearchFieldDim * 4).getCoordinates()).distinct().collect(Collectors.toList()));
+        List<Coordinate> vertices = new ArrayList<>(Arrays.stream(createSquare(currentSearchFieldDim * 4).getCoordinates()).distinct().collect(Collectors.toList()));
         vertices.add(vertices.get(0).copy());
         List<Coordinate> polyHint = new ArrayList<>();
         for (int i = 0; i < vertices.size() - 1; i++) {
@@ -101,21 +100,6 @@ public class PolygonStrategy implements Searcher<AngleHint> {
         }
         polyHint.add(polyHint.get(0).copy());
         return JTSUtils.GEOMETRY_FACTORY.createPolygon(polyHint.toArray(Coordinate[]::new));
-        /*Coordinate leftExtension = hint.leftVector().multiply(Math.pow(4, curentSearchFieldArea)).translate(hint.getLeft());
-        Coordinate rightExtension = hint.rightVector().multiply(Math.pow(4, curentSearchFieldArea)).translate(hint.getRight());
-        List<Coordinate> polyEdges = new ArrayList<>();
-        polyEdges.addAll(Arrays.asList(hint.getCenter().copy(), rightExtension));
-        polyEdges.addAll(
-                Arrays.asList(square.getCoordinates()).stream()
-                        .filter(hint::inView).distinct()
-                        .collect(Collectors.toList()));
-        polyEdges.add(leftExtension);
-        polyEdges.add(hint.getCenter().copy());
-        Polygon hintPoly = JTSUtils.GEOMETRY_FACTORY.createPolygon(polyEdges.toArray(Coordinate[]::new));
-        if (hint.extend() >= Math.PI) {
-            return square.difference(hintPoly);
-        }
-        return hintPoly.intersection(square);*/
     }
 
     /**
@@ -128,23 +112,15 @@ public class PolygonStrategy implements Searcher<AngleHint> {
     public Point nextPosition() {
         double length = searchArea.getInteriorPoint().getCoordinate().distance(new Coordinate(0, 0));
         for (double currentScale = 1; currentScale < length; currentScale += length / 20) {
-            if (searchArea.contains(
-                    JTSUtils.createPoint(
-                            JTSUtils.coordinateInDistance(
-                                    currentPosition.getCoordinate(),
-                                    searchArea.getInteriorPoint().getCoordinate(),
-                                    currentScale
-                            )
+            Point point = JTSUtils.createPoint(
+                    JTSUtils.coordinateInDistance(
+                            currentPosition.getCoordinate(),
+                            searchArea.getInteriorPoint().getCoordinate(),
+                            currentScale
                     )
-            )
-            ) {
-                return JTSUtils.createPoint(
-                        JTSUtils.coordinateInDistance(
-                                currentPosition.getCoordinate(),
-                                searchArea.getInteriorPoint().getCoordinate(),
-                                currentScale
-                        )
-                );
+            );
+            if (searchArea.contains(point)) {
+                return point;
             }
         }
         return searchArea.getInteriorPoint();
