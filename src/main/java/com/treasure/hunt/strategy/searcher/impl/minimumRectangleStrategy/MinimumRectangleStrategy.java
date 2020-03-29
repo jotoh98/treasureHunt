@@ -28,24 +28,22 @@ import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
  * "Deterministic Treasure Hunt in the Plane with Angular Hints" from Bouchard et al..
  * We will call the strategy from the paper S in the following text.
  * S gets improved by this strategy.
- * Like S, this strategy has phases 1,2,... in which it searches the treasure in rectangles
+ * Like S, this strategy has phases i=1,2,... in which it searches the treasure in rectangles
  * of the side length 2^i.
  * These rectangles are also centered in the start position of the searcher.
  * But in contrast to S, in this strategy the phase rectangles aren't oriented in order to be axis
  * parallel, but the rectangle is rotated in order to have one side that is parallel
  * to the first gotten hint.
  * By that, already half of the phase rectangle can be ignored.
- * Phase rectangles are indicated by yellow in the visualisation.
- * When the phase gets increased (and at the start of the strategy), the intersection I of all
- * halfplanes of all hints and the current phase rectangle is created.
+ * Every step the intersection I of all halfplanes of all hints and the current phase rectangle is
+ * created.
  * The difference D of I and all already seen areas is created.
- * D is visualized in green.
- * Then the minimum rectangle which has sides parallel to the phase rectangle and where D is
- * inside, is formed and S is applied on it as long as the phase is not increased.
- * The area where the treasure is currently searched is visualized by red.
- * Then the procedure gets repeated with the new phase.
+ * Then the current rectangle gets reduced to the minimum rectangle where D is inside and
+ * which has sides parallel to the phase rectangle.
+ * <p>
  * Also when applying RectangleScan, this strategy does reduce the rectangle to be  scanned,
- * by ignoring some areas it has already seen and areas which can be ignored due to hints.
+ * by ignoring some areas it has already seen and areas which can be ignored due to hints and
+ * uses a better RectangleScan Routine.
  * <p>
  * An annotation to the implementation:
  * The implementation works on two different coordinate systems:
@@ -93,7 +91,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
      * The lastLocation of the previous move
      */
     private Point lastLocation; // stored in internal coordinates
-    private HintQuality currentHintQuality = HintQuality.none;
+    private HintQuality currentHintQuality;
     private LastHintBadSubroutine lastHintBadSubroutine = new LastHintBadSubroutine(this);
 
     private ArrayList<StatusMessageItem> statusMessagesToBeRemovedNextMoveInMinimumRectangleStrategy = new ArrayList<>();
@@ -117,6 +115,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         obtainedHints = new ArrayList<>();
         currentMultiPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon();
         visitedPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon();
+        currentHintQuality = HintQuality.none;
     }
 
     /**
@@ -243,6 +242,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
     SearchPath setNewPhaseAndMove(SearchPath move) {
         scanCurrentRectangle(move, currentHint);
         Geometry newMultiPolygon = null;
+        updateVisitedPolygon(move);
         do {
             phase++;
             updatePhaseHints();
@@ -295,10 +295,11 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
     /**
      * This method has to be called directly before move(HalfPlaneHint) returns
      * In this method, several things are accomplished:
-     * 1. the internal fields are updated (visitedPolygon, lastLocation)
-     * 2. the move is transformed in the external coordinates
-     * 3. the state of the current rectangle is added to the move
-     * 4. the status messages which have to be removed, get removed
+     * - the internal fields are updated (visitedPolygon, lastLocation)
+     * - the move is transformed in the external coordinates
+     * - the state of the current rectangle is added to the move
+     * - the status messages which have to be removed, get removed
+     * - status messages of quality of hints get added
      *
      * @param move the move which is done this draw in internal coordinates
      * @return the transformed move with added state and removed status messages
@@ -311,10 +312,6 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         // the move is transformed in external coordinates
         move = transformer.toExternal(move);
 
-        // add state of the current rectangle to move
-        if (transformer == null) {
-            return super.addState(move);
-        }
         // add polygon
         if (currentMultiPolygon != null) {
             move.addAdditionalItem(new GeometryItem<>(transformer.toExternal(currentMultiPolygon),
@@ -331,6 +328,11 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
             move.addAdditionalItem(new GeometryItem<>(
                     transformer.toExternal(previousHint).getHalfPlaneTheTreasureIsNotIn(),
                     GeometryType.HALF_PLANE_BEFORE_PREVIOUS_ORANGE));
+        }
+
+        // add state of the current rectangle to move
+        if (transformer == null) {
+            return super.addState(move);
         }
 
         // remove status messages
@@ -353,7 +355,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         move.getStatusMessageItemsToBeAdded().add(lastHintQualityStatus);
 
         StatusMessageItem currentHintQualityStatus;
-        switch (previousHintQuality) {
+        switch (currentHintQuality) {
             case bad:
                 currentHintQualityStatus = new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY, "bad");
                 break;
@@ -407,13 +409,12 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
 
         Coordinate[] envelopeToScanTransformedPoints = newAreaToScanTransformed.getEnvelope().getCoordinates();
 
-        RoutinesFromPaper.rectangleScan(
+        return RoutinesFromPaper.rectangleScanEnhanced(
                 transformerForRectangleAxisParallelism.toExternal(envelopeToScanTransformedPoints[0]),
                 transformerForRectangleAxisParallelism.toExternal(envelopeToScanTransformedPoints[1]),
                 transformerForRectangleAxisParallelism.toExternal(envelopeToScanTransformedPoints[2]),
                 transformerForRectangleAxisParallelism.toExternal(envelopeToScanTransformedPoints[3]), move
         );
-        return move;
     }
 
     private Coordinate[] searchRectangle() {
@@ -441,7 +442,6 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         searchAreaCornerB = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[2]);
         searchAreaCornerC = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[3]);
         searchAreaCornerD = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[0]);
-        previousHintQuality = StrategyFromPaper.HintQuality.none;
     }
 }
 

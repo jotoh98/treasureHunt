@@ -7,6 +7,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.util.AffineTransformation;
+import org.locationtech.jts.math.Vector2D;
 
 import java.util.Arrays;
 
@@ -29,17 +30,19 @@ public class RoutinesFromPaper {
     }
 
     /**
-     * @param k the distance from P1 to P2 (rounded down)
-     * @return An Array of Points on P1P2, which have distance one to one another and reach from P1 to P2 at minimum
+     * Calculates the points a_0, a_1, ... and b_0, b_1, ... like in the paper at page 3.
+     *
+     * @param k the distance from p1 to p2 (rounded down)
+     * @return An Array of Points on P1P2, which have distance at most two to one another and reach from p1 to p2 at minimum
      */
-    static private Point[] lineOfPointsWithDistanceOne(int k, Coordinate P1, Coordinate P2) {
+    static private Point[] lineOfPointsWithDistanceOne(int k, Coordinate p1, Coordinate p2) {
         Point[] res = new Point[k + 1];
 
-        double xDist = P2.getX() - P1.getX();
-        double yDist = P2.getY() - P1.getY();
-        for (int i = 0; i <= k; i++) {
-            res[i] = JTSUtils.createPoint(P1.getX() + xDist * ((double) i / (double) k), P1.getY() + yDist *
-                    ((double) i / (double) k));
+        Vector2D p1ToP2WithLengthDistance = new Vector2D(p1, p2);
+        p1ToP2WithLengthDistance = p1ToP2WithLengthDistance.divide(p1ToP2WithLengthDistance.length());
+        for (int i = 0; i < k + 1; i++) {
+            res[i] = JTSUtils.createPoint(p1.getX() + p1ToP2WithLengthDistance.getX() * i,
+                    p1.getY() + p1ToP2WithLengthDistance.getY() * i);
         }
         return res;
     }
@@ -76,6 +79,10 @@ public class RoutinesFromPaper {
         Point[] a = lineOfPointsWithDistanceOne(k, A, B);
         Point[] b = lineOfPointsWithDistanceOne(k, D, C);
 
+        return meanderThroughLines(a, b, k, searchPath);
+    }
+
+    public static SearchPath meanderThroughLines(Point[] a, Point[] b, int k, SearchPath searchPath) {
         if (k % 2 == 1) {
             for (int i = 0; i <= k - 1; i += 2) {
                 searchPath.addPoint(a[i]);
@@ -94,6 +101,58 @@ public class RoutinesFromPaper {
             searchPath.addPoint(b[k]);
         }
         return searchPath;
+    }
+
+    static private Point[] lineOfPointsWithDistanceAtMostTwo(int numberOfPointsOnLine, Coordinate p1, Coordinate p2) {
+        if (numberOfPointsOnLine <= 1) {
+            throw new IllegalArgumentException("numberOfPointsOnLine must be bigger than 1 but equals " + numberOfPointsOnLine);
+        }
+        Vector2D p1ToP2WithDistanceOne = new Vector2D(p1, p2);
+        p1ToP2WithDistanceOne = p1ToP2WithDistanceOne.divide(p1ToP2WithDistanceOne.length());
+
+        Coordinate newP1 = new Coordinate(p1.x + p1ToP2WithDistanceOne.getX(),
+                p1.y + p1ToP2WithDistanceOne.getY());
+        Coordinate newP2 = new Coordinate(p2.x - p1ToP2WithDistanceOne.getX(),
+                p2.y - p1ToP2WithDistanceOne.getY());
+
+        Point[] res = new Point[numberOfPointsOnLine + 1];
+
+        double xDist = newP2.getX() - newP1.getX();
+        double yDist = newP2.getY() - newP1.getY();
+        for (int i = 0; i < numberOfPointsOnLine; i++) {
+            res[i] = JTSUtils.createPoint(newP1.getX() + xDist * ((double) i / (double) (numberOfPointsOnLine - 1)),
+                    newP1.getY() + yDist * ((double) i / (double) (numberOfPointsOnLine - 1)));
+        }
+        return res;
+    }
+
+    /**
+     * Meanders through the rectangle to scan it like the RectangleScan Routine from the paper but uses fewer distance
+     */
+    public static SearchPath rectangleScanEnhanced(Coordinate a, Coordinate b, Coordinate c, Coordinate d,
+                                                   SearchPath searchPath) {
+        if (a.distance(b) > a.distance(d)) {
+            Coordinate temp = a;
+            a = d;
+            d = c;
+            c = b;
+            b = temp;
+        }
+        int numberOfPointsInOneLine = (int) Math.ceil(a.distance(b) / 2);
+        if (numberOfPointsInOneLine == 1) {
+            Vector2D aToBHalf = new Vector2D(a, b);
+            aToBHalf = aToBHalf.divide(2);
+            searchPath.addPoint(JTSUtils.createPoint(a.x + aToBHalf.getX()
+                    , a.y + aToBHalf.getY()));
+            searchPath.addPoint(JTSUtils.createPoint(d.x + aToBHalf.getX(),
+                    d.y + aToBHalf.getY()
+            ));
+            return searchPath;
+        }
+
+        Point[] a_k = lineOfPointsWithDistanceAtMostTwo(numberOfPointsInOneLine, a, b);
+        Point[] b_k = lineOfPointsWithDistanceAtMostTwo(numberOfPointsInOneLine, d, c);
+        return meanderThroughLines(a_k, b_k, numberOfPointsInOneLine - 1, searchPath);
     }
 
     /**
@@ -115,8 +174,7 @@ public class RoutinesFromPaper {
         Coordinate newAPRight = new Coordinate();
         reflection.transform(hint.getRight(), newAPLeft);
         reflection.transform(hint.getCenter(), newAPRight);
-        HalfPlaneHint newHint = new HalfPlaneHint(newAPLeft, newAPRight);
-        return newHint;
+        return new HalfPlaneHint(newAPLeft, newAPRight);
     }
 
     /**

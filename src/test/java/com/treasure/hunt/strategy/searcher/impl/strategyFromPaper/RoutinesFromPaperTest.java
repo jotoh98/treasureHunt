@@ -2,19 +2,27 @@ package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.utils.JTSUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.math.Vector2D;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.*;
 import static com.treasure.hunt.utils.JTSUtils.doubleEqual;
 
+/**
+ * @author Rank
+ */
+
 public class RoutinesFromPaperTest {
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
 
     }
 
@@ -55,7 +63,7 @@ public class RoutinesFromPaperTest {
     }
 
     @Test
-    public void testBasicTransformation2(){
+    public void testBasicTransformation2() {
         Coordinate[] testRectangle = new Coordinate[]{
                 new Coordinate(4748.7729876546655, 8192.0),
                 new Coordinate(4752.857933732405, 8192.0),
@@ -176,5 +184,42 @@ public class RoutinesFromPaperTest {
                 new Coordinate(0, 1)
         };
         testRectangleScan(rectangleToTest, stepsExpectedResult);
+    }
+
+    private void assertArrayEqualsList(List<Point> actualResult, Point[] correctResult) {
+        if (correctResult.length != actualResult.size()) {
+            throw new AssertionError("The actual result has more steps than the correct result\nactual result:\n "
+                    + actualResult + "\ncorrect result:\n " + Arrays.toString(correctResult));
+        }
+        for (int i = 0; i < correctResult.length; i++) {
+            if (!correctResult[i].equalsExact(actualResult.get(i))) {
+                throw new AssertionError("The actual result does not equal the correct result\nactual result:\n "
+                        + actualResult + "\ncorrect result:\n " + Arrays.toString(correctResult));
+            }
+        }
+    }
+
+    @Test
+    public void rectangleScanEnhancedTestOne() {
+        Point a = JTSUtils.createPoint(1, 4);
+        Point b = JTSUtils.createPoint(2.5, 3);
+        Point c = JTSUtils.createPoint(-0.5, -1.5);
+        Point d = JTSUtils.createPoint(-1.5, -0.5);
+        Vector2D aToBDividedByTwo = new Vector2D(a.getCoordinate(), b.getCoordinate());
+        aToBDividedByTwo = aToBDividedByTwo.divide(2);
+        Point[] correctResult = new Point[]{
+                JTSUtils.createPoint(a.getX() + aToBDividedByTwo.getX(),
+                        a.getY() + aToBDividedByTwo.getY()),
+                JTSUtils.createPoint(d.getX() + aToBDividedByTwo.getX(),
+                        d.getY() + aToBDividedByTwo.getY())
+        };
+        List<Point> actualResult = RoutinesFromPaper.rectangleScanEnhanced(a.getCoordinate(), b.getCoordinate(),
+                c.getCoordinate(), d.getCoordinate(), new SearchPath()).getPoints();
+        assertArrayEqualsList(actualResult, correctResult);
+    }
+
+    @Test
+    public void rectangleScanEnhancedTestTwo(){
+        //todo
     }
 }

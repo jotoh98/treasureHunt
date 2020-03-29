@@ -23,12 +23,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 
 public class StrategyFromPaperTest {
+    Vector2D sToSAposLengthOne;
+    Vector2D dToDAposLengthOne;
     private StrategyFromPaper strategy;
 
     @org.junit.jupiter.api.BeforeEach
     void setUp() {
         strategy = new StrategyFromPaper();
         strategy.init(JTSUtils.createPoint(0, 0));
+
+        sToSAposLengthOne = new Vector2D(getSForMyBadHint(), getSAposForMyBadHint());
+        sToSAposLengthOne = sToSAposLengthOne.divide(sToSAposLengthOne.length());
+        dToDAposLengthOne = new Vector2D(getSForMyBadHint(), getSAposForMyBadHint());
+        dToDAposLengthOne = dToDAposLengthOne.divide(dToDAposLengthOne.length());
     }
 
     void assertPoints(List<Point> strategyPoints, Point[] truePoints) {
@@ -245,8 +252,8 @@ public class StrategyFromPaperTest {
                 //scan m'k'km:
                 GEOMETRY_FACTORY.createPoint(getMForMyBadHint()),
                 GEOMETRY_FACTORY.createPoint(getKForMyBadHint()),
-                GEOMETRY_FACTORY.createPoint(getKAposForMyBadHint()),
-                GEOMETRY_FACTORY.createPoint(getMAposForMyBadHint()),
+                JTSUtils.createPoint(getKForMyBadHint().x, getMForMyBadHint().y + 1),
+                JTSUtils.createPoint(getMForMyBadHint().x, getMForMyBadHint().y + 1),
                 // go to the center of the new rectangle
                 JTSUtils.createPoint(2, 0)
         };
@@ -266,17 +273,20 @@ public class StrategyFromPaperTest {
         oneBadHint(0, 0);
         HalfPlaneHint secondHint = new HalfPlaneHint(getPAposForMyBadHint(), new Coordinate(-4, 3));
         SearchPath searcherMove = strategy.move(secondHint);
+
         Point[] correctPoints = new Point[]{
                 //scan ss'd'd
                 GEOMETRY_FACTORY.createPoint(getSForMyBadHint()),
                 GEOMETRY_FACTORY.createPoint(getDForMyBadHint()),
-                GEOMETRY_FACTORY.createPoint(getDAposForMyBadHint()),
-                GEOMETRY_FACTORY.createPoint(getSAposForMyBadHint()),
+                JTSUtils.createPoint(getDForMyBadHint().x + dToDAposLengthOne.getX(),
+                        getDForMyBadHint().y + dToDAposLengthOne.getY()),
+                JTSUtils.createPoint(getSForMyBadHint().x + sToSAposLengthOne.getX(),
+                        getSForMyBadHint().y + sToSAposLengthOne.getY()),
                 //scan m'k'km
                 GEOMETRY_FACTORY.createPoint(getMForMyBadHint()),
                 GEOMETRY_FACTORY.createPoint(getKForMyBadHint()),
-                GEOMETRY_FACTORY.createPoint(getKAposForMyBadHint()),
-                GEOMETRY_FACTORY.createPoint(getMAposForMyBadHint()),
+                JTSUtils.createPoint(getKForMyBadHint().x, getMForMyBadHint().y + 1),
+                JTSUtils.createPoint(getMForMyBadHint().x, getMForMyBadHint().y + 1),
                 // go to the center of the new rectangle
                 JTSUtils.createPoint(2, -2)
         };
@@ -294,13 +304,15 @@ public class StrategyFromPaperTest {
                 //scan ss'd'd
                 GEOMETRY_FACTORY.createPoint(getSForMyBadHint()),
                 GEOMETRY_FACTORY.createPoint(getDForMyBadHint()),
-                GEOMETRY_FACTORY.createPoint(getDAposForMyBadHint()),
-                GEOMETRY_FACTORY.createPoint(getSAposForMyBadHint()),
+                JTSUtils.createPoint(getDForMyBadHint().x + dToDAposLengthOne.getX(),
+                        getDForMyBadHint().y + dToDAposLengthOne.getY()),
+                JTSUtils.createPoint(getSForMyBadHint().x + sToSAposLengthOne.getX(),
+                        getSForMyBadHint().y + sToSAposLengthOne.getY()),
                 //scan gg'h'h
                 GEOMETRY_FACTORY.createPoint(getGForMyBadHint()),
                 GEOMETRY_FACTORY.createPoint(getHForMyBadHint()),
-                GEOMETRY_FACTORY.createPoint(getHAposForMyBadHint()),
-                GEOMETRY_FACTORY.createPoint(getGAposForMyBadHint()),
+                JTSUtils.createPoint(getHForMyBadHint().x + 1, getHForMyBadHint().y),
+                JTSUtils.createPoint(getGForMyBadHint().x + 1, getGForMyBadHint().y),
                 // go to the center of the new rectangle
                 JTSUtils.createPoint(-2, 2)
         };
@@ -312,8 +324,8 @@ public class StrategyFromPaperTest {
                 //scan gg'h'h
                 GEOMETRY_FACTORY.createPoint(getGForMyBadHint()),
                 GEOMETRY_FACTORY.createPoint(getHForMyBadHint()),
-                GEOMETRY_FACTORY.createPoint(getHAposForMyBadHint()),
-                GEOMETRY_FACTORY.createPoint(getGAposForMyBadHint()),
+                JTSUtils.createPoint(getHForMyBadHint().x + 1, getHForMyBadHint().y),
+                JTSUtils.createPoint(getGForMyBadHint().x + 1, getGForMyBadHint().y),
                 // go to the center of the new rectangle
                 JTSUtils.createPoint(0, 2)
         };
