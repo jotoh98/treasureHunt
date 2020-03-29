@@ -21,8 +21,6 @@ import java.util.List;
  */
 @Slf4j
 @Preference(name = PreferenceService.HintSize_Preference, value = 180)
-@Preference(name = PreferenceService.TreasureLocationX_Preference, value = 70)
-@Preference(name = PreferenceService.TreasureLocationY_Preference, value = 70)
 @Preference(name = GameField.CircleExtension_Preference, value = 0)
 @Preference(name = StatisticalHider.getRelativeAreaCutoffWeight_Preference, value = 5)
 @Preference(name = StatisticalHider.DistanceFromNormalAngleLineToTreasureWeight_Preference, value = 2)

@@ -12,12 +12,11 @@ import org.locationtech.jts.geom.Point;
  */
 @Slf4j
 @Preference(name = PreferenceService.HintSize_Preference, value = 180)
-@Preference(name = PreferenceService.TreasureLocationX_Preference, value = 70)
-@Preference(name = PreferenceService.TreasureLocationY_Preference, value = 70)
 @Preference(name = GameField.CircleExtension_Preference, value = 0)
 @Preference(name = StatisticalHider.getRelativeAreaCutoffWeight_Preference, value = 10)
 @Preference(name = StatisticalHider.DistanceFromNormalAngleLineToTreasureWeight_Preference, value = 1)
 @Preference(name = StatisticalHider.DistanceFromResultingCentroidToTreasureWeight_Preference, value = 3)
+@Preference(name = PreferenceService.MAX_TREASURE_DISTANCE, value = 100)
 public class FixedTreasureHider extends StatisticalHider implements Hider<AngleHint> {
 
     @Override

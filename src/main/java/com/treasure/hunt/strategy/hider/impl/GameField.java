@@ -55,7 +55,8 @@ public class GameField {
     private List<Point> visitedPoints = new ArrayList<>();
 
     private GeometryItem<Geometry> possibleArea;
-    private GeometryStyle possibleAreaStyle = new GeometryStyle(true, new Color(255, 105, 180));
+    private GeometryStyle possibleAreaStyle = new GeometryStyle(true, new Color(255, 105, 180), new Color(255, 105, 180, 64));
+
     private GeometryItem<Circle> boundingCircle;
     private GeometryStyle boundingCircleStyle = new GeometryStyle(true, new Color(50, 205, 50));
     private GeometryItem<Polygon> checkedArea; //the area which has been visited by the player
