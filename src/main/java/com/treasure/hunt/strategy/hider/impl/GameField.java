@@ -111,11 +111,11 @@ public class GameField {
         Circle circle;
         if (PreferenceService.getInstance().getPreference(GameField.CircleExtension_Preference, 0).intValue() == 1) {
             boundingCircleSize = ((maxExtensions - 1) * boundingCircleExtensionDelta) + boundingCircleSize;
-            circle = new Circle(startingPoint.getCoordinate(), boundingCircleSize, geometryFactory);
+            circle = new Circle(startingPoint.getCoordinate(), boundingCircleSize);
             extensions = maxExtensions;
 
         } else {
-            circle = new Circle(startingPoint.getCoordinate(), boundingCircleSize, geometryFactory);
+            circle = new Circle(startingPoint.getCoordinate(), boundingCircleSize);
         }
 
         boundingCircle = new GeometryItem<>(circle, GeometryType.BOUNDING_CIRCE, boundingCircleStyle);
