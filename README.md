@@ -22,11 +22,16 @@
     src/main/java/com/treasure/hunt/strategy/hider/impl/
     2. Implement to the interface "Hider"
     
-# Implementing a View
-    Starting the GameManager with your View Class applied will
-    run it **concurrent**!
-    1. Create a class "YourView" in
-    src/main/java/com/treasure/hunt/view/in_game/impl/
-    2. Implement to the interface "View"
-    3. Access the Products created after each step via
-    GameHistory.getGeometryItems()
+# Implementing a GameEngine
+    1. Create a class "YourGameEngine" in
+    src/main/java/com/treasure/hunt/game/mods/yourMod/YourGameEngine/
+    implementing the GameEngine
+    2. Overwrite the necessary methods of the GameEngine, like
+    init(), move(), hiderMove(), searcherMove(), verifyHint()
+    in order to implement your wished rules
+    3. Create an interface "YourHider", extending Hider<T>
+    4. Create an interface "YourSearcher", extending Searcher<T>
+    5. In
+    src/main/java/com/treasure/hunt/strategy/hider/impl/ and
+    src/main/java/com/treasure/hunt/strategy/searcher/impl/
+    implement your custom Hider and Searcher, playing your custom game modification.
