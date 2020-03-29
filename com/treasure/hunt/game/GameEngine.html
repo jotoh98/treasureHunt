@@ -287,8 +287,9 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#verifyHint(com.treasure.hunt.strategy.hint.Hint,org.locationtech.jts.geom.Point)">verifyHint</a></span>&#8203;(<a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;hint,
-          org.locationtech.jts.geom.Point&nbsp;treasurePosition)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#verifyHint(com.treasure.hunt.strategy.hint.Hint,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">verifyHint</a></span>&#8203;(<a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;hint,
+          org.locationtech.jts.geom.Point&nbsp;treasurePosition,
+          org.locationtech.jts.geom.Point&nbsp;searcherPosition)</code></th>
 <td class="colLast">
 <div class="block">TODO implement:
  AngleHints must be of angle [0, 180] !?
@@ -508,14 +509,15 @@ extends java.lang.Object</pre>
 <div class="block">Let the <a href="#searcher"><code>searcher</code></a> make <a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a>.</div>
 </li>
 </ul>
-<a id="verifyHint(com.treasure.hunt.strategy.hint.Hint,org.locationtech.jts.geom.Point)">
+<a id="verifyHint(com.treasure.hunt.strategy.hint.Hint,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>verifyHint</h4>
 <pre class="methodSignature">protected&nbsp;void&nbsp;verifyHint&#8203;(<a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;hint,
-                          org.locationtech.jts.geom.Point&nbsp;treasurePosition)</pre>
+                          org.locationtech.jts.geom.Point&nbsp;treasurePosition,
+                          org.locationtech.jts.geom.Point&nbsp;searcherPosition)</pre>
 <div class="block">TODO implement:
  AngleHints must be of angle [0, 180] !?
  CircleHints must contain each other !?
@@ -524,6 +526,7 @@ extends java.lang.Object</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>hint</code> - <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a> to be verified</dd>
 <dd><code>treasurePosition</code> - treasure position</dd>
+<dd><code>searcherPosition</code> - searcher position</dd>
 </dl>
 </li>
 </ul>
