@@ -4,6 +4,7 @@ import com.treasure.hunt.utils.JTSUtils;
 import lombok.Getter;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.math.Vector2D;
 import org.locationtech.jts.util.GeometricShapeFactory;
@@ -100,5 +101,9 @@ public class Circle extends Coordinate {
         shapeFactory.setSize(radius);
         shapeFactory.setNumPoints(numPoints);
         return shapeFactory.createCircle();
+    }
+
+    public boolean covers(Point p) {
+
     }
 }
