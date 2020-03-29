@@ -29,10 +29,6 @@ public class Line extends Ray {
         super(p0, p1);
     }
 
-    public Line() {
-        super();
-    }
-
     /**
      * Line constructor with a base {@link Coordinate} and a directional {@link Vector2D}.
      *

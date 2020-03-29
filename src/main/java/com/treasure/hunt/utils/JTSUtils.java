@@ -11,6 +11,7 @@ import org.locationtech.jts.math.Vector2D;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -73,7 +74,6 @@ public final class JTSUtils {
 
     public static boolean doubleEqual(double a, double b) {
         return (0 == GEOMETRY_FACTORY.getPrecisionModel().makePrecise(a - b));
-
     }
 
     /**
@@ -270,10 +270,21 @@ public final class JTSUtils {
     }
 
     public static Point shuffleTreasure() {
-        double distance = PreferenceService.getInstance()
+        double maxDistance = PreferenceService.getInstance()
                 .getPreference(PreferenceService.MAX_TREASURE_DISTANCE, 100)
                 .doubleValue();
-        Coordinate treasure = Vector2D.create(Math.random() * distance, 0).rotate(2 * Math.PI * Math.random()).translate(new Coordinate());
+        double minDistance = PreferenceService.getInstance()
+                .getPreference(PreferenceService.MIN_TREASURE_DISTANCE, 0)
+                .doubleValue();
+        Optional<Number> fixedDistance = PreferenceService.getInstance()
+                .getPreference(PreferenceService.TREASURE_DISTANCE);
+
+        if (fixedDistance.isPresent()) {
+            Coordinate treasure = Vector2D.create(fixedDistance.get().doubleValue(), 0).rotate(2 * Math.PI * Math.random()).translate(new Coordinate());
+            return JTSUtils.GEOMETRY_FACTORY.createPoint(treasure);
+        }
+
+        Coordinate treasure = Vector2D.create(Math.random() * (maxDistance - minDistance) + minDistance, 0).rotate(2 * Math.PI * Math.random()).translate(new Coordinate());
         return JTSUtils.GEOMETRY_FACTORY.createPoint(treasure);
     }
 }
