@@ -8,7 +8,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
 /**
- * This kind of {@link com.treasure.hunt.strategy.searcher.Searcher} only gives {@link HalfPlaneHint}'s,
+ * This kind of {@link Hider} only gives {@link HalfPlaneHint}'s,
  * which are parallel to the X-axis.
  */
 public class BadHalfplaneHintHider implements Hider<HalfPlaneHint> {
