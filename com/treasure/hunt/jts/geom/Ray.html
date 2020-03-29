@@ -193,17 +193,13 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">Ray</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="rowColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate)">Ray</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;start,
    org.locationtech.jts.geom.Coordinate&nbsp;target)</code></th>
 <td class="colLast">
 <div class="block">Ray constructor from two coordinates.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.math.Vector2D)">Ray</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;start,
    org.locationtech.jts.math.Vector2D&nbsp;direction)</code></th>
 <td class="colLast">
@@ -231,7 +227,9 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>org.locationtech.jts.math.Vector2D</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDirection()">getDirection</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Get the ray's direction vector.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>double</code></td>
@@ -257,7 +255,9 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#inSegment(org.locationtech.jts.geom.Coordinate)">inSegment</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Checks, if a given <code>Coordinate</code> lays in the segment.</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
@@ -342,7 +342,7 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <a id="&lt;init&gt;(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.math.Vector2D)">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>Ray</h4>
 <pre>public&nbsp;Ray&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;start,
@@ -355,15 +355,6 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 </dl>
 </li>
 </ul>
-<a id="&lt;init&gt;()">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>Ray</h4>
-<pre>public&nbsp;Ray()</pre>
-</li>
-</ul>
 </li>
 </ul>
 </section>
@@ -374,31 +365,6 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="inRay(org.locationtech.jts.geom.Coordinate)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>inRay</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;inRay&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</pre>
-<div class="block">Checks, if a given <code>Coordinate</code> lays in the ray.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>coordinate</code> - coordinate to check</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>whether point lays in ray or not</dd>
-</dl>
-</li>
-</ul>
-<a id="inSegment(org.locationtech.jts.geom.Coordinate)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>inSegment</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;inSegment&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</pre>
-</li>
-</ul>
 <a id="intersection(org.locationtech.jts.geom.LineSegment)">
 <!--   -->
 </a>
@@ -508,6 +474,38 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 </dl>
 </li>
 </ul>
+<a id="inRay(org.locationtech.jts.geom.Coordinate)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>inRay</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;inRay&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</pre>
+<div class="block">Checks, if a given <code>Coordinate</code> lays in the ray.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>coordinate</code> - coordinate to check</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>whether point lays in ray or not</dd>
+</dl>
+</li>
+</ul>
+<a id="inSegment(org.locationtech.jts.geom.Coordinate)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>inSegment</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;inSegment&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</pre>
+<div class="block">Checks, if a given <code>Coordinate</code> lays in the segment.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>coordinate</code> - coordinate to check</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>whether point lays in segment or not</dd>
+</dl>
+</li>
+</ul>
 <a id="getDirection()">
 <!--   -->
 </a>
@@ -515,6 +513,11 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <li class="blockList">
 <h4>getDirection</h4>
 <pre class="methodSignature">public&nbsp;org.locationtech.jts.math.Vector2D&nbsp;getDirection()</pre>
+<div class="block">Get the ray's direction vector.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>direction vector of ray</dd>
+</dl>
 </li>
 </ul>
 </li>

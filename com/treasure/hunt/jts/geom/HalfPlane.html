@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":9,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
+var data = {"i0":9,"i1":10,"i2":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -157,7 +157,7 @@ extends <a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>
  computing a normal vector pointing out of the inner half space and a corresponding double scalar to scale the half
  plane away from the origin.</p>
  <hr>
- <p>Now we want to explore, how we compute a vector laying inside the inner half space in <a href="#inside(org.locationtech.jts.math.Vector2D)"><code>inside(Vector2D)</code></a>:</p>
+ <p>Now we want to explore, how we compute a vector laying inside the inner half space in <a href="#inside(org.locationtech.jts.geom.Coordinate)"><code>inside(Coordinate)</code></a>:</p>
  <p>So we state that <i>a</i> is the normal vector pointing out of the inner half space, <i>b</i> is the scalar and
  <i>x</i> is the vector to test.</p>
  <p>If evaluation is strict, the test evaluates true, if</p>
@@ -165,12 +165,12 @@ extends <a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>
  <p>Else, it already evaluates true, if the following statement is true:</p>
  &lang; a, x &rang; &ge; b.
  <hr>
- <p>The half plane is represented as an infinite line in coordinate form. To perform <a href="#inside(org.locationtech.jts.math.Vector2D)"><code>inside(Vector2D)</code></a>, we
+ <p>The half plane is represented as an infinite line in coordinate form. To perform <a href="#inside(org.locationtech.jts.geom.Coordinate)"><code>inside(Coordinate)</code></a>, we
  compute the corresponding normal vector and scalar. For two coordinates <i>c1</i> and <i>c2</i>, the inner half space
  lies on the <u>right-hand-side</u> of the vector from <i>c1</i> to <i>c2</i>.</p></div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="#inside(org.locationtech.jts.math.Vector2D)"><code>inside(Vector2D)</code></a>, 
+<dd><a href="#inside(org.locationtech.jts.geom.Coordinate)"><code>inside(Coordinate)</code></a>, 
 <a href="../../../../../serialized-form.html#com.treasure.hunt.jts.geom.HalfPlane">Serialized Form</a></dd>
 </dl>
 </li>
@@ -243,21 +243,6 @@ extends <a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#covers(org.locationtech.jts.geom.Geometry)">covers</a></span>&#8203;(org.locationtech.jts.geom.Geometry&nbsp;g)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#covers(org.locationtech.jts.geom.LineSegment)">covers</a></span>&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;lineSegment)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#equals(com.treasure.hunt.jts.geom.HalfPlane)">equals</a></span>&#8203;(<a href="HalfPlane.html" title="class in com.treasure.hunt.jts.geom">HalfPlane</a>&nbsp;other)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static <a href="HalfPlane.html" title="class in com.treasure.hunt.jts.geom">HalfPlane</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#from(org.locationtech.jts.math.Vector2D,double)">from</a></span>&#8203;(org.locationtech.jts.math.Vector2D&nbsp;normal,
     double&nbsp;scalar)</code></th>
@@ -265,42 +250,9 @@ extends <a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>
 <div class="block">Construct a HalfPlane with its normal vector and its scalar.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>org.locationtech.jts.math.Vector2D</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDirection()">getDirection</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Directional vector of the divider line.</div>
-</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>org.locationtech.jts.math.Vector2D</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNormalVector()">getNormalVector</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Compute the normal vector for evaluating <a href="#inside(org.locationtech.jts.math.Vector2D)"><code>inside(Vector2D)</code></a>.</div>
-</td>
-</tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>double</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getScalar()">getScalar</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Compute the scalar for evaluating <a href="#inside(org.locationtech.jts.math.Vector2D)"><code>inside(Vector2D)</code></a>.</div>
-</td>
-</tr>
-<tr id="i7" class="rowColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#inside(org.locationtech.jts.geom.Coordinate)">inside</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;c)</code></th>
-<td class="colLast">
-<div class="block">Convenience method for <a href="#inside(org.locationtech.jts.math.Vector2D)"><code>inside(Vector2D)</code></a>.</div>
-</td>
-</tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#inside(org.locationtech.jts.geom.LineSegment)">inside</a></span>&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;lineSegment)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#inside(org.locationtech.jts.math.Vector2D)">inside</a></span>&#8203;(org.locationtech.jts.math.Vector2D&nbsp;x)</code></th>
 <td class="colLast">
 <div class="block">Evaluates, if a location vector of a point lies in the inner half space.<br>
  For strict half planes, it must satisfy the following condition:
@@ -309,11 +261,11 @@ extends <a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>
  &lang; a, x &rang; &ge; b.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>java.awt.Shape</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toShape(com.treasure.hunt.jts.awt.AdvancedShapeWriter)">toShape</a></span>&#8203;(<a href="../awt/AdvancedShapeWriter.html" title="class in com.treasure.hunt.jts.awt">AdvancedShapeWriter</a>&nbsp;shapeWriter)</code></th>
 <td class="colLast">
-<div class="block">Convert the infinite line to a line shape, if it lays inside of the visual boundary.</div>
+<div class="block">Transfers the emerging polygon to a shape for rendering.</div>
 </td>
 </tr>
 </table>
@@ -329,7 +281,7 @@ extends <a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;com.treasure.hunt.jts.geom.<a href="Ray.html" title="class in com.treasure.hunt.jts.geom">Ray</a></h3>
-<code><a href="Ray.html#getLength()">getLength</a>, <a href="Ray.html#inLine(org.locationtech.jts.geom.Coordinate)">inLine</a>, <a href="Ray.html#inRay(org.locationtech.jts.geom.Coordinate)">inRay</a>, <a href="Ray.html#inSegment(org.locationtech.jts.geom.Coordinate)">inSegment</a>, <a href="Ray.html#intersects(org.locationtech.jts.geom.LineSegment)">intersects</a></code></li>
+<code><a href="Ray.html#getDirection()">getDirection</a>, <a href="Ray.html#getLength()">getLength</a>, <a href="Ray.html#inLine(org.locationtech.jts.geom.Coordinate)">inLine</a>, <a href="Ray.html#inRay(org.locationtech.jts.geom.Coordinate)">inRay</a>, <a href="Ray.html#inSegment(org.locationtech.jts.geom.Coordinate)">inSegment</a>, <a href="Ray.html#intersects(org.locationtech.jts.geom.LineSegment)">intersects</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.org.locationtech.jts.geom.LineSegment">
@@ -371,7 +323,7 @@ extends <a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>
                  org.locationtech.jts.geom.Coordinate&nbsp;c2,
                  boolean&nbsp;strict)</pre>
 <div class="block">Default constructor.
- The half plane divides the space in two sections. The side, that the method <a href="#inside(org.locationtech.jts.math.Vector2D)"><code>inside(Vector2D)</code></a> evaluates true on
+ The half plane divides the space in two sections. The side, that the method <a href="#inside(org.locationtech.jts.geom.Coordinate)"><code>inside(Coordinate)</code></a> evaluates true on
  is on the right side of the vector from c1 to c2.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -425,72 +377,7 @@ extends <a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a half plane in coordinate representation</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="#inside(org.locationtech.jts.math.Vector2D)"><code>inside(Vector2D)</code></a></dd>
-</dl>
-</li>
-</ul>
-<a id="getDirection()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getDirection</h4>
-<pre class="methodSignature">public&nbsp;org.locationtech.jts.math.Vector2D&nbsp;getDirection()</pre>
-<div class="block">Directional vector of the divider line.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="Ray.html#getDirection()">getDirection</a></code>&nbsp;in class&nbsp;<code><a href="Ray.html" title="class in com.treasure.hunt.jts.geom">Ray</a></code></dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>divider direction vector</dd>
-</dl>
-</li>
-</ul>
-<a id="getNormalVector()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getNormalVector</h4>
-<pre class="methodSignature">public&nbsp;org.locationtech.jts.math.Vector2D&nbsp;getNormalVector()</pre>
-<div class="block">Compute the normal vector for evaluating <a href="#inside(org.locationtech.jts.math.Vector2D)"><code>inside(Vector2D)</code></a>.
- The normal vector is the directional vector rotated clockwise by 90&deg;.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>half plane normal vector</dd>
-</dl>
-</li>
-</ul>
-<a id="getScalar()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getScalar</h4>
-<pre class="methodSignature">public&nbsp;double&nbsp;getScalar()</pre>
-<div class="block">Compute the scalar for evaluating <a href="#inside(org.locationtech.jts.math.Vector2D)"><code>inside(Vector2D)</code></a>.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>evaluation scalar</dd>
-</dl>
-</li>
-</ul>
-<a id="inside(org.locationtech.jts.math.Vector2D)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>inside</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;inside&#8203;(org.locationtech.jts.math.Vector2D&nbsp;x)</pre>
-<div class="block">Evaluates, if a location vector of a point lies in the inner half space.<br>
- For strict half planes, it must satisfy the following condition:
- &lang; a, x &rang; &gt; b,
- otherwise, it tests the condition:
- &lang; a, x &rang; &ge; b.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>x</code> - location vector to test</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>whether the point lays in the inner half space</dd>
+<dd><a href="#inside(org.locationtech.jts.geom.Coordinate)"><code>inside(Coordinate)</code></a></dd>
 </dl>
 </li>
 </ul>
@@ -501,7 +388,11 @@ extends <a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>
 <li class="blockList">
 <h4>inside</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;inside&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;c)</pre>
-<div class="block">Convenience method for <a href="#inside(org.locationtech.jts.math.Vector2D)"><code>inside(Vector2D)</code></a>.</div>
+<div class="block">Evaluates, if a location vector of a point lies in the inner half space.<br>
+ For strict half planes, it must satisfy the following condition:
+ &lang; a, x &rang; &gt; b,
+ otherwise, it tests the condition:
+ &lang; a, x &rang; &ge; b.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>c</code> - coordinate to test</dd>
@@ -510,42 +401,14 @@ extends <a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>
 </dl>
 </li>
 </ul>
-<a id="inside(org.locationtech.jts.geom.LineSegment)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>inside</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;inside&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;lineSegment)</pre>
-</li>
-</ul>
-<a id="covers(org.locationtech.jts.geom.Geometry)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>covers</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;covers&#8203;(org.locationtech.jts.geom.Geometry&nbsp;g)</pre>
-</li>
-</ul>
-<a id="covers(org.locationtech.jts.geom.LineSegment)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>covers</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;covers&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;lineSegment)</pre>
-</li>
-</ul>
 <a id="toShape(com.treasure.hunt.jts.awt.AdvancedShapeWriter)">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>toShape</h4>
 <pre class="methodSignature">public&nbsp;java.awt.Shape&nbsp;toShape&#8203;(<a href="../awt/AdvancedShapeWriter.html" title="class in com.treasure.hunt.jts.awt">AdvancedShapeWriter</a>&nbsp;shapeWriter)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="Line.html#toShape(com.treasure.hunt.jts.awt.AdvancedShapeWriter)">Line</a></code></span></div>
-<div class="block">Convert the infinite line to a line shape, if it lays inside of the visual boundary.</div>
+<div class="block">Transfers the emerging polygon to a shape for rendering.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="Shapeable.html#toShape(com.treasure.hunt.jts.awt.AdvancedShapeWriter)">toShape</a></code>&nbsp;in interface&nbsp;<code><a href="Shapeable.html" title="interface in com.treasure.hunt.jts.geom">Shapeable</a></code></dd>
@@ -554,19 +417,10 @@ extends <a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>shapeWriter</code> - writer for shapes, holds the visual boundary</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>line shape, or if not visible, null</dd>
+<dd>rendering shape</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../utils/JTSUtils.html#getBoundaryIntersections(com.treasure.hunt.jts.awt.CanvasBoundary,org.locationtech.jts.geom.LineSegment)"><code>JTSUtils.getBoundaryIntersections(CanvasBoundary, LineSegment)</code></a></dd>
 </dl>
-</li>
-</ul>
-<a id="equals(com.treasure.hunt.jts.geom.HalfPlane)">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>equals</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;equals&#8203;(<a href="HalfPlane.html" title="class in com.treasure.hunt.jts.geom">HalfPlane</a>&nbsp;other)</pre>
 </li>
 </ul>
 </li>
