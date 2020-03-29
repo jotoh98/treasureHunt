@@ -10,7 +10,7 @@
     <content>
         <HBox alignment="TOP_CENTER">
             <children>
-                <VBox prefHeight="200.0" prefWidth="100.0">
+                <VBox maxHeight="900.0" prefHeight="200.0" prefWidth="100.0">
                     <children>
                         <Label alignment="TOP_LEFT" contentDisplay="CENTER" maxWidth="1.7976931348623157E308"
                                text="TreasureHunt">
