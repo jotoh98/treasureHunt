@@ -331,12 +331,12 @@ public class MainController {
         Set<Class<? extends Hider>> allHiders = ReflectionUtils.getAllHiders();
         Set<Class<? extends GameEngine>> allGameEngines = ReflectionUtils.getAllGameEngines();
 
-        ObservableList<Class<? extends Searcher>> observableSearchers = FXCollections.observableArrayList(allSearchers);
+        ObservableList<Class<? extends Searcher>> observableSearchers = FXCollections.observableArrayList(allSearchers).sorted();
         FilteredList<Class<? extends Searcher>> filteredSearchers = new FilteredList<>(observableSearchers);
 
         searcherList.setItems(filteredSearchers);
 
-        ObservableList<Class<? extends Hider>> observableHiders = FXCollections.observableArrayList(allHiders);
+        ObservableList<Class<? extends Hider>> observableHiders = FXCollections.observableArrayList(allHiders).sorted();
         FilteredList<Class<? extends Hider>> filteredHiders = new FilteredList<>(observableHiders);
 
         hiderList.setItems(filteredHiders);
