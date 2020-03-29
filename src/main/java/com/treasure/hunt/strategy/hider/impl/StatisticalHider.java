@@ -3,6 +3,7 @@ package com.treasure.hunt.strategy.hider.impl;
 import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.geom.*;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
+import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -174,6 +175,16 @@ public abstract class StatisticalHider{
         return dist;
     }
 
+    /** Todo
+     *
+     * @param statistic
+     * @param searchPath
+     * @return
+     */
+    protected double fillStrategyFromPaper_RectangleCutQuality(AngleHintStatistic statistic, SearchPath searchPath){
+        return 0.0;
+    }
+
     /**
      * Filters the given Hints on the Predicate of being abel to see
      * @param stats the List of AngleHintStats to filter
@@ -231,7 +242,13 @@ public abstract class StatisticalHider{
                 Point right = gf.createPoint(new Coordinate(hintCenter.getX() + dX_right, hintCenter.getY() + dY_right));
                 Point left = gf.createPoint(new Coordinate(hintCenter.getX() + dX_left, hintCenter.getY() + dY_left));
 
-                hint = new AngleHint(right.getCoordinate(), hintCenter.getCoordinate(), left.getCoordinate());
+                //check for possible HalfPlaneHint
+                if(preferredHintSize == 180){
+                    hint = new HalfPlaneHint(hintCenter.getCoordinate(), right.getCoordinate());
+                }else{
+                    hint = new AngleHint(right.getCoordinate(), hintCenter.getCoordinate(), left.getCoordinate());
+                }
+
 
                 hints.add(hint);
             }

@@ -54,8 +54,6 @@ public class GameField {
     private double walkedPathLength = 0.0;
     private List<Point> visitedPoints = new ArrayList<>();
 
-
-
     private GeometryItem<Geometry> possibleArea;
     private GeometryStyle possibleAreaStyle = new GeometryStyle(true, new Color(255, 105, 180));
     private GeometryItem<Circle> boundingCircle;
@@ -314,7 +312,7 @@ public class GameField {
     /**
      * Checks all edges of the possibleArea for the Coordinate which maximizes the value of {dist(C - Player) / dist( C -Origin) }
      *
-     * @return the List of Pairs made of (Coordinates C ; their associated Value of {dist(C-Player)/dist(C-Origin)} )
+     * @return a List of {@link org.locationtech.jts.geom.Coordinate} with their corresponding Constant of (Coordinates C ; their associated Value of {dist(C-Player)/dist(C-Origin)} )
      */
     public List<Pair<Coordinate, Double>> getWorstPointsOnAllEdges() {
         // making the decision transparent by drawing all lines which are inspected
@@ -376,6 +374,14 @@ public class GameField {
         return worstEdgePoints;
     }
 
+
+    /**Todo
+     * @param geometry the geometry whose LineSegment are educed to its best Point according to the worstConstant - formula
+     * @return a List of {@link org.locationtech.jts.geom.Coordinate} with their corresponding Constant of (Coordinates C ; their associated Value of {dist(C-Player)/dist(C-Origin)} )
+     */
+    public List<Pair<Coordinate, Double>> getWorstPointOnGeometry(LineString geometry){
+        return null;
+    }
 
     /**
      * Alternate to {@link this.sampleMaxConstantPointOnLineSegment}
