@@ -37,6 +37,9 @@ public class StatisticObject {
         public static final StatisticInfo OPTIMAL_SOLUTION = new StatisticInfo("Optimal solution",
                 "The euclidean distance between treasure and searchers start position.",
                 Double.class);
+        public static final StatisticInfo FINISHED_AND_FOUND = new StatisticInfo("Treasure found",
+                "Is one if the searcher found the treasure and 0 if not.",
+                Double.class);
         @Getter
         private final String name;
         @Getter
@@ -51,7 +54,7 @@ public class StatisticObject {
         }
 
         public static List<StatisticInfo> getAllStatisticInfo() {
-            return Arrays.asList(TRACE_LENGTH, SOLUTION_QUOTIENT, HINT_TRACE_LENGTH_RATION, HINT_REQUEST, OPTIMAL_SOLUTION);
+            return Arrays.asList(TRACE_LENGTH, SOLUTION_QUOTIENT, HINT_TRACE_LENGTH_RATION, HINT_REQUEST, FINISHED_AND_FOUND);
         }
     }
 }

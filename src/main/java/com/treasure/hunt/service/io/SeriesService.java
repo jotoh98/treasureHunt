@@ -35,7 +35,7 @@ import java.util.zip.ZipOutputStream;
 public class SeriesService {
     public static final String STATS_FILE_NAME = "stats.huntstats";
     public static final String HUNT_FILE_EXTENSION = ".hunt";
-    private static final int SMALL_ROUND_SIZE = 10000;
+    private static final int SMALL_ROUND_SIZE = 500;
     private static SeriesService instance;
     private final FileChooser fileChooser;
 
@@ -61,7 +61,7 @@ public class SeriesService {
     }
 
     @SneakyThrows
-    public void runSeries(Integer rounds, GameManager gameManager, Consumer<Double> progressConsumer) {
+    public void runSeries(Integer rounds, GameManager gameManager, Consumer<Double> progressConsumer, Integer maxSteps) {
         AtomicReference<File> selectedFile = new AtomicReference<>();
         CountDownLatch userSelectedFileLatch = new CountDownLatch(1);
         Platform.runLater(() -> {
@@ -72,7 +72,7 @@ public class SeriesService {
         if (selectedFile.get() == null) {
             return;
         }
-        StatisticsWithIdsAndPath statisticsWithIdsAndPath = runSeriesAndSaveToFile(rounds, gameManager, progressConsumer, selectedFile.get(), false, true);
+        StatisticsWithIdsAndPath statisticsWithIdsAndPath = runSeriesAndSaveToFile(rounds, gameManager, progressConsumer, selectedFile.get(), false, true, maxSteps);
         EventBusUtils.STATISTICS_LOADED_EVENT.trigger(statisticsWithIdsAndPath);
     }
 
@@ -84,8 +84,12 @@ public class SeriesService {
      * @return
      */
     @SneakyThrows
-    public StatisticsWithIdsAndPath runSeriesAndSaveToFile(Integer rounds, GameManager gameManager, Consumer<Double> progressConsumer, File selectedFile, boolean alreadyInitialed, boolean writeGameManger) {
+    public StatisticsWithIdsAndPath runSeriesAndSaveToFile(Integer rounds, GameManager gameManager, Consumer<Double> progressConsumer, File selectedFile, boolean alreadyInitialed, boolean writeGameManger, Integer maxSteps) {
         int totalWorkLoad = rounds * (writeGameManger ? 9 : 6);
+
+        if(selectedFile != null && selectedFile.exists()){
+            selectedFile.delete();
+        }
 
         AtomicInteger workLoadDone = new AtomicInteger();
         ZipOutputStream zipOutputStream = null;
@@ -95,16 +99,16 @@ public class SeriesService {
         ExecutorService executorService = AsyncUtils.newExhaustingThreadPoolExecutor();
         List<CompletableFuture<Void>> runFutures = new ArrayList<>(SMALL_ROUND_SIZE);
         List<StatisticsWithId> statisticsWithIds = new ArrayList<>(rounds);
-        for (int i = 0; i < rounds; i++) {
+        for (int id = 0; id < rounds; id++) {
             CompletableFuture<Void> future = CompletableFuture.supplyAsync(duplicateGameManager(gameManager, progressConsumer, alreadyInitialed, totalWorkLoad, workLoadDone), executorService)
-                    .thenApplyAsync(runGame(progressConsumer, totalWorkLoad, workLoadDone), executorService)
-                    .thenAcceptAsync(writeGameManagerAndSaveStats(writeGameManger, progressConsumer, totalWorkLoad, workLoadDone, zipOutputStream, statisticsWithIds), executorService)
+                    .thenApplyAsync(runGame(progressConsumer, totalWorkLoad, workLoadDone, maxSteps), executorService)
+                    .thenAcceptAsync(writeGameManagerAndSaveStats(id, writeGameManger, progressConsumer, totalWorkLoad, workLoadDone, zipOutputStream, statisticsWithIds), executorService)
                     .exceptionally(throwable -> {
                         log.error("A run failed", throwable);
                         return null;
                     });
             runFutures.add(future);
-            if (i % SMALL_ROUND_SIZE == 0 && i != 0) {
+            if (id % SMALL_ROUND_SIZE == 0 && id != 0) {
                 CompletableFuture<Void> allRunsFinished = CompletableFuture.allOf(runFutures.toArray(new CompletableFuture[runFutures.size()]));
                 allRunsFinished.join();
                 runFutures.clear();
@@ -123,9 +127,8 @@ public class SeriesService {
     }
 
     @NotNull
-    private Consumer<GameManager> writeGameManagerAndSaveStats(boolean writeGameManger, Consumer<Double> progressConsumer, int totalWorkLoad, AtomicInteger workLoadDone, ZipOutputStream zipOutputStream, List<StatisticsWithId> statisticsWithIds) {
+    private Consumer<GameManager> writeGameManagerAndSaveStats(int id, boolean writeGameManger, Consumer<Double> progressConsumer, int totalWorkLoad, AtomicInteger workLoadDone, ZipOutputStream zipOutputStream, List<StatisticsWithId> statisticsWithIds) {
         return gameManagerCopy -> {
-            int id = statisticsWithIds.size();
             statisticsWithIds.add(new StatisticsWithId(id, gameManagerCopy.getStatistics().get()));
             if (zipOutputStream == null) {
                 return;
@@ -144,9 +147,9 @@ public class SeriesService {
     }
 
     @NotNull
-    private Function<GameManager, GameManager> runGame(Consumer<Double> progressConsumer, double totalWorkLoad, AtomicInteger workLoadDone) {
+    private Function<GameManager, GameManager> runGame(Consumer<Double> progressConsumer, double totalWorkLoad, AtomicInteger workLoadDone, Integer maxSteps) {
         return gameManagerCopy -> {
-            CompletableFuture<Void> beat = gameManagerCopy.beat().thenRun(() -> {
+            CompletableFuture<Void> beat = gameManagerCopy.beat(maxSteps).thenRun(() -> {
                 synchronized (workLoadDone) {
                     workLoadDone.addAndGet(5);
                     progressConsumer.accept(workLoadDone.get() / totalWorkLoad);

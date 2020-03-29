@@ -1,4 +1,4 @@
-package com.treasure.hunt.utils;
+package com.treasure.hunt.service.preferences;
 
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;

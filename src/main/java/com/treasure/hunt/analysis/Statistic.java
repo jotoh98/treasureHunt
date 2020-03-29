@@ -88,7 +88,7 @@ public class Statistic {
 
     }
 
-    public List<StatisticObject> calculate(List<Turn> turns) {
+    public List<StatisticObject> calculate(List<Turn> turns, boolean finished) {
         this.turns = new ArrayList<>(turns);
         ArrayList<StatisticObject> statisticObjects = new ArrayList<>(Arrays.asList(
                 new StatisticObject(StatisticObject.StatisticInfo.TRACE_LENGTH, getTraceLength()),
@@ -96,11 +96,12 @@ public class Statistic {
                 new StatisticObject(StatisticObject.StatisticInfo.SOLUTION_QUOTIENT, getSolutionQuotient()),
                 new StatisticObject(StatisticObject.StatisticInfo.HINT_REQUEST, getHintRequests()),
                 new StatisticObject(StatisticObject.StatisticInfo.HINT_TRACE_LENGTH_RATION, getHintTraceLengthRatio()),
-                new StatisticObject(StatisticObject.StatisticInfo.OPTIMAL_SOLUTION, getOptimumSolution())
+                new StatisticObject(StatisticObject.StatisticInfo.OPTIMAL_SOLUTION, getOptimumSolution()),
+                new StatisticObject(StatisticObject.StatisticInfo.FINISHED_AND_FOUND, finished? 1:0)
         ));
         PreferenceService.getInstance()
                 .getPreferences()
-                .forEach((key, value) -> statisticObjects.add(new StatisticObject(new StatisticObject.StatisticInfo(key, "Imprted from preferences", Number.class), value)));
+                .forEach((key, value) -> statisticObjects.add(new StatisticObject(new StatisticObject.StatisticInfo(key, "Imported from preferences", Number.class), value)));
         return statisticObjects;
     }
 
