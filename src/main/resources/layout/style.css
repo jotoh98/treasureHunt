@@ -334,6 +334,11 @@
     -fx-background-radius: 0;
 }
 
+.text-input {
+    -fx-text-fill: white;
+    -fx-fill: white;
+}
+
 .widget-pane {
     -fx-background-color: LIGHTER_BACKGROUND;
     -fx-border-color: transparent;
