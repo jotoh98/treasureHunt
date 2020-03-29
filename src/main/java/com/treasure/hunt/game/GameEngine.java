@@ -2,6 +2,7 @@ package com.treasure.hunt.game;
 
 import com.treasure.hunt.analysis.Statistic;
 import com.treasure.hunt.jts.geom.Circle;
+import com.treasure.hunt.jts.geom.GeometryAngle;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
@@ -124,7 +125,7 @@ public class GameEngine {
     protected void hiderMove() {
         Hint newHint = hider.move(lastSearchPath);
         assert (newHint != null);
-        verifyHint(newHint, treasurePos);
+        verifyHint(newHint, treasurePos, lastSearchPath.getLastPoint());
         lastHint = newHint;
     }
 
@@ -150,11 +151,16 @@ public class GameEngine {
      *
      * @param hint             {@link Hint} to be verified
      * @param treasurePosition treasure position
+     * @param searcherPosition searcher position
      */
-    protected void verifyHint(Hint hint, Point treasurePosition) {
+    protected void verifyHint(Hint hint, Point treasurePosition, Point searcherPosition) {
         if (hint instanceof AngleHint) {
-            if (!((AngleHint) hint).getGeometryAngle().inView(treasurePosition.getCoordinate())) {
+            GeometryAngle geometryAngle = ((AngleHint) hint).getGeometryAngle();
+            if (!geometryAngle.inView(treasurePosition.getCoordinate())) {
                 throw new IllegalArgumentException("Treasure does not lie in given Angle.");
+            }
+            if (!JTSUtils.doubleEqual(geometryAngle.getCenter().distance(searcherPosition.getCoordinate()), 0)) {
+                throw new IllegalArgumentException("Treasure does not originate in the searcher's last position.");
             }
         }
         if (hint instanceof CircleHint) {

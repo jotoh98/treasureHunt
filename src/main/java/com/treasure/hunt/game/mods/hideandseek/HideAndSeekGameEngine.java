@@ -6,6 +6,7 @@ import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.Requires;
+import org.locationtech.jts.geom.Coordinate;
 
 /**
  * In this modification, the hider may reset the
@@ -20,6 +21,10 @@ public class HideAndSeekGameEngine extends GameEngine {
         super(searcher, hider);
     }
 
+    public HideAndSeekGameEngine(Searcher searcher, Hider hider, Coordinate coordinate) {
+        super(searcher, hider, coordinate);
+    }
+
     /**
      * Let the {@link GameEngine#hider} reset the treasure position and give his {@link com.treasure.hunt.strategy.hint.Hint}.
      */
@@ -29,5 +34,15 @@ public class HideAndSeekGameEngine extends GameEngine {
         assert (newHint != null);
         verifyHint(newHint, treasurePos);
         lastHint = newHint;
+    }
+
+    /**
+     * Let the {@link GameEngine#hider} reset the treasure position and give his {@link com.treasure.hunt.strategy.hint.Hint}.
+     */
+    protected void hiderMove() {
+        lastHint = hider.move(lastSearchPath);
+        treasurePos = hider.getTreasureLocation(); // Difference between GameEngine and HideAndSeekGameEngine.
+        assert (lastHint != null);
+        verifyHint(lastHint, treasurePos);
     }
 }

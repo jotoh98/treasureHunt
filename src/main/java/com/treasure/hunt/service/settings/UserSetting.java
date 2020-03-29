@@ -7,8 +7,8 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface PrefName {
-    String prefName() default "";
+public @interface UserSetting {
+    String name() default "";
 
-    String prefDesc() default "";
+    String desc() default "";
 }

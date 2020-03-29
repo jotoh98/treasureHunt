@@ -12,6 +12,7 @@ import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.EventBusUtils;
 import com.treasure.hunt.utils.ListUtils;
+import com.treasure.hunt.view.plot.PlotController;
 import com.treasure.hunt.view.plot.PlotSettingsController;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -21,6 +22,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.*;
@@ -55,6 +57,7 @@ public class StatisticTableController {
     public ComboBox<Class<? extends Searcher>> searcherList;
     public ComboBox<Class<? extends Hider>> hiderList;
     public ComboBox<Class<? extends GameEngine>> gameEngineList;
+    public Spinner<Integer> maxStepsSpinner;
     HashMap<StatisticObject.StatisticInfo, List<StatisticObject>> statisticsMeasureHashMap = new HashMap<>();
     private Path path;
     private ObjectProperty<GameManager> gameManager;
@@ -67,6 +70,10 @@ public class StatisticTableController {
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100000, 1000, 100);
         roundSpinner.setEditable(true);
         roundSpinner.setValueFactory(valueFactory);
+        SpinnerValueFactory<Integer> valueFactoryMax =
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100000, 1500, 100);
+        maxStepsSpinner.setEditable(true);
+        maxStepsSpinner.setValueFactory(valueFactoryMax);
         progressIndicator.managedProperty().bind(progressIndicator.visibleProperty());
 
         EventBusUtils.STATISTICS_LOADED_EVENT.addListener(statisticsWithIds -> Platform.runLater(() -> {
@@ -229,7 +236,7 @@ public class StatisticTableController {
                     SeriesService.getInstance().runSeries(roundSpinner.getValue(), newGameManager, aDouble ->
                             Platform.runLater(() ->
                                     progressIndicator.setProgress(aDouble)
-                            )
+                            ), maxStepsSpinner.getValue()==0? null : maxStepsSpinner.getValue()
                     )
             )
                     .exceptionally(throwable -> {
@@ -330,10 +337,20 @@ public class StatisticTableController {
         PlotSettingsController plotSettingsController = fxmlLoader.getController();
         plotSettingsController.setData(selectedGameEngine, selectedSearcher, selectedHider);
 
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/layout/plot.fxml"));
+        Parent plot = loader.load();
+        PlotController plotController = loader.getController();
+        plotSettingsController.init(settings -> {
+            plotSettingsController.errorLabel.getScene().setRoot(plot);
+            plotController.setData(settings, selectedGameEngine, selectedSearcher, selectedHider);
+            stage.setMaximized(true);
+        });
+
         Scene scene = new Scene(root);
         stage.setScene(scene);
         scene.getStylesheets().add(getClass().getResource("/layout/style.css").toExternalForm());
 
         stage.show();
+
     }
 }

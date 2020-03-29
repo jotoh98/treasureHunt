@@ -32,7 +32,7 @@ public class SeriesServiceTest extends AbstractPlainJavaFxTest {
         File file = testFolder.newFile("save.hunts");
         GameManager gameManager = new GameManager(NaiveAngleSearcher.class, RandomAngleHintHider.class, GameEngine.class);
         SeriesService.getInstance().runSeriesAndSaveToFile(100, gameManager, aDouble -> {
-        }, file, false, true);
+        }, file, false, true, 50);
         CountDownLatch loadLatch = new CountDownLatch(1);
         AtomicReference<StatisticsWithIdsAndPath> statisticsWithIdsAndPath = new AtomicReference<>();
         EventBusUtils.STATISTICS_LOADED_EVENT.addListener(data -> {

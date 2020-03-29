@@ -37,11 +37,14 @@ public class TreasureHuntRunSeriesCommand implements Callable<Integer> {
     @CommandLine.Option(names = {"-f", "--file"}, description = "output file location")
     private Path path;
 
-    @CommandLine.Option(names = {"-sI", "--sameInit"}, description = "same init this mostly results in same treasure location and start location")
+    @CommandLine.Option(names = {"-sI", "--sameInit"}, description = "Same init this mostly results in same treasure location and start location")
     private boolean sameInit;
 
     @CommandLine.Option(names = {"-wG", "--withOutGameManger"}, description = "Whether to include the runs in the hunts file")
     private boolean withOutGamemanger = false;
+
+    @CommandLine.Option(names = {"-m", "--maxSteps"}, description = "After how many steps to leave execution. If not set games might run forever.")
+    private Integer maxSteps = null;
 
     @Override
     /**
@@ -62,7 +65,7 @@ public class TreasureHuntRunSeriesCommand implements Callable<Integer> {
                 .build();
         AtomicInteger lastProgress = new AtomicInteger();
         SeriesService.getInstance()
-                .runSeriesAndSaveToFile(rounds, gameManager, progress -> lastProgress.set(updateProgress(progress, progressBar, lastProgress.get())), path.toFile(), sameInit, !withOutGamemanger);
+                .runSeriesAndSaveToFile(rounds, gameManager, progress -> lastProgress.set(updateProgress(progress, progressBar, lastProgress.get())), path.toFile(), sameInit, !withOutGamemanger, maxSteps);
         progressBar.close();
         return 0;
     }
