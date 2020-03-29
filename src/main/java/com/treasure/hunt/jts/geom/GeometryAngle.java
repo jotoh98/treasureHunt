@@ -2,6 +2,7 @@ package com.treasure.hunt.jts.geom;
 
 import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
 import com.treasure.hunt.utils.JTSUtils;
+import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
@@ -63,6 +64,17 @@ public class GeometryAngle extends LineString implements Shapeable {
         );
     }
 
+    /** the Angle between the middle of the Hint and the x axis normalized to the range of [0 , 2*PI]
+     *
+     * @return the angle in radians
+     */
+    public double getNormalizedAngle(){
+        double angle = Angle.angle(this.getCenter() , JTSUtils.middleOfGeometryAngle(this));
+        if( angle < 0){
+            angle += 2 * Math.PI;
+        }
+        return angle;
+    }
     private void setCoordinate(int i, Coordinate c) {
         points.getCoordinate(i).setX(c.getX());
         points.getCoordinate(i).setY(c.getY());
@@ -98,6 +110,14 @@ public class GeometryAngle extends LineString implements Shapeable {
 
     public Vector2D leftVector() {
         return new Vector2D(getCenter(), getLeft());
+    }
+
+    public Ray leftRay(){
+        return new Ray(getCenter().copy(),getLeft().copy());
+    }
+
+    public Ray rightRay(){
+        return new Ray(getCenter().copy(),getRight().copy());
     }
 
     public double rightAngle() {

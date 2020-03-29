@@ -2,6 +2,7 @@ package com.treasure.hunt.utils;
 
 import com.treasure.hunt.jts.awt.CanvasBoundary;
 import com.treasure.hunt.jts.geom.GeometryAngle;
+import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.algorithm.ConvexHull;
@@ -10,6 +11,7 @@ import org.locationtech.jts.math.Vector2D;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -37,7 +39,7 @@ public final class JTSUtils {
     }
 
     public static Point createPoint(Coordinate p) {
-        return createPoint(p.x, p.x);
+        return createPoint(p.x, p.y);
     }
 
     /**
@@ -80,6 +82,10 @@ public final class JTSUtils {
      */
     public static Coordinate middleOfAngleHint(AngleHint angleHint) {
         GeometryAngle angle = angleHint.getGeometryAngle();
+        return middleOfGeometryAngle(angle);
+    }
+
+    public static Coordinate middleOfGeometryAngle(GeometryAngle angle){
         return angle
                 .rightVector()
                 .rotate(angle.extend() / 2)
@@ -261,5 +267,24 @@ public final class JTSUtils {
                 coordinates.toArray(Coordinate[]::new),
                 JTSUtils.GEOMETRY_FACTORY
         );
+    }
+
+    public static Point shuffleTreasure() {
+        double maxDistance = PreferenceService.getInstance()
+                .getPreference(PreferenceService.MAX_TREASURE_DISTANCE, 100)
+                .doubleValue();
+        double minDistance = PreferenceService.getInstance()
+                .getPreference(PreferenceService.MIN_TREASURE_DISTANCE, 0)
+                .doubleValue();
+        Optional<Number> fixedDistance = PreferenceService.getInstance()
+                .getPreference(PreferenceService.TREASURE_DISTANCE);
+
+        if (fixedDistance.isPresent()) {
+            Coordinate treasure = Vector2D.create(fixedDistance.get().doubleValue(), 0).rotate(2 * Math.PI * Math.random()).translate(new Coordinate());
+            return JTSUtils.GEOMETRY_FACTORY.createPoint(treasure);
+        }
+
+        Coordinate treasure = Vector2D.create(Math.random() * (maxDistance - minDistance) + minDistance, 0).rotate(2 * Math.PI * Math.random()).translate(new Coordinate());
+        return JTSUtils.GEOMETRY_FACTORY.createPoint(treasure);
     }
 }

@@ -44,7 +44,7 @@ public class PlotController {
             GameManager newGameManager = new GameManager(selectedSearcher, selectedHider, selectedGameEngine);
 
             StatisticsWithIdsAndPath currentStatistics = SeriesService.getInstance().runSeriesAndSaveToFile(settings.getSeriesAccuracyValue(), newGameManager, a -> {
-            }, null, false, true);
+            }, null, false, true, settings.getMaxSteps());
 
             List<Number> statisticValues = Statistic.filterBy(currentStatistics.getStatisticsWithIds(), settings.getStatisticInfo());
             computedValues.add(new Pair<>(currentStatisticValue, settings.getType().getAggregation().apply(statisticValues).doubleValue()));
@@ -73,14 +73,12 @@ public class PlotController {
             Platform.runLater(() -> {
                 lineChart.getData().add(series);
                 if (settings.isSavePNG()) {
-                    JavaFxUtils.savePngFromStage(lineChart.getScene().getWindow());
+                    Platform.runLater(() -> JavaFxUtils.savePngFromStage(lineChart.getScene().getWindow()));
                 }
-
             });
         }).exceptionally(throwable -> {
             log.error("Error calculating plot", throwable);
             return null;
         });
     }
-
 }

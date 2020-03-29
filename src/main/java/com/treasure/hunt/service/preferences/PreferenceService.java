@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
+import java.util.Optional;
 
 /**
  * Service that holds all the preferences, you can pass those to the searcher and hider. Either preferences are set via the UI or via env variables that start with PREF_ followed by the preference name.
@@ -15,7 +16,19 @@ import java.util.Locale;
  */
 @Slf4j
 public class PreferenceService {
+    public static final String MAX_TREASURE_DISTANCE = "MAX_TREASURE_DISTANCE";
+    public static final String MIN_TREASURE_DISTANCE = "MIN_TREASURE_DISTANCE";
+    public static final String TREASURE_DISTANCE = "TREASURE_DISTANCE";
+    public static final String ANGLE_UPPER_BOUND = "ANGLE_UPPER_BOUND";
+    public static final String ANGLE_LOWER_BOUND = "ANGLE_LOWER_BOUND";
+
+    public static final String HintSize_Preference = "preferred hint size";
+    public static final String TreasureLocationX_Preference = "preferred x-Value treasure";
+    public static final String TreasureLocationY_Preference = "preferred y-Value treasure";
+
+
     public static final String PREF_PREFIX = "PREF_";
+
     private static PreferenceService instance = new PreferenceService();
     @Getter
     private ObservableMap<String, Number> preferences = FXCollections.observableHashMap();
@@ -48,6 +61,10 @@ public class PreferenceService {
 
     public Number getPreference(String name, Number defaultNumber) {
         return preferences.getOrDefault(name, defaultNumber);
+    }
+
+    public Optional<Number> getPreference(String name) {
+        return Optional.ofNullable(preferences.get(name));
     }
 
 }

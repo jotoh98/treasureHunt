@@ -20,7 +20,10 @@ public class StatisticObject {
     @EqualsAndHashCode(of = "name")
     public static class StatisticInfo {
         public static final StatisticInfo TRACE_LENGTH = new StatisticInfo("Trace length",
-                "If finished: Length of searchers path; if unfinished: Length of searchers path plus the direct route from searchers last point to treasure",
+                "The length of the visited searchers path.",
+                Double.class);
+        public static final StatisticInfo LOCAL_OPTIMUM = new StatisticInfo("Local Optimal solution",
+                "Length of the visited searchers path plus the direct route from searchers last point to treasure",
                 Double.class);
         public static final StatisticInfo SOLUTION_QUOTIENT = new StatisticInfo("Solution quotient",
                 "The Quotient of the optimum solution and the trace length",
@@ -33,6 +36,9 @@ public class StatisticObject {
                 Double.class);
         public static final StatisticInfo OPTIMAL_SOLUTION = new StatisticInfo("Optimal solution",
                 "The euclidean distance between treasure and searchers start position.",
+                Double.class);
+        public static final StatisticInfo FINISHED_AND_FOUND = new StatisticInfo("Treasure found",
+                "Is one if the searcher found the treasure and 0 if not.",
                 Double.class);
         @Getter
         private final String name;
@@ -48,7 +54,7 @@ public class StatisticObject {
         }
 
         public static List<StatisticInfo> getAllStatisticInfo() {
-            return Arrays.asList(TRACE_LENGTH, SOLUTION_QUOTIENT, HINT_TRACE_LENGTH_RATION, HINT_REQUEST, OPTIMAL_SOLUTION);
+            return Arrays.asList(TRACE_LENGTH, SOLUTION_QUOTIENT, HINT_TRACE_LENGTH_RATION, HINT_REQUEST, FINISHED_AND_FOUND);
         }
     }
 }
