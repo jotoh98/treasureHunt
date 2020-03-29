@@ -20,7 +20,10 @@ public class StatisticObject {
     @EqualsAndHashCode(of = "name")
     public static class StatisticInfo {
         public static final StatisticInfo TRACE_LENGTH = new StatisticInfo("Trace length",
-                "If finished: Length of searchers path; if unfinished: Length of searchers path plus the direct route from searchers last point to treasure",
+                "The length of the visited searchers path.",
+                Double.class);
+        public static final StatisticInfo LOCAL_OPTIMUM = new StatisticInfo("Local Optimal solution",
+                "Length of the visited searchers path plus the direct route from searchers last point to treasure",
                 Double.class);
         public static final StatisticInfo SOLUTION_QUOTIENT = new StatisticInfo("Solution quotient",
                 "The Quotient of the optimum solution and the trace length",
