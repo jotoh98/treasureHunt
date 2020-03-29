@@ -38,7 +38,7 @@ public final class JTSUtils {
     }
 
     public static Point createPoint(Coordinate p) {
-        return createPoint(p.x, p.x);
+        return createPoint(p.x, p.y);
     }
 
     /**
