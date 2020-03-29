@@ -15,22 +15,24 @@
 # Implementing a Searcher
     1. Create a class "YourSearcher" in
     src/main/java/com/treasure/hunt/strategy/searcher/impl/
-    2. Implement to the interface "Searcher"
+    2. Implement the interface Searcher<T>, where T is the Type of Hint
+    the Searcher is compatible with.
 
 # Implementing a Hider
     1. Create a class "YourHider" in
     src/main/java/com/treasure/hunt/strategy/hider/impl/
-    2. Implement to the interface "Hider"
+    2. Implement the interface Hider<T>, where T is the Type of Hint
+    the Hider returns.
     
 # Implementing a GameEngine
-    1. Create a class "YourGameEngine" in
+    1. Create a class "yourgameengine" in
     src/main/java/com/treasure/hunt/game/mods/yourMod/YourGameEngine/
-    implementing the GameEngine
+    implementing GameEngine.
     2. Overwrite the necessary methods of the GameEngine, like
     init(), move(), hiderMove(), searcherMove(), verifyHint()
-    in order to implement your wished rules
-    3. Create an interface "YourHider", extending Hider<T>
-    4. Create an interface "YourSearcher", extending Searcher<T>
+    in order to implement your wished rules.
+    3. Create an interface "YourHider", extending Hider<T>.
+    4. Create an interface "YourSearcher", extending Searcher<T>.
     5. In
     src/main/java/com/treasure/hunt/strategy/hider/impl/ and
     src/main/java/com/treasure/hunt/strategy/searcher/impl/
