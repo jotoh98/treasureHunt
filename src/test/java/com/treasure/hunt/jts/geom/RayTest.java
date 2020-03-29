@@ -8,7 +8,7 @@ import org.locationtech.jts.geom.LineSegment;
 
 class RayTest {
 
-    private final Ray testRay = new Ray(new Coordinate(0, 0), new Coordinate(.1, 0));
+    private final Ray testRay = new Ray(new Coordinate(0, 0), new Coordinate(0.1, 0));
 
     private final LineSegment segmentIntersection = new LineSegment(new Coordinate(1, 0), new Coordinate(1, 1));
     private final LineSegment segmentNoIntersection = new LineSegment(new Coordinate(1, 1), new Coordinate(2, 1));
@@ -46,10 +46,34 @@ class RayTest {
     }
 
     @Test
-    void testInside() {
-        Assertions.assertTrue(testRay.inRay(new Coordinate(400, 0)));
-        Assertions.assertTrue(testRay.inRay(new Coordinate(0, 0)));
+    void testInRay() {
         Assertions.assertFalse(testRay.inRay(new Coordinate(-1, 0)));
+        Assertions.assertFalse(testRay.inRay(new Coordinate(-.1, 0)));
+        Assertions.assertTrue(testRay.inRay(new Coordinate(0, 0)));
+        Assertions.assertTrue(testRay.inRay(new Coordinate(.1, 0)));
+        Assertions.assertTrue(testRay.inRay(new Coordinate(1, 0)));
+        Assertions.assertTrue(testRay.inRay(new Coordinate(400, 0)));
+    }
+
+    @Test
+    void testInLine() {
+        Assertions.assertTrue(testRay.inLine(new Coordinate(-400, 0)));
         Assertions.assertTrue(testRay.inLine(new Coordinate(-1, 0)));
+        Assertions.assertTrue(testRay.inLine(new Coordinate(-.1, 0)));
+        Assertions.assertTrue(testRay.inLine(new Coordinate(0, 0)));
+        Assertions.assertTrue(testRay.inLine(new Coordinate(.1, 0)));
+        Assertions.assertTrue(testRay.inLine(new Coordinate(1, 0)));
+        Assertions.assertTrue(testRay.inLine(new Coordinate(400, 0)));
+    }
+
+    @Test
+    void testInSegment() {
+        Assertions.assertFalse(testRay.inSegment(new Coordinate(-400, 0)));
+        Assertions.assertFalse(testRay.inSegment(new Coordinate(-1, 0)));
+        Assertions.assertFalse(testRay.inSegment(new Coordinate(-.1, 0)));
+        Assertions.assertTrue(testRay.inSegment(new Coordinate(0, 0)));
+        Assertions.assertTrue(testRay.inSegment(new Coordinate(.1, 0)));
+        Assertions.assertTrue(testRay.inSegment(new Coordinate(1, 0))); // since the vector is normalized
+        Assertions.assertFalse(testRay.inSegment(new Coordinate(400, 0)));
     }
 }
