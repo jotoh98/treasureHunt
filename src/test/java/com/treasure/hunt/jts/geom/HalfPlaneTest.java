@@ -21,6 +21,7 @@ class HalfPlaneTest {
                 .forEach(coordinate ->
                         Assertions.assertTrue(halfPlane.inside(coordinate))
                 );
+        Assertions.assertTrue(halfPlane.inside(new Coordinate(-10 + Math.random() * 20, 0)));
     }
 
 }
