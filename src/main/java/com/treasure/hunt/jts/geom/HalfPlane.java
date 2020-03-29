@@ -3,12 +3,11 @@ package com.treasure.hunt.jts.geom;
 import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
 import com.treasure.hunt.jts.awt.CanvasBoundary;
 import com.treasure.hunt.utils.JTSUtils;
-import com.treasure.hunt.utils.ListUtils;
+import lombok.EqualsAndHashCode;
 import org.locationtech.jts.algorithm.ConvexHull;
 import org.locationtech.jts.algorithm.Orientation;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.math.Vector2D;
 
@@ -37,6 +36,7 @@ import java.util.stream.Stream;
  *
  * @see #inside(Coordinate)
  */
+@EqualsAndHashCode(callSuper = false)
 public class HalfPlane extends Line {
 
     /**
@@ -115,24 +115,24 @@ public class HalfPlane extends Line {
         return strict ? index < 0 : index <= 0;
     }
 
-    public boolean inside(LineSegment lineSegment) {
-        return inside(lineSegment.p0) || inside(lineSegment.p1);
-    }
-
-    public boolean covers(Geometry g) {
-        return ListUtils.allMatch(g.getCoordinates(), this::inside);
-    }
-
-    public boolean covers(LineSegment lineSegment) {
-        return inside(lineSegment.p0) && inside(lineSegment.p1);
-    }
-
+    /**
+     * Transfers the emerging polygon to a shape for rendering.
+     *
+     * @param shapeWriter writer for shapes, holds the visual boundary
+     * @return rendering shape
+     */
     @Override
     public Shape toShape(AdvancedShapeWriter shapeWriter) {
         final Polygon polygon = toPolygon(shapeWriter.getBoundary());
         return polygon == null ? null : shapeWriter.toShape(polygon);
     }
 
+    /**
+     * Creates the polygon shape for a half plane within the visual boundary rectangle.
+     *
+     * @param boundary visual boundary rectangle of the canvas
+     * @return polygon representing the area covered by the half plane
+     */
     private Polygon toPolygon(CanvasBoundary boundary) {
         final List<Coordinate> intersections = JTSUtils.getBoundaryIntersections(boundary, this);
 
@@ -153,14 +153,5 @@ public class HalfPlane extends Line {
         }
 
         return null;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof HalfPlane) {
-            HalfPlane other = (HalfPlane) o;
-            return p0.equals2D(other.p0) && p1.equals2D(other.p1);
-        }
-        return false;
     }
 }
