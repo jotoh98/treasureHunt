@@ -73,7 +73,7 @@ class RayTest {
         Assertions.assertFalse(testRay.inSegment(new Coordinate(-.1, 0)));
         Assertions.assertTrue(testRay.inSegment(new Coordinate(0, 0)));
         Assertions.assertTrue(testRay.inSegment(new Coordinate(.1, 0)));
-        Assertions.assertFalse(testRay.inSegment(new Coordinate(1, 0))); // expected: <false> but was: <true>
+        Assertions.assertTrue(testRay.inSegment(new Coordinate(1, 0))); // since the vector is normalized
         Assertions.assertFalse(testRay.inSegment(new Coordinate(400, 0)));
     }
 }
