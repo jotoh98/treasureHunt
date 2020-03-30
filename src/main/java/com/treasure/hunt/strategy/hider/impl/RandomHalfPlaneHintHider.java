@@ -75,14 +75,9 @@ public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
      */
     @Override
     public Point getTreasureLocation() {
-        if (treasurePos == null) {
-            treasurePos = JTSUtils.GEOMETRY_FACTORY.createPoint(
-                    Vector2D.create(
-                            PreferenceService.getInstance().getPreference(RandomHalfPlaneHintHider.TREASURE_DISTANCE, 1000).doubleValue(), 0)
-                            .rotate(2 * Math.PI * Math.random())
-                            .toCoordinate()
-            );
-        }
+        double distance = PreferenceService.getInstance().getPreference(TREASURE_DISTANCE, 100).doubleValue();
+        Coordinate treasure = Vector2D.create(Math.random() * distance, 0).rotate(2 * Math.PI * Math.random()).translate(new Coordinate());
+        treasurePos = JTSUtils.GEOMETRY_FACTORY.createPoint(treasure);
         return treasurePos;
     }
 }

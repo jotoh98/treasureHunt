@@ -4,7 +4,6 @@ import com.treasure.hunt.jts.geom.HalfPlane;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.utils.JTSUtils;
-import lombok.Getter;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
@@ -30,7 +29,6 @@ public class HalfPlaneHint extends AngleHint {
      * to the line (the up and down enumerators are only used when the line is horizontal)
      * left and down respectively
      */
-    @Getter
     private Direction direction;
     private boolean visualisation = true;
 
@@ -43,25 +41,7 @@ public class HalfPlaneHint extends AngleHint {
         super(right, center, new Coordinate(2 * center.x - right.x, 2 * center.y - right.y));
         Direction dir = null;
 
-        if (center.getY() == right.getY()) {
-            if (center.getX() < right.getX()) {
-                dir = up;
-            }
-            if (center.getX() > right.getX()) {
-                dir = down;
-            }
-            if (center.getX() == right.getX()) {
-                throw new IllegalArgumentException("anglePointLeft must not equal anglePointRight in the " +
-                        "construction of a new HalfPlaneHint");
-            }
-        }
-        if (center.getY() < right.getY()) {
-            dir = Direction.left;
-        }
-        if (center.getY() > right.getY()) {
-            dir = Direction.right;
-        }
-        direction = dir;
+
     }
 
     /**
@@ -139,6 +119,32 @@ public class HalfPlaneHint extends AngleHint {
         geometryAngle.setCenter(center);
         geometryAngle.setLeft(new Coordinate(2 * center.x - right.x, 2 * center.y - right.y));
         this.direction = direction;
+    }
+
+    public Direction getDirection() {
+        if (direction != null) {
+            return direction;
+        }
+
+        if (getCenter().getY() == getRight().getY()) {
+            if (getCenter().getX() < getRight().getX()) {
+                direction = up;
+            }
+            if (getCenter().getX() > getRight().getX()) {
+                direction = down;
+            }
+            if (getCenter().getX() == getRight().getX()) {
+                throw new IllegalArgumentException("getCenter() must not equal getRight() in the " +
+                        "calculation of the direction");
+            }
+        }
+        if (getCenter().getY() < getRight().getY()) {
+            direction = Direction.left;
+        }
+        if (getCenter().getY() > getRight().getY()) {
+            direction = Direction.right;
+        }
+        return direction;
     }
 
     public Coordinate getCenter() {

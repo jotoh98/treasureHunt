@@ -16,7 +16,12 @@ public enum StatusMessageType {
             false, "An explanation for the visualisation used by the searcher"),
     // hider:
     EXPLANATION_VISUALISATION_HIDER("An explanation for the visualisation used by the hider", true,
-            true, "An explanation for the visualisation used by the hider");
+            true, "An explanation for the visualisation used by the hider"),
+    PREFERRED_SIZE_OF_HINT("the size of an AngleHint", true, true, "the size of the hint in radians."), // maybe to preferences
+    REMAINING_POSSIBLE_AREA("the remaining area in which the treasure could be", true, true, "The area which has not been excluded by previous hints"),
+    RELATIVE_AREA_CUTOFF("relative area cutoff" , true, true, "the area which has been excluded by this area in percent"),
+    DISTANCE_TREASURE_TO_CENTROID(" the distance beetween Centroid and the tresure", true, true, "the distance of the remaining possible area's centroid and the treasure"),
+    DISTANCE_ANGLE_BISECTOR_TREASURE("distance from Normal AngleLine to treasure" , true, true, "distance from AngleHint bisector to treasure");
 
     @Getter
     private final String name;

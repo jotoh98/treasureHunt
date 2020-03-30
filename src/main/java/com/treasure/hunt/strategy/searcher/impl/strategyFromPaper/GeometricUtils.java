@@ -10,6 +10,7 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.math.Vector2D;
 
 import static com.treasure.hunt.utils.JTSUtils.doubleEqual;
+import static org.locationtech.jts.algorithm.Angle.normalizePositive;
 
 /**
  * @author Rank
@@ -94,7 +95,7 @@ public class GeometricUtils {
         }
 
         if (!doubleEqual(newA.x, newD.x) || !doubleEqual(newA.y, newB.y) || !doubleEqual(newB.x, newC.x) || !doubleEqual(newC.y, newD.y)) {
-            throw new IllegalArgumentException("rect is not parallel to x an y axis:" +
+            throw new IllegalArgumentException("rect is not parallel to x and y axis:" +
                     "\nrect[0] = " + rect[0] +
                     "\nrect[1] = " + rect[1] +
                     "\nrect[2] = " + rect[2] +
@@ -105,8 +106,7 @@ public class GeometricUtils {
                     "\nnewD = " + newD
             );
         }
-        Coordinate[] rectRes = new Coordinate[]{newA, newB, newC, newD};
-        return rectRes;
+        return new Coordinate[]{newA, newB, newC, newD};
     }
 
     public static Coordinate twoStepsOrthogonal(HalfPlaneHint hint, Point P) {
@@ -120,5 +120,10 @@ public class GeometricUtils {
         hintVector = hintVector.divide(hintVector.length() / 2);
         hintVector = hintVector.rotateByQuarterCircle(1);
         return new Coordinate(cur_pos.getX() + hintVector.getX(), cur_pos.getY() + hintVector.getY());
+    }
+
+    public static double minimumAngleToXAxis(LineSegment line){
+        LineSegment lineReverse = new LineSegment(line.p1, line.p0);
+        return Math.min(normalizePositive(line.angle()), normalizePositive(lineReverse.angle()));
     }
 }

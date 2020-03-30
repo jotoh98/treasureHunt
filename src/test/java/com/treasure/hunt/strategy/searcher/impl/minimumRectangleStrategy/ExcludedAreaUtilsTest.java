@@ -14,7 +14,7 @@ public class ExcludedAreaUtilsTest {
     }
 
     @Test
-    public void reduceConvexPolygonTest() {
+    public void reduceConvexPolygonTest0() {
         Polygon convexPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon(
                 new Coordinate[]{
                         new Coordinate(-1, 1),
@@ -40,4 +40,18 @@ public class ExcludedAreaUtilsTest {
         }
     }
 
+    @Test
+    public void reduceConvexPolygonTest1() {
+        Polygon convexPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon(
+                new Coordinate[]{
+                        new Coordinate(8, 4.0501533), new Coordinate(2.3590343, 8),
+                        new Coordinate(8, 8), new Coordinate(8, 4.0501533)
+                }
+        );
+        HalfPlaneHint halfPlaneHint = new HalfPlaneHint(
+                new Coordinate(5.179517, 6.025077),
+                new Coordinate(5.998669044288992, 5.4515005636489535)
+        );
+        Polygon result = ExcludedAreasUtils.reduceConvexPolygon(convexPolygon, halfPlaneHint);
+    }
 }

@@ -78,6 +78,17 @@ public class RoutinesFromPaperTest {
     }
 
     @Test
+    public void testBasicTransformation3() { // hint equals the diagonal
+        Coordinate[] testRectangle = new Coordinate[]{
+                new Coordinate(6.388583936417138, 16.0), new Coordinate(16.0, 16.0),
+                new Coordinate(16.0, 7.037209521563136), new Coordinate(6.388583936417138, 7.037209521563136)
+        };
+        HalfPlaneHint testHint = new HalfPlaneHint(new Coordinate(11.194292000000004, 11.518604800000002),
+                new Coordinate(11.925645701619175, 10.836606439937503));
+        testRectHint(testRectangle, testHint, 0);
+    }
+
+    @Test
     public void testPhiRectangle() {
         Coordinate[] rect = new Coordinate[]{new Coordinate(-4, 4), new Coordinate(4, 4),
                 new Coordinate(4, -4), new Coordinate(-4, -4)};
@@ -154,7 +165,8 @@ public class RoutinesFromPaperTest {
 
         if (result.getPoints().size() != stepsExpectedResult.length) {
             throw new AssertionError("The number of steps should be " + stepsExpectedResult.length + " " +
-                    "but equals " + result.getPoints().size());
+                    "but equals " + result.getPoints().size() + "\n result:\n" + result.getPoints()
+                    + "\n expected result:\n" + Arrays.toString(stepsExpectedResult));
         }
 
         for (int i = 0; i < stepsExpectedResult.length; i++) {
@@ -219,7 +231,7 @@ public class RoutinesFromPaperTest {
     }
 
     @Test
-    public void rectangleScanEnhancedTestTwo(){
+    public void rectangleScanEnhancedTestTwo() {
         //todo
     }
 }

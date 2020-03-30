@@ -2,6 +2,7 @@ package com.treasure.hunt.utils;
 
 import com.treasure.hunt.jts.awt.CanvasBoundary;
 import com.treasure.hunt.jts.geom.GeometryAngle;
+import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.algorithm.ConvexHull;
@@ -22,7 +23,7 @@ public final class JTSUtils {
      * A static final shared {@link GeometryFactory} we use, such that every usage
      * uses the same settings of the geometry factory.
      */
-    public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(10000000));
+    public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(1000000));
 
     private JTSUtils() {
     }
@@ -59,19 +60,25 @@ public final class JTSUtils {
      * @return an intersection {@link Point} of the {@link LineSegment} objects {@code line} and {@code lineSegment}
      */
     public static Coordinate lineWayIntersection(LineSegment line, LineSegment segment) {
+        if (doubleEqual(line.distancePerpendicular(segment.p0), 0)) {
+            return segment.p0;
+        }
+        if (doubleEqual(line.distancePerpendicular(segment.p1), 0)) {
+            return segment.p1;
+        }
+
         Coordinate intersection = line.lineIntersection(segment);
         if (intersection == null) {
             return null;
         }
-        double distance = GEOMETRY_FACTORY.getPrecisionModel().makePrecise(segment.distance(intersection));
-        if (distance != 0) {
+        if (!doubleEqual(segment.distance(intersection), 0)) {
             return null;
         }
         return intersection;
     }
 
     /**
-     * Tests wether the convex polygon polygon intersects with the line line and returns the intersecting coordinates
+     * Tests whether the convex polygon polygon intersects with the line line and returns the intersecting coordinates
      * if it does.
      *
      * @param polygon a {@link Polygon}
@@ -94,12 +101,21 @@ public final class JTSUtils {
         return (0 == GEOMETRY_FACTORY.getPrecisionModel().makePrecise(a - b));
     }
 
+    public static boolean doubleEqualApproximately(double a, double b) {
+        PrecisionModel precisionModelCustom = new PrecisionModel(GEOMETRY_FACTORY.getPrecisionModel().getScale() / 100);
+        return (0 == precisionModelCustom.makePrecise(a - b));
+    }
+
     /**
      * @param angleHint where we want the middle point to go, from.
      * @return {@link Coordinate} going through the middle of the {@link AngleHint}
      */
     public static Coordinate middleOfAngleHint(AngleHint angleHint) {
         GeometryAngle angle = angleHint.getGeometryAngle();
+        return middleOfGeometryAngle(angle);
+    }
+
+    public static Coordinate middleOfGeometryAngle(GeometryAngle angle) {
         return angle
                 .rightVector()
                 .rotate(angle.extend() / 2)
@@ -281,5 +297,13 @@ public final class JTSUtils {
                 coordinates.toArray(Coordinate[]::new),
                 JTSUtils.GEOMETRY_FACTORY
         );
+    }
+
+    public static boolean isApproximatelyOnLine(Coordinate point, LineSegment line) {
+        PrecisionModel precisionModelCustom = new PrecisionModel(GEOMETRY_FACTORY.getPrecisionModel().getScale() / 100);
+        GEOMETRY_FACTORY.getPrecisionModel().makePrecise(point);
+        GEOMETRY_FACTORY.getPrecisionModel().makePrecise(line.p0);
+        GEOMETRY_FACTORY.getPrecisionModel().makePrecise(line.p1);
+        return precisionModelCustom.makePrecise((point.x - line.p0.x) / (line.p1.x - line.p0.x) - (point.y - line.p0.y) / (line.p1.y - line.p0.y)) == 0;
     }
 }

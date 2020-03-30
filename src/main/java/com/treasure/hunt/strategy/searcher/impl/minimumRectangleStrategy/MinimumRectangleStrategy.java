@@ -180,6 +180,9 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
             transformer = new TransformForAxisParallelism(hint, realSearcherStartPosition);
             lastLocation = JTSUtils.createPoint(0, 0); // the point the searcher moved to in the previous move
             visitedPolygon.union(visitedPolygon(lastLocation, new SearchPath()));
+            updatePhaseHints();
+            hintPolygon = intersectHints(obtainedHints, phaseHints);
+            currentMultiPolygon = hintPolygon.difference(visitedPolygon);
         }
         previousHintQuality = currentHintQuality;
         HalfPlaneHint hintInInternal = transformer.toInternal(hint);
@@ -188,16 +191,24 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         obtainedHints.add(hintInInternal);
         SearchPath move = new SearchPath();
 
+        if (rectangleNotLargeEnough() || currentMultiPolygon == null || currentMultiPolygon.getArea() == 0) {
+            currentHintQuality = HintQuality.none;
+            return returnHandling(setNewPhaseAndMove(move));
+        }
+
         if (previousHintQuality == HintQuality.bad) {
             currentHintQuality = HintQuality.none;
+            move.addPoint(lastLocation);
             move = lastHintBadSubroutine.lastHintBadSubroutine(currentHint, previousHint,
                     move);
             updateVisitedPolygon(move);
-            reducePolygons();
-            if (currentMultiPolygon != null && currentMultiPolygon.getArea() != 0) {// otherwise, the phase is increased
+            reducePolygons(previousHint);
+            reducePolygons(currentHint);
+            if (currentMultiPolygon != null && currentMultiPolygon.getArea() != 0) {// otherwise, the phase is increased next move
                 return returnHandling(GeometricUtils.moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB,
                         searchAreaCornerC, searchAreaCornerD, move));
             }
+            return returnHandling(move);
         } else {
             if (!hintIsGood(currentHint) && !rectangleNotLargeEnough()) {
                 currentHintQuality = HintQuality.bad;
@@ -206,7 +217,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
                 move.addPoint(destination);
                 return returnHandling(move);
             }
-            reducePolygons();
+            reducePolygons(currentHint);
         }
 
         if (rectangleNotLargeEnough() || currentMultiPolygon == null || currentMultiPolygon.getArea() == 0) {
@@ -217,9 +228,9 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         }
     }
 
-    void reducePolygons() {
+    void reducePolygons(HalfPlaneHint hint) {
         if (hintPolygon != null) {
-            hintPolygon = ExcludedAreasUtils.reduceConvexPolygon(hintPolygon, currentHint);
+            hintPolygon = ExcludedAreasUtils.reduceConvexPolygon(hintPolygon, hint);
             if (hintPolygon == null) {
                 currentMultiPolygon = null;
             } else {
@@ -240,7 +251,9 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
     }
 
     SearchPath setNewPhaseAndMove(SearchPath move) {
-        scanCurrentRectangle(move, currentHint);
+        if (currentMultiPolygon != null && currentMultiPolygon.getArea() != 0) {
+            scanCurrentRectangle(move, currentHint);
+        }
         Geometry newMultiPolygon = null;
         updateVisitedPolygon(move);
         do {
@@ -315,6 +328,9 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         // add polygon
         if (currentMultiPolygon != null) {
             move.addAdditionalItem(new GeometryItem<>(transformer.toExternal(currentMultiPolygon),
+                    GeometryType.CURRENT_POLYGON));
+        } else {
+            move.addAdditionalItem(new GeometryItem<>(GEOMETRY_FACTORY.createPolygon(),
                     GeometryType.CURRENT_POLYGON));
         }
 
@@ -432,7 +448,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
     }
 
     private void scanCurrentRectangle(SearchPath move, HalfPlaneHint hint) {
-        rectangleScanMinimal(searchAreaCornerA.getCoordinate(), searchAreaCornerB.getCoordinate(),
+        specificRectangleScan(searchAreaCornerA.getCoordinate(), searchAreaCornerB.getCoordinate(),
                 searchAreaCornerC.getCoordinate(), searchAreaCornerD.getCoordinate(), move);
     }
 

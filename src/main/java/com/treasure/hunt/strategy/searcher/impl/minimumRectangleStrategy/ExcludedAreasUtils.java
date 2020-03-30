@@ -101,21 +101,38 @@ public class ExcludedAreasUtils {
         }
         Coordinate[] coordinatesFromPolygon = convexPolygon.getCoordinates();
         ArrayList<Coordinate> newPolygonCorners = new ArrayList<>();
+        LineSegment hintLine = halfPlaneHint.getHalfPlaneLine();
+        boolean hintLineLiesOnPolygonLine = false;
         for (int i = 0; i < coordinatesFromPolygon.length - 1; i++) {
+            if (i != coordinatesFromPolygon.length - 1) {
+                if (JTSUtils.isApproximatelyOnLine(coordinatesFromPolygon[i], hintLine) &&
+                        JTSUtils.isApproximatelyOnLine(coordinatesFromPolygon[i], hintLine)) {
+                    hintLineLiesOnPolygonLine = true;
+                }
+            }
             if (halfPlaneHint.inHalfPlane(coordinatesFromPolygon[i])) {
                 newPolygonCorners.add(coordinatesFromPolygon[i]);
             }
         }
-        ArrayList<Coordinate> intersections = JTSUtils.convexPolygonLineIntersection(convexPolygon, halfPlaneHint.getHalfPlaneLine());//convexPolygon.intersection(halfPlaneHint.getHalfPlaneLineString());
-        if (intersections.size() > 0) {
-            if (intersections.size() != 2) {
-                throw new IllegalArgumentException("the intersection has more than 2 points or only 1 point");
+        ArrayList<Coordinate> intersections = JTSUtils.convexPolygonLineIntersection(convexPolygon, hintLine);
+        if (hintLineLiesOnPolygonLine || intersections.size() == 3) {
+            if (newPolygonCorners.size() <= 2) {
+                return null;
             }
-            newPolygonCorners.add(intersections.get(0));
-            newPolygonCorners.add(intersections.get(1));
-        }
-        if (newPolygonCorners.size() < 3) {
-            return null;
+        } else { // the intersection gets considered
+            if (intersections.size() > 0) {
+                if (intersections.size() != 2) {
+                    throw new IllegalArgumentException("the intersection has " + intersections.size() + " points." +
+                            " It should have 0, 2 or 3.\n convexPolygon: \n" + convexPolygon + "\n halfPlaneHint: \n"
+                            + halfPlaneHint.getCenter() + "\n" + halfPlaneHint.getRight() +
+                            "\n the intersecting points:\n" + intersections);
+                }
+                newPolygonCorners.add(intersections.get(0));
+                newPolygonCorners.add(intersections.get(1));
+            }
+            if (newPolygonCorners.size() < 3) {
+                return null;
+            }
         }
         newPolygonCorners.add(newPolygonCorners.get(0));
         Polygon newPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon(newPolygonCorners.toArray(new Coordinate[]{}));

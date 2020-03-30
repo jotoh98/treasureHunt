@@ -9,8 +9,6 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.util.AffineTransformation;
 import org.locationtech.jts.math.Vector2D;
 
-import java.util.Arrays;
-
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.right;
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.up;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.*;
@@ -60,7 +58,7 @@ public class RoutinesFromPaper {
      * @see RoutinesFromPaper#rectangleScan(Point, Point, Point, Point, SearchPath)
      */
     public static SearchPath rectangleScan(Coordinate A, Coordinate B, Coordinate C, Coordinate D, SearchPath searchPath) {
-        if (A.distance(B) > A.distance(D)) {
+        if (A.distance(B) > A.distance(D)) { //todo add startpoint to the searchPath
             Coordinate temp = A;
             A = D;
             D = C;
@@ -79,7 +77,8 @@ public class RoutinesFromPaper {
         Point[] a = lineOfPointsWithDistanceOne(k, A, B);
         Point[] b = lineOfPointsWithDistanceOne(k, D, C);
 
-        return meanderThroughLines(a, b, k, searchPath);
+        meanderThroughLines(a, b, k, searchPath);
+        return searchPath;
     }
 
     public static SearchPath meanderThroughLines(Point[] a, Point[] b, int k, SearchPath searchPath) {
@@ -385,25 +384,34 @@ public class RoutinesFromPaper {
      * @return the basic transformation of this rectangle-hint pair
      */
     static int getBasicTransformation(Coordinate[] rectangle, HalfPlaneHint hint) {
+        boolean hintGoesThroughEdge = false;
+        LineSegment hintLine = hint.getHalfPlaneLine();
+        for (int i = 0; i < 4; i++) {
+            //if (doubleEqual(hintLine.distancePerpendicular(rectangle[i]), 0)) {
+            if (JTSUtils.isApproximatelyOnLine(rectangle[i], hintLine)) {
+                hintGoesThroughEdge = true;
+            }
+        }
+
         for (int i = 0; i <= 7; i++) {
             Coordinate[] testRect = phiRectangle(i, rectangle);
             HalfPlaneHint testHint = phiHint(i, rectangle, hint);
-            LineSegment hintLine = new LineSegment(testHint.getCenter(),
-                    testHint.getRight());
+            LineSegment testHintLine = testHint.getHalfPlaneLine();
             LineSegment testAD = new LineSegment(testRect[0], testRect[3]);
-            Coordinate AD_hint = lineWayIntersection(hintLine, testAD);
+            Coordinate intersectionHintAD = lineWayIntersection(testHintLine, testAD);
             if (testHint.getDirection() == up) {
                 return i;
             }
             if (testHint.getDirection() == right &&
                     testHint.getUpperHintPoint().getX() < testHint.getLowerHintPoint().getX() &&
-                    AD_hint != null) {
+                    (intersectionHintAD != null || hintGoesThroughEdge)) {
                 return i;
             }
         }
         throw new IllegalArgumentException("Somehow there was no basic transformation found for this " +
-                "rectangle and hint. This is impossible.\n" + "rectangle: " + Arrays.toString(rectangle) +
-                " anglepoints: " + hint.getCenter() + hint.getRight());
+                "rectangle and hint. This is impossible.\nrectangle: \n " + rectangle[0] +
+                "\n " + rectangle[1] + "\n " + rectangle[2] + "\n " + rectangle[3] +
+                "\nhint:\n " + hint.getCenter() + "\n " + hint.getRight());
     }
 
     /**

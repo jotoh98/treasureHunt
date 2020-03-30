@@ -8,19 +8,22 @@ import com.treasure.hunt.strategy.geom.StatusMessageType;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
+import org.locationtech.jts.geom.LineString;
 
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
-import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.*;
+import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.centerOfRectangle;
+import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.twoStepsOrthogonal;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.*;
 import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
 import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
-import static org.locationtech.jts.algorithm.Angle.normalizePositive;
 
 /**
  * @author Rank
  */
+@Slf4j
 public class LastHintBadSubroutine {
     /**
      * Variable names are equivalent to the paper, but since a', d', etc. is not a valid variable name in Java,
@@ -269,6 +272,9 @@ public class LastHintBadSubroutine {
                 statusMessage = statusMessage.concat(L1DoubleAposDef + "\n" + jDef + jAposDef +
                         "\n The search rectangle is reduced to " + transformedRectangle[0] + transformedRectangle[1] +
                         "jj'.");
+                break;
+            default:
+                throw new IllegalArgumentException("caseIndex must be in [1,...,6] but equals " + caseIndex);
         }
         StatusMessageItem explanation = new StatusMessageItem(StatusMessageType.EXPLANATION_MOVEMENT, statusMessage);
         move.getStatusMessageItemsToBeAdded().add(explanation);
@@ -294,7 +300,7 @@ public class LastHintBadSubroutine {
      * is found)
      */
     public SearchPath lastHintBadSubroutine(HalfPlaneHint currentHint,
-                                     HalfPlaneHint lastBadHint, SearchPath move) {
+                                            HalfPlaneHint lastBadHint, SearchPath move) {
 
         initializeVariables(currentHint, lastBadHint);
         int caseIndex = -1;
@@ -315,8 +321,8 @@ public class LastHintBadSubroutine {
             move = rectangleScanPhiReverse(basicTransformation, currentRectangle, mApos, kApos, k, m, move, strategy);
             newRectangle = phiOtherRectangleInverse(basicTransformation, currentRectangle,
                     new Coordinate[]{g, B, C, h});
-        } else if ((x2Apos == left || x2Apos == down) &&
-                lineBetweenClockwise(L2Apos, mAposKApos, L1DoubleApos)
+        } else if (x2Apos == down || (x2Apos == left &&
+                lineBetweenClockwise(L2Apos, mAposKApos, L1DoubleApos))
         ) {
             caseIndex = 3;
             // rectangleScan(phi_reverse(k, (s, s', d', d))
@@ -359,6 +365,18 @@ public class LastHintBadSubroutine {
             newRectangle = phiOtherRectangleInverse(basicTransformation, currentRectangle,
                     new Coordinate[]{A, B, j, jApos});
         }
+        log.debug("basicTransformation = " + basicTransformation + "\n" + "caseIndex = " + caseIndex);
+
+        if (caseIndex == -1) {
+            throw new AssertionError("No case got used.\n basicTransformation = " + basicTransformation +
+                    "\n current rectangle " + strategy.searchAreaCornerA + "\n " +
+                    strategy.searchAreaCornerB + "\n " +
+                    strategy.searchAreaCornerC + "\n " +
+                    strategy.searchAreaCornerD + "\n current hint =\n " +
+                    currentHint.getCenter() + ", " + currentHint.getRight() + "\n last hint =\n " +
+                    lastBadHint.getCenter() + ", " + lastBadHint.getRight()
+            );
+        }
         addCaseDescriptionToStatus(move, basicTransformation, caseIndex, strategy);
 
         strategy.searchAreaCornerA = GEOMETRY_FACTORY.createPoint(newRectangle[0]);
@@ -375,16 +393,20 @@ public class LastHintBadSubroutine {
      * @return if line is clockwise between between1 (included) and between2 (excluded)
      */
     private boolean lineBetweenClockwise(LineSegment line, LineSegment between1, LineSegment between2) {
-        LineSegment lineReverse = new LineSegment(line.p1, line.p0);
-        LineSegment between2reverse = new LineSegment(between2.p1, between2.p0);
-        double angleBetween1 = between1.angle();
-        double maxAngleLineBetween1 = Math.max(normalizePositive(line.angle() - angleBetween1),
-                normalizePositive(lineReverse.angle() - angleBetween1));
-        double maxAngleBetween2and1 = Math.max(normalizePositive(between2.angle() - angleBetween1),
-                normalizePositive(between2reverse.angle() - angleBetween1));
-        if (maxAngleLineBetween1 == 0) {
-            return true;
+        GEOMETRY_FACTORY.getPrecisionModel().makePrecise(line.p0);
+        GEOMETRY_FACTORY.getPrecisionModel().makePrecise(line.p1);
+        GEOMETRY_FACTORY.getPrecisionModel().makePrecise(between1.p0);
+        GEOMETRY_FACTORY.getPrecisionModel().makePrecise(between1.p1);
+        GEOMETRY_FACTORY.getPrecisionModel().makePrecise(between2.p0);
+        GEOMETRY_FACTORY.getPrecisionModel().makePrecise(between2.p1);
+
+        double minLineAngle = GeometricUtils.minimumAngleToXAxis(line);
+        double minBetween1Angle = GeometricUtils.minimumAngleToXAxis(between1);
+        double minBetween2Angle = GeometricUtils.minimumAngleToXAxis(between2);
+        if (minBetween1Angle == 0) {
+            minBetween1Angle = Math.PI;
         }
-        return maxAngleBetween2and1 < maxAngleLineBetween1;
+
+        return minLineAngle <= minBetween1Angle && minLineAngle > minBetween2Angle;
     }
 }
