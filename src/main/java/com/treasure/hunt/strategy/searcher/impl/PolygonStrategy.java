@@ -1,11 +1,11 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
+import com.treasure.hunt.game.mods.hideandseek.HideAndSeekSearcher;
 import com.treasure.hunt.jts.geom.GeometryAngle;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
-import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.*;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class PolygonStrategy
-        implements Searcher<AngleHint> {
+        implements HideAndSeekSearcher<AngleHint> {
 
     Geometry searchArea;
     double currentSearchFieldDim = 4;
@@ -47,13 +47,30 @@ public class PolygonStrategy
     public SearchPath move(AngleHint hint) {
         hints.add(hint.getGeometryAngle().copy());
         Geometry polyHint = createPolygonHintFrom(hint.getGeometryAngle());
-        if (searchArea.getArea() < Math.pow(2, 4) && currentSearchFieldDim < Math.pow(2, 20)) {
+        if ((searchArea.getArea() < Math.pow(2, 4) || searchArea.getArea() / searchArea.getLength() < 2) && currentSearchFieldDim < Math.pow(2, 20)) {
             extendSearchSquare();
+            if (searchArea.getArea() / searchArea.getLength() < 1) {
+                return scanCompleteSearchArea();
+            }
         }
         searchArea = searchArea.intersection(polyHint);
         currentPosition = nextPosition();
         SearchPath currentPath = new SearchPath(currentPosition);
         currentPath.addAdditionalItem(new GeometryItem(searchArea, GeometryType.CURRENT_POLYGON));
+        return currentPath;
+    }
+
+    /**
+     * if the search area is too tight (height smaller 2) and bounded than every vertices will be visited
+     *
+     * @return SearchPath including every vertices of the search area
+     */
+    public SearchPath scanCompleteSearchArea() {
+        SearchPath currentPath = new SearchPath(currentPosition);
+        currentPath.addAdditionalItem(new GeometryItem(searchArea, GeometryType.CURRENT_POLYGON));
+        for (Coordinate vertices : searchArea.getCoordinates()) {
+            currentPath.addPoint(JTSUtils.createPoint(vertices));
+        }
         return currentPath;
     }
 
@@ -70,13 +87,17 @@ public class PolygonStrategy
             LineSegment currentLineSeg = new LineSegment(vertices.get(i), vertices.get(i + 1));
 
             Coordinate leftInter = hint.leftRay().intersection(currentLineSeg);
-            if (leftInter != null && currentLineSeg.distance(leftInter) > 1e-10) {
-                leftInter = null;
+            if (leftInter != null) {
+                if (JTSUtils.coordinateEqual(leftInter, vertices.get(i)) || JTSUtils.coordinateEqual(leftInter, vertices.get(i + 1)) || currentLineSeg.distance(leftInter) > 1e-10) {
+                    leftInter = null;
+                }
             }
 
             Coordinate rightInter = hint.rightRay().intersection(currentLineSeg);
-            if (rightInter != null && currentLineSeg.distance(rightInter) > 1e-10) {
-                rightInter = null;
+            if (rightInter != null) {
+                if (JTSUtils.coordinateEqual(rightInter, vertices.get(i)) || JTSUtils.coordinateEqual(rightInter, vertices.get(i + 1)) || currentLineSeg.distance(rightInter) > 1e-10) {
+                    rightInter = null;
+                }
             }
 
             if (hint.inView(vertices.get(i))) {
