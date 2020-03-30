@@ -332,20 +332,32 @@ public class GameField {
      *
      * @return a List of {@link org.locationtech.jts.geom.Coordinate} with their corresponding Constant of (Coordinates C ; their associated Value of {dist(C-Player)/dist(C-Origin)} )
      */
-    public List<Pair<Coordinate, Double>> getWorstPointsOnAllEdges() {
+    public List<Pair<Coordinate, Double>> getWorstPointsOnAllEdges(double minDistance) {
+
+
         // making the decision transparent by drawing all lines which are inspected
-        Geometry innerBuffer = possibleArea.getObject().buffer( -0.001);
-        innerBufferItem = new GeometryItem(innerBuffer, GeometryType.INNER_BUFFER, innerBufferStyle);
+        Geometry innerBufferedArea = possibleArea.getObject().buffer(-0.001);
+
+        // due to rounding errors in the calculation a minimally negative buffer is to be drawn
+        //innerBufferItem = new GeometryItem(innerBufferedArea.copy(), GeometryType.INNER_BUFFER, innerBufferStyle);
+
+        Geometry geometryToCheck;
+        if(minDistance > this.searcherScoutRadius){
+            Circle minDistanceCircle = new Circle(startingPoint.getCoordinate(), minDistance, geometryFactory);
+            geometryToCheck = innerBufferedArea.difference(minDistanceCircle);
+        }else{ //dont bother
+            geometryToCheck = innerBufferedArea;
+        }
+
+        innerBufferItem = new GeometryItem(geometryToCheck.copy(), GeometryType.INNER_BUFFER, innerBufferStyle);
 
 
         log.trace("# geometries " + this.possibleArea.getObject().getNumGeometries());
         log.trace("# geometries buffered " + this.possibleArea.getObject().buffer(-0.1).getNumGeometries());
 
-        // due to rounding errors in the calculation a minimally negative buffer is to be drawn
-        Geometry innerBufferedArea = this.possibleArea.getObject().buffer( -0.1);
-
         Pair<Coordinate, Double> bestSampled = new Pair(this.favoredTreasureLocation.getObject().getCoordinate(), (this.favoredTreasureLocation.getObject().getCoordinate().distance(this.currentPlayersPosition.getCoordinate()) + this.walkedPathLength) / this.favoredTreasureLocation.getObject().getCoordinate().distance(this.startingPoint.getCoordinate()));
         Pair<Coordinate, Double> bestCalc = new Pair(this.favoredTreasureLocation.getObject().getCoordinate(), this.favoredTreasureLocation.getObject().getCoordinate().distance(this.currentPlayersPosition.getCoordinate()) / this.favoredTreasureLocation.getObject().getCoordinate().distance(this.startingPoint.getCoordinate()));
+
 
         // always consider just leaving the treasure as is
         List<Pair<Coordinate, Double>> worstEdgePoints = new ArrayList<>();
@@ -354,9 +366,9 @@ public class GameField {
         worstEdgePointsSampled.add(bestSampled);
 
         // for the case, that the player's visited area divides the possible area into 2 or more Polygons, a seperate search for each geometry is required
-        for(int geomNumber = 0; geomNumber < innerBufferedArea.getNumGeometries(); geomNumber++){
-            log.trace(" geom " + geomNumber+ " has " + innerBufferedArea.getGeometryN(geomNumber).getCoordinates().length + " coords");
-            Geometry currentGeometry = innerBufferedArea.getGeometryN(geomNumber);
+        for(int geomNumber = 0; geomNumber < geometryToCheck.getNumGeometries(); geomNumber++){
+            log.trace(" geom " + geomNumber+ " has " + geometryToCheck.getGeometryN(geomNumber).getCoordinates().length + " coords");
+            Geometry currentGeometry = geometryToCheck.getGeometryN(geomNumber);
             Coordinate[] edges = currentGeometry.getCoordinates();
 
             log.trace("Sampling " + edges.length + " edges in run " + visitedPoints.size());

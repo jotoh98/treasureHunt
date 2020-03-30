@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Preference(name = StatisticalHider.DistanceFromResultingCentroidToTreasureWeight_Preference, value = 3)
 @Preference(name = MobileTreasureHider.treasureBeforeHintFirst_Preference, value = 1)
 @Preference(name = MobileTreasureHider.walkedPathLengthForTreasureRelocation_Preference, value = 1)
-@Preference(name = MobileTreasureHider.mindTreasureRelocationDistance_Preference, value = 10)
+@Preference(name = MobileTreasureHider.mindTreasureRelocationDistance_Preference, value = 3)
 public class MobileTreasureHider extends StatisticalHider implements HideAndSeekHider<AngleHint> {
 
     public static final String treasureBeforeHintFirst_Preference = "pick treasure before hint? 1/0";
@@ -106,7 +106,8 @@ public class MobileTreasureHider extends StatisticalHider implements HideAndSeek
     }
 
     private Point generateNewTreasureLocation() {
-        List<Pair<Coordinate, Double>> possibleTreasures = gameField.getWorstPointsOnAllEdges();
+        //todo maybe allow treasure to be put within inDistance as soon as the searcher left that circle once
+        List<Pair<Coordinate, Double>> possibleTreasures = gameField.getWorstPointsOnAllEdges(PreferenceService.getInstance().getPreference(mindTreasureRelocationDistance_Preference, 3).doubleValue());
 
         possibleTreasures.sort(new Comparator<Pair<Coordinate, Double>>() {
             @Override
@@ -114,9 +115,9 @@ public class MobileTreasureHider extends StatisticalHider implements HideAndSeek
                 return coordinateDoublePair.getValue().compareTo(t1.getValue());
             }
         }.reversed());
+        return gf.createPoint(possibleTreasures.get(0).getKey());
 
-        //todo maybe allow treasure to be put within inDistance as soon as the searcher left that circle once
-
+        /* alternate Implementation of minDistance
         double minDistance = PreferenceService.getInstance().getPreference(mindTreasureRelocationDistance_Preference, 5).doubleValue();
         List<Pair<Coordinate, Double>> treasureWithMinDistance = possibleTreasures.stream().filter(treasurePair -> treasurePair.getKey().distance(this.startingPoint.getCoordinate()) >= minDistance).collect(Collectors.toList());
 
@@ -127,6 +128,9 @@ public class MobileTreasureHider extends StatisticalHider implements HideAndSeek
             // return with minDistance
             return gf.createPoint(treasureWithMinDistance.get(0).getKey());
         }
+        */
+
+
     }
 
     @Override
