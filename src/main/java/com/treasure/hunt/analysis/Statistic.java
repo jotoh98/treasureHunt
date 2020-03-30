@@ -109,6 +109,11 @@ public class Statistic {
 
     }
 
+    /**
+     * @param turns    a list, containing {@link Turn} objects.
+     * @param finished telling, whether the game is finished yet.
+     * @return A list, containing {@link StatisticObject}'s.
+     */
     public List<StatisticObject> calculate(List<Turn> turns, boolean finished) {
         this.turns = new ArrayList<>(turns);
         ArrayList<StatisticObject> statisticObjects = new ArrayList<>(Arrays.asList(

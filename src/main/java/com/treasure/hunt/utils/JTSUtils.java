@@ -218,7 +218,7 @@ public final class JTSUtils {
      * @param searcher  the {@link Coordinate} of the {@link com.treasure.hunt.strategy.searcher.Searcher}.
      * @param treasure  the {@link Coordinate} of the treasure.
      * @param maxExtend number of {@code [0, 2 * Math.PI)} defining, how wide the angle is opened.
-     * @param minExtend number of {@code [0,maxExtend)}
+     * @param minExtend number of {@code [0, maxExtend)}
      * @return a valid {@link GeometryAngle}, randomly generated.
      */
     public static GeometryAngle validRandomAngle(Coordinate searcher, Coordinate treasure, double maxExtend, double minExtend) {
