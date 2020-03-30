@@ -100,11 +100,9 @@ public final class JTSUtils {
     public static boolean doubleEqual(double a, double b) {
         return (0 == GEOMETRY_FACTORY.getPrecisionModel().makePrecise(a - b));
     }
-
     public static boolean doubleEqualApproximately(double a, double b) {
         PrecisionModel precisionModelCustom = new PrecisionModel(GEOMETRY_FACTORY.getPrecisionModel().getScale() / 100);
         return (0 == precisionModelCustom.makePrecise(a - b));
-    }
 
     /**
      * @param angleHint where we want the middle point to go, from.
@@ -115,7 +113,7 @@ public final class JTSUtils {
         return middleOfGeometryAngle(angle);
     }
 
-    public static Coordinate middleOfGeometryAngle(GeometryAngle angle) {
+    public static Coordinate middleOfGeometryAngle(GeometryAngle angle){
         return angle
                 .rightVector()
                 .rotate(angle.extend() / 2)
@@ -297,6 +295,14 @@ public final class JTSUtils {
                 coordinates.toArray(Coordinate[]::new),
                 JTSUtils.GEOMETRY_FACTORY
         );
+    }
+
+    public static Point shuffleTreasure() {
+        double distance = PreferenceService.getInstance()
+                .getPreference(PreferenceService.MAX_TREASURE_DISTANCE, 100)
+                .doubleValue();
+        Coordinate treasure = Vector2D.create(Math.random() * distance, 0).rotate(2 * Math.PI * Math.random()).translate(new Coordinate());
+        return JTSUtils.GEOMETRY_FACTORY.createPoint(treasure);
     }
 
     public static boolean isApproximatelyOnLine(Coordinate point, LineSegment line) {

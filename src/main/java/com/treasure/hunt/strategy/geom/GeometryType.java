@@ -24,8 +24,8 @@ public enum GeometryType {
     // treasure/no-treasure (areas)
     TREASURE(true, "treasure", true),
     TREASURE_FLAG(true, "treasure flag", true),
-    NO_TREASURE(false, "no treasure"),
-    POSSIBLE_TREASURE(false, "possible treasure"),
+    NO_TREASURE(false, "no treasure", true),
+    POSSIBLE_TREASURE(false, "possible treasure", true),
     HINT_ANGLE(true, "angle hint", true),
 
     // searcher movements
@@ -34,7 +34,11 @@ public enum GeometryType {
     SEARCHER_MOVEMENT(true, "searcher movement"),
     SEARCHER_LAST_MOVE(true, "the searchers last movement", true),
 
-    BOUNDING_CIRCE(false, "bounding circle"),
+    BOUNDING_CIRCE(false, "bounding circle", true),
+    OUTER_CIRCLE(false, "outer circle", true),
+    WORST_CONSTANT(false, "Point with worst Constant",true),
+    INNER_BUFFER(true,"inner buffer area", true),
+    CENTROID(true, "Centroid of remaining possible Area", true),
 
     // StrategyFromPaper
     CURRENT_PHASE(false, "current phase", true),

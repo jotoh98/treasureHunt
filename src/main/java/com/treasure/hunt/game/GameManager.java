@@ -126,7 +126,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     private void setBindings() {
         latestStepViewedBinding = Bindings.createBooleanBinding(() -> turns.size() - 1 == viewIndex.get(), viewIndex, turns);
         stepForwardImpossibleBinding = finishedProperty.and(latestStepViewedBinding);
-        statistics = Bindings.createObjectBinding(() -> gameEngine.getStatistics().calculate(getVisibleTurns()), viewIndex);
+        statistics = Bindings.createObjectBinding(() -> gameEngine.getStatistics().calculate(getVisibleTurns(), gameEngine.isFinished()), viewIndex);
         stepBackwardImpossibleBinding = viewIndex.isEqualTo(0);
         lastMoveBinding = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()), viewIndex, turns);
         lastTreasureBindings = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()).getTreasureLocation(), viewIndex, turns);
@@ -201,8 +201,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     /**
      * This simulates the whole game, until its finished.
      */
-    public CompletableFuture<Void> beat() {
-        return beat(new SimpleObjectProperty<>(0d), false);
+    public CompletableFuture<Void> beat(Integer maxSteps) {
+        return beat(new SimpleObjectProperty<>(0d), false, maxSteps);
     }
 
     /**
@@ -230,10 +230,10 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     /**
      * {@code executeNextOnJavaFxThread} defaults to {@code true}.
      *
-     * @see GameManager#beat(ReadOnlyObjectProperty, Boolean)
+     * @see GameManager#beat(ReadOnlyObjectProperty, Boolean, Integer)
      */
     public CompletableFuture<Void> beat(ReadOnlyObjectProperty<Double> delay) {
-        return beat(delay, true);
+        return beat(delay, true, null);
     }
 
     /**
@@ -243,7 +243,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      * @param executeNextOnJavaFxThread if set to true the next call is made on javafx thread that is important when UI is attached to the GameManager,
      *                                  if it false the delay parameter is ignored
      */
-    public CompletableFuture<Void> beat(ReadOnlyObjectProperty<Double> delay, Boolean executeNextOnJavaFxThread) {
+    public CompletableFuture<Void> beat(ReadOnlyObjectProperty<Double> delay, Boolean executeNextOnJavaFxThread, Integer maxSteps) {
         CompletableFuture<Void> completableFuture = new CompletableFuture<>();
         if (beatThreadRunning.get()) {
             log.warn("There's already a beating thread running");
@@ -254,7 +254,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         beatThreadRunning.set(true);
         AsyncUtils.EXECUTOR_SERVICE.submit(() -> {
             log.trace("Start beating thread");
-            while (!stepForwardImpossibleBinding.get() && beatThreadRunning.get()) {
+            int steps =1;
+            while (!stepForwardImpossibleBinding.get() && beatThreadRunning.get() && (maxSteps == null || steps<= maxSteps)) {
                 if (executeNextOnJavaFxThread) {
                     CountDownLatch latch = new CountDownLatch(1);
                     Platform.runLater(() -> {
@@ -275,6 +276,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
                         completableFuture.completeExceptionally(e);
                     }
                 }
+                steps++;
             }
             log.trace("Terminating beating thread");
             if (executeNextOnJavaFxThread) {

@@ -21,7 +21,8 @@ public enum StatusMessageType {
     REMAINING_POSSIBLE_AREA("the remaining area in which the treasure could be", true, true, "The area which has not been excluded by previous hints"),
     RELATIVE_AREA_CUTOFF("relative area cutoff" , true, true, "the area which has been excluded by this area in percent"),
     DISTANCE_TREASURE_TO_CENTROID(" the distance beetween Centroid and the tresure", true, true, "the distance of the remaining possible area's centroid and the treasure"),
-    DISTANCE_ANGLE_BISECTOR_TREASURE("distance from Normal AngleLine to treasure" , true, true, "distance from AngleHint bisector to treasure");
+    DISTANCE_ANGLE_BISECTOR_TREASURE("distance from Normal AngleLine to treasure" , true, true, "distance from AngleHint bisector to treasure"),
+    CURRENT_TREASURE_POSITION("current treasure position", true,true, "the current x and y values of the treasure");
 
     @Getter
     private final String name;

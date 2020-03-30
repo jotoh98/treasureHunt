@@ -41,9 +41,9 @@ public class UserControlledHintSearcher implements HideAndSeekSearcher<Hint> {
     @Override
     public SearchPath move(Hint hint) {
         Point moveTo = SwingUtils.promptForPoint("Please provide a move location", "Hint is: " + hint);
-        SearchPath searchPath = new SearchPath(currentPosition);
+        SearchPath searchPath = new SearchPath(moveTo);
         currentPosition = moveTo;
-        searchPath.addPoint(moveTo);
+
         return searchPath;
     }
 }
