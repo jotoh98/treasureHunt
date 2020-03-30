@@ -103,6 +103,7 @@ public final class JTSUtils {
     public static boolean doubleEqualApproximately(double a, double b) {
         PrecisionModel precisionModelCustom = new PrecisionModel(GEOMETRY_FACTORY.getPrecisionModel().getScale() / 100);
         return (0 == precisionModelCustom.makePrecise(a - b));
+    }
 
     /**
      * @param angleHint where we want the middle point to go, from.

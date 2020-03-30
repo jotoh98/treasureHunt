@@ -1,5 +1,6 @@
 package com.treasure.hunt.strategy.hider.impl;
 
+import com.treasure.hunt.service.preferences.Preference;
 import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.geom.StatusMessageItem;
 import com.treasure.hunt.strategy.geom.StatusMessageType;
@@ -8,11 +9,9 @@ import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
-import com.treasure.hunt.utils.Preference;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.math.Vector2D;
 
 /**
  * This type of {@link Hider} returns a random {@link HalfPlaneHint},
