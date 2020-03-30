@@ -125,8 +125,4 @@ public class Statistic {
                 .forEach((key, value) -> statisticObjects.add(new StatisticObject(new StatisticObject.StatisticInfo(key, "Imported from preferences", Number.class), value)));
         return statisticObjects;
     }
-
-
 }
-
-

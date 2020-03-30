@@ -38,8 +38,12 @@ public final class JTSUtils {
         return GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
     }
 
-    public static Point createPoint(Coordinate p) {
-        return createPoint(p.x, p.y);
+    /**
+     * @param coordinate The {@link Coordinate}, which should be converted to a {@link Point}.
+     * @return {@link Point} lying on {@code coordinate.}.
+     */
+    public static Point createPoint(Coordinate coordinate) {
+        return createPoint(coordinate.x, coordinate.y);
     }
 
     /**
@@ -85,7 +89,7 @@ public final class JTSUtils {
         return middleOfGeometryAngle(angle);
     }
 
-    public static Coordinate middleOfGeometryAngle(GeometryAngle angle){
+    public static Coordinate middleOfGeometryAngle(GeometryAngle angle) {
         return angle
                 .rightVector()
                 .rotate(angle.extend() / 2)
@@ -201,8 +205,8 @@ public final class JTSUtils {
     }
 
     /**
-     * @param searcher  the position of the {@link com.treasure.hunt.strategy.searcher.Searcher}.
-     * @param treasure  the position of the treasure.
+     * @param searcher  the {@link Coordinate} of the {@link com.treasure.hunt.strategy.searcher.Searcher}.
+     * @param treasure  the {@link Coordinate} of the treasure.
      * @param maxExtend number of {@code [0, 2 * Math.PI)} defining, how wide the angle is opened.
      * @return a valid {@link GeometryAngle}, randomly generated.
      */
@@ -210,6 +214,13 @@ public final class JTSUtils {
         return validRandomAngle(searcher, treasure, maxExtend, 0);
     }
 
+    /**
+     * @param searcher  the {@link Coordinate} of the {@link com.treasure.hunt.strategy.searcher.Searcher}.
+     * @param treasure  the {@link Coordinate} of the treasure.
+     * @param maxExtend number of {@code [0, 2 * Math.PI)} defining, how wide the angle is opened.
+     * @param minExtend number of {@code [0,maxExtend)}
+     * @return a valid {@link GeometryAngle}, randomly generated.
+     */
     public static GeometryAngle validRandomAngle(Coordinate searcher, Coordinate treasure, double maxExtend, double minExtend) {
 
         if (maxExtend <= 0 || minExtend < 0 || minExtend >= maxExtend) {
@@ -222,12 +233,20 @@ public final class JTSUtils {
         return new GeometryAngle(GEOMETRY_FACTORY, searcher, start, extend);
     }
 
+    /**
+     * @param geometries A list, containing {@link Geometry}'s, which should be converted to a list of {@link Coordinate}'s.
+     * @return A list of {@link Coordinate}'s, which {@code geometries} is converted to.
+     */
     public static List<Coordinate> getCoordinateList(List<? extends Geometry> geometries) {
         return geometries.stream()
                 .map(Geometry::getCoordinate)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @param envelope An {@link Envelope}, which will be converted to an {@link Polygon}.
+     * @return A {@link Polygon}, a {@code envelope} is converted to.
+     */
     public static Polygon toPolygon(Envelope envelope) {
         return GEOMETRY_FACTORY.createPolygon(new Coordinate[]{
                 new Coordinate(envelope.getMinX(), envelope.getMinY()),
@@ -269,6 +288,9 @@ public final class JTSUtils {
         );
     }
 
+    /**
+     * @return A {@link Point}, where the treasure is located,msatisfying {@link PreferenceService#MIN_TREASURE_DISTANCE}, {@link PreferenceService#MAX_TREASURE_DISTANCE} and {@link PreferenceService#TREASURE_DISTANCE}.
+     */
     public static Point shuffleTreasure() {
         double maxDistance = PreferenceService.getInstance()
                 .getPreference(PreferenceService.MAX_TREASURE_DISTANCE, 100)
