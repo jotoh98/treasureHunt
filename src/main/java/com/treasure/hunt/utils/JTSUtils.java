@@ -24,6 +24,7 @@ public final class JTSUtils {
      * uses the same settings of the geometry factory.
      */
     public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(1000000));
+    public static final PrecisionModel APPROXIMATELY_PRECISION = new PrecisionModel(10000);
 
     private JTSUtils() {
     }
@@ -100,9 +101,9 @@ public final class JTSUtils {
     public static boolean doubleEqual(double a, double b) {
         return (0 == GEOMETRY_FACTORY.getPrecisionModel().makePrecise(a - b));
     }
+
     public static boolean doubleEqualApproximately(double a, double b) {
-        PrecisionModel precisionModelCustom = new PrecisionModel(GEOMETRY_FACTORY.getPrecisionModel().getScale() / 100);
-        return (0 == precisionModelCustom.makePrecise(a - b));
+        return (0 == APPROXIMATELY_PRECISION.makePrecise(a - b));
     }
 
     /**
@@ -114,7 +115,7 @@ public final class JTSUtils {
         return middleOfGeometryAngle(angle);
     }
 
-    public static Coordinate middleOfGeometryAngle(GeometryAngle angle){
+    public static Coordinate middleOfGeometryAngle(GeometryAngle angle) {
         return angle
                 .rightVector()
                 .rotate(angle.extend() / 2)
@@ -307,10 +308,6 @@ public final class JTSUtils {
     }
 
     public static boolean isApproximatelyOnLine(Coordinate point, LineSegment line) {
-        PrecisionModel precisionModelCustom = new PrecisionModel(GEOMETRY_FACTORY.getPrecisionModel().getScale() / 100);
-        GEOMETRY_FACTORY.getPrecisionModel().makePrecise(point);
-        GEOMETRY_FACTORY.getPrecisionModel().makePrecise(line.p0);
-        GEOMETRY_FACTORY.getPrecisionModel().makePrecise(line.p1);
-        return precisionModelCustom.makePrecise((point.x - line.p0.x) / (line.p1.x - line.p0.x) - (point.y - line.p0.y) / (line.p1.y - line.p0.y)) == 0;
+        return APPROXIMATELY_PRECISION.makePrecise((point.x - line.p0.x) / (line.p1.x - line.p0.x) - (point.y - line.p0.y) / (line.p1.y - line.p0.y)) == 0;
     }
 }

@@ -73,38 +73,15 @@ public class GeometricUtils {
             minX = Math.min(minX, x);
             minY = Math.min(minY, y);
 
-            if (doubleEqual(minX, x) && doubleEqual(maxY, y)) {
-                newA = rect[i];
-            }
-            if (doubleEqual(maxX, x) && doubleEqual(maxY, y)) {
-                newB = rect[i];
-            }
-            if (doubleEqual(maxX, x) && doubleEqual(minY, y)) {
-                newC = rect[i];
-            }
-            if (doubleEqual(minX, x) && doubleEqual(minY, y)) {
-                newD = rect[i];
-            }
-        }
-        if (newA == null || newB == null || newC == null || newD == null) {
-            throw new IllegalArgumentException("rect is malformed. It equals " + rect[0] + rect[1] + rect[2] + rect[3]);
         }
 
-        if (newA.equals2D(newB) || newA.equals2D(newC) || newA.equals2D(newD) || newB.equals2D(newC) || newB.equals2D(newD) || newC.equals2D(newD)) {
-            throw new IllegalArgumentException("rect is malformed. It equals " + rect[0] + rect[1] + rect[2] + rect[3]);
-        }
+        newA = new Coordinate(minX, maxY);
+        newB = new Coordinate(maxX, maxY);
+        newC = new Coordinate(maxX, minY);
+        newD = new Coordinate(minX, minY);
 
-        if (!doubleEqual(newA.x, newD.x) || !doubleEqual(newA.y, newB.y) || !doubleEqual(newB.x, newC.x) || !doubleEqual(newC.y, newD.y)) {
-            throw new IllegalArgumentException("rect is not parallel to x and y axis:" +
-                    "\nrect[0] = " + rect[0] +
-                    "\nrect[1] = " + rect[1] +
-                    "\nrect[2] = " + rect[2] +
-                    "\nrect[3] = " + rect[3] +
-                    "\nnewA = " + newA +
-                    "\nnewB = " + newB +
-                    "\nnewC = " + newC +
-                    "\nnewD = " + newD
-            );
+        if (doubleEqual(maxX, minX) || doubleEqual(maxY, minY)) {
+            throw new IllegalArgumentException("rect is malformed. It equals:\n" + rect[0] + rect[1] + rect[2] + rect[3]);
         }
         return new Coordinate[]{newA, newB, newC, newD};
     }
@@ -122,7 +99,7 @@ public class GeometricUtils {
         return new Coordinate(cur_pos.getX() + hintVector.getX(), cur_pos.getY() + hintVector.getY());
     }
 
-    public static double minimumAngleToXAxis(LineSegment line){
+    public static double minimumAngleToXAxis(LineSegment line) {
         LineSegment lineReverse = new LineSegment(line.p1, line.p0);
         return Math.min(normalizePositive(line.angle()), normalizePositive(lineReverse.angle()));
     }

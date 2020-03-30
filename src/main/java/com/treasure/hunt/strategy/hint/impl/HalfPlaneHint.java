@@ -29,7 +29,7 @@ public class HalfPlaneHint extends AngleHint {
      * to the line (the up and down enumerators are only used when the line is horizontal)
      * left and down respectively
      */
-    private Direction direction;
+    private Direction direction = null;
     private boolean visualisation = true;
 
     public HalfPlaneHint(Coordinate center, Coordinate right, boolean visualisation) {
@@ -39,9 +39,6 @@ public class HalfPlaneHint extends AngleHint {
 
     public HalfPlaneHint(Coordinate center, Coordinate right) {
         super(right, center, new Coordinate(2 * center.x - right.x, 2 * center.y - right.y));
-        Direction dir = null;
-
-
     }
 
     /**
