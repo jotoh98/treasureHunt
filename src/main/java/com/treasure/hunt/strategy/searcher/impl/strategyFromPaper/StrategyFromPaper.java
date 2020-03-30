@@ -483,5 +483,4 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     public enum HintQuality {
         good, bad, none
     }
-
 }

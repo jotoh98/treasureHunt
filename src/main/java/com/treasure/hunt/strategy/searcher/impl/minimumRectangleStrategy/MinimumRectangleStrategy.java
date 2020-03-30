@@ -243,4 +243,3 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
 
 
 }
-

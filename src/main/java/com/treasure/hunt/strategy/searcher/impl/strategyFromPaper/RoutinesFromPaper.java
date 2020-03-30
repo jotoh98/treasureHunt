@@ -319,7 +319,7 @@ public class RoutinesFromPaper {
      * @param B
      * @param C
      * @param D
-     * @param strategy the strategy whose specificRectangleScan should be used
+     * @param strategy   the strategy whose specificRectangleScan should be used
      * @param move
      * @return
      */
