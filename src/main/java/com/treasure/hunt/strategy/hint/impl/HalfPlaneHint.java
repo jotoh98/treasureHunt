@@ -29,7 +29,7 @@ public class HalfPlaneHint extends AngleHint {
      * to the line (the up and down enumerators are only used when the line is horizontal)
      * left and down respectively
      */
-    private Direction direction;
+    private Direction direction = null;
     private boolean visualisation = true;
 
     public HalfPlaneHint(Coordinate center, Coordinate right, boolean visualisation) {
@@ -39,9 +39,6 @@ public class HalfPlaneHint extends AngleHint {
 
     public HalfPlaneHint(Coordinate center, Coordinate right) {
         super(right, center, new Coordinate(2 * center.x - right.x, 2 * center.y - right.y));
-        Direction dir = null;
-
-
     }
 
     /**
@@ -126,7 +123,7 @@ public class HalfPlaneHint extends AngleHint {
             return direction;
         }
 
-        if (getCenter().getY() == getRight().getY()) {
+        if (JTSUtils.doubleEqual(getCenter().getY(), getRight().getY())) {
             if (getCenter().getX() < getRight().getX()) {
                 direction = up;
             }
@@ -161,7 +158,7 @@ public class HalfPlaneHint extends AngleHint {
 
     public HalfPlane getHalfPlaneTheTreasureIsNotIn() {
         if (halfPlaneTheTreasureIsNotIn == null) {
-            halfPlaneTheTreasureIsNotIn = new HalfPlane(getCenter(), getRight(), false);
+            halfPlaneTheTreasureIsNotIn = new HalfPlane(getCenter(), getRight(), true);
         }
         return halfPlaneTheTreasureIsNotIn;
     }
@@ -175,9 +172,14 @@ public class HalfPlaneHint extends AngleHint {
     }
 
     public boolean inHalfPlane(Coordinate coordinate) {
-        double angleHintLine = new LineSegment(getCenter(), getRight()).angle();
+        /*double angleHintLine = new LineSegment(getCenter(), getRight()).angle();
         double angleCenterP = new LineSegment(getCenter(), coordinate).angle();
-        return Angle.normalizePositive((angleCenterP - angleHintLine)) <= Math.PI;
+        double halfPlaneToPAngle = Angle.normalizePositive((angleCenterP - angleHintLine));
+        return halfPlaneToPAngle < Math.PI || JTSUtils.doubleEqualApproximately(halfPlaneToPAngle, 0) ||
+                JTSUtils.doubleEqualApproximately(halfPlaneToPAngle, Math.PI) ||
+                JTSUtils.doubleEqualApproximately(halfPlaneToPAngle, Math.PI * 2);
+        */
+        return !getHalfPlaneTheTreasureIsNotIn().inside(coordinate);
     }
 
     /**

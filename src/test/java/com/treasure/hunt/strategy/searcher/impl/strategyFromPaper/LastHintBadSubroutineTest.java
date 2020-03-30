@@ -34,7 +34,7 @@ public class LastHintBadSubroutineTest {
         strategy.phase = 4;
         strategy.move(lastHint);
         SearchPath move = new SearchPath();
-        strategy.lastHintBadSubroutine.lastHintBadSubroutine(currentHint, lastHint, move);
+        strategy.lastHintBadSubroutine.lastHintBadSubroutine(currentHint, lastHint, move, true);
     }
 
     @Test
@@ -53,6 +53,24 @@ public class LastHintBadSubroutineTest {
         strategy.phase = 10;
         strategy.move(lastHint);
         SearchPath move = new SearchPath();
-        strategy.lastHintBadSubroutine.lastHintBadSubroutine(currentHint, lastHint, move);
+        strategy.lastHintBadSubroutine.lastHintBadSubroutine(currentHint, lastHint, move, true);
+    }
+
+    @Test
+    void throwsError2() {
+        strategy.searchAreaCornerA = JTSUtils.createPoint(-64, 64);
+        strategy.searchAreaCornerB = JTSUtils.createPoint(-57.7396742, 64);
+        strategy.searchAreaCornerC = JTSUtils.createPoint(-57.7396742, 0.2301608);
+        strategy.searchAreaCornerD = JTSUtils.createPoint(-64, 0.2301608);
+        HalfPlaneHint currentHint = new HalfPlaneHint(
+                new Coordinate(-62.864965100519655, 32.25459294748826),
+                new Coordinate(-62.864965100519655, 33.254592947488256));
+        HalfPlaneHint lastHint = new HalfPlaneHint(
+                new Coordinate(-60.869837, 32.11507999999999),
+                new Coordinate(-60.80008052625587, 33.11264405025982));
+        strategy.phase = 10;
+        strategy.move(lastHint);
+        SearchPath move = new SearchPath();
+        strategy.lastHintBadSubroutine.lastHintBadSubroutine(currentHint, lastHint, move, true);
     }
 }

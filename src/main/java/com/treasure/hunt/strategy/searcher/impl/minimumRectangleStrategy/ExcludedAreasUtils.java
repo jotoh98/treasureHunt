@@ -29,6 +29,9 @@ public class ExcludedAreasUtils {
     static void addIntersectionIfInPoly(HalfPlaneHint hintOne, HalfPlaneHint hintTwo,
                                         List<HalfPlaneHint> otherHintsOne, List<HalfPlaneHint> otherHintsTwo,
                                         ArrayList<Coordinate> newPolygonCorners) {
+        if (hintOne == hintTwo) {
+            return;
+        }
         Coordinate intersection = hintOne.getHalfPlaneLine().lineIntersection(hintTwo.getHalfPlaneLine());
         if (intersection == null) {
             return;
@@ -81,8 +84,9 @@ public class ExcludedAreasUtils {
             }
         }
 
-        if (newPolygonCorners.size() <= 2)
+        if (newPolygonCorners.size() <= 2) {
             return null;
+        }
 
         newPolygonCorners.add(newPolygonCorners.get(0));
         Geometry newPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon(
@@ -96,22 +100,25 @@ public class ExcludedAreasUtils {
     }
 
     static Polygon reduceConvexPolygon(Polygon convexPolygon, HalfPlaneHint halfPlaneHint) {
-        if (convexPolygon == null || halfPlaneHint == null) {
-            throw new IllegalArgumentException("Arguments must not be null");
+        if (convexPolygon == null) {
+            throw new IllegalArgumentException("convexPolygon must not be null");
+        }
+        if (halfPlaneHint == null) {
+            throw new IllegalArgumentException("halfPlaneHint must not be null");
         }
         Coordinate[] coordinatesFromPolygon = convexPolygon.getCoordinates();
         ArrayList<Coordinate> newPolygonCorners = new ArrayList<>();
         LineSegment hintLine = halfPlaneHint.getHalfPlaneLine();
         boolean hintLineLiesOnPolygonLine = false;
         for (int i = 0; i < coordinatesFromPolygon.length - 1; i++) {
-            if (i != coordinatesFromPolygon.length - 1) {
-                if (JTSUtils.isApproximatelyOnLine(coordinatesFromPolygon[i], hintLine) &&
-                        JTSUtils.isApproximatelyOnLine(coordinatesFromPolygon[i], hintLine)) {
-                    hintLineLiesOnPolygonLine = true;
-                }
-            }
-            if (halfPlaneHint.inHalfPlane(coordinatesFromPolygon[i])) {
+            if (JTSUtils.isApproximatelyOnLine(coordinatesFromPolygon[i], hintLine) &&
+                    JTSUtils.isApproximatelyOnLine(coordinatesFromPolygon[i], hintLine)) {
+                hintLineLiesOnPolygonLine = true;
                 newPolygonCorners.add(coordinatesFromPolygon[i]);
+            } else {
+                if (halfPlaneHint.inHalfPlane(coordinatesFromPolygon[i])) {
+                    newPolygonCorners.add(coordinatesFromPolygon[i]);
+                }
             }
         }
         ArrayList<Coordinate> intersections = JTSUtils.convexPolygonLineIntersection(convexPolygon, hintLine);
@@ -141,6 +148,16 @@ public class ExcludedAreasUtils {
             return null;
         }
         return newPolygon;
+    }
+
+    static Polygon reduceConvexPolygon(Polygon convexPolygon, List<HalfPlaneHint> halfPlaneHints) {//todo do better
+        for (HalfPlaneHint halfPlaneHint : halfPlaneHints) {
+            convexPolygon = reduceConvexPolygon(convexPolygon, halfPlaneHint);
+            if (convexPolygon == null) {
+                return JTSUtils.GEOMETRY_FACTORY.createPolygon();
+            }
+        }
+        return convexPolygon;
     }
 
     static Geometry visitedPolygon(Point lastLocation, SearchPath move) {

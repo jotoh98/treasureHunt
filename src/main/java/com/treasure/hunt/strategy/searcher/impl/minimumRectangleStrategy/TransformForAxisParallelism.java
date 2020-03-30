@@ -3,6 +3,8 @@ package com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
+import lombok.Getter;
+import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.geom.util.AffineTransformation;
 
@@ -15,6 +17,8 @@ public class TransformForAxisParallelism {
     private AffineTransformation toInternal;
     private AffineTransformation toExternalWithStartPointDisplacement;
     private AffineTransformation toInternalWithStartPointDisplacement;
+    @Getter
+    private double angle;
 
     /**
      * Creates a transformer where the HalfPlaneHint hint in internal coordinates is parallel to the x-axis and shows
@@ -42,6 +46,8 @@ public class TransformForAxisParallelism {
         double sinHintAngle = (right.y - left.y) / radius;
         double cosHintAngle = (right.x - left.x) / radius;
         toExternal = AffineTransformation.rotationInstance(sinHintAngle, cosHintAngle);
+
+        angle = Angle.normalizePositive(Math.atan2(sinHintAngle, cosHintAngle));
 
         double sinHintAngleReverse = (left.y - right.y) / radius;
         double cosHintAngleReverse = (right.x - left.x) / radius;

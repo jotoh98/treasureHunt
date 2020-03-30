@@ -2,6 +2,7 @@ package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.RectangleScanEnhanced;
 import com.treasure.hunt.utils.JTSUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -161,9 +162,9 @@ public class RoutinesFromPaperTest {
 
     private void testRectangleScan(Coordinate[] rectangleToTest, Coordinate[] stepsExpectedResult) {
         SearchPath result = rectangleScan(rectangleToTest[0], rectangleToTest[1], rectangleToTest[2],
-                rectangleToTest[3], new SearchPath());
+                rectangleToTest[3], new SearchPath(), JTSUtils.createPoint(0, 0));
 
-        if (result.getPoints().size() != stepsExpectedResult.length) {
+        if (result.getPoints().size() != stepsExpectedResult.length + 1) {
             throw new AssertionError("The number of steps should be " + stepsExpectedResult.length + " " +
                     "but equals " + result.getPoints().size() + "\n result:\n" + result.getPoints()
                     + "\n expected result:\n" + Arrays.toString(stepsExpectedResult));
@@ -176,6 +177,10 @@ public class RoutinesFromPaperTest {
                 throw new AssertionError("The coordinate " + result.getPoints().get(i) + " does" +
                         " not equal the expected coordinate " + stepsExpectedResult[i]);
             }
+        }
+        if (result.getLastPoint().getX() != 0 || result.getLastPoint().getY() != 0) {
+            throw new AssertionError("The coordinate " + result.getLastPoint() + " does" +
+                    " not equal the expected coordinate POINT (0 0)");
         }
     }
 
@@ -225,7 +230,7 @@ public class RoutinesFromPaperTest {
                 JTSUtils.createPoint(d.getX() + aToBDividedByTwo.getX(),
                         d.getY() + aToBDividedByTwo.getY())
         };
-        List<Point> actualResult = RoutinesFromPaper.rectangleScanEnhanced(a.getCoordinate(), b.getCoordinate(),
+        List<Point> actualResult = RectangleScanEnhanced.rectangleScanEnhanced(a.getCoordinate(), b.getCoordinate(),
                 c.getCoordinate(), d.getCoordinate(), new SearchPath()).getPoints();
         assertArrayEqualsList(actualResult, correctResult);
     }

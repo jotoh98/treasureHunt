@@ -22,6 +22,8 @@ import static com.treasure.hunt.strategy.geom.GeometryType.CURRENT_RECTANGLE;
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.*;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.rectangleScan;
+import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StatusMessages.explainingStrategyMessage;
+import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StatusMessages.visualisationMessage;
 import static com.treasure.hunt.utils.JTSUtils.*;
 
 /**
@@ -64,11 +66,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     protected HalfPlaneHint currentHint;
     protected HintQuality previousHintQuality = HintQuality.none;
     protected LastHintBadSubroutine lastHintBadSubroutine = new LastHintBadSubroutine(this);
-    protected StatusMessageItem visualisationMessage;
-    protected StatusMessageItem explainingStrategyMessage;
     Point start; // the initial position of the player
     List<StatusMessageItem> statusMessageItemsToBeRemovedNextMove = new ArrayList<>();
     List<GeometryItem> geometryItemsToBeAddedNextMove = new ArrayList<>();
+    Point lastPosition;
 
     /**
      * {@inheritDoc}
@@ -79,33 +80,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         setRectToPhase();
         currentHint = null;
         previousHint = null;
-        visualisationMessage = new StatusMessageItem(StatusMessageType.EXPLANATION_VISUALISATION_SEARCHER,
-                "The previous hint is visualized by a red area which covers the area the treasure is not in.\n" +
-                        "The hint before the previous hint is visualized by a lighter red area which covers the area the treasure is not in.\n" +
-                        "\n" +
-                        "The phase rectangle is visualized in a dark green color.\n" +
-                        "The current rectangle is visualized in a lighter green color.\n" +
-                        "\n" +
-                        "When L1'' is needed (it will be explained when it is), this line is visualized in blue.");
-        explainingStrategyMessage = new StatusMessageItem(StatusMessageType.EXPLANATION_STRATEGY,
-                "This strategy implements the strategy from the paper \"Deterministic Treasure Hunt in the Plane with Angular Hints\"\n" +
-                        "from Bouchard et al..\n" +
-                        "\n" +
-                        "Generally this strategy works in phases i=1, 2, ... in which it searchers the treasure in rectangles of the side \n" +
-                        "length 2^i.\n" +
-                        "The rectangles are centered in the start position of the searcher and are axis parallel.\n" +
-                        "We will call the rectangle of the current phase the phase rectangle.\n" +
-                        "The strategy uses a second rectangle, called the current rectangle, which equals the phase rectangle at the beginning\n" +
-                        "of each phase. \n" +
-                        "In some draws (most draws) the searcher can exclude a part of the current rectangle by using areas seen and the current hint\n" +
-                        "gotten and lower its area.\n" +
-                        "The previous rectangle is the current rectangle from the previous draw.\n" +
-                        "When the current rectangle is small enough, the rectangle gets scanned which means the player walks a route in such a way \n" +
-                        "that it sees all points of the current rectangle. \n" +
-                        "When this happens the phase is incremented and the current rectangle is again set to the phase rectangle.\n" +
-                        "\n" +
-                        "For more information please look in the paper."
-        );
+        lastPosition = start;
     }
 
     @Override
@@ -116,7 +91,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         statusMessageItemsToBeRemovedNextMove.add(visualisationMessage);
         statusMessageItemsToBeRemovedNextMove.add(explainingStrategyMessage);
         setRectToPhase();
-        return (addState(incrementPhase(move)));
+        return (returnHandling(incrementPhase(move)));
     }
 
     @Override
@@ -143,10 +118,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                         "bad"));
                 move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY,
                         "none, because the hint before this hint was bad."));
-                SearchPath lastHintBadSteps = lastHintBadSubroutine.lastHintBadSubroutine(hint, previousHint, move);
+                SearchPath lastHintBadSteps = lastHintBadSubroutine.lastHintBadSubroutine(hint, previousHint, move, true);
                 moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD,
                         lastHintBadSteps);
-                return addState(lastHintBadSteps);
+                return returnHandling(lastHintBadSteps);
             case good:
                 lastHintQualityStatus = new StatusMessageItem(StatusMessageType.BEFORE_PREVIOUS_QUALITY, "good");
                 break;
@@ -162,7 +137,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             previousHintQuality = HintQuality.none;
             move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY,
                     "none, because the previous rectangle was small enough to be scanned directly."));
-            return addState(incrementPhase(move));
+            return returnHandling(incrementPhase(move));
         }
 
         //now analyse the hint:
@@ -178,7 +153,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             searchAreaCornerC = horizontalSplit[2];
             searchAreaCornerD = horizontalSplit[3];
             // "good" case (as defined in the paper)
-            return addState(moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB,
+            return returnHandling(moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB,
                     searchAreaCornerC, searchAreaCornerD, move));
         }
         Point[] verticalSplit = splitRectangleVertically(searchAreaCornerA, searchAreaCornerB,
@@ -191,7 +166,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             searchAreaCornerC = verticalSplit[2];
             searchAreaCornerD = verticalSplit[3];
             // "good" case (as defined in the paper)
-            return addState(moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB,
+            return returnHandling(moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB,
                     searchAreaCornerC, searchAreaCornerD, move));
         }
         // when none of this cases takes place, the hint is bad (as defined in the paper). This gets handled here:
@@ -202,7 +177,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Point destination = GEOMETRY_FACTORY.createPoint(twoStepsOrthogonal(hint,
                 centerOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD)));
         move.addPoint(destination);
-        return addState(move);
+        return returnHandling(move);
     }
 
     protected boolean rectangleNotLargeEnough() {
@@ -240,7 +215,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return move;
     }
 
-    protected SearchPath addState(SearchPath move) {
+    protected SearchPath returnHandling(SearchPath move) {
         Coordinate[] curCoords = new Coordinate[4];
         curCoords[0] = searchAreaCornerA.getCoordinate();
         curCoords[1] = searchAreaCornerB.getCoordinate();
@@ -308,6 +283,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
             move.addAdditionalItem(new GeometryItem<>(previousHint.getHalfPlaneTheTreasureIsNotIn(),
                     GeometryType.HALF_PLANE_BEFORE_PREVIOUS_ORANGE));
         }
+        lastPosition = move.getLastPoint();
         return addState(move, curCoords, currentPhaseRectangle());
     }
 
@@ -393,7 +369,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      */
     protected SearchPath specificRectangleScan(Coordinate rectangleCorner1, Coordinate rectangleCorner2,
                                                Coordinate rectangleCorner3, Coordinate rectangleCorner4, SearchPath move) {
-        return rectangleScan(rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4, move);
+        return rectangleScan(rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4, move, lastPosition);
     }
 
     /**

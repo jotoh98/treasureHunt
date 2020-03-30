@@ -10,9 +10,9 @@ import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils;
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.LastHintBadSubroutine;
-import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper;
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StrategyFromPaper;
 import com.treasure.hunt.utils.JTSUtils;
+import lombok.Getter;
 import org.locationtech.jts.geom.*;
 
 import java.util.ArrayList;
@@ -60,14 +60,15 @@ import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
  *
  * @author Rank
  */
-
 public class MinimumRectangleStrategy extends StrategyFromPaper implements Searcher<HalfPlaneHint> {
     Point realSearcherStartPosition;
+    RectangleScanEnhanced rectangleScanEnhanced = new RectangleScanEnhanced(this);
     private boolean firstMoveWithHint = true;
     private TransformForAxisParallelism transformer;
     /**
      * received after the last update of the phase's rectangle
      */
+    @Getter
     private List<HalfPlaneHint> obtainedHints; // stored in internal coordinates
     /**
      * This points represent the polygon where the treasure must lie in if it is in the current search rectangle,
@@ -84,16 +85,17 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
     private ArrayList<HalfPlaneHint> phaseHints; // stored in internal coordinates
     private Polygon hintPolygon;
     /**
-     * The polygon the player already has seen because he was there.
-     */
-    private Polygon visitedPolygon; // stored in internal coordinates
-    /**
      * The lastLocation of the previous move
      */
     private Point lastLocation; // stored in internal coordinates
+    /**
+     * The polygon the player already has seen because he was there.
+     */
+    @Getter
+    private Polygon visitedPolygon; // stored in internal coordinates
     private HintQuality currentHintQuality;
     private LastHintBadSubroutine lastHintBadSubroutine = new LastHintBadSubroutine(this);
-
+    private ArrayList<StatusMessageItem> statusMessagesOfThisMove = new ArrayList<>();
     private ArrayList<StatusMessageItem> statusMessagesToBeRemovedNextMoveInMinimumRectangleStrategy = new ArrayList<>();
 
     /**
@@ -178,6 +180,10 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         if (firstMoveWithHint) {
             firstMoveWithHint = false;
             transformer = new TransformForAxisParallelism(hint, realSearcherStartPosition);
+            StatusMessageItem angleStatus = new StatusMessageItem(StatusMessageType.ROTATION_RECTANGLE, "" + transformer.getAngle());
+            statusMessagesOfThisMove.add(angleStatus);
+            //statusMessagesToBeRemovedNextMoveInMinimumRectangleStrategy.add(angleStatus);
+
             lastLocation = JTSUtils.createPoint(0, 0); // the point the searcher moved to in the previous move
             visitedPolygon.union(visitedPolygon(lastLocation, new SearchPath()));
             updatePhaseHints();
@@ -185,46 +191,46 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
             currentMultiPolygon = hintPolygon.difference(visitedPolygon);
         }
         previousHintQuality = currentHintQuality;
-        HalfPlaneHint hintInInternal = transformer.toInternal(hint);
         previousHint = currentHint;
-        currentHint = hintInInternal;
-        obtainedHints.add(hintInInternal);
+        currentHint = transformer.toInternal(hint);
+
+        obtainedHints.add(currentHint);
         SearchPath move = new SearchPath();
 
         if (rectangleNotLargeEnough() || currentMultiPolygon == null || currentMultiPolygon.getArea() == 0) {
             currentHintQuality = HintQuality.none;
-            return returnHandling(setNewPhaseAndMove(move));
+            return returnHandlingMinimumRectangleStrategy(setNewPhaseAndMove(move));
         }
 
         if (previousHintQuality == HintQuality.bad) {
             currentHintQuality = HintQuality.none;
             move.addPoint(lastLocation);
             move = lastHintBadSubroutine.lastHintBadSubroutine(currentHint, previousHint,
-                    move);
+                    move, false);
             updateVisitedPolygon(move);
             reducePolygons(previousHint);
             reducePolygons(currentHint);
             if (currentMultiPolygon != null && currentMultiPolygon.getArea() != 0) {// otherwise, the phase is increased next move
-                return returnHandling(GeometricUtils.moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB,
+                return returnHandlingMinimumRectangleStrategy(GeometricUtils.moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB,
                         searchAreaCornerC, searchAreaCornerD, move));
             }
-            return returnHandling(move);
+            return returnHandlingMinimumRectangleStrategy(move);
         } else {
             if (!hintIsGood(currentHint) && !rectangleNotLargeEnough()) {
                 currentHintQuality = HintQuality.bad;
                 Point destination = GEOMETRY_FACTORY.createPoint(GeometricUtils.twoStepsOrthogonal(currentHint,
                         lastLocation));
                 move.addPoint(destination);
-                return returnHandling(move);
+                return returnHandlingMinimumRectangleStrategy(move);
             }
             reducePolygons(currentHint);
         }
 
         if (rectangleNotLargeEnough() || currentMultiPolygon == null || currentMultiPolygon.getArea() == 0) {
             currentHintQuality = HintQuality.none;
-            return returnHandling(setNewPhaseAndMove(move));
+            return returnHandlingMinimumRectangleStrategy(setNewPhaseAndMove(move));
         } else {
-            return returnHandling(goodHintSubroutine());
+            return returnHandlingMinimumRectangleStrategy(goodHintSubroutine());
         }
     }
 
@@ -317,7 +323,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
      * @param move the move which is done this draw in internal coordinates
      * @return the transformed move with added state and removed status messages
      */
-    protected SearchPath returnHandling(SearchPath move) {
+    protected SearchPath returnHandlingMinimumRectangleStrategy(SearchPath move) {
         // update the visited polygon and the last location
         updateVisitedPolygon(move);
         lastLocation = move.getLastPoint();
@@ -348,7 +354,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
 
         // add state of the current rectangle to move
         if (transformer == null) {
-            return super.addState(move);
+            return super.returnHandling(move);
         }
 
         // remove status messages
@@ -386,6 +392,9 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         }
         move.getStatusMessageItemsToBeAdded().add(currentHintQualityStatus);
 
+        move.getStatusMessageItemsToBeAdded().addAll(statusMessagesOfThisMove);
+        statusMessagesOfThisMove.clear();
+
         // add search rectangle and phase rectangle
         return super.addState(move, transformer.toExternal(searchRectangle()),
                 transformer.toExternal(phaseRectangle(phase)));
@@ -394,43 +403,8 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
     @Override
     protected SearchPath specificRectangleScan(Coordinate rectangleCorner1, Coordinate rectangleCorner2,
                                                Coordinate rectangleCorner3, Coordinate rectangleCorner4, SearchPath move) {
-        return rectangleScanMinimal(rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4,
+        return rectangleScanEnhanced.rectangleScanMinimal(rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4,
                 move);
-    }
-
-    private SearchPath rectangleScanMinimal(Coordinate rectangleCorner1, Coordinate rectangleCorner2,
-                                            Coordinate rectangleCorner3, Coordinate rectangleCorner4, SearchPath move) {
-        TransformForAxisParallelism transformerForRectangleAxisParallelism =
-                new TransformForAxisParallelism(new LineSegment(rectangleCorner1, rectangleCorner2));
-        ArrayList<HalfPlaneHint> rectangleToScanHints = new ArrayList<>(4);
-        rectangleToScanHints.add(new HalfPlaneHint(rectangleCorner2, rectangleCorner1));
-        rectangleToScanHints.add(new HalfPlaneHint(rectangleCorner3, rectangleCorner2));
-        rectangleToScanHints.add(new HalfPlaneHint(rectangleCorner4, rectangleCorner3));
-        rectangleToScanHints.add(new HalfPlaneHint(rectangleCorner1, rectangleCorner4));
-        Polygon newPolygonToScan = intersectHints(obtainedHints, rectangleToScanHints);
-        if (newPolygonToScan == null || newPolygonToScan.getArea() == 0) {
-            return move;
-        }
-        Polygon newPolygonToScanTransformed = transformerForRectangleAxisParallelism.toInternal(newPolygonToScan);
-        visitedPolygon = (Polygon) visitedPolygon.union(visitedPolygon(lastLocation, move));
-        Geometry newAreaToScanTransformed;
-        try {
-            newAreaToScanTransformed = newPolygonToScanTransformed.difference(visitedPolygon);
-        } catch (TopologyException e) {
-            newAreaToScanTransformed = newPolygonToScanTransformed;
-        }
-        if (newAreaToScanTransformed.getArea() == 0) {
-            return move;
-        }
-
-        Coordinate[] envelopeToScanTransformedPoints = newAreaToScanTransformed.getEnvelope().getCoordinates();
-
-        return RoutinesFromPaper.rectangleScanEnhanced(
-                transformerForRectangleAxisParallelism.toExternal(envelopeToScanTransformedPoints[0]),
-                transformerForRectangleAxisParallelism.toExternal(envelopeToScanTransformedPoints[1]),
-                transformerForRectangleAxisParallelism.toExternal(envelopeToScanTransformedPoints[2]),
-                transformerForRectangleAxisParallelism.toExternal(envelopeToScanTransformedPoints[3]), move
-        );
     }
 
     private Coordinate[] searchRectangle() {

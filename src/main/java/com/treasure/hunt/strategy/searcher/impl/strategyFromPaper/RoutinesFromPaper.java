@@ -49,16 +49,23 @@ public class RoutinesFromPaper {
      * Does the same as the routine RectangleScan in the paper.
      * It adds the Points to searchPath so that the player sees all points in the rectangle ABCD.
      * Unlike the paper it does not add the point where the procedure started to the search-path.
+     *
+     * @param searchPath the searchPath the rectangle scan path gets added to
+     * @param lastPosition  when the searchPath is empty, it is assumed that this was the point where the procedure
+     *                   rectangleScan got started and the searcher returns there afterwards
      */
-    public static SearchPath rectangleScan(Point A, Point B, Point C, Point D, SearchPath searchPath) {
-        return rectangleScan(A.getCoordinate(), B.getCoordinate(), C.getCoordinate(), D.getCoordinate(), searchPath);
+    public static SearchPath rectangleScan(Point A, Point B, Point C, Point D, SearchPath searchPath, Point lastPosition) {
+        return rectangleScan(A.getCoordinate(), B.getCoordinate(), C.getCoordinate(), D.getCoordinate(), searchPath, lastPosition);
     }
 
     /**
-     * @see RoutinesFromPaper#rectangleScan(Point, Point, Point, Point, SearchPath)
+     * @see RoutinesFromPaper#rectangleScan(Point, Point, Point, Point, SearchPath, Point)
      */
-    public static SearchPath rectangleScan(Coordinate A, Coordinate B, Coordinate C, Coordinate D, SearchPath searchPath) {
-        if (A.distance(B) > A.distance(D)) { //todo add startpoint to the searchPath
+    public static SearchPath rectangleScan(Coordinate A, Coordinate B, Coordinate C, Coordinate D, SearchPath searchPath, Point lastPosition) {
+        if(!searchPath.getPoints().isEmpty()){
+            lastPosition = searchPath.getLastPoint();
+        }
+        if (A.distance(B) > A.distance(D)) {
             Coordinate temp = A;
             A = D;
             D = C;
@@ -78,6 +85,7 @@ public class RoutinesFromPaper {
         Point[] b = lineOfPointsWithDistanceOne(k, D, C);
 
         meanderThroughLines(a, b, k, searchPath);
+        searchPath.addPoint(lastPosition);
         return searchPath;
     }
 
@@ -100,58 +108,6 @@ public class RoutinesFromPaper {
             searchPath.addPoint(b[k]);
         }
         return searchPath;
-    }
-
-    static private Point[] lineOfPointsWithDistanceAtMostTwo(int numberOfPointsOnLine, Coordinate p1, Coordinate p2) {
-        if (numberOfPointsOnLine <= 1) {
-            throw new IllegalArgumentException("numberOfPointsOnLine must be bigger than 1 but equals " + numberOfPointsOnLine);
-        }
-        Vector2D p1ToP2WithDistanceOne = new Vector2D(p1, p2);
-        p1ToP2WithDistanceOne = p1ToP2WithDistanceOne.divide(p1ToP2WithDistanceOne.length());
-
-        Coordinate newP1 = new Coordinate(p1.x + p1ToP2WithDistanceOne.getX(),
-                p1.y + p1ToP2WithDistanceOne.getY());
-        Coordinate newP2 = new Coordinate(p2.x - p1ToP2WithDistanceOne.getX(),
-                p2.y - p1ToP2WithDistanceOne.getY());
-
-        Point[] res = new Point[numberOfPointsOnLine + 1];
-
-        double xDist = newP2.getX() - newP1.getX();
-        double yDist = newP2.getY() - newP1.getY();
-        for (int i = 0; i < numberOfPointsOnLine; i++) {
-            res[i] = JTSUtils.createPoint(newP1.getX() + xDist * ((double) i / (double) (numberOfPointsOnLine - 1)),
-                    newP1.getY() + yDist * ((double) i / (double) (numberOfPointsOnLine - 1)));
-        }
-        return res;
-    }
-
-    /**
-     * Meanders through the rectangle to scan it like the RectangleScan Routine from the paper but uses fewer distance
-     */
-    public static SearchPath rectangleScanEnhanced(Coordinate a, Coordinate b, Coordinate c, Coordinate d,
-                                                   SearchPath searchPath) {
-        if (a.distance(b) > a.distance(d)) {
-            Coordinate temp = a;
-            a = d;
-            d = c;
-            c = b;
-            b = temp;
-        }
-        int numberOfPointsInOneLine = (int) Math.ceil(a.distance(b) / 2);
-        if (numberOfPointsInOneLine == 1) {
-            Vector2D aToBHalf = new Vector2D(a, b);
-            aToBHalf = aToBHalf.divide(2);
-            searchPath.addPoint(JTSUtils.createPoint(a.x + aToBHalf.getX()
-                    , a.y + aToBHalf.getY()));
-            searchPath.addPoint(JTSUtils.createPoint(d.x + aToBHalf.getX(),
-                    d.y + aToBHalf.getY()
-            ));
-            return searchPath;
-        }
-
-        Point[] a_k = lineOfPointsWithDistanceAtMostTwo(numberOfPointsInOneLine, a, b);
-        Point[] b_k = lineOfPointsWithDistanceAtMostTwo(numberOfPointsInOneLine, d, c);
-        return meanderThroughLines(a_k, b_k, numberOfPointsInOneLine - 1, searchPath);
     }
 
     /**
@@ -387,7 +343,6 @@ public class RoutinesFromPaper {
         boolean hintGoesThroughEdge = false;
         LineSegment hintLine = hint.getHalfPlaneLine();
         for (int i = 0; i < 4; i++) {
-            //if (doubleEqual(hintLine.distancePerpendicular(rectangle[i]), 0)) {
             if (JTSUtils.isApproximatelyOnLine(rectangle[i], hintLine)) {
                 hintGoesThroughEdge = true;
             }
