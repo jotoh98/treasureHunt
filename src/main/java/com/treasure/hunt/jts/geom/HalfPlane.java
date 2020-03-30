@@ -131,7 +131,7 @@ public class HalfPlane extends Line {
     /**
      * Evaluates, if a location vector of a point lies in the inner half space.<br>
      * For strict half planes, it must satisfy the following condition:
-     * &lang; a, x &rang; &ge; b,
+     * &lang; a, x &rang; &gt; b,
      * otherwise, it tests the condition:
      * &lang; a, x &rang; &ge; b.
      *

@@ -64,7 +64,7 @@ public class ListUtils {
     public static <T> boolean noneMatch(T[] list, Predicate<T> predicate) {
         return allMatch(list, predicate.negate());
     }
-  
+
     public static double standardDeviation(List<Number> table) {
         // Step 1:
         double mean = table.stream().mapToDouble(Number::doubleValue).average().getAsDouble();

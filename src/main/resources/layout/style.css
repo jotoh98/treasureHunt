@@ -112,6 +112,14 @@
     -fx-text-fill: white;
 }
 
+.table-view .table-cell {
+    -fx-text-fill: white;
+}
+
+.text-field, .combo-box{
+    -fx-text-fill: white;
+}
+
 .table-view:focused {
     -fx-background-color: transparent;
 }
@@ -324,6 +332,11 @@
     -fx-border-color: BORDER_COLOR;
     -fx-background-color: BACKGROUND_COLOR;
     -fx-background-radius: 0;
+}
+
+.text-input {
+    -fx-text-fill: white;
+    -fx-fill: white;
 }
 
 .widget-pane {

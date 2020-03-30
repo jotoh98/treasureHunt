@@ -1,8 +1,8 @@
 package com.treasure.hunt.view.settings;
 
-import com.treasure.hunt.service.settings.PrefName;
 import com.treasure.hunt.service.settings.Settings;
 import com.treasure.hunt.service.settings.SettingsService;
+import com.treasure.hunt.service.settings.UserSetting;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -48,10 +48,10 @@ public class SettingsController {
 
         String description = "";
 
-        PrefName declaredAnnotation = field.getDeclaredAnnotation(PrefName.class);
+        UserSetting declaredAnnotation = field.getDeclaredAnnotation(UserSetting.class);
 
         if (declaredAnnotation != null) {
-            description = declaredAnnotation.prefDesc();
+            description = declaredAnnotation.desc();
         }
 
         if (!description.isEmpty()) {
@@ -111,7 +111,7 @@ public class SettingsController {
     private void createSetting(Field field) {
         field.setAccessible(true);
 
-        if (field.getDeclaredAnnotation(PrefName.class) == null) {
+        if (field.getDeclaredAnnotation(UserSetting.class) == null) {
             return;
         }
 
@@ -134,7 +134,7 @@ public class SettingsController {
     }
 
     private void addBooleanSetting(VBox vBox, Field field) {
-        String name = field.getDeclaredAnnotation(PrefName.class).prefName();
+        String name = field.getDeclaredAnnotation(UserSetting.class).name();
         final boolean value = (boolean) getSetting(field);
         CheckBox checkBox = new CheckBox(name);
         checkBox.setSelected(value);
@@ -143,7 +143,7 @@ public class SettingsController {
     }
 
     private void addStringSetting(VBox vBox, Field field) {
-        String name = field.getDeclaredAnnotation(PrefName.class).prefName();
+        String name = field.getDeclaredAnnotation(UserSetting.class).name();
         String value = (String) getSetting(field);
         TextField textField = new TextField(value);
         HBox hBox = new HBox(new Label(name), textField);
@@ -154,7 +154,7 @@ public class SettingsController {
     }
 
     private void addIntSetting(VBox vBox, Field field) {
-        String name = field.getDeclaredAnnotation(PrefName.class).prefName();
+        String name = field.getDeclaredAnnotation(UserSetting.class).name();
         int value = (int) getSetting(field);
         TextField textField = new TextField();
         HBox hBox = new HBox(new Label(name), textField);
