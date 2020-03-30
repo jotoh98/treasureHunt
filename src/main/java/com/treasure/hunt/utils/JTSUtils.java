@@ -80,6 +80,10 @@ public final class JTSUtils {
         return (0 == GEOMETRY_FACTORY.getPrecisionModel().makePrecise(a - b));
     }
 
+    public static boolean coordinateEqual(Coordinate a, Coordinate b) {
+        return doubleEqual(a.x, b.x) && doubleEqual(a.y, b.y);
+    }
+
     /**
      * @param angleHint where we want the middle point to go, from.
      * @return {@link Coordinate} going through the middle of the {@link AngleHint}
