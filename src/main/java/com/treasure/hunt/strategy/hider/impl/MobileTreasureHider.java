@@ -11,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A Strategy using the {@link StatisticalHider} as Base Implementation,
@@ -26,9 +28,14 @@ import java.util.List;
 @Preference(name = StatisticalHider.DistanceFromNormalAngleLineToTreasureWeight_Preference, value = 2)
 @Preference(name = StatisticalHider.DistanceFromResultingCentroidToTreasureWeight_Preference, value = 3)
 @Preference(name = MobileTreasureHider.treasureBeforeHintFirst_Preference, value = 1)
+@Preference(name = MobileTreasureHider.walkedPathLengthForTreasureRelocation_Preference, value = 1)
+@Preference(name = MobileTreasureHider.mindTreasureRelocationDistance_Preference, value = 10)
 public class MobileTreasureHider extends StatisticalHider implements HideAndSeekHider<AngleHint> {
 
     public static final String treasureBeforeHintFirst_Preference = "pick treasure before hint? 1/0";
+    public static final String walkedPathLengthForTreasureRelocation_Preference = " consider walkedPath length for treausre reloaciton? 1/0";
+    public static final String mindTreasureRelocationDistance_Preference = "min treasure distance";
+
     @Override
     public AngleHint move(SearchPath searchPath) {
 
@@ -101,8 +108,25 @@ public class MobileTreasureHider extends StatisticalHider implements HideAndSeek
     private Point generateNewTreasureLocation() {
         List<Pair<Coordinate, Double>> possibleTreasures = gameField.getWorstPointsOnAllEdges();
 
-        // Todo refine treasure placement , maybe minDistance
-        return gf.createPoint(possibleTreasures.get(0).getKey());
+        possibleTreasures.sort(new Comparator<Pair<Coordinate, Double>>() {
+            @Override
+            public int compare(Pair<Coordinate, Double> coordinateDoublePair, Pair<Coordinate, Double> t1) {
+                return coordinateDoublePair.getValue().compareTo(t1.getValue());
+            }
+        }.reversed());
+
+        //todo maybe allow treasure to be put within inDistance as soon as the searcher left that circle once
+
+        double minDistance = PreferenceService.getInstance().getPreference(mindTreasureRelocationDistance_Preference, 5).doubleValue();
+        List<Pair<Coordinate, Double>> treasureWithMinDistance = possibleTreasures.stream().filter(treasurePair -> treasurePair.getKey().distance(this.startingPoint.getCoordinate()) >= minDistance).collect(Collectors.toList());
+
+        if(treasureWithMinDistance.isEmpty()){
+            // just return without any Min Distance restriction
+            return gf.createPoint(possibleTreasures.get(0).getKey());
+        }else{
+            // return with minDistance
+            return gf.createPoint(treasureWithMinDistance.get(0).getKey());
+        }
     }
 
     @Override

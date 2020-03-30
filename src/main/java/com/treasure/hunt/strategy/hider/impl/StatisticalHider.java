@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public abstract class StatisticalHider{
-    //todo use em
     public static final String getRelativeAreaCutoffWeight_Preference = "relative area cutoff weight";
     public static final String DistanceFromNormalAngleLineToTreasureWeight_Preference = "distance to angle bisector line weight";
     public static final String DistanceFromResultingCentroidToTreasureWeight_Preference = "distance to centroid weight";
@@ -93,6 +92,7 @@ public abstract class StatisticalHider{
         Geometry before = this.currentPossibleArea;
         log.info("current possibleArea size " + before.getArea());
         for(AngleHint hint: hints){
+
             Geometry after = gameField.testHint(hint);
             AngleHintStatistic hs = new AngleHintStatistic(hint,before,after); // autofills the absolute/relative area cutoffs
 

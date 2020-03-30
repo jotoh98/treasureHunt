@@ -3,6 +3,7 @@ package com.treasure.hunt.strategy.hider.impl;
 
 import com.treasure.hunt.jts.geom.Circle;
 import com.treasure.hunt.jts.geom.GeometryAngle;
+import com.treasure.hunt.service.preferences.Preference;
 import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryStyle;
@@ -189,10 +190,13 @@ public class GameField {
         adaptBoundingCircle();
 
         List<Point> newMovementPoints = searchPath.getPoints();
+
         log.trace("supplied searchpath " + newMovementPoints);
         this.visitedPoints.addAll(newMovementPoints);
 
         log.trace("total Walked Path " + visitedPoints.toString());
+        this.walkedPathLength += searchPath.getLength(null);
+        log.trace("total pathlength");
         Polygon checkedPoly;
         if (visitedPoints.size() > 1) {
 
@@ -248,7 +252,7 @@ public class GameField {
 
 
         List<Geometry> possibleAreas = new ArrayList<>();
-        log.debug("number of geoms in possible " + possibleArea.getObject().getNumGeometries());
+        log.trace("number of geoms in possible " + possibleArea.getObject().getNumGeometries());
         /*
         // first take all polygons separately
         for(int geometryNumber = 0; geometryNumber < possibleArea.getObject().getNumGeometries() ; geometryNumber++){
@@ -330,7 +334,7 @@ public class GameField {
      */
     public List<Pair<Coordinate, Double>> getWorstPointsOnAllEdges() {
         // making the decision transparent by drawing all lines which are inspected
-        Geometry innerBuffer = possibleArea.getObject().buffer( -0.1);
+        Geometry innerBuffer = possibleArea.getObject().buffer( -0.001);
         innerBufferItem = new GeometryItem(innerBuffer, GeometryType.INNER_BUFFER, innerBufferStyle);
 
 
@@ -340,10 +344,14 @@ public class GameField {
         // due to rounding errors in the calculation a minimally negative buffer is to be drawn
         Geometry innerBufferedArea = this.possibleArea.getObject().buffer( -0.1);
 
-        Pair<Coordinate, Double> bestSampled = new Pair(this.favoredTreasureLocation.getObject().getCoordinate(), this.favoredTreasureLocation.getObject().getCoordinate().distance(this.currentPlayersPosition.getCoordinate()) / this.favoredTreasureLocation.getObject().getCoordinate().distance(this.startingPoint.getCoordinate()));
+        Pair<Coordinate, Double> bestSampled = new Pair(this.favoredTreasureLocation.getObject().getCoordinate(), (this.favoredTreasureLocation.getObject().getCoordinate().distance(this.currentPlayersPosition.getCoordinate()) + this.walkedPathLength) / this.favoredTreasureLocation.getObject().getCoordinate().distance(this.startingPoint.getCoordinate()));
         Pair<Coordinate, Double> bestCalc = new Pair(this.favoredTreasureLocation.getObject().getCoordinate(), this.favoredTreasureLocation.getObject().getCoordinate().distance(this.currentPlayersPosition.getCoordinate()) / this.favoredTreasureLocation.getObject().getCoordinate().distance(this.startingPoint.getCoordinate()));
-        List<Pair<Coordinate, Double>> worstEdgePoints = new ArrayList<>();
 
+        // always consider just leaving the treasure as is
+        List<Pair<Coordinate, Double>> worstEdgePoints = new ArrayList<>();
+        worstEdgePoints.add(bestCalc);
+        List<Pair<Coordinate, Double>> worstEdgePointsSampled = new ArrayList<>();
+        worstEdgePointsSampled.add(bestSampled);
 
         // for the case, that the player's visited area divides the possible area into 2 or more Polygons, a seperate search for each geometry is required
         for(int geomNumber = 0; geomNumber < innerBufferedArea.getNumGeometries(); geomNumber++){
@@ -360,7 +368,8 @@ public class GameField {
             for (int currentCoordinateIndex = 1; currentCoordinateIndex < edges.length; currentCoordinateIndex++) {
                 calcOnEdge = calcMaxConstantPointOnSegment(edges[currentCoordinateIndex - 1], edges[currentCoordinateIndex], this.currentPlayersPosition.getCoordinate());
                 worstEdgePoints.add(calcOnEdge);
-                sampledOnEdge = sampleMaxConstantPointOnLineSegment(edges[currentCoordinateIndex - 1], edges[currentCoordinateIndex], this.currentPlayersPosition.getCoordinate());
+                sampledOnEdge = sampleMaxConstantWithPathOnLineSegment(edges[currentCoordinateIndex - 1], edges[currentCoordinateIndex], this.currentPlayersPosition.getCoordinate());
+                worstEdgePointsSampled.add(sampledOnEdge);
                 log.trace("line (" + edges[currentCoordinateIndex - 1] + ", " + edges[currentCoordinateIndex] + ")");
                 log.trace("Calc " + calcOnEdge);
                 log.trace("Samp " + sampledOnEdge);
@@ -382,10 +391,21 @@ public class GameField {
             }
         }.reversed());
 
+        worstEdgePointsSampled.sort(new Comparator<Pair<Coordinate, Double>>() {
+            @Override
+            public int compare(Pair<Coordinate, Double> coordinateDoublePair, Pair<Coordinate, Double> t1) {
+                return coordinateDoublePair.getValue().compareTo(t1.getValue());
+            }
+        }.reversed());
+
         log.trace("worst Point List:" + worstEdgePoints.size() + "first element: " + worstEdgePoints.get(0));
-        log.trace("best overall Sampled constant is" + bestSampled.getValue() + " at " + bestSampled.getKey().toString());
+        log.debug("best overall Sampled constant is" + bestSampled.getValue() + " at " + bestSampled.getKey().toString());
         log.debug("best overall calculated constant is" + bestCalc.getValue() + " at " + bestCalc.getKey().toString());
-        return worstEdgePoints;
+        if(PreferenceService.getInstance().getPreference(MobileTreasureHider.walkedPathLengthForTreasureRelocation_Preference, 1).intValue() == 1){
+            return worstEdgePointsSampled;
+        }else{
+            return worstEdgePoints;
+        }
     }
 
 
@@ -564,6 +584,30 @@ public class GameField {
             double distToPlayer = currentPoint.distance(this.currentPlayersPosition.getCoordinate());
             double distToStart = currentPoint.distance(startingPoint.getCoordinate());
             double constant = distToPlayer / distToStart;
+            if (constant > bestPoint.getValue()) {
+                bestPoint = new Pair<>(currentPoint, constant);
+                log.trace("new Best Point found on Linesegment at " + step + "/" + samples + "with C=" + constant);
+            }
+        }
+        return bestPoint;
+    }
+
+    private Pair<Coordinate, Double> sampleMaxConstantWithPathOnLineSegment(Coordinate p1, Coordinate p2, Coordinate player) {
+        log.trace("checking Linesegment(" + p1.getX() + ", " + p1.getY() + ") -> (" + p2.getX() + ", " + p2.getY() + ")");
+        double eps = 0.2; //the maximum distance between two sampled Point on the LineSegment
+
+        LineSegment segment = new LineSegment(p1, p2);
+        double length = segment.getLength();
+        int samples = (int) Math.ceil(length / eps);
+
+        Pair<Coordinate, Double> bestPoint = new Pair(p1, p1.distance(this.currentPlayersPosition.getCoordinate()) / p1.distance(startingPoint.getCoordinate()));
+        for (int step = 1; step <= samples; step++) {
+
+            double fractionAlong = ((double) step) / (double) samples;
+            Coordinate currentPoint = segment.pointAlong(fractionAlong);
+            double distToPlayer = currentPoint.distance(this.currentPlayersPosition.getCoordinate());
+            double distToStart = currentPoint.distance(startingPoint.getCoordinate());
+            double constant = (distToPlayer + this.walkedPathLength) / distToStart;
             if (constant > bestPoint.getValue()) {
                 bestPoint = new Pair<>(currentPoint, constant);
                 log.trace("new Best Point found on Linesegment at " + step + "/" + samples + "with C=" + constant);
