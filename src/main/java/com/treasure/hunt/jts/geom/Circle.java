@@ -1,16 +1,15 @@
 package com.treasure.hunt.jts.geom;
 
+import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.Getter;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.LineSegment;
-import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
-import org.locationtech.jts.math.Vector2D;
 import org.locationtech.jts.util.GeometricShapeFactory;
 
-import java.util.Collections;
-import java.util.List;
+import java.awt.*;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
 
 /**
  * Adding a {@link Polygon} based Circle to the {@link org.locationtech.jts} suite.
@@ -18,7 +17,7 @@ import java.util.List;
  * @author jotoh
  * @see org.locationtech.jts.geom.Geometry
  */
-public class Circle extends Coordinate {
+public class Circle extends Coordinate implements Shapeable {
 
     @Getter
     private double radius;
@@ -48,62 +47,93 @@ public class Circle extends Coordinate {
         this(coordinate, radius, 64);
     }
 
-    public List<Coordinate> intersection(LineSegment l) {
-        double dx = l.p1.x - l.p0.x;
-        double dy = l.p1.y - l.p0.y;
-        double dr = Vector2D.create(dx, dy).length();
-        double D = l.p0.x * l.p1.y - l.p1.y * l.p0.y;
-
-        double discriminant = radius * radius * dr * dr - D * D;
-
-        if (discriminant < 0) {
-            return Collections.emptyList();
-        }
-        //TODO: implement intersection
-        return null;
-    }
-
-    public boolean contains(Coordinate c) {
+    /**
+     * Tests whether a coordinate lays inside the circle or not.
+     *
+     * @param c coordinate to test
+     * @return whether a coordinate lays inside the circle or not
+     */
+    public boolean inside(Coordinate c) {
         return distance(c) <= radius;
     }
 
-    public double getArea() {
-        return Math.PI * radius * radius;
+    /**
+     * Test, whether the circle covers another circle.
+     *
+     * @param circle circle that may be covered.
+     * @return whether the circle covers another circle or not
+     */
+    public boolean covers(Circle circle) {
+        return distance(circle.getCenter()) + circle.radius <= radius;
     }
 
-    public double distance(Coordinate c) {
-        return getCenter().distance(c);
-    }
-
-    public double outerDistance(Coordinate c) {
-        return distance(c) - radius;
-    }
-
-    public Coordinate intersection(Coordinate c) {
-        double distance = getCenter().distance(c);
-        if (distance < getRadius()) {
-            return null;
-        }
-        if (distance == getRadius()) {
-            return c;
-        }
+    /**
+     * Project a coordinate on the edge of the circle.
+     *
+     * @param c coordinate to project
+     * @return projected coordinate, may be center if projected point is center
+     */
+    public Coordinate project(Coordinate c) {
         return JTSUtils.coordinateInDistance(getCenter(), c, radius);
     }
 
+    /**
+     * Get central coordinate of circle.
+     *
+     * @return central coordinate
+     */
     public Coordinate getCenter() {
         return new Coordinate(this);
     }
 
-
+    /**
+     * Generate a polygon from the circle.
+     *
+     * @return circular polygon
+     */
     public Polygon toPolygon() {
         GeometricShapeFactory shapeFactory = new GeometricShapeFactory(JTSUtils.GEOMETRY_FACTORY);
         shapeFactory.setCentre(getCenter());
-        shapeFactory.setSize(radius);
+        shapeFactory.setSize(2 * radius);
         shapeFactory.setNumPoints(numPoints);
         return shapeFactory.createCircle();
     }
 
-    public boolean covers(Point p) {
+    /**
+     * Shape the circle as an awt ellipse.
+     *
+     * @param advancedShapeWriter shape writer for shape transformation
+     * @return awt circle shape
+     */
+    @Override
+    public Shape toShape(AdvancedShapeWriter advancedShapeWriter) {
+        final GeneralPath generalPath = new GeneralPath();
+        final Shape point = advancedShapeWriter.toShape(JTSUtils.createPoint(getCenter()));
+        generalPath.append(point, false);
+        final Coordinate translatedCenter = advancedShapeWriter.getPointTransformation().transform(getCenter());
+        final double scaledRadius = advancedShapeWriter.getPointTransformation().getScale() * radius;
+        final Ellipse2D.Double ellipse = new Ellipse2D.Double(translatedCenter.x - scaledRadius, translatedCenter.y - scaledRadius, 2 * scaledRadius, 2 * scaledRadius);
+        generalPath.append(ellipse, false);
+        return generalPath;
+    }
 
+    /**
+     * Custom string serialization.
+     *
+     * @return string representation for circle
+     */
+    @Override
+    public String toString() {
+        return String.format("Circle(c: %s, r: %s)", getCenter(), radius);
+    }
+
+    /**
+     * Override the coordinate copy.
+     *
+     * @return copied circle
+     */
+    @Override
+    public Circle copy() {
+        return new Circle(super.copy(), radius);
     }
 }

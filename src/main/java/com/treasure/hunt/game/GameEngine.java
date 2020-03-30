@@ -167,7 +167,7 @@ public class GameEngine {
             Circle lastCircleHint = ((CircleHint) hint).getCircle();
             Circle newCircleHint = ((CircleHint) hint).getCircle();
             // check, whether the CircleHint contains the treasure.
-            if (!newCircleHint.contains(treasurePosition.getCoordinate())) {
+            if (!newCircleHint.inside(treasurePosition.getCoordinate())) {
                 throw new IllegalArgumentException("The CircleHint does not contain the treasure.\n" +
                         "It says, " + newCircleHint.getRadius() + " around " + newCircleHint.getCenter() + ", " +
                         "but was " + newCircleHint.getCenter().distance(treasurePosition.getCoordinate()));

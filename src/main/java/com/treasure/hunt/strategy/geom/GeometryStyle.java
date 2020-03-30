@@ -33,12 +33,10 @@ public class GeometryStyle {
                 GeometryType.HALF_PLANE_LINE_BLUE, new GeometryStyle(true, Color.BLUE)
         ));
         defaultsMapAdd.put(GeometryType.CURRENT_POLYGON, new GeometryStyle(true, new Color(0x00ff00)));
-        defaultsMap.putAll(defaultsMapAdd);
         defaultsMapAdd.put(GeometryType.HALF_PLANE_LINE_BROWN, new GeometryStyle(true, new Color(0x8B4513)));
-        defaultsMap.putAll(defaultsMapAdd);
         defaultsMapAdd.put(GeometryType.WAY_POINT_LINE, new GeometryStyle(true, new Color(0xFFFFFF)));
-        defaultsMap.putAll(defaultsMapAdd);
         defaultsMapAdd.put(GeometryType.HIGHLIGHTER, new GeometryStyle(true, Color.GREEN, Integer.MAX_VALUE));
+        defaultsMapAdd.put(GeometryType.HELPER_LINE, new GeometryStyle(true, Color.DARK_GRAY));
         defaultsMap.putAll(defaultsMapAdd);
     }
 

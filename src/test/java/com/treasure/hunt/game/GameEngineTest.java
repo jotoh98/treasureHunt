@@ -12,7 +12,8 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for the {@link GameEngine}.
@@ -49,7 +50,7 @@ class GameEngineTest {
         gameEngine.init();
         simulateSteps(gameEngine, 2);
         assertTrue(gameEngine.isFinished());
-        assertSame(gameEngine.treasurePos, gameEngine.searcherPos);
+        assertTrue(gameEngine.treasurePos.equalsTopo(gameEngine.searcherPos));
     }
 
     /**

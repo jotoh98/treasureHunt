@@ -34,10 +34,12 @@ public enum GeometryType {
     SEARCHER_MOVEMENT(true, "searcher movement"),
     SEARCHER_LAST_MOVE(true, "the searchers last movement", true),
 
+    HELPER_LINE(true, "helper line"),
+
     BOUNDING_CIRCE(false, "bounding circle", true),
     OUTER_CIRCLE(false, "outer circle", true),
-    WORST_CONSTANT(false, "Point with worst Constant",true),
-    INNER_BUFFER(true,"inner buffer area", true),
+    WORST_CONSTANT(false, "Point with worst Constant", true),
+    INNER_BUFFER(true, "inner buffer area", true),
     CENTROID(true, "Centroid of remaining possible Area", true),
 
     // StrategyFromPaper

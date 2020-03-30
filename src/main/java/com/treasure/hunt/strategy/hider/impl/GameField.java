@@ -120,7 +120,7 @@ public class GameField {
 
         boundingCircle = new GeometryItem<>(circle, GeometryType.BOUNDING_CIRCE, boundingCircleStyle);
 
-        possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{circle}, geometryFactory), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
+        possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{circle.toPolygon()}, geometryFactory), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
 
         visitedPoints.add(startingPoint);
         SearchPath startingPath = new SearchPath(startingPoint);
@@ -139,12 +139,12 @@ public class GameField {
 
         double distToBoundary = boundingCircleSize - currentPlayersPosition.distance(startingPoint);
         if (extensions < maxExtensions) {
-            while ((distToBoundary < circleExtensionDistance || !boundingCircle.getObject().contains(currentPlayersPosition)) && (extensions < maxExtensions)) {
+            while ((distToBoundary < circleExtensionDistance || !boundingCircle.getObject().inside(currentPlayersPosition.getCoordinate())) && (extensions < maxExtensions)) {
 
                 boundingCircleSize += boundingCircleExtensionDelta;
                 log.info("extending Bounding Area by " + boundingCircleSize + "to " + boundingCircleSize);
-                boundingCircle = new GeometryItem<>(new Circle(startingPoint.getCoordinate(), boundingCircleSize, geometryFactory), GeometryType.BOUNDING_CIRCE, boundingCircleStyle);
-                possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{boundingCircle.getObject()}, geometryFactory), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
+                boundingCircle = new GeometryItem<>(new Circle(startingPoint.getCoordinate(), boundingCircleSize), GeometryType.BOUNDING_CIRCE, boundingCircleStyle);
+                possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{boundingCircle.getObject().toPolygon()}, geometryFactory), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
 
                 //now recompute all the intersections of Hints and the Bounding Circle
                 for (AngleHint hint : givenHints) {
@@ -289,7 +289,7 @@ public class GameField {
 
 
     public boolean isWithinGameField(Point p) {
-        return boundingCircle.getObject().covers(p);
+        return boundingCircle.getObject().inside(p.getCoordinate());
     }
 
 

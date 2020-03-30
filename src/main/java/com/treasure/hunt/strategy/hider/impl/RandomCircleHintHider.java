@@ -1,24 +1,25 @@
 package com.treasure.hunt.strategy.hider.impl;
 
+import com.treasure.hunt.jts.geom.Circle;
+import com.treasure.hunt.service.preferences.Preference;
+import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.CircleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.math.Vector2D;
 
+@Preference(name = PreferenceService.MAX_TREASURE_DISTANCE, value = 100)
+@Preference(name = PreferenceService.MIN_TREASURE_DISTANCE, value = 0)
+@Preference(name = PreferenceService.CIRCLE_INIT_RADIUS, value = 100)
 public class RandomCircleHintHider implements Hider<CircleHint> {
-    public static int MAX_X = 100;
-    public static int MAX_Y = 200;
-    public static int MAX_RADIUS = 100;
 
-    Point treasureLocation = JTSUtils.createPoint(0, 0);
-    CircleHint lastCircleHint = null;
+    Point treasureLocation = JTSUtils.shuffleTreasure();
+    Circle lastCircle = null;
 
     @Override
     public void init(Point searcherStartPosition) {
-
     }
 
     /**
@@ -30,24 +31,18 @@ public class RandomCircleHintHider implements Hider<CircleHint> {
      * a center lying in the previous given {@link CircleHint} with a valid radius.
      *
      * @param searchPath the {@link SearchPath}, the {@link com.treasure.hunt.strategy.searcher.Searcher} did last
-     * @return
+     * @return randomly generated circle
      */
     @Override
     public CircleHint move(SearchPath searchPath) {
-        Coordinate center;
-        double radius;
-        if (lastCircleHint == null) {
-            center = new Coordinate(MAX_X * (Math.random() * 2 - 1), MAX_Y * (Math.random() * 2 - 1));
-            Vector2D movement = new Vector2D(treasureLocation.getCoordinate(), center);
-            radius = movement.length() + (MAX_RADIUS - movement.length()) * Math.random();
+        if (lastCircle == null) {
+            final double initRadius = PreferenceService.getInstance().getPreference(PreferenceService.CIRCLE_INIT_RADIUS, 100).doubleValue();
+            final Coordinate center = JTSUtils.randomInCircle(new Circle(treasureLocation.getCoordinate(), initRadius));
+            lastCircle = new Circle(center, initRadius);
         } else {
-            Vector2D movement = new Vector2D(new Coordinate(0, 0),
-                    new Coordinate(0, lastCircleHint.getCircle().getRadius() * Math.random()));
-            movement.rotate(2 * Math.PI * Math.random());
-            center = new Coordinate(movement.getX() + lastCircleHint.getCircle().x, movement.getY() + lastCircleHint.getCircle().y);
-            radius = Math.random() * (lastCircleHint.getCircle().getRadius() - lastCircleHint.getCircle().distance(center));
+            lastCircle = JTSUtils.randomContainedCircle(lastCircle, treasureLocation.getCoordinate(), lastCircle.getRadius() / (1 + Math.random() * 2));
         }
-        return new CircleHint(center, radius);
+        return new CircleHint(lastCircle.copy());
     }
 
     @Override
