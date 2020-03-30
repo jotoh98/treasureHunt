@@ -14,11 +14,17 @@ import org.locationtech.jts.geom.Point;
 public class BadHalfplaneHintHider implements Hider<HalfPlaneHint> {
     private Point treasurePosition;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void init(Point searcherStartPosition) {
         return;
     }
 
+    /**
+     * A valid {@link HalfPlaneHint} which are parallel to the X-axis.
+     */
     @Override
     public HalfPlaneHint move(SearchPath searchPath) {
         Point searcherPoint = searchPath.getLastPoint();
@@ -29,6 +35,9 @@ public class BadHalfplaneHintHider implements Hider<HalfPlaneHint> {
         }
     }
 
+    /**
+     * @return A random treasure location via {@link JTSUtils#shuffleTreasure()}.
+     */
     @Override
     public Point getTreasureLocation() {
         treasurePosition = JTSUtils.shuffleTreasure();

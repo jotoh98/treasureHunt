@@ -12,12 +12,11 @@ import org.locationtech.jts.geom.Point;
 @Preference(name = PreferenceService.TreasureLocationX_Preference, value = 70)
 @Preference(name = PreferenceService.TreasureLocationY_Preference, value = 70)
 public class FixedTreasureHider extends StatisticalHider implements Hider<AngleHint> {
-
     @Override
-    protected double rateHint(AngleHintStatistic ahs){
+    protected double rateHint(AngleHintStatistic ahs) {
         double rating = 0;
 
-        rating += 10 * ( 1 / ahs.getRelativeAreaCutoff());
+        rating += 10 * (1 / ahs.getRelativeAreaCutoff());
         rating += 1 * ahs.getDistanceFromNormalAngleLineToTreasure();
         rating += 3 * ahs.getDistanceFromResultingCentroidToTreasure();
 
@@ -25,8 +24,11 @@ public class FixedTreasureHider extends StatisticalHider implements Hider<AngleH
         return rating;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Point getTreasureLocation(){
+    public Point getTreasureLocation() {
         return this.treasure;
     }
 }

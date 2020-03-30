@@ -26,7 +26,7 @@ public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
 
     /**
      * @param searcherStartPosition the {@link Searcher} starting position,
-     *                              he will initia^lized on.
+     *                              he will initialized on.
      */
     @Override
     public void init(Point searcherStartPosition) {

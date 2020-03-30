@@ -24,8 +24,7 @@ import java.util.stream.Collectors;
  */
 
 @Slf4j
-public class PolygonStrategy
-        implements Searcher<AngleHint> {
+public class PolygonStrategy implements Searcher<AngleHint> {
 
     Geometry searchArea;
     double currentSearchFieldDim = 4;
