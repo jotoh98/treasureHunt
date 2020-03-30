@@ -49,7 +49,7 @@ public class PolygonStrategy
         Geometry polyHint = createPolygonHintFrom(hint.getGeometryAngle());
         if ((searchArea.getArea() < Math.pow(2, 4) || searchArea.getArea() / searchArea.getLength() < 2) && currentSearchFieldDim < Math.pow(2, 20)) {
             extendSearchSquare();
-            if (searchArea.getArea() / searchArea.getLength() < 2) {
+            if (searchArea.getArea() / searchArea.getLength() < 1) {
                 return scanCompleteSearchArea();
             }
         }
