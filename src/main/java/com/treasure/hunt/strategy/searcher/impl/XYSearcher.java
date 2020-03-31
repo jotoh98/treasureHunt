@@ -170,25 +170,25 @@ public class XYSearcher implements Searcher<AngleHint> {
         if (maxXSet) {
             searchPath.addAdditionalItem(new GeometryItem<>(
                     new Line(new Coordinate(maxX, 0), new Coordinate(maxX, 1)),
-                    GeometryType.HALF_PLANE_LINE
+                    GeometryType.MAX_X
             ));
         }
         if (maxYSet) {
             searchPath.addAdditionalItem(new GeometryItem<>(
                     new Line(new Coordinate(0, maxY), new Coordinate(1, maxY)),
-                    GeometryType.HALF_PLANE_LINE
+                    GeometryType.MAX_Y
             ));
         }
         if (minXSet) {
             searchPath.addAdditionalItem(new GeometryItem<>(
                     new Line(new Coordinate(minX, 0), new Coordinate(minX, 1)),
-                    GeometryType.HALF_PLANE_LINE
+                    GeometryType.MIN_X
             ));
         }
         if (minYSet) {
             searchPath.addAdditionalItem(new GeometryItem<>(
                     new Line(new Coordinate(0, minY), new Coordinate(1, minY)),
-                    GeometryType.HALF_PLANE_LINE
+                    GeometryType.MIN_Y
             ));
         }
         searcherStartPosition = newSearcherPosition;

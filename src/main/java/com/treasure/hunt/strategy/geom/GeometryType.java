@@ -36,14 +36,20 @@ public enum GeometryType {
 
     BOUNDING_CIRCE(false, "bounding circle", true),
     OUTER_CIRCLE(false, "outer circle", true),
-    WORST_CONSTANT(false, "Point with worst Constant",true),
-    INNER_BUFFER(true,"inner buffer area", true),
+    WORST_CONSTANT(false, "Point with worst Constant", true),
+    INNER_BUFFER(true, "inner buffer area", true),
     CENTROID(true, "Centroid of remaining possible Area", true),
 
     // StrategyFromPaper
     CURRENT_PHASE(false, "current phase", true),
     CURRENT_RECTANGLE(true, "current rectangle", true),
     CURRENT_POLYGON(true, "current polygon", true),
+
+    // XY Searcher
+    MAX_X(true, "max x", true),
+    MAX_Y(true, "max x", true),
+    MIN_X(true, "max x", true),
+    MIN_Y(true, "max x", true),
 
     STANDARD(true, ""),
     CURRENT_WAY_POINT(true, "Current way point", true),

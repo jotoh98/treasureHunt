@@ -40,6 +40,14 @@ public class GeometryStyle {
         defaultsMap.putAll(defaultsMapAdd);
         defaultsMapAdd.put(GeometryType.HIGHLIGHTER, new GeometryStyle(true, Color.GREEN, Integer.MAX_VALUE));
         defaultsMap.putAll(defaultsMapAdd);
+        defaultsMapAdd.put(GeometryType.MAX_X, new GeometryStyle(true, new Color(0x000000)));
+        defaultsMap.putAll(defaultsMapAdd);
+        defaultsMapAdd.put(GeometryType.MAX_Y, new GeometryStyle(true, new Color(0x000000)));
+        defaultsMap.putAll(defaultsMapAdd);
+        defaultsMapAdd.put(GeometryType.MIN_X, new GeometryStyle(true, new Color(0x000000)));
+        defaultsMap.putAll(defaultsMapAdd);
+        defaultsMapAdd.put(GeometryType.MIN_Y, new GeometryStyle(true, new Color(0x000000)));
+        defaultsMap.putAll(defaultsMapAdd);
     }
 
     private boolean visible;
