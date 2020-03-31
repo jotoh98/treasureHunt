@@ -38,6 +38,8 @@ import java.math.RoundingMode;
  *      return root;
  * }
  * }</pre>
+ *
+ * @author hassel
  */
 public class TreeConstructor {
 
