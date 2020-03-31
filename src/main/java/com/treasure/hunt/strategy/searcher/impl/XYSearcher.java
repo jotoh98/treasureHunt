@@ -39,11 +39,6 @@ public class XYSearcher implements Searcher<AngleHint> {
      */
     private boolean maxXSet = false, maxYSet = false, minXSet = false, minYSet = false;
     /**
-     * XInterval is true, if maxX and minX are set.
-     * YInterval is defined analogous.
-     */
-    private boolean XInterval = false, YInterval = false;
-    /**
      * XSteps tells, that as long as the searcher knows only a minimum X, but no maximum X
      * (or knows only a maximum X, but no minimum X), he will go 2^XSteps into the correct X-direction.
      * The same holds for the Y-coordinate.
@@ -103,9 +98,6 @@ public class XYSearcher implements Searcher<AngleHint> {
                 minY = searcherStartPosition.getY();
             }
             minYSet = true;
-            if (minYSet && maxYSet) {
-                YInterval = true;
-            }
         }
         if (leftWing.x >= searcherStartPosition.getX() && rightWing.x >= searcherStartPosition.getX()) {
             right = true;
@@ -116,9 +108,6 @@ public class XYSearcher implements Searcher<AngleHint> {
                 minX = searcherStartPosition.getX();
             }
             minXSet = true;
-            if (minXSet && maxXSet) {
-                XInterval = true;
-            }
         }
         if (leftWing.y <= searcherStartPosition.getY() && rightWing.y <= searcherStartPosition.getY()) {
             down = true;
@@ -129,9 +118,6 @@ public class XYSearcher implements Searcher<AngleHint> {
                 maxY = searcherStartPosition.getY();
             }
             maxYSet = true;
-            if (minYSet && maxYSet) {
-                YInterval = true;
-            }
         }
         if (leftWing.x <= searcherStartPosition.getX() && rightWing.x <= searcherStartPosition.getX()) {
             left = true;
@@ -142,9 +128,6 @@ public class XYSearcher implements Searcher<AngleHint> {
                 maxX = searcherStartPosition.getX();
             }
             maxXSet = true;
-            if (minXSet && maxXSet) {
-                XInterval = true;
-            }
         }
         if (minXSet && maxXSet) {
             assert (minX <= maxX);
@@ -155,28 +138,28 @@ public class XYSearcher implements Searcher<AngleHint> {
         assert (1 <= directions && directions <= 2);
 
         if (up) {
-            if (YInterval) {
+            if (maxYSet && minYSet) {
                 newCoordinate.y = (maxY + minY) / 2;
             } else {
                 newCoordinate.y += Math.pow(2, YSteps++);
             }
         }
         if (right) {
-            if (XInterval) {
+            if (maxXSet && minXSet) {
                 newCoordinate.x = (maxX + minX) / 2;
             } else {
                 newCoordinate.x += Math.pow(2, XSteps++);
             }
         }
         if (down) {
-            if (YInterval) {
+            if (maxYSet && minYSet) {
                 newCoordinate.y = (maxY + minY) / 2;
             } else {
                 newCoordinate.y -= Math.pow(2, YSteps++);
             }
         }
         if (left) {
-            if (XInterval) {
+            if (maxXSet && minXSet) {
                 newCoordinate.x = (maxX + minX) / 2;
             } else {
                 newCoordinate.x -= Math.pow(2, XSteps++);
