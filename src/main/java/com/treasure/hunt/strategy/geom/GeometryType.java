@@ -10,10 +10,7 @@ import lombok.Getter;
  */
 public enum GeometryType {
     // hints
-    FALSE_HINT(false, "False Hint"),
     HINT_CENTER(false, "hint-center"),
-    HINT_RADIUS(false, "hint-center"),
-    TRUE_HINT(false, "True Hint"),
 
     // HalfPlaneHint
     HALF_PLANE(true, "the treasure is not here", true),
@@ -31,7 +28,6 @@ public enum GeometryType {
     // searcher movements
     WAY_POINT(true, "way point"),
     WAY_POINT_LINE(true, "way point line"),
-    SEARCHER_MOVEMENT(true, "searcher movement"),
     CURRENT_WAY_POINT(true, "Current way point", true),
 
     BOUNDING_CIRCE(false, "bounding circle", true),
@@ -73,5 +69,4 @@ public enum GeometryType {
     GeometryType(boolean enabledByDefault, String displayName) {
         this(enabledByDefault, displayName, false);
     }
-
 }
