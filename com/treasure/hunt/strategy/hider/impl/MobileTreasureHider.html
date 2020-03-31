@@ -95,7 +95,7 @@ loadScripts(document, 'script');</script>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -143,6 +143,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">MobileTreasureHider</span>
 extends <a href="StatisticalHider.html" title="class in com.treasure.hunt.strategy.hider.impl">StatisticalHider</a>
 implements <a href="../../../game/mods/hideandseek/HideAndSeekHider.html" title="interface in com.treasure.hunt.game.mods.hideandseek">HideAndSeekHider</a>&lt;<a href="../../hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&gt;</pre>
+<div class="block">A Strategy using the <a href="StatisticalHider.html" title="class in com.treasure.hunt.strategy.hider.impl"><code>StatisticalHider</code></a> as Base Implementation,
+ but being able to move the treasure while the game is running and therefore implementing to the <a href="../../../game/mods/hideandseek/HideAndSeekHider.html" title="interface in com.treasure.hunt.game.mods.hideandseek"><code>HideAndSeekHider</code></a> interface
+
+ The strategy uses the <a href="GameField.html" title="class in com.treasure.hunt.strategy.hider.impl"><code>GameField</code></a> to maintain its state</div>
 </li>
 </ul>
 </div>
@@ -156,12 +160,35 @@ implements <a href="../../../game/mods/hideandseek/HideAndSeekHider.html" title=
 <!--   -->
 </a>
 <h3>Field Summary</h3>
+<table class="memberSummary">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Field</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mindTreasureRelocationDistance_Preference">mindTreasureRelocationDistance_Preference</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#treasureBeforeHintFirst_Preference">treasureBeforeHintFirst_Preference</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#walkedPathLengthForTreasureRelocation_Preference">walkedPathLengthForTreasureRelocation_Preference</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</table>
 <ul class="blockList">
 <li class="blockList"><a id="fields.inherited.from.class.com.treasure.hunt.strategy.hider.impl.StatisticalHider">
 <!--   -->
 </a>
 <h3>Fields inherited from class&nbsp;com.treasure.hunt.strategy.hider.impl.<a href="StatisticalHider.html" title="class in com.treasure.hunt.strategy.hider.impl">StatisticalHider</a></h3>
-<code><a href="StatisticalHider.html#absoluteAreaCutoff">absoluteAreaCutoff</a>, <a href="StatisticalHider.html#centroidDistanceToTreasure">centroidDistanceToTreasure</a>, <a href="StatisticalHider.html#counterStrategyGeometryCutoff">counterStrategyGeometryCutoff</a>, <a href="StatisticalHider.html#currentPossibleArea">currentPossibleArea</a>, <a href="StatisticalHider.html#distanceFromNormalAngleRay">distanceFromNormalAngleRay</a>, <a href="StatisticalHider.html#gameField">gameField</a>, <a href="StatisticalHider.html#gf">gf</a>, <a href="StatisticalHider.html#preferredHintSize">preferredHintSize</a>, <a href="StatisticalHider.html#relativeAreaCutoff">relativeAreaCutoff</a>, <a href="StatisticalHider.html#startingPoint">startingPoint</a>, <a href="StatisticalHider.html#treasure">treasure</a></code></li>
+<code><a href="StatisticalHider.html#absoluteAreaCutoff">absoluteAreaCutoff</a>, <a href="StatisticalHider.html#centroidDistanceToTreasure">centroidDistanceToTreasure</a>, <a href="StatisticalHider.html#counterStrategyGeometryCutoff">counterStrategyGeometryCutoff</a>, <a href="StatisticalHider.html#currentPossibleArea">currentPossibleArea</a>, <a href="StatisticalHider.html#DistanceFromNormalAngleLineToTreasureWeight_Preference">DistanceFromNormalAngleLineToTreasureWeight_Preference</a>, <a href="StatisticalHider.html#distanceFromNormalAngleRay">distanceFromNormalAngleRay</a>, <a href="StatisticalHider.html#DistanceFromResultingCentroidToTreasureWeight_Preference">DistanceFromResultingCentroidToTreasureWeight_Preference</a>, <a href="StatisticalHider.html#gameField">gameField</a>, <a href="StatisticalHider.html#getRelativeAreaCutoffWeight_Preference">getRelativeAreaCutoffWeight_Preference</a>, <a href="StatisticalHider.html#gf">gf</a>, <a href="StatisticalHider.html#preferredHintSize">preferredHintSize</a>, <a href="StatisticalHider.html#relativeAreaCutoff">relativeAreaCutoff</a>, <a href="StatisticalHider.html#startingPoint">startingPoint</a>, <a href="StatisticalHider.html#treasure">treasure</a></code></li>
 </ul>
 </li>
 </ul>
@@ -219,7 +246,7 @@ implements <a href="../../../game/mods/hideandseek/HideAndSeekHider.html" title=
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;com.treasure.hunt.strategy.hider.impl.<a href="StatisticalHider.html" title="class in com.treasure.hunt.strategy.hider.impl">StatisticalHider</a></h3>
-<code><a href="StatisticalHider.html#eval(java.util.List)">eval</a>, <a href="StatisticalHider.html#fillDistanceToCentroid(com.treasure.hunt.strategy.hider.impl.AngleHintStatistic)">fillDistanceToCentroid</a>, <a href="StatisticalHider.html#fillDistanceToNormalLine(com.treasure.hunt.strategy.hider.impl.AngleHintStatistic)">fillDistanceToNormalLine</a>, <a href="StatisticalHider.html#filterForValidHints(java.util.List)">filterForValidHints</a>, <a href="StatisticalHider.html#generateHints(int,org.locationtech.jts.geom.Point)">generateHints</a>, <a href="StatisticalHider.html#getTreasureLocation()">getTreasureLocation</a>, <a href="StatisticalHider.html#init(org.locationtech.jts.geom.Point)">init</a></code></li>
+<code><a href="StatisticalHider.html#eval(java.util.List)">eval</a>, <a href="StatisticalHider.html#fillDistanceToCentroid(com.treasure.hunt.strategy.hider.impl.AngleHintStatistic)">fillDistanceToCentroid</a>, <a href="StatisticalHider.html#fillDistanceToNormalLine(com.treasure.hunt.strategy.hider.impl.AngleHintStatistic)">fillDistanceToNormalLine</a>, <a href="StatisticalHider.html#fillStrategyFromPaper_RectangleCutQuality(com.treasure.hunt.strategy.hider.impl.AngleHintStatistic,com.treasure.hunt.strategy.searcher.SearchPath)">fillStrategyFromPaper_RectangleCutQuality</a>, <a href="StatisticalHider.html#filterForValidHints(java.util.List)">filterForValidHints</a>, <a href="StatisticalHider.html#generateHints(int,org.locationtech.jts.geom.Point)">generateHints</a>, <a href="StatisticalHider.html#getTreasureLocation()">getTreasureLocation</a>, <a href="StatisticalHider.html#init(org.locationtech.jts.geom.Point)">init</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -244,6 +271,55 @@ implements <a href="../../../game/mods/hideandseek/HideAndSeekHider.html" title=
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
+<!-- ============ FIELD DETAIL =========== -->
+<section role="region">
+<ul class="blockList">
+<li class="blockList"><a id="field.detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a id="treasureBeforeHintFirst_Preference">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>treasureBeforeHintFirst_Preference</h4>
+<pre>public static final&nbsp;java.lang.String treasureBeforeHintFirst_Preference</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../constant-values.html#com.treasure.hunt.strategy.hider.impl.MobileTreasureHider.treasureBeforeHintFirst_Preference">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="walkedPathLengthForTreasureRelocation_Preference">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>walkedPathLengthForTreasureRelocation_Preference</h4>
+<pre>public static final&nbsp;java.lang.String walkedPathLengthForTreasureRelocation_Preference</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../constant-values.html#com.treasure.hunt.strategy.hider.impl.MobileTreasureHider.walkedPathLengthForTreasureRelocation_Preference">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="mindTreasureRelocationDistance_Preference">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>mindTreasureRelocationDistance_Preference</h4>
+<pre>public static final&nbsp;java.lang.String mindTreasureRelocationDistance_Preference</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../constant-values.html#com.treasure.hunt.strategy.hider.impl.MobileTreasureHider.mindTreasureRelocationDistance_Preference">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</section>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <section role="region">
 <ul class="blockList">
@@ -366,7 +442,7 @@ implements <a href="../../../game/mods/hideandseek/HideAndSeekHider.html" title=
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>

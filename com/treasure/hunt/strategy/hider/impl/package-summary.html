@@ -118,7 +118,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="FixedTreasureHider.html" title="class in com.treasure.hunt.strategy.hider.impl">FixedTreasureHider</a></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">A Strategy using the <a href="StatisticalHider.html" title="class in com.treasure.hunt.strategy.hider.impl"><code>StatisticalHider</code></a> as Base Implementation, using the <a href="GameField.html" title="class in com.treasure.hunt.strategy.hider.impl"><code>GameField</code></a> to maintain its state</div>
+</td>
 </tr>
 <tr class="rowColor">
 <th class="colFirst" scope="row"><a href="GameField.html" title="class in com.treasure.hunt.strategy.hider.impl">GameField</a></th>
@@ -133,12 +135,29 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </td>
 </tr>
 <tr class="altColor">
+<th class="colFirst" scope="row"><a href="HalfPlaneAdapter_FixedTreasure.html" title="class in com.treasure.hunt.strategy.hider.impl">HalfPlaneAdapter_FixedTreasure</a></th>
+<td class="colLast">
+<div class="block">Adapter such that searchers who require HalfPlaneHints can play against this strategy
+
+ Unfortunately some redundant work needs to be done ( e.g.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colFirst" scope="row"><a href="HalfPlaneAdapter_MobileTreasure.html" title="class in com.treasure.hunt.strategy.hider.impl">HalfPlaneAdapter_MobileTreasure</a></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
 <th class="colFirst" scope="row"><a href="HintEvaluator.html" title="class in com.treasure.hunt.strategy.hider.impl">HintEvaluator</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <th class="colFirst" scope="row"><a href="MobileTreasureHider.html" title="class in com.treasure.hunt.strategy.hider.impl">MobileTreasureHider</a></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">A Strategy using the <a href="StatisticalHider.html" title="class in com.treasure.hunt.strategy.hider.impl"><code>StatisticalHider</code></a> as Base Implementation,
+ but being able to move the treasure while the game is running and therefore implementing to the <a href="../../../game/mods/hideandseek/HideAndSeekHider.html" title="interface in com.treasure.hunt.game.mods.hideandseek"><code>HideAndSeekHider</code></a> interface
+
+ The strategy uses the <a href="GameField.html" title="class in com.treasure.hunt.strategy.hider.impl"><code>GameField</code></a> to maintain its state</div>
+</td>
 </tr>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="RandomAngleHintHider.html" title="class in com.treasure.hunt.strategy.hider.impl">RandomAngleHintHider</a></th>
@@ -155,7 +174,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="StatisticalHider.html" title="class in com.treasure.hunt.strategy.hider.impl">StatisticalHider</a></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">An abstract hider which implements methods to play a basic game
+ It also supplies methods to judge a given hint by generating statistics about the hint and saving them in <a href="StatisticalHider.html" title="class in com.treasure.hunt.strategy.hider.impl"><code>StatisticalHider</code></a>
+
+ How these hints are rated is up to the <a href="StatisticalHider.html" title="class in com.treasure.hunt.strategy.hider.impl"><code>StatisticalHider</code></a> subclasses by implementing the <a href="StatisticalHider.html#rateHint(com.treasure.hunt.strategy.hider.impl.AngleHintStatistic)"><code>StatisticalHider.rateHint(AngleHintStatistic)</code></a> method</div>
+</td>
 </tr>
 <tr class="rowColor">
 <th class="colFirst" scope="row"><a href="UserControlledAngleHintHider.html" title="class in com.treasure.hunt.strategy.hider.impl">UserControlledAngleHintHider</a></th>
