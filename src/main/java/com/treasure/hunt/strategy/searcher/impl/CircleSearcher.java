@@ -12,6 +12,9 @@ import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
+/**
+ * @author hassel
+ */
 @Preference(name = PreferenceService.GLOBAL_GREEDY, value = 1)
 public class CircleSearcher implements Searcher<CircleHint> {
 
