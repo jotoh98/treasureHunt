@@ -1,6 +1,8 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
 import com.treasure.hunt.jts.geom.Line;
+import com.treasure.hunt.service.preferences.Preference;
+import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
@@ -27,6 +29,8 @@ import org.locationtech.jts.geom.Point;
  *
  * @author dorianreineccius
  */
+@Preference(name = PreferenceService.ANGLE_LOWER_BOUND, value = 0)
+@Preference(name = PreferenceService.ANGLE_UPPER_BOUND, value = Math.PI / 2)
 public class XYSearcher implements Searcher<AngleHint> {
     private Point searcherStartPosition;
     /**
@@ -137,6 +141,9 @@ public class XYSearcher implements Searcher<AngleHint> {
         }
         assert (1 <= directions && directions <= 2);
 
+        /**
+         * Move in the correct directions
+         */
         if (up) {
             if (maxYSet && minYSet) {
                 newCoordinate.y = (maxY + minY) / 2;
@@ -165,8 +172,12 @@ public class XYSearcher implements Searcher<AngleHint> {
                 newCoordinate.x -= Math.pow(2, XSteps++);
             }
         }
+
         Point newSearcherPosition = JTSUtils.createPoint(newCoordinate);
         SearchPath searchPath = new SearchPath(newSearcherPosition);
+        /**
+         * Completing additional items
+         */
         if (maxXSet) {
             searchPath.addAdditionalItem(new GeometryItem<>(
                     new Line(new Coordinate(maxX, 0), new Coordinate(maxX, 1)),
