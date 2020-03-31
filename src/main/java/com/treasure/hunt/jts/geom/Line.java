@@ -91,7 +91,7 @@ public class Line extends Ray {
      * Convert the infinite line to a line shape, if it lays inside of the visual boundary.
      *
      * @param shapeWriter writer for shapes, holds the visual boundary
-     * @return line shape, or if not visible, null
+     * @return {@link Shape} of {@code this} line or if not visible, {@code null}
      * @see JTSUtils#getBoundaryIntersections(CanvasBoundary, LineSegment)
      */
     @Override
