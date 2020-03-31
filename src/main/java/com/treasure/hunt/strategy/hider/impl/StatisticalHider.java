@@ -27,9 +27,11 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public abstract class StatisticalHider{
+
     public static final String getRelativeAreaCutoffWeight_Preference = "relative area cutoff weight";
     public static final String DistanceFromNormalAngleLineToTreasureWeight_Preference = "distance to angle bisector line weight";
     public static final String DistanceFromResultingCentroidToTreasureWeight_Preference = "distance to centroid weight";
+
 
     protected GameField gameField;
     protected GeometryFactory gf = JTSUtils.GEOMETRY_FACTORY;

@@ -73,14 +73,12 @@ public class PlotController {
             Platform.runLater(() -> {
                 lineChart.getData().add(series);
                 if (settings.isSavePNG()) {
-                    JavaFxUtils.savePngFromStage(lineChart.getScene().getWindow());
+                    Platform.runLater(() -> JavaFxUtils.savePngFromStage(lineChart.getScene().getWindow()));
                 }
-
             });
         }).exceptionally(throwable -> {
             log.error("Error calculating plot", throwable);
             return null;
         });
     }
-
 }

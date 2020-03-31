@@ -51,6 +51,8 @@ public class HistoryController {
             }
         });
 
+        list.getSelectionModel().select(0);
+
         list.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> {
             int index = newIndex.intValue();
             if (index >= 0 && index < turns.size()) {
@@ -65,8 +67,6 @@ public class HistoryController {
                 }
             }
         });
-
-        list.getSelectionModel().select(0);
 
         collapse.expandedProperty().addListener((observable, wasExpanded, isExpanded) -> {
             if (isExpanded) {

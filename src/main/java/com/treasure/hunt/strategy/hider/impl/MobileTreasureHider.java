@@ -1,6 +1,7 @@
 package com.treasure.hunt.strategy.hider.impl;
 
 import com.treasure.hunt.game.mods.hideandseek.HideAndSeekHider;
+import com.treasure.hunt.jts.geom.Line;
 import com.treasure.hunt.service.preferences.Preference;
 import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.geom.*;
