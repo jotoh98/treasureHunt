@@ -21,6 +21,7 @@ public class PreferenceService {
     public static final String TREASURE_DISTANCE = "TREASURE_DISTANCE";
     public static final String ANGLE_UPPER_BOUND = "ANGLE_UPPER_BOUND";
     public static final String ANGLE_LOWER_BOUND = "ANGLE_LOWER_BOUND";
+    public static final String ANGLE = "ANGLE";
 
     public static final String HintSize_Preference = "preferred hint size";
     public static final String TreasureLocationX_Preference = "preferred x-Value treasure";
