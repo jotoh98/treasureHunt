@@ -9,6 +9,7 @@
     DARKER_BACKGROUND: #1c1c1c;
     REQUIRED_RED: red;
     ACCENT: #04ff16;
+    -fx-text-fill: white;
 }
 
 #root,
@@ -20,7 +21,6 @@
     -fx-background-color: transparent;
     -fx-border-color: BORDER_COLOR;
     -fx-border-width: 0;
-    -fx-text-fill: white;
 }
 
 .pop-up-pane .list-view {
@@ -30,7 +30,6 @@
 
 .pop-up-pane .list-cell {
     -fx-background-color: LIGHTER_BACKGROUND;
-    -fx-text-fill: white;
 }
 
 .pop-up-pane .list-cell:focused {
@@ -108,18 +107,6 @@
     -fx-table-cell-border-color: red;
 }
 
-.table-view .placeholder .label {
-    -fx-text-fill: white;
-}
-
-.table-view .table-cell {
-    -fx-text-fill: white;
-}
-
-.text-field, .combo-box{
-    -fx-text-fill: white;
-}
-
 .table-view:focused {
     -fx-background-color: transparent;
 }
@@ -133,10 +120,6 @@
     -fx-background-color: DARKER_BACKGROUND;
 }
 
-.table-view .column-header-background .label {
-    -fx-text-fill: white;
-}
-
 .table-view .column-header,
 .table-view .filler,
 .table-view .table-cell {
@@ -148,7 +131,6 @@
     -fx-padding: 0;
     -fx-table-cell-border-color: DARK_BACKGROUND;
     -fx-border-width: 0;
-    -fx-text-fill: white;
 }
 
 .table-row-cell:odd {
@@ -250,7 +232,6 @@
 
 .list-cell:selected {
     -fx-background-color: DARKER_BACKGROUND;
-    -fx-text-fill: white;
 }
 
 .combo-box .list-cell:selected {
@@ -321,10 +302,6 @@
     -fx-background-color: rgba(255, 255, 255, 0.1);
 }
 
-.widget-pane * {
-    -fx-text-fill: white;
-}
-
 .text-field {
     -fx-border-radius: .5pt;
     -fx-min-width: 50pt;
@@ -335,7 +312,6 @@
 }
 
 .text-input {
-    -fx-text-fill: white;
     -fx-fill: white;
 }
 
@@ -375,6 +351,14 @@
     -fx-background-color: lightgrey;
 }
 
+.titled-pane .title {
+    -fx-background-color: LIGHTER_BACKGROUND;
+}
+
+.titled-pane .content {
+    -fx-background-color: transparent;
+}
+
 .tree-cell > .tree-disclosure-node > .arrow {
     -fx-cursor: hand;
 }
@@ -395,10 +379,6 @@
 
 .settings > .viewport {
     -fx-background-color: BACKGROUND_COLOR;
-}
-
-.settings * {
-    -fx-text-fill: white;
 }
 
 .settings .description {
