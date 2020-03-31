@@ -1,5 +1,6 @@
 package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 
+import com.treasure.hunt.game.mods.hideandseek.HideAndSeekSearcher;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.geom.StatusMessageItem;
@@ -30,7 +31,7 @@ import static com.treasure.hunt.utils.JTSUtils.*;
  *
  * @author Rank
  */
-public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
+public class StrategyFromPaper implements Searcher<HalfPlaneHint>, HideAndSeekSearcher<HalfPlaneHint> {
     /**
      * phase equals i in Algorithm2 (TreasureHunt1) in the paper.
      * In phase k, the algorithm checks, if the treasure is located in a rectangle
