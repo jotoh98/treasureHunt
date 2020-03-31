@@ -10,6 +10,11 @@ import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
+/**
+ * This kind of {@link Hider} gives a randomly placed and randomly sized valid {@link CircleHint}.
+ *
+ * @author dorianreineccius
+ */
 @Preference(name = PreferenceService.MAX_TREASURE_DISTANCE, value = 100)
 @Preference(name = PreferenceService.MIN_TREASURE_DISTANCE, value = 0)
 @Preference(name = PreferenceService.CIRCLE_INIT_RADIUS, value = 100)
