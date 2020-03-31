@@ -1,8 +1,6 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
-import com.treasure.hunt.jts.geom.HalfPlane;
-import com.treasure.hunt.service.preferences.Preference;
-import com.treasure.hunt.service.preferences.PreferenceService;
+import com.treasure.hunt.jts.geom.Line;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
@@ -14,21 +12,42 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
 /**
- * This TODO
+ * This type of {@link Searcher} holds the numbers maxX, maxY, minX, minY, and updates these.
  * <p>
  * This {@link com.treasure.hunt.strategy.hider.Hider} works only for {@link com.treasure.hunt.strategy.hint.impl.AngleHint} with an angle <= {@code {@link Math#PI}/2}.
+ * Thus, this {@link Searcher} always gets one or two directions, in which the treasure lies for sure.
+ * <p>
+ * If the searcher knows only a minimum X, but no maximum X (or knows only a maximum X, but no minimum X),
+ * he will go in the correct X-direction and double its moving-distance each time.
+ * <p>
+ * Otherwise, if the searcher knows both a minimum X and a maximum X,
+ * he will go to the middle of these interval.
+ * <p>
+ * The same holds for the Y coordinates.
  *
  * @author dorianreineccius
  */
-@Preference(name = PreferenceService.ANGLE_UPPER_BOUND, value = Math.PI / 2)
 public class XYSearcher implements Searcher<AngleHint> {
     private Point searcherStartPosition;
+    /**
+     * These max/min X/Y values define halfplanes, in which the treasure lies for sure.
+     */
     private double maxX, maxY, minX, minY;
+    /**
+     * maxXSet is true, if maxX were set yet. Otherwise it is true.
+     * maxYSet, minXSet, minYSet is defined analogous.
+     */
+    private boolean maxXSet = false, maxYSet = false, minXSet = false, minYSet = false;
     /**
      * XInterval is true, if maxX and minX are set.
      * YInterval is defined analogous.
      */
     private boolean XInterval = false, YInterval = false;
+    /**
+     * XSteps tells, that as long as the searcher knows only a minimum X, but no maximum X
+     * (or knows only a maximum X, but no minimum X), he will go 2^XSteps into the correct X-direction.
+     * The same holds for the Y-coordinate.
+     */
     private int XSteps = 0, YSteps = 0;
 
     /**
@@ -47,6 +66,15 @@ public class XYSearcher implements Searcher<AngleHint> {
         return new SearchPath(this.searcherStartPosition);
     }
 
+    /**
+     * If the searcher knows only a minimum X, but no maximum X (or knows only a maximum X, but no minimum X),
+     * he will go in the correct X-direction and double its moving-distance each time.
+     * <p>
+     * Otherwise, if the searcher knows both a minimum X and a maximum X,
+     * he will go to the middle of these interval.
+     * <p>
+     * The same holds for the Y coordinates.
+     */
     @Override
     public SearchPath move(AngleHint angleHint) {
 
@@ -60,27 +88,69 @@ public class XYSearcher implements Searcher<AngleHint> {
         boolean up = false, right = false, down = false, left = false;
         int directions = 0;
 
-        Coordinate leftWing = ((AngleHint) angleHint).getGeometryAngle().getLeft();
-        Coordinate rightWing = ((AngleHint) angleHint).getGeometryAngle().getRight();
+        Coordinate leftWing = angleHint.getGeometryAngle().getLeft();
+        Coordinate rightWing = angleHint.getGeometryAngle().getRight();
+
+        /**
+         * update minX,minY,maxX,maxY.
+         */
         if (leftWing.y >= searcherStartPosition.getY() && rightWing.y >= searcherStartPosition.getY()) {
-            minY = Math.max(minY, searcherStartPosition.getY());
             up = true;
             directions++;
+            if (minYSet) {
+                minY = Math.max(minY, searcherStartPosition.getY());
+            } else {
+                minY = searcherStartPosition.getY();
+            }
+            minYSet = true;
+            if (minYSet && maxYSet) {
+                YInterval = true;
+            }
         }
         if (leftWing.x >= searcherStartPosition.getX() && rightWing.x >= searcherStartPosition.getX()) {
-            minX = Math.max(minX, searcherStartPosition.getX());
             right = true;
             directions++;
+            if (minXSet) {
+                minX = Math.max(minX, searcherStartPosition.getX());
+            } else {
+                minX = searcherStartPosition.getX();
+            }
+            minXSet = true;
+            if (minXSet && maxXSet) {
+                XInterval = true;
+            }
         }
         if (leftWing.y <= searcherStartPosition.getY() && rightWing.y <= searcherStartPosition.getY()) {
-            maxY = Math.min(maxY, searcherStartPosition.getY());
             down = true;
             directions++;
+            if (maxYSet) {
+                maxY = Math.min(maxY, searcherStartPosition.getY());
+            } else {
+                maxY = searcherStartPosition.getY();
+            }
+            maxYSet = true;
+            if (minYSet && maxYSet) {
+                YInterval = true;
+            }
         }
         if (leftWing.x <= searcherStartPosition.getX() && rightWing.x <= searcherStartPosition.getX()) {
-            maxX = Math.min(maxX, searcherStartPosition.getX());
             left = true;
             directions++;
+            if (maxXSet) {
+                maxX = Math.min(maxX, searcherStartPosition.getX());
+            } else {
+                maxX = searcherStartPosition.getX();
+            }
+            maxXSet = true;
+            if (minXSet && maxXSet) {
+                XInterval = true;
+            }
+        }
+        if (minXSet && maxXSet) {
+            assert (minX <= maxX);
+        }
+        if (minYSet && maxYSet) {
+            assert (minY <= maxY);
         }
         assert (1 <= directions && directions <= 2);
 
@@ -114,28 +184,28 @@ public class XYSearcher implements Searcher<AngleHint> {
         }
         Point newSearcherPosition = JTSUtils.createPoint(newCoordinate);
         SearchPath searchPath = new SearchPath(newSearcherPosition);
-        if (up) {
+        if (maxXSet) {
             searchPath.addAdditionalItem(new GeometryItem<>(
-                    new HalfPlane(searcherStartPosition.getCoordinate(), new Coordinate(searcherStartPosition.getCoordinate().x + 1, searcherStartPosition.getCoordinate().y)),
-                    GeometryType.HALF_PLANE
+                    new Line(new Coordinate(maxX, 0), new Coordinate(maxX, 1)),
+                    GeometryType.HALF_PLANE_LINE
             ));
         }
-        if (right) {
+        if (maxYSet) {
             searchPath.addAdditionalItem(new GeometryItem<>(
-                    new HalfPlane(searcherStartPosition.getCoordinate(), new Coordinate(searcherStartPosition.getCoordinate().x, searcherStartPosition.getCoordinate().y - 1)),
-                    GeometryType.HALF_PLANE
+                    new Line(new Coordinate(0, maxY), new Coordinate(1, maxY)),
+                    GeometryType.HALF_PLANE_LINE
             ));
         }
-        if (down) {
+        if (minXSet) {
             searchPath.addAdditionalItem(new GeometryItem<>(
-                    new HalfPlane(searcherStartPosition.getCoordinate(), new Coordinate(searcherStartPosition.getCoordinate().x - 1, searcherStartPosition.getCoordinate().y)),
-                    GeometryType.HALF_PLANE
+                    new Line(new Coordinate(minX, 0), new Coordinate(minX, 1)),
+                    GeometryType.HALF_PLANE_LINE
             ));
         }
-        if (left) {
+        if (minYSet) {
             searchPath.addAdditionalItem(new GeometryItem<>(
-                    new HalfPlane(searcherStartPosition.getCoordinate(), new Coordinate(searcherStartPosition.getCoordinate().x, searcherStartPosition.getCoordinate().y + 1)),
-                    GeometryType.HALF_PLANE
+                    new Line(new Coordinate(0, minY), new Coordinate(1, minY)),
+                    GeometryType.HALF_PLANE_LINE
             ));
         }
         searcherStartPosition = newSearcherPosition;
