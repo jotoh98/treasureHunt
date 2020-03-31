@@ -366,19 +366,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
-     * Remove an additional {@link GeometryItem} from the rendering queue.
-     *
-     * @param key name of the additional item to be removed
-     */
-    public void removeAdditional(String key) {
-        additional.remove(key);
-    }
-
-    public Map<String, GeometryItem<?>> getAdditionals() {
-        return getAdditional();
-    }
-
-    /**
      * Get visible geometry items.
      * The visible {@link Turn}s determine which {@link GeometryItem} are visible.
      *
