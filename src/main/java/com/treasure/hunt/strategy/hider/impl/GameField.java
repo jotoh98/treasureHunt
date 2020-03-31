@@ -3,29 +3,26 @@ package com.treasure.hunt.strategy.hider.impl;
 
 import com.treasure.hunt.jts.geom.Circle;
 import com.treasure.hunt.jts.geom.GeometryAngle;
-import com.treasure.hunt.service.preferences.Preference;
 import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryStyle;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
-
-import java.awt.*;
-import java.lang.Math;
-
 import com.treasure.hunt.utils.JTSUtils;
 import javafx.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.algorithm.Angle;
-import org.locationtech.jts.geom.*;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.*;
 import org.locationtech.jts.geom.util.AffineTransformation;
 import org.locationtech.jts.geom.util.NoninvertibleTransformationException;
 import org.locationtech.jts.util.GeometricShapeFactory;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -36,10 +33,9 @@ import java.util.List;
  * Bounding Area:         the biggest Area in which the Strategy wants to place the treasure
  * checkedArea:            the Area the player has visited and thus must not contain the target
  * AreaExcludedByHints:    the Area the previous hints have
- *
+ * <p>
  * these 3 structures are used to calculate the remaining possible area to place the treasure into
  * possibleArea:           BoundingCircle \ {checkedArea + AreaExcludedByHints)
- *
  */
 
 @Slf4j
@@ -82,15 +78,16 @@ public class GameField {
     @Setter
     private double searcherScoutRadius = 1.0;
 
-    /**Asks the Gamefield to move the treasure to the speciefied new location
+    /**
+     * Asks the Gamefield to move the treasure to the speciefied new location
      *
      * @param newTreasureLocation the new treasure location
      * @throws ImpossibleTreasureLocationException is thrown when newTreasureLocation is not within the checked area or violates a previously given hint
      */
     public void moveTreasure(Point newTreasureLocation) throws ImpossibleTreasureLocationException {
 
-        for( AngleHint hint : givenHints){
-            if ( ! hint.getGeometryAngle().inView(newTreasureLocation.getCoordinate())) {
+        for (AngleHint hint : givenHints) {
+            if (!hint.getGeometryAngle().inView(newTreasureLocation.getCoordinate())) {
                 log.debug("Hint invalid");
                 throw new ImpossibleTreasureLocationException("you've supplied a treasure location, which is inconsistent with a previously given Hint: " + hint.getGeometryAngle().toString());
             }
@@ -99,7 +96,7 @@ public class GameField {
         Coordinate[] visitedCoords = visitedPoints.stream().map(p -> p.getCoordinate()).toArray(Coordinate[]::new);
         LineString walkedPath = geometryFactory.createLineString(visitedCoords);
 
-        if (walkedPath.buffer(searcherScoutRadius-0.1).covers(newTreasureLocation)) {
+        if (walkedPath.buffer(searcherScoutRadius - 0.1).covers(newTreasureLocation)) {
             log.debug("Hint invalid");
             throw new ImpossibleTreasureLocationException("you've supplied a treasure location, which is inconsistent the checked area the player has already visited");
         }
@@ -108,10 +105,11 @@ public class GameField {
         log.info("new treasure location at" + favoredTreasureLocation.getObject());
     }
 
-    /** Initializes the Gamefield with its initial values
+    /**
+     * Initializes the Gamefield with its initial values
      *
      * @param searcherStartPosition the position, the player starts at
-     * @param treasureLocation the postition, the player wants to reach
+     * @param treasureLocation      the postition, the player wants to reach
      */
     public void init(Point searcherStartPosition, Point treasureLocation) {
         log.debug("GameField init");
@@ -123,12 +121,12 @@ public class GameField {
         log.info(searcherStartPosition.toString());
 
         Circle circle;
-        if(PreferenceService.getInstance().getPreference(GameField.CircleExtension_Preference, 0).intValue() == 1){
-            boundingCircleSize = ((maxExtensions-1) * boundingCircleExtensionDelta) +boundingCircleSize;
+        if (PreferenceService.getInstance().getPreference(GameField.CircleExtension_Preference, 0).intValue() == 1) {
+            boundingCircleSize = ((maxExtensions - 1) * boundingCircleExtensionDelta) + boundingCircleSize;
             circle = new Circle(startingPoint.getCoordinate(), boundingCircleSize, geometryFactory);
             extensions = maxExtensions;
 
-        }else{
+        } else {
             circle = new Circle(startingPoint.getCoordinate(), boundingCircleSize, geometryFactory);
         }
 
@@ -141,11 +139,12 @@ public class GameField {
         commitPlayerMovement(startingPath);
     }
 
-    /** returns the possible area in which the treasure could be
+    /**
+     * returns the possible area in which the treasure could be
      *
      * @return
      */
-    public Geometry getPossibleArea(){
+    public Geometry getPossibleArea() {
         return this.possibleArea.getObject();
     }
 
@@ -158,7 +157,6 @@ public class GameField {
         double distToBoundary = boundingCircleSize - currentPlayersPosition.distance(startingPoint);
         if (extensions < maxExtensions) {
             while ((distToBoundary < circleExtensionDistance || !boundingCircle.getObject().contains(currentPlayersPosition)) && (extensions < maxExtensions)) {
-
 
                 boundingCircleSize += boundingCircleExtensionDelta;
                 log.info("extending Bounding Area by " + boundingCircleSize + "to " + boundingCircleSize);
@@ -178,10 +176,10 @@ public class GameField {
 
     /**
      * Updates the GameField's state with a new Players SearchPath
-     *
-     *  this method assumes that the the searcher cannot fly, e.g. For 2 visited points,
-     *  all points on the line between them are counted as checked,
-     *  and of those point, all points within a distance of searcherScoutRadius are checked as well
+     * <p>
+     * this method assumes that the the searcher cannot fly, e.g. For 2 visited points,
+     * all points on the line between them are counted as checked,
+     * and of those point, all points within a distance of searcherScoutRadius are checked as well
      *
      * @param searchPath the new SearchPath
      */
@@ -216,15 +214,15 @@ public class GameField {
     }
 
     /**
-      * Integrates the 2 intersections between the bounding circle and the current hint,
-      * then merges the resulting polygon and the remaining possible area
-      * to the new possible area.
+     * Integrates the 2 intersections between the bounding circle and the current hint,
+     * then merges the resulting polygon and the remaining possible area
+     * to the new possible area.
+     * <p>
+     * The resulting area is NOT committed, therefore this method can be used to test a possibleHint for its result
      *
-      * The resulting area is NOT committed, therefore this method can be used to test a possibleHint for its result
-      *
-      * @param hint The hint to integrate
-      * @return the resulting Geometry
-      **/
+     * @param hint The hint to integrate
+     * @return the resulting Geometry
+     **/
     public Geometry testHint(AngleHint hint) {
         GeometryAngle angle = hint.getGeometryAngle();
 
@@ -249,7 +247,6 @@ public class GameField {
         Coordinate[] arcArray = new Coordinate[arCoords.size()];
         arcArray = arCoords.toArray(arcArray);
         Polygon arc = geometryFactory.createPolygon(arcArray);
-
 
         List<Geometry> possibleAreas = new ArrayList<>();
         log.trace("number of geoms in possible " + possibleArea.getObject().getNumGeometries());
@@ -306,23 +303,24 @@ public class GameField {
      * @param hint the Hint to be integrated
      * @return the resulting Area in which the Treasure could be
      */
-    public Geometry commitHint(AngleHint hint){
+    public Geometry commitHint(AngleHint hint) {
         Geometry newPossibleArea = testHint(hint);
         this.possibleArea = new GeometryItem<>(newPossibleArea, GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
-        if(! givenHints.contains(hint)){
+        if (!givenHints.contains(hint)) {
             givenHints.add(hint);
         }
 
         return newPossibleArea;
     }
 
-    /** Returns whether the specified point lies within the possible Area,
+    /**
+     * Returns whether the specified point lies within the possible Area,
      * treasure could live in
      *
      * @param p
      * @return
      */
-    public boolean isWithinGameField(Point p){
+    public boolean isWithinGameField(Point p) {
         return boundingCircle.getObject().covers(p);
     }
 
@@ -334,7 +332,6 @@ public class GameField {
      */
     public List<Pair<Coordinate, Double>> getWorstPointsOnAllEdges(double minDistance) {
 
-
         // making the decision transparent by drawing all lines which are inspected
         Geometry innerBufferedArea = possibleArea.getObject().buffer(-0.001);
 
@@ -342,22 +339,20 @@ public class GameField {
         //innerBufferItem = new GeometryItem(innerBufferedArea.copy(), GeometryType.INNER_BUFFER, innerBufferStyle);
 
         Geometry geometryToCheck;
-        if(minDistance > this.searcherScoutRadius){
+        if (minDistance > this.searcherScoutRadius) {
             Circle minDistanceCircle = new Circle(startingPoint.getCoordinate(), minDistance, geometryFactory);
             geometryToCheck = innerBufferedArea.difference(minDistanceCircle);
-        }else{ //dont bother
+        } else { //dont bother
             geometryToCheck = innerBufferedArea;
         }
 
         innerBufferItem = new GeometryItem(geometryToCheck.copy(), GeometryType.INNER_BUFFER, innerBufferStyle);
-
 
         log.trace("# geometries " + this.possibleArea.getObject().getNumGeometries());
         log.trace("# geometries buffered " + this.possibleArea.getObject().buffer(-0.1).getNumGeometries());
 
         Pair<Coordinate, Double> bestSampled = new Pair(this.favoredTreasureLocation.getObject().getCoordinate(), (this.favoredTreasureLocation.getObject().getCoordinate().distance(this.currentPlayersPosition.getCoordinate()) + this.walkedPathLength) / this.favoredTreasureLocation.getObject().getCoordinate().distance(this.startingPoint.getCoordinate()));
         Pair<Coordinate, Double> bestCalc = new Pair(this.favoredTreasureLocation.getObject().getCoordinate(), this.favoredTreasureLocation.getObject().getCoordinate().distance(this.currentPlayersPosition.getCoordinate()) / this.favoredTreasureLocation.getObject().getCoordinate().distance(this.startingPoint.getCoordinate()));
-
 
         // always consider just leaving the treasure as is
         List<Pair<Coordinate, Double>> worstEdgePoints = new ArrayList<>();
@@ -366,8 +361,8 @@ public class GameField {
         worstEdgePointsSampled.add(bestSampled);
 
         // for the case, that the player's visited area divides the possible area into 2 or more Polygons, a seperate search for each geometry is required
-        for(int geomNumber = 0; geomNumber < geometryToCheck.getNumGeometries(); geomNumber++){
-            log.trace(" geom " + geomNumber+ " has " + geometryToCheck.getGeometryN(geomNumber).getCoordinates().length + " coords");
+        for (int geomNumber = 0; geomNumber < geometryToCheck.getNumGeometries(); geomNumber++) {
+            log.trace(" geom " + geomNumber + " has " + geometryToCheck.getGeometryN(geomNumber).getCoordinates().length + " coords");
             Geometry currentGeometry = geometryToCheck.getGeometryN(geomNumber);
             Coordinate[] edges = currentGeometry.getCoordinates();
 
@@ -413,19 +408,21 @@ public class GameField {
         log.trace("worst Point List:" + worstEdgePoints.size() + "first element: " + worstEdgePoints.get(0));
         log.debug("best overall Sampled constant is" + bestSampled.getValue() + " at " + bestSampled.getKey().toString());
         log.debug("best overall calculated constant is" + bestCalc.getValue() + " at " + bestCalc.getKey().toString());
-        if(PreferenceService.getInstance().getPreference(MobileTreasureHider.walkedPathLengthForTreasureRelocation_Preference, 1).intValue() == 1){
+        if (PreferenceService.getInstance().getPreference(MobileTreasureHider.walkedPathLengthForTreasureRelocation_Preference, 1).intValue() == 1) {
             return worstEdgePointsSampled;
-        }else{
+        } else {
             return worstEdgePoints;
         }
     }
 
 
-    /**Todo
+    /**
+     * Todo
+     *
      * @param geometry the geometry whose LineSegment are educed to its best Point according to the worstConstant - formula
      * @return a List of {@link org.locationtech.jts.geom.Coordinate} with their corresponding Constant of (Coordinates C ; their associated Value of {dist(C-Player)/dist(C-Origin)} )
      */
-    public List<Pair<Coordinate, Double>> getWorstPointOnGeometry(LineString geometry){
+    public List<Pair<Coordinate, Double>> getWorstPointOnGeometry(LineString geometry) {
         return null;
     }
 
@@ -442,7 +439,7 @@ public class GameField {
         LineSegment unscaled = new LineSegment(p1, p2);
 
         Point origin = startingPoint;
-        assert origin.equals( geometryFactory.createPoint(new Coordinate(0, 0))); // origin assumed to be (0,0)
+        assert origin.equals(geometryFactory.createPoint(new Coordinate(0, 0))); // origin assumed to be (0,0)
 
         Coordinate projection = unscaled.project(origin.getCoordinate());
         double scalingFactor = 1.0 / projection.distance(origin.getCoordinate());
@@ -471,7 +468,6 @@ public class GameField {
         playerTransformed = rotationTransform.transform(playerTransformed, playerTransformed);
 
         LineSegment normalizedLineSegment = new LineSegment(p1Transformed, p2Transformed);
-
 
         //now normal state is reached and Derivative can be applied for MaxConstant Search
 
@@ -550,7 +546,7 @@ public class GameField {
             log.trace("after projection; Distance from " + bestCoordinate + "to " + unscaled + " : " + unscaled.distance(bestCoordinate)); // stays in the 10e-16 range
 
         } catch (NoninvertibleTransformationException e) {
-            log.error("Non invertible, but it should be!" , e);
+            log.error("Non invertible, but it should be!", e);
 
         }
         log.trace("Final Point after InverseTransformation: " + bestCoordinate);

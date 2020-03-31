@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Coordinate;
 
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -19,7 +18,7 @@ public class HintEvaluator {
     private List<AngleHintStatistic> hints;
     private List<Pair<Coordinate, Pair<Double, Double>>> treasurePointsOfInterest; //Coordinate, Constant, Angle under PlayerPosition
     private Coordinate playerPosition;
-    private Coordinate origin = new Coordinate(0,0);
+    private Coordinate origin = new Coordinate(0, 0);
     private double currentArea;
 
     //algorithmic parameters
@@ -52,9 +51,8 @@ public class HintEvaluator {
             throw new InvalidHintException("given Hint does not have the player as Center");
         }
 
-
         //AngleHintStatistic ahs = new AngleHintStatistic(hint, currentArea, areaAfter);
-       // hints.add(ahs);
+        // hints.add(ahs);
     }
 
     /**
@@ -63,15 +61,15 @@ public class HintEvaluator {
      *
      * @param distance
      */
-    private void enforceMinTreasureDistanceConstraint(double distance){
+    private void enforceMinTreasureDistanceConstraint(double distance) {
         treasurePointsOfInterest = new ArrayList<>();
-        List<Pair<Coordinate,Pair<Double,Double>>> validPoints = treasurePointsOfInterest.stream().filter( t -> t.getKey().distance(origin) >= distance).collect(Collectors.toList());
+        List<Pair<Coordinate, Pair<Double, Double>>> validPoints = treasurePointsOfInterest.stream().filter(t -> t.getKey().distance(origin) >= distance).collect(Collectors.toList());
         treasurePointsOfInterest.addAll(validPoints);
 
         //in case the restriction limits the # of possible who conform the constraint to 0
-        if(validPoints.isEmpty()){
+        if (validPoints.isEmpty()) {
             log.info("No Point with Distance > " + distance + " found. Addding Points with smaller distance, sorted by distance");
-            List<Pair<Coordinate, Pair<Double,Double>>> invalidPoints = treasurePointsOfInterest.stream().filter( t -> t.getKey().distance(origin) > distance).collect(Collectors.toList());
+            List<Pair<Coordinate, Pair<Double, Double>>> invalidPoints = treasurePointsOfInterest.stream().filter(t -> t.getKey().distance(origin) > distance).collect(Collectors.toList());
             treasurePointsOfInterest.addAll(invalidPoints);
         }
 
@@ -84,7 +82,7 @@ public class HintEvaluator {
         treasurePointsOfInterest.sort(new Comparator<Pair<Coordinate, Pair<Double, Double>>>() {
             @Override
             public int compare(Pair<Coordinate, Pair<Double, Double>> coordConstAngle1, Pair<Coordinate, Pair<Double, Double>> coordConstAngle2) {
-                return coordConstAngle1.getValue().getKey().compareTo( coordConstAngle2.getValue().getKey());
+                return coordConstAngle1.getValue().getKey().compareTo(coordConstAngle2.getValue().getKey());
             }
         }.reversed()); //
 
@@ -112,11 +110,11 @@ public class HintEvaluator {
             @Override
             public int compare(AngleHintStatistic angleHintStat1, AngleHintStatistic angleHintStat2) {
                 double diff = angleHintStat1.getWorstConstantPoint().getValue() - angleHintStat2.getWorstConstantPoint().getValue();
-                if(diff == 0){
+                if (diff == 0) {
                     return 0;
-                }else if(diff <0){
+                } else if (diff < 0) {
                     return -1;
-                }else{
+                } else {
                     return 1;
                 }
             }

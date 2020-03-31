@@ -22,7 +22,7 @@ public class FixedTreasureHider extends StatisticalHider implements Hider<AngleH
     protected double rateHint(AngleHintStatistic ahs) {
         double rating = 0;
 
-        rating += PreferenceService.getInstance().getPreference(StatisticalHider.getRelativeAreaCutoffWeight_Preference, 10).doubleValue() * ( 1 / ahs.getRelativeAreaCutoff());
+        rating += PreferenceService.getInstance().getPreference(StatisticalHider.getRelativeAreaCutoffWeight_Preference, 10).doubleValue() * (1 / ahs.getRelativeAreaCutoff());
         rating += PreferenceService.getInstance().getPreference(StatisticalHider.DistanceFromNormalAngleLineToTreasureWeight_Preference, 1).doubleValue() * ahs.getDistanceFromNormalAngleLineToTreasure();
         rating += PreferenceService.getInstance().getPreference(StatisticalHider.DistanceFromResultingCentroidToTreasureWeight_Preference, 3).doubleValue() * ahs.getDistanceFromResultingCentroidToTreasure();
 
@@ -30,7 +30,8 @@ public class FixedTreasureHider extends StatisticalHider implements Hider<AngleH
         return rating;
     }
 
-    /**This method will be invoked at the start of the Game. it returns the initial treasure location.
+    /**
+     * This method will be invoked at the start of the Game. it returns the initial treasure location.
      * Since hider does not move the treasure, any further calls to this method will return the same result.
      *
      * @return the point the treasure is located at

@@ -1,10 +1,10 @@
 package com.treasure.hunt.strategy.hider.impl;
 
 import com.treasure.hunt.game.mods.hideandseek.HideAndSeekHider;
-import com.treasure.hunt.jts.geom.Line;
 import com.treasure.hunt.service.preferences.Preference;
 import com.treasure.hunt.service.preferences.PreferenceService;
-import com.treasure.hunt.strategy.geom.*;
+import com.treasure.hunt.strategy.geom.StatusMessageItem;
+import com.treasure.hunt.strategy.geom.StatusMessageType;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import javafx.util.Pair;
@@ -14,7 +14,6 @@ import org.locationtech.jts.geom.Point;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * A Strategy using the {@link StatisticalHider} as Base Implementation,
