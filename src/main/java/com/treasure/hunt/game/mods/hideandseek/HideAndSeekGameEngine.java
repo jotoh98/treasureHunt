@@ -45,4 +45,5 @@ public class HideAndSeekGameEngine extends GameEngine {
         assert (lastHint != null);
         verifyHint(lastHint, treasurePos, lastSearchPath.getLastPoint());
     }
+
 }
