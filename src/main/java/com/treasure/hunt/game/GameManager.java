@@ -112,7 +112,9 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
 
     public void init() {
         // Do initial move
-        turns.add(gameEngine.init());
+        if (turns.size() == 0) {
+            turns.add(gameEngine.init());
+        }
         if (gameEngine.isFinished()) {
             finishedProperty.set(true);
         }
