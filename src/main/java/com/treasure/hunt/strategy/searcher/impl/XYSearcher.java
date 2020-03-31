@@ -14,7 +14,7 @@ import org.locationtech.jts.geom.Point;
 /**
  * This type of {@link Searcher} holds the numbers maxX, maxY, minX, minY, and updates these.
  * <p>
- * This {@link com.treasure.hunt.strategy.hider.Hider} works only for {@link com.treasure.hunt.strategy.hint.impl.AngleHint} with an angle <= {@code {@link Math#PI}/2}.
+ * This {@link com.treasure.hunt.strategy.hider.Hider} works only for {@link com.treasure.hunt.strategy.hint.impl.AngleHint} with an angle &le; {@code {@link Math#PI}/2}.
  * Thus, this {@link Searcher} always gets one or two directions, in which the treasure lies for sure.
  * <p>
  * If the searcher knows only a minimum X, but no maximum X (or knows only a maximum X, but no minimum X),
