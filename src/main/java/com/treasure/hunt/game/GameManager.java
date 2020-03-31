@@ -56,7 +56,10 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     @VisibleForTesting
     @Getter
     ObservableList<Turn> turns = FXCollections.observableArrayList();
-
+    /**
+     * Contains additional {@link GeometryItem}'s, besides the {@link Turn} objects,
+     * like the {@link com.treasure.hunt.jts.geom.Grid} or {@link com.treasure.hunt.strategy.geom.GeometryType#HIGHLIGHTER};
+     */
     @Getter
     private ObservableMap<String, GeometryItem<?>> additional = FXCollections.observableHashMap();
 
