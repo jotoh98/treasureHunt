@@ -256,39 +256,6 @@ public class GameField {
 
         List<Geometry> possibleAreas = new ArrayList<>();
         log.trace("number of geoms in possible " + possibleArea.getObject().getNumGeometries());
-        /*
-        // first take all polygons separately
-        for(int geometryNumber = 0; geometryNumber < possibleArea.getObject().getNumGeometries() ; geometryNumber++){
-
-            //Intersect with arc
-            Geometry possibleAreaWithNewHint = possibleArea.getObject().getGeometryN(geometryNumber).intersection(arc);
-            log.debug("number of geometries after intersecting the " + geometryNumber + "th possible Part with arc:" + possibleAreaWithNewHint.getNumGeometries());
-            log.debug("hint angle" + Angle.toDegrees(hint.getGeometryAngle().getNormalizedAngle()));
-
-            // again multiple polygons
-            List<Geometry> differenceGeometries = new ArrayList<>();
-
-            // take the visited part out for each one
-            Geometry resultingDifferenceGeometry = possibleAreaWithNewHint.getGeometryN(0).difference(this.checkedArea.getObject());
-
-            for(int geometryNumber2 = 1 ; geometryNumber2 < possibleAreaWithNewHint.getNumGeometries(); geometryNumber2++){
-                Geometry differenceOperationGeometry = possibleAreaWithNewHint.getGeometryN(geometryNumber2).difference(this.checkedArea.getObject());
-                differenceGeometries.add(differenceOperationGeometry);
-
-                //and union them again
-                resultingDifferenceGeometry = resultingDifferenceGeometry.union(differenceOperationGeometry);
-
-            }
-
-            possibleAreas.add(resultingDifferenceGeometry);
-        }
-
-        // now union them to one resulting Geometry
-        Geometry resultingPossibleArea = possibleAreas.get(0);
-        for(int geometryNumber = 1; geometryNumber < possibleAreas.size(); geometryNumber++){
-            resultingPossibleArea = resultingPossibleArea.union(possibleAreas.get(geometryNumber));
-        }
-        */
 
         Geometry resultingPossibleArea = possibleArea.getObject().intersection(arc);
 
