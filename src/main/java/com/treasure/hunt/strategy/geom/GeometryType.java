@@ -13,6 +13,7 @@ public enum GeometryType {
      * Hint relevant
      */
     HINT_CENTER(false, "hint-center"),
+    HINT_CIRCLE(true, "Circle hint"),
 
     /**
      * HalfPlaneHint relevant
@@ -54,8 +55,8 @@ public enum GeometryType {
     CURRENT_POLYGON(true, "current polygon", true),
 
     STANDARD(true, ""),
-    GRID(true, "Grid", false),
-    HIGHLIGHTER(true, "Highlighter", true),
+    GRID(true, "Grid", false, false, false),
+    HIGHLIGHTER(true, "Highlighter", true, false, false),
     POLYHEDRON(true, "Polyhedron", true);
 
     @Getter
@@ -66,6 +67,8 @@ public enum GeometryType {
     private boolean override;
     @Getter
     private boolean multiStyle = false;
+    @Getter
+    private boolean selectable = true;
 
     GeometryType(boolean enabled, String displayName, boolean override) {
         this.displayName = displayName;
@@ -73,9 +76,10 @@ public enum GeometryType {
         this.override = override;
     }
 
-    GeometryType(boolean enabled, String displayName, boolean override, boolean multiStyle) {
+    GeometryType(boolean enabled, String displayName, boolean override, boolean multiStyle, boolean selectable) {
         this(enabled, displayName, override);
         this.multiStyle = multiStyle;
+        this.selectable = selectable;
     }
 
     GeometryType(boolean enabledByDefault, String displayName) {

@@ -37,6 +37,7 @@ public class GeometryStyle {
         defaultsMapAdd.put(GeometryType.WAY_POINT_LINE, new GeometryStyle(true, new Color(0xFFFFFF)));
         defaultsMapAdd.put(GeometryType.HIGHLIGHTER, new GeometryStyle(true, Color.GREEN, Integer.MAX_VALUE));
         defaultsMapAdd.put(GeometryType.HELPER_LINE, new GeometryStyle(true, Color.DARK_GRAY, -1));
+        defaultsMapAdd.put(GeometryType.HINT_CIRCLE, new GeometryStyle(true, Color.WHITE, new Color(1, 1, 1, 0.01f)));
         defaultsMap.putAll(defaultsMapAdd);
     }
 
