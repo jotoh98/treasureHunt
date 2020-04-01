@@ -5,12 +5,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <ScrollPane xmlns:fx="http://javafx.com/fxml/1" fitToWidth="true" maxHeight="500.0" maxWidth="-Infinity"
-            minHeight="-Infinity" minWidth="500.0" styleClass="settings" xmlns="http://javafx.com/javafx/11.0.1"
+            minHeight="-Infinity"
+            minWidth="500.0" styleClass="settings" xmlns="http://javafx.com/javafx/11.0.1"
             fx:controller="com.treasure.hunt.view.settings.SettingsController">
     <content>
         <HBox alignment="TOP_CENTER">
             <children>
-                <VBox maxHeight="900.0" prefHeight="200.0" prefWidth="100.0">
+                <VBox prefHeight="200.0" prefWidth="100.0">
                     <children>
                         <Label alignment="TOP_LEFT" contentDisplay="CENTER" maxWidth="1.7976931348623157E308"
                                text="TreasureHunt">
@@ -27,7 +28,7 @@
                                 <Insets bottom="20.0"/>
                             </VBox.margin>
                         </Label>
-                        <VBox fx:id="settingsList" minWidth="300.0" styleClass="settings-list">
+                        <VBox fx:id="settingsList" maxWidth="500.0" minWidth="300.0" styleClass="settings-list">
                             <VBox.margin>
                                 <Insets bottom="20.0"/>
                             </VBox.margin>
