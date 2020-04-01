@@ -377,10 +377,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         additional.remove(key);
     }
 
-    public Map<String, GeometryItem<?>> getAdditionals() {
-        return getAdditional();
-    }
-
     /**
      * Get visible geometry items.
      * The visible {@link Turn}s determine which {@link GeometryItem} are visible.

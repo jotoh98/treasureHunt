@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * A Strategy using the {@link StatisticalHider} as Base Implementation,
  * but being able to move the treasure while the game is running and therefore implementing to the {@link HideAndSeekHider} interface
- *
+ * <p>
  * The strategy uses the {@link GameField} to maintain its state
  */
 @Slf4j
@@ -46,19 +46,18 @@ public class MobileTreasureHider extends StatisticalHider implements HideAndSeek
         AngleHint hint;
 
         // treasure first, hint second
-        if(PreferenceService.getInstance().getPreference(treasureBeforeHintFirst_Preference, 0).intValue() == 1){
+        if (PreferenceService.getInstance().getPreference(treasureBeforeHintFirst_Preference, 0).intValue() == 1) {
 
             log.debug("treasure first, hint second");
             // new treasure location
             Point newTreasureLocation = generateNewTreasureLocation();
             log.info("trying to move the Treasure to " + newTreasureLocation);
-            try{
+            try {
                 gameField.moveTreasure(newTreasureLocation);
                 this.treasure = newTreasureLocation;
-            }catch (ImpossibleTreasureLocationException e) {
+            } catch (ImpossibleTreasureLocationException e) {
                 log.info("Setting the treasure to new position failed: " + e.getMessage());
             }
-
 
             // generate Hints
             List<AngleHint> possibleHints = generateHints(360, searchPath.getLastPoint());
@@ -69,7 +68,7 @@ public class MobileTreasureHider extends StatisticalHider implements HideAndSeek
             // commitHint
             gameField.commitHint(hint);
 
-        }else{ // Hint first, treasure second
+        } else { // Hint first, treasure second
             log.debug("Hint first, treasure second");
             // generate Hints
             List<AngleHint> possibleHints = generateHints(360, searchPath.getLastPoint());
@@ -80,25 +79,22 @@ public class MobileTreasureHider extends StatisticalHider implements HideAndSeek
             // commitHint
             gameField.commitHint(hint);
 
-
             // new treasure location
             Point newTreasureLocation = generateNewTreasureLocation();
             log.info("trying to move the Treasure to " + newTreasureLocation);
-            try{
+            try {
                 gameField.moveTreasure(newTreasureLocation);
                 this.treasure = newTreasureLocation;
-            }catch (ImpossibleTreasureLocationException e) {
+            } catch (ImpossibleTreasureLocationException e) {
                 log.info("Setting the treasure to new position failed: " + e.getMessage());
             }
 
         }
 
-
         this.currentPossibleArea = gameField.getPossibleArea();
         hint.addAdditionalItem(gameField.getInnerBufferItem());
         //add some status information
-        hint.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.CURRENT_TREASURE_POSITION, treasure.toString() ));
-
+        hint.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.CURRENT_TREASURE_POSITION, treasure.toString()));
 
         log.info(" --- MOVE ENDED ---");
         // return Hint
@@ -130,17 +126,15 @@ public class MobileTreasureHider extends StatisticalHider implements HideAndSeek
         }
         */
 
-
     }
 
     @Override
     protected double rateHint(AngleHintStatistic ahs) {
         double rating = 0;
 
-        rating += PreferenceService.getInstance().getPreference(StatisticalHider.getRelativeAreaCutoffWeight_Preference, 5).doubleValue() * ( 1 / ahs.getRelativeAreaCutoff());
+        rating += PreferenceService.getInstance().getPreference(StatisticalHider.getRelativeAreaCutoffWeight_Preference, 5).doubleValue() * (1 / ahs.getRelativeAreaCutoff());
         rating += PreferenceService.getInstance().getPreference(StatisticalHider.DistanceFromNormalAngleLineToTreasureWeight_Preference, 2).doubleValue() * ahs.getDistanceFromNormalAngleLineToTreasure();
         rating += PreferenceService.getInstance().getPreference(StatisticalHider.DistanceFromResultingCentroidToTreasureWeight_Preference, 3).doubleValue() * ahs.getDistanceFromResultingCentroidToTreasure();
-
 
         ahs.setRating(rating);
         return rating;

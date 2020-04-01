@@ -50,6 +50,8 @@ public class GameField {
     private GeometryFactory geometryFactory = JTSUtils.GEOMETRY_FACTORY;
     private double walkedPathLength = 0.0;
     private List<Point> visitedPoints = new ArrayList<>();
+    private boolean treasureMovedthisTurn = false;
+
 
     private GeometryItem<Geometry> possibleArea;
     private GeometryStyle possibleAreaStyle = new GeometryStyle(true, new Color(255, 105, 180), new Color(255, 105, 180, 64));
@@ -85,7 +87,7 @@ public class GameField {
      * @throws ImpossibleTreasureLocationException is thrown when newTreasureLocation is not within the checked area or violates a previously given hint
      */
     public void moveTreasure(Point newTreasureLocation) throws ImpossibleTreasureLocationException {
-
+        treasureMovedthisTurn = true;
         for (AngleHint hint : givenHints) {
             if (!hint.getGeometryAngle().inView(newTreasureLocation.getCoordinate())) {
                 log.debug("Hint invalid");
@@ -123,16 +125,16 @@ public class GameField {
         Circle circle;
         if (PreferenceService.getInstance().getPreference(GameField.CircleExtension_Preference, 0).intValue() == 1) {
             boundingCircleSize = ((maxExtensions - 1) * boundingCircleExtensionDelta) + boundingCircleSize;
-            circle = new Circle(startingPoint.getCoordinate(), boundingCircleSize, geometryFactory);
+            circle = new Circle(startingPoint.getCoordinate(), boundingCircleSize);
             extensions = maxExtensions;
 
         } else {
-            circle = new Circle(startingPoint.getCoordinate(), boundingCircleSize, geometryFactory);
+            circle = new Circle(startingPoint.getCoordinate(), boundingCircleSize);
         }
 
         boundingCircle = new GeometryItem<>(circle, GeometryType.BOUNDING_CIRCE, boundingCircleStyle);
 
-        possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{circle}, geometryFactory), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
+        possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{circle.toPolygon()}, geometryFactory), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
 
         visitedPoints.add(startingPoint);
         SearchPath startingPath = new SearchPath(startingPoint);
@@ -156,12 +158,12 @@ public class GameField {
 
         double distToBoundary = boundingCircleSize - currentPlayersPosition.distance(startingPoint);
         if (extensions < maxExtensions) {
-            while ((distToBoundary < circleExtensionDistance || !boundingCircle.getObject().contains(currentPlayersPosition)) && (extensions < maxExtensions)) {
+            while ((distToBoundary < circleExtensionDistance || !boundingCircle.getObject().inside(currentPlayersPosition.getCoordinate())) && (extensions < maxExtensions)) {
 
                 boundingCircleSize += boundingCircleExtensionDelta;
                 log.info("extending Bounding Area by " + boundingCircleSize + "to " + boundingCircleSize);
-                boundingCircle = new GeometryItem<>(new Circle(startingPoint.getCoordinate(), boundingCircleSize, geometryFactory), GeometryType.BOUNDING_CIRCE, boundingCircleStyle);
-                possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{boundingCircle.getObject()}, geometryFactory), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
+                boundingCircle = new GeometryItem<>(new Circle(startingPoint.getCoordinate(), boundingCircleSize), GeometryType.BOUNDING_CIRCE, boundingCircleStyle);
+                possibleArea = new GeometryItem<>(new MultiPolygon(new Polygon[]{boundingCircle.getObject().toPolygon()}, geometryFactory), GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
 
                 //now recompute all the intersections of Hints and the Bounding Circle
                 for (AngleHint hint : givenHints) {
@@ -224,6 +226,10 @@ public class GameField {
      * @return the resulting Geometry
      **/
     public Geometry testHint(AngleHint hint) {
+        if (treasureMovedthisTurn) {
+            hint.addAdditionalItem(innerBufferItem);
+        }
+
         GeometryAngle angle = hint.getGeometryAngle();
 
         double rightAngle = Angle.angle(angle.getCenter(), angle.getRight());
@@ -309,7 +315,7 @@ public class GameField {
         if (!givenHints.contains(hint)) {
             givenHints.add(hint);
         }
-
+        treasureMovedthisTurn = false;
         return newPossibleArea;
     }
 
@@ -321,7 +327,7 @@ public class GameField {
      * @return
      */
     public boolean isWithinGameField(Point p) {
-        return boundingCircle.getObject().covers(p);
+        return boundingCircle.getObject().inside(p.getCoordinate());
     }
 
 
@@ -340,8 +346,8 @@ public class GameField {
 
         Geometry geometryToCheck;
         if (minDistance > this.searcherScoutRadius) {
-            Circle minDistanceCircle = new Circle(startingPoint.getCoordinate(), minDistance, geometryFactory);
-            geometryToCheck = innerBufferedArea.difference(minDistanceCircle);
+            Circle minDistanceCircle = new Circle(startingPoint.getCoordinate(), minDistance);
+            geometryToCheck = innerBufferedArea.difference(minDistanceCircle.toPolygon());
         } else { //dont bother
             geometryToCheck = innerBufferedArea;
         }
