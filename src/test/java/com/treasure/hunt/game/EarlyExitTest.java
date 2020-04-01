@@ -19,6 +19,8 @@ import java.util.List;
 
 /**
  * This test evaluates the functionality of the early exit feature.
+ *
+ * @author jotoh
  */
 @Slf4j
 class EarlyExitTest {
@@ -110,6 +112,9 @@ class EarlyExitTest {
         }
     }
 
+    /**
+     * A type of {@link Hider}, placing the treasore on {@code (10,0)} and does only give empty {@link Hint} objects.
+     */
     public static class EmptyHider implements Hider<Hint> {
 
         /**
