@@ -21,8 +21,8 @@ public class GeometryStyle {
 
     static {
         HashMap defaultsMapAdd = new HashMap(Map.of(
-                GeometryType.WAY_POINT, new GeometryStyle(true, new Color(0xFFFFFF)),
-                GeometryType.TREASURE, new GeometryStyle(true, new Color(0xFFD700)),
+                GeometryType.WAY_POINT, new GeometryStyle(true, new Color(0xFFFFFF), 1),
+                GeometryType.TREASURE, new GeometryStyle(true, new Color(0xFFD700), 2),
                 GeometryType.HINT_ANGLE, new GeometryStyle(true, new Color(0x575757)),
                 GeometryType.GRID, new GeometryStyle(true, false, new Color(0x555555), null, -1),
                 GeometryType.CURRENT_PHASE, new GeometryStyle(true, Color.YELLOW),
@@ -36,7 +36,7 @@ public class GeometryStyle {
         defaultsMapAdd.put(GeometryType.HALF_PLANE_LINE_BROWN, new GeometryStyle(true, new Color(0x8B4513)));
         defaultsMapAdd.put(GeometryType.WAY_POINT_LINE, new GeometryStyle(true, new Color(0xFFFFFF)));
         defaultsMapAdd.put(GeometryType.HIGHLIGHTER, new GeometryStyle(true, Color.GREEN, Integer.MAX_VALUE));
-        defaultsMapAdd.put(GeometryType.HELPER_LINE, new GeometryStyle(true, Color.DARK_GRAY));
+        defaultsMapAdd.put(GeometryType.HELPER_LINE, new GeometryStyle(true, Color.DARK_GRAY, -1));
         defaultsMap.putAll(defaultsMapAdd);
     }
 
