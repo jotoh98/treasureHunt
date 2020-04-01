@@ -88,13 +88,16 @@ public class Renderer {
     }
 
     /**
-     * Render an unspecified object with it's associated geometry style.
+     * Render an unspecified object with it's associated {@link GeometryStyle}.
      *
      * @param object        object that may be rendered
-     * @param geometryStyle the associated geometry style
+     * @param geometryStyle the {@link GeometryStyle}, associated to the {@code object}
      */
     private void render(Object object, GeometryStyle geometryStyle) {
         Shape shape = shapeWriter.toShape(object);
+        if (shape == null) {
+            return;
+        }
 
         if (geometryStyle.isFilled()) {
             graphics2D.setColor(geometryStyle.getFillColor());
