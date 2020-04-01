@@ -268,11 +268,14 @@ public class TreeConstructor {
     public static TreeItem<String> createItem(GeometryStyle geometryStyle) {
         final TreeItem<String> root = createItem("GeometryStyle");
 
+        final String outlineColor = geometryStyle.getOutlineColor() == null ? "none" : geometryStyle.getOutlineColor().toString();
+        final String fillColor = geometryStyle.getFillColor() == null ? "none" : geometryStyle.getFillColor().toString();
+
         root.getChildren().addAll(
                 createItem("visible: %b", geometryStyle.isVisible()),
                 createItem("filled: %b", geometryStyle.isFilled()),
-                createItem("outline color: %s", geometryStyle.getOutlineColor().toString()),
-                createItem("fill color: %s", geometryStyle.getFillColor().toString()),
+                createItem("outline color: %s", outlineColor),
+                createItem("fill color: %s", fillColor),
                 createItem("z-index: %s", geometryStyle.getZIndex())
         );
 
