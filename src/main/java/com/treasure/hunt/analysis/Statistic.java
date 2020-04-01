@@ -63,6 +63,9 @@ public class Statistic {
     }
 
     public double getHintRequests() {
+        if (turns.size() > 1 && turns.get(turns.size() - 1).getHint() == null) {
+            return turns.size() - 2;
+        }
         return turns.size() - 1;
     }
 
