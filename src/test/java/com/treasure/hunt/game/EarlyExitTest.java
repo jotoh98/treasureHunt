@@ -23,8 +23,6 @@ import java.util.List;
 @Slf4j
 class EarlyExitTest {
 
-    private static Vector2D translate = Vector2D.create(1, 0);
-
     /**
      * This tests the overall functionality of the early exit.
      */
@@ -78,19 +76,33 @@ class EarlyExitTest {
         }
     }
 
+    /**
+     * This {@link Searcher} does only go one LE to EAST.
+     */
     public static class EmptySearcher implements Searcher<Hint> {
+        private static Vector2D translate = Vector2D.create(1, 0);
         Point last;
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void init(final Point searcherStartPosition) {
             last = searcherStartPosition;
         }
 
+        /**
+         * @return {@link EmptySearcher#move(Hint)} with argument {@code null}.
+         */
         @Override
         public SearchPath move() {
             return move(null);
         }
 
+        /**
+         * @param hint the hint, the {@link Hider} gave last.
+         * @return A {@link SearchPath}, in which the {@link Searcher} moves only one LE to EAST.
+         */
         @Override
         public SearchPath move(final Hint hint) {
             last = JTSUtils.createPoint(translate.translate(last.getCoordinate()));
@@ -99,13 +111,24 @@ class EarlyExitTest {
     }
 
     public static class EmptyHider implements Hider<Hint> {
+
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void init(final Point searcherStartPosition) {
         }
 
+        /**
+         * @param searchPath the {@link SearchPath}, the {@link Searcher} did last
+         * @return a empty {@link Hint}
+         */
         @Override
         public Hint move(final SearchPath searchPath) {
             return new Hint() {
+                /**
+                 * {@inheritDoc}
+                 */
                 @Override
                 public List<GeometryItem<?>> getGeometryItems() {
                     return Collections.emptyList();
@@ -113,6 +136,9 @@ class EarlyExitTest {
             };
         }
 
+        /**
+         * @return a {@link Point} describing the treasure location on {@code (10,0)}.
+         */
         @Override
         public Point getTreasureLocation() {
             return JTSUtils.createPoint(10, 0);
