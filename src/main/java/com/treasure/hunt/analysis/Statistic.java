@@ -62,7 +62,7 @@ public class Statistic {
         return getLocalOptimumSolution() / getOptimumSolution();
     }
 
-    public double getHintRequests() {
+    public int getHintRequests() {
         if (turns.size() > 1 && turns.get(turns.size() - 1).getHint() == null) {
             return turns.size() - 2;
         }
