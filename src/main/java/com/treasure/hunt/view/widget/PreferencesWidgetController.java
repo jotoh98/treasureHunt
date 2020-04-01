@@ -3,6 +3,7 @@ package com.treasure.hunt.view.widget;
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.service.preferences.Preference;
 import com.treasure.hunt.service.preferences.PreferenceService;
+import com.treasure.hunt.service.settings.SettingsService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import javafx.beans.InvalidationListener;
@@ -19,9 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
 
-import java.text.NumberFormat;
 import java.util.HashMap;
-import java.util.Locale;
 
 /**
  * @author axel1200
@@ -47,9 +46,8 @@ public class PreferencesWidgetController {
         valueColumn.setEditable(true);
         valueColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         valueColumn.setOnEditCommit(event -> {
-            NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
             try {
-                Number number = numberFormat.parse(event.getNewValue());
+                Number number = SettingsService.getInstance().getSettings().getFormat().parse(event.getNewValue());
                 PreferenceService.getInstance().putPreference(event.getRowValue().getKey(), number);
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -57,7 +55,9 @@ public class PreferencesWidgetController {
         });
 
         nameColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getKey()));
-        valueColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getValue().toString()));
+        valueColumn.setCellValueFactory(param -> new SimpleStringProperty(
+                SettingsService.getInstance().getSettings().getFormat().format(param.getValue().getValue().doubleValue())
+        ));
 
         preferencesTable.setItems(items);
         InvalidationListener invalidationListener = observable -> {
@@ -116,15 +116,18 @@ public class PreferencesWidgetController {
                 .deletePreferences(selectedItem.getKey());
     }
 
-    public void addCancel() {
+    public void cancelClicked() {
         popupPane.setVisible(false);
     }
 
-    public void addAdd() {
-        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
+    public void addClicked() {
         try {
-            Number number = numberFormat.parse(valueTextField.getText());
-            PreferenceService.getInstance().putPreference(nameTextField.getText(), number);
+            Number number = SettingsService.getInstance()
+                    .getSettings()
+                    .getFormat()
+                    .parse(valueTextField.getText());
+            PreferenceService.getInstance()
+                    .putPreference(nameTextField.getText(), number);
         } catch (Exception e) {
             errorLabel.setVisible(true);
             return;

@@ -10,10 +10,7 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
@@ -24,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
@@ -35,7 +33,7 @@ public class SettingsController {
     public Button cancelButton;
     public Button saveButton;
 
-    private ObservableMap<Field, Property<?>> changedValues = FXCollections.observableHashMap();
+    private ObservableMap<Field, ReadOnlyProperty<?>> changedValues = FXCollections.observableHashMap();
 
     private HashMap<String, Pair<BiConsumer<VBox, Field>, Consumer<Field>>> fieldConverter = new HashMap<>();
 
@@ -77,8 +75,14 @@ public class SettingsController {
 
         fieldConverter.put("int", new Pair<>(
                 this::addIntSetting,
+                field -> ((ObjectProperty<Locale>) changedValues.get(field)).setValue((Locale) getSetting(field))
+        ));
+
+        fieldConverter.put("Locale", new Pair<>(
+                this::addLocaleSetting,
                 field -> ((IntegerProperty) changedValues.get(field)).setValue((int) getSetting(field))
         ));
+
         createSettings();
         bindChangedStates();
     }
@@ -96,7 +100,7 @@ public class SettingsController {
 
     private void createChangedBinding() {
         final Field[] declaredFields = Settings.class.getDeclaredFields();
-        Property<?>[] propertyArray = Arrays.stream(declaredFields).map(changedValues::get).filter(Objects::nonNull).toArray(Property<?>[]::new);
+        ReadOnlyProperty<?>[] propertyArray = Arrays.stream(declaredFields).map(changedValues::get).filter(Objects::nonNull).toArray(ReadOnlyProperty<?>[]::new);
         somethingChanged = Bindings.createBooleanBinding(() -> {
             for (Field field : changedValues.keySet()) {
                 field.setAccessible(true);
@@ -184,6 +188,19 @@ public class SettingsController {
 
         });
         changedValues.put(field, integerProperty);
+    }
+
+    private void addLocaleSetting(VBox vBox, Field field) {
+        String name = field.getDeclaredAnnotation(UserSetting.class).name();
+        Locale value = (Locale) getSetting(field);
+        final ComboBox<Locale> localeComboBox = new ComboBox<>();
+        localeComboBox.setItems(FXCollections.observableArrayList(Locale.getAvailableLocales()).sorted());
+        localeComboBox.getSelectionModel().select(value);
+        HBox hBox = new HBox(new Label(name), localeComboBox);
+        hBox.setSpacing(10);
+        hBox.setAlignment(Pos.CENTER_LEFT);
+        vBox.getChildren().add(hBox);
+        changedValues.put(field, localeComboBox.getSelectionModel().selectedItemProperty());
     }
 
     public void cancel() {

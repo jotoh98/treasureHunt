@@ -47,8 +47,9 @@
 }
 
 .toolbar {
-    -fx-padding: 0 7pt;
+    -fx-padding: 0;
     -fx-border-color: BORDER_COLOR;
+    -fx-spacing: 10;
 }
 
 .toolbar.top {
@@ -78,9 +79,14 @@
     -fx-padding: 0 0 0 10pt;
 }
 
-.toolbar *,
-.list-cell {
-    -fx-text-fill: lightgrey;
+#statisticsTable .toolbar {
+    -fx-padding: 0 5pt;
+    -fx-border-width: 0;
+    -fx-background-color: LIGHTER_BACKGROUND;
+}
+
+.list-cell * {
+    -fx-text-fill: SECONDARY_GREY;
 }
 
 .button,
@@ -88,7 +94,7 @@
     -fx-background-color: transparent;
     -fx-background-radius: 0;
     -fx-cursor: hand;
-    -fx-padding: 3pt 14pt;
+    -fx-padding: 3pt 10pt;
     -fx-font-size: .9em;
     -fx-border-width: .5pt;
     -fx-border-color: rgba(255, 255, 255, 0.27);
@@ -210,7 +216,7 @@
 }
 
 .arrow {
-    -fx-background-color: lightgrey;
+    -fx-background-color: SECONDARY_GREY;
 }
 
 .list-cell {
@@ -276,11 +282,9 @@
 
 .scroll-bar:vertical .increment-button,
 .scroll-bar:vertical .decrement-button {
-
     -fx-background-color: transparent;
     -fx-background-radius: 0em;
     -fx-padding: 0 10 0 0;
-
 }
 
 .scroll-bar .increment-arrow,
@@ -294,7 +298,6 @@
     -fx-background-color: derive(black, 90%);
     -fx-background-insets: 2, 0, 0;
     -fx-background-radius: 2em;
-
 }
 
 .widget {
@@ -343,12 +346,29 @@
 
 .tree-view * {
     -fx-background-color: BACKGROUND_COLOR;
-    -fx-fill: lightgrey;
+    -fx-fill: SECONDARY_GREY;
+}
+
+.spinner .text-field {
+    -fx-padding: 2pt 10pt;
 }
 
 .titled-pane .arrow-button .arrow,
-.tree-cell > .tree-disclosure-node > .arrow {
-    -fx-background-color: lightgrey;
+.tree-cell > .tree-disclosure-node > .arrow,
+.increment-arrow,
+.decrement-arrow {
+    -fx-background-color: SECONDARY_GREY;
+}
+
+.decrement-arrow-button,
+.increment-arrow-button {
+    -fx-background-color: BORDER_COLOR;
+    -fx-border-width: 0;
+}
+
+.decrement-arrow-button:hover,
+.increment-arrow-button:hover {
+    -fx-background-color: DARKER_BACKGROUND;
 }
 
 .titled-pane .title {
