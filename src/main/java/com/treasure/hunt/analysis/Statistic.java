@@ -79,7 +79,7 @@ public class Statistic {
     /**
      * @return The number of {@link com.treasure.hunt.strategy.hint.Hint}'s, the {@link com.treasure.hunt.strategy.searcher.Searcher} got yet.
      */
-    public int getHintRequests() {
+    public double getHintRequests() {
         return turns.size() - 1;
     }
 
