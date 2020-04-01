@@ -4,6 +4,7 @@ import com.treasure.hunt.analysis.StatisticAggregation;
 import com.treasure.hunt.analysis.StatisticObject;
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.service.preferences.Preference;
+import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import javafx.scene.control.CheckBox;
@@ -14,9 +15,9 @@ import javafx.util.StringConverter;
 import lombok.Value;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class PlotSettingsController {
@@ -130,10 +131,6 @@ public class PlotSettingsController {
         initPreferenceComboBox(selectedSearcher, selectedHider);
         initSelectStatisticComboBox();
         initSelectAggregationComboBox();
-        lowerBound.setText("0");
-        upperBound.setText("100");
-        stepSize.setText("1");
-        seriesAccuracy.setText("100");
         this.selectedGameEngine = selectedGameEngine;
         this.selectedSearcher = selectedSearcher;
         this.selectedHider = selectedHider;
@@ -172,13 +169,7 @@ public class PlotSettingsController {
     }
 
     private void initPreferenceComboBox(Class<? extends Searcher> selectedSearcher, Class<? extends Hider> selectedHider) {
-        Preference[] annotationsByTypeSearcher = selectedSearcher.getAnnotationsByType(Preference.class);
-        Preference[] annotationsByTypeHider = selectedHider.getAnnotationsByType(Preference.class);
 
-        List<Preference> preferences = new ArrayList<>(Arrays.asList(annotationsByTypeHider));
-        preferences.addAll(Arrays.asList(annotationsByTypeSearcher));
-
-        selectPreference.getItems().setAll(preferences);
         selectPreference.setConverter(new StringConverter<>() {
             @Override
             public String toString(Preference preference) {
@@ -190,6 +181,13 @@ public class PlotSettingsController {
                 throw new UnsupportedOperationException();
             }
         });
+
+        final PreferenceService service = PreferenceService.getInstance();
+
+        final Set linkedHashSet = new LinkedHashSet(service.getAnnotated(selectedSearcher));
+        linkedHashSet.addAll(service.getAnnotated(selectedHider));
+
+        selectPreference.getItems().setAll(linkedHashSet);
     }
 
     @Value

@@ -1,7 +1,6 @@
 package com.treasure.hunt.view.widget;
 
 import com.treasure.hunt.game.GameEngine;
-import com.treasure.hunt.service.preferences.Preference;
 import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
@@ -88,15 +87,13 @@ public class PreferencesWidgetController {
         if (selected == null || selected == deselected) {
             return;
         }
-
         final PreferenceService service = PreferenceService.getInstance();
-        associated.keySet().forEach(service::deletePreferences);
+        associated.keySet().forEach(service::deletePreference);
         associated.clear();
-
-        for (Preference preference : selected.getAnnotationsByType(Preference.class)) {
+        service.getAnnotated(selected).forEach(preference -> {
             associated.put(preference.name(), preference.value());
-        }
-        associated.forEach(service::putPreference);
+            service.putPreference(preference.name(), preference.value());
+        });
     }
 
     public void addItem() {
@@ -113,7 +110,7 @@ public class PreferencesWidgetController {
             return;
         }
         PreferenceService.getInstance()
-                .deletePreferences(selectedItem.getKey());
+                .deletePreference(selectedItem.getKey());
     }
 
     public void addCancel() {
