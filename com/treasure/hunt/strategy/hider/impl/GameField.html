@@ -137,7 +137,7 @@ extends java.lang.Object</pre>
  Bounding Area:         the biggest Area in which the Strategy wants to place the treasure
  checkedArea:            the Area the player has visited and thus must not contain the target
  AreaExcludedByHints:    the Area the previous hints have
-
+ <p>
  these 3 structures are used to calculate the remaining possible area to place the treasure into
  possibleArea:           BoundingCircle \ {checkedArea + AreaExcludedByHints)</div>
 </li>
@@ -215,9 +215,7 @@ extends java.lang.Object</pre>
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#commitPlayerMovement(com.treasure.hunt.strategy.searcher.SearchPath)">commitPlayerMovement</a></span>&#8203;(<a href="../../searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath)</code></th>
 <td class="colLast">
-<div class="block">Updates the GameField's state with a new Players SearchPath
-
-  this method assumes that the the searcher cannot fly, e.g.</div>
+<div class="block">Updates the GameField's state with a new Players SearchPath</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
@@ -393,10 +391,10 @@ extends java.lang.Object</pre>
 <h4>commitPlayerMovement</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;commitPlayerMovement&#8203;(<a href="../../searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath)</pre>
 <div class="block">Updates the GameField's state with a new Players SearchPath
-
-  this method assumes that the the searcher cannot fly, e.g. For 2 visited points,
-  all points on the line between them are counted as checked,
-  and of those point, all points within a distance of searcherScoutRadius are checked as well</div>
+ <p>
+ this method assumes that the the searcher cannot fly, e.g. For 2 visited points,
+ all points on the line between them are counted as checked,
+ and of those point, all points within a distance of searcherScoutRadius are checked as well</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>searchPath</code> - the new SearchPath</dd>
@@ -413,7 +411,7 @@ extends java.lang.Object</pre>
 <div class="block">Integrates the 2 intersections between the bounding circle and the current hint,
  then merges the resulting polygon and the remaining possible area
  to the new possible area.
-
+ <p>
  The resulting area is NOT committed, therefore this method can be used to test a possibleHint for its result</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>

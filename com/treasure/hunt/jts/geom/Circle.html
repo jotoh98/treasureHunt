@@ -27,6 +27,12 @@
     catch(err) {
     }
 //-->
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var altColor = "altColor";
+var rowColor = "rowColor";
+var tableTab = "tableTab";
+var activeTableTab = "activeTableTab";
 var pathtoroot = "../../../../../";
 var useModuleDirectories = true;
 loadScripts(document, 'script');</script>
@@ -82,7 +88,7 @@ loadScripts(document, 'script');</script>
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
@@ -91,7 +97,7 @@ loadScripts(document, 'script');</script>
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li>Method</li>
+<li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
 <a id="skip.navbar.top">
@@ -117,15 +123,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li>org.locationtech.jts.geom.Geometry</li>
-<li>
-<ul class="inheritance">
-<li>org.locationtech.jts.geom.Polygon</li>
+<li>org.locationtech.jts.geom.Coordinate</li>
 <li>
 <ul class="inheritance">
 <li>com.treasure.hunt.jts.geom.Circle</li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -136,11 +137,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code>java.io.Serializable</code>, <code>java.lang.Cloneable</code>, <code>java.lang.Comparable</code>, <code>org.locationtech.jts.geom.Polygonal</code></dd>
+<dd><code><a href="Shapeable.html" title="interface in com.treasure.hunt.jts.geom">Shapeable</a></code>, <code>java.io.Serializable</code>, <code>java.lang.Cloneable</code>, <code>java.lang.Comparable&lt;org.locationtech.jts.geom.Coordinate&gt;</code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">Circle</span>
-extends org.locationtech.jts.geom.Polygon</pre>
+extends org.locationtech.jts.geom.Coordinate
+implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.geom">Shapeable</a></pre>
 <div class="block">Adding a <code>Polygon</code> based Circle to the <code>org.locationtech.jts</code> suite.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
@@ -153,6 +155,23 @@ extends org.locationtech.jts.geom.Polygon</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<section role="region">
+<ul class="blockList">
+<li class="blockList"><a id="nested.class.summary">
+<!--   -->
+</a>
+<h3>Nested Class Summary</h3>
+<ul class="blockList">
+<li class="blockList"><a id="nested.classes.inherited.from.class.org.locationtech.jts.geom.Coordinate">
+<!--   -->
+</a>
+<h3>Nested classes/interfaces inherited from class&nbsp;org.locationtech.jts.geom.Coordinate</h3>
+<code>org.locationtech.jts.geom.Coordinate.DimensionalComparator</code></li>
+</ul>
+</li>
+</ul>
+</section>
 <!-- =========== FIELD SUMMARY =========== -->
 <section role="region">
 <ul class="blockList">
@@ -161,18 +180,11 @@ extends org.locationtech.jts.geom.Polygon</pre>
 </a>
 <h3>Field Summary</h3>
 <ul class="blockList">
-<li class="blockList"><a id="fields.inherited.from.class.org.locationtech.jts.geom.Polygon">
+<li class="blockList"><a id="fields.inherited.from.class.org.locationtech.jts.geom.Coordinate">
 <!--   -->
 </a>
-<h3>Fields inherited from class&nbsp;org.locationtech.jts.geom.Polygon</h3>
-<code>holes, shell</code></li>
-</ul>
-<ul class="blockList">
-<li class="blockList"><a id="fields.inherited.from.class.org.locationtech.jts.geom.Geometry">
-<!--   -->
-</a>
-<h3>Fields inherited from class&nbsp;org.locationtech.jts.geom.Geometry</h3>
-<code>envelope, factory, SRID</code></li>
+<h3>Fields inherited from class&nbsp;org.locationtech.jts.geom.Coordinate</h3>
+<code>M, NULL_ORDINATE, x, X, y, Y, z, Z</code></li>
 </ul>
 </li>
 </ul>
@@ -191,18 +203,16 @@ extends org.locationtech.jts.geom.Polygon</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.locationtech.jts.geom.Coordinate,double,int,org.locationtech.jts.geom.GeometryFactory)">Circle</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate,
-      double&nbsp;radius,
-      int&nbsp;numOfPoints,
-      org.locationtech.jts.geom.GeometryFactory&nbsp;geometryFactory)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.locationtech.jts.geom.Coordinate,double)">Circle</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate,
+      double&nbsp;radius)</code></th>
 <td class="colLast">
 <div class="block">The constructor</div>
 </td>
 </tr>
 <tr class="rowColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.locationtech.jts.geom.Coordinate,double,org.locationtech.jts.geom.GeometryFactory)">Circle</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.locationtech.jts.geom.Coordinate,double,int)">Circle</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate,
       double&nbsp;radius,
-      org.locationtech.jts.geom.GeometryFactory&nbsp;geometryFactory)</code></th>
+      int&nbsp;numPoints)</code></th>
 <td class="colLast">
 <div class="block">The constructor</div>
 </td>
@@ -218,19 +228,76 @@ extends org.locationtech.jts.geom.Polygon</pre>
 <!--   -->
 </a>
 <h3>Method Summary</h3>
+<table class="memberSummary">
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr id="i0" class="altColor">
+<td class="colFirst"><code><a href="Circle.html" title="class in com.treasure.hunt.jts.geom">Circle</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#copy()">copy</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Override the coordinate copy.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#covers(com.treasure.hunt.jts.geom.Circle)">covers</a></span>&#8203;(<a href="Circle.html" title="class in com.treasure.hunt.jts.geom">Circle</a>&nbsp;circle)</code></th>
+<td class="colLast">
+<div class="block">Test, whether the circle covers another circle.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCenter()">getCenter</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Get central coordinate of circle.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#inside(org.locationtech.jts.geom.Coordinate)">inside</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;c)</code></th>
+<td class="colLast">
+<div class="block">Tests whether a coordinate lays inside the circle or not.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#project(org.locationtech.jts.geom.Coordinate)">project</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;c)</code></th>
+<td class="colLast">
+<div class="block">Project a coordinate on the edge of the circle.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>org.locationtech.jts.geom.Polygon</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toPolygon()">toPolygon</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Generate a polygon from the circle.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>java.awt.Shape</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toShape(com.treasure.hunt.jts.awt.AdvancedShapeWriter)">toShape</a></span>&#8203;(<a href="../awt/AdvancedShapeWriter.html" title="class in com.treasure.hunt.jts.awt">AdvancedShapeWriter</a>&nbsp;advancedShapeWriter)</code></th>
+<td class="colLast">
+<div class="block">Shape the circle as an awt ellipse.</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toString()">toString</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Custom string serialization.</div>
+</td>
+</tr>
+</table>
 <ul class="blockList">
-<li class="blockList"><a id="methods.inherited.from.class.org.locationtech.jts.geom.Polygon">
+<li class="blockList"><a id="methods.inherited.from.class.org.locationtech.jts.geom.Coordinate">
 <!--   -->
 </a>
-<h3>Methods inherited from class&nbsp;org.locationtech.jts.geom.Polygon</h3>
-<code>apply, apply, apply, apply, clone, compareToSameClass, compareToSameClass, computeEnvelopeInternal, convexHull, copyInternal, equalsExact, getArea, getBoundary, getBoundaryDimension, getCoordinate, getCoordinates, getDimension, getExteriorRing, getGeometryType, getInteriorRingN, getLength, getNumInteriorRing, getNumPoints, getSortIndex, isEmpty, isRectangle, normalize, reverse</code></li>
-</ul>
-<ul class="blockList">
-<li class="blockList"><a id="methods.inherited.from.class.org.locationtech.jts.geom.Geometry">
-<!--   -->
-</a>
-<h3>Methods inherited from class&nbsp;org.locationtech.jts.geom.Geometry</h3>
-<code>buffer, buffer, buffer, checkNotGeometryCollection, compare, compareTo, compareTo, contains, copy, coveredBy, covers, crosses, difference, disjoint, distance, equal, equals, equals, equalsExact, equalsNorm, equalsTopo, geometryChanged, geometryChangedAction, getCentroid, getEnvelope, getEnvelopeInternal, getFactory, getGeometryN, getInteriorPoint, getNumGeometries, getPrecisionModel, getSRID, getUserData, hashCode, hasNonEmptyElements, hasNullElements, intersection, intersects, isEquivalentClass, isGeometryCollection, isSimple, isValid, isWithinDistance, norm, overlaps, relate, relate, setSRID, setUserData, symDifference, toString, toText, touches, union, union, within</code></li>
+<h3>Methods inherited from class&nbsp;org.locationtech.jts.geom.Coordinate</h3>
+<code>clone, compareTo, distance, distance3D, equalInZ, equals, equals2D, equals2D, equals3D, getM, getOrdinate, getX, getY, getZ, hashCode, hashCode, setCoordinate, setM, setOrdinate, setX, setY, setZ</code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -255,7 +322,7 @@ extends org.locationtech.jts.geom.Polygon</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(org.locationtech.jts.geom.Coordinate,double,int,org.locationtech.jts.geom.GeometryFactory)">
+<a id="&lt;init&gt;(org.locationtech.jts.geom.Coordinate,double,int)">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -263,33 +330,165 @@ extends org.locationtech.jts.geom.Polygon</pre>
 <h4>Circle</h4>
 <pre>public&nbsp;Circle&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate,
               double&nbsp;radius,
-              int&nbsp;numOfPoints,
-              org.locationtech.jts.geom.GeometryFactory&nbsp;geometryFactory)</pre>
+              int&nbsp;numPoints)</pre>
 <div class="block">The constructor</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>coordinate</code> - the center point of the circle.</dd>
 <dd><code>radius</code> - the radius of the circle.</dd>
-<dd><code>numOfPoints</code> - the number of points, the circle get after converting to a <code>Polygon</code>.</dd>
-<dd><code>geometryFactory</code> - the <code>GeometryFactory</code>.</dd>
+<dd><code>numPoints</code> - the number of points, the circle get after converting to a <code>Polygon</code>.</dd>
 </dl>
 </li>
 </ul>
-<a id="&lt;init&gt;(org.locationtech.jts.geom.Coordinate,double,org.locationtech.jts.geom.GeometryFactory)">
+<a id="&lt;init&gt;(org.locationtech.jts.geom.Coordinate,double)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>Circle</h4>
 <pre>public&nbsp;Circle&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate,
-              double&nbsp;radius,
-              org.locationtech.jts.geom.GeometryFactory&nbsp;geometryFactory)</pre>
+              double&nbsp;radius)</pre>
 <div class="block">The constructor</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>coordinate</code> - the center point of the circle.</dd>
 <dd><code>radius</code> - the radius of the circle.</dd>
-<dd><code>geometryFactory</code> - the <code>GeometryFactory</code>.</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<!-- ============ METHOD DETAIL ========== -->
+<section role="region">
+<ul class="blockList">
+<li class="blockList"><a id="method.detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a id="inside(org.locationtech.jts.geom.Coordinate)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>inside</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;inside&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;c)</pre>
+<div class="block">Tests whether a coordinate lays inside the circle or not.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>c</code> - coordinate to test</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>whether a coordinate lays inside the circle or not</dd>
+</dl>
+</li>
+</ul>
+<a id="covers(com.treasure.hunt.jts.geom.Circle)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>covers</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;covers&#8203;(<a href="Circle.html" title="class in com.treasure.hunt.jts.geom">Circle</a>&nbsp;circle)</pre>
+<div class="block">Test, whether the circle covers another circle.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>circle</code> - circle that may be covered.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>whether the circle covers another circle or not</dd>
+</dl>
+</li>
+</ul>
+<a id="project(org.locationtech.jts.geom.Coordinate)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>project</h4>
+<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Coordinate&nbsp;project&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;c)</pre>
+<div class="block">Project a coordinate on the edge of the circle.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>c</code> - coordinate to project</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>projected coordinate, may be center if projected point is center</dd>
+</dl>
+</li>
+</ul>
+<a id="getCenter()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCenter</h4>
+<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Coordinate&nbsp;getCenter()</pre>
+<div class="block">Get central coordinate of circle.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>central coordinate</dd>
+</dl>
+</li>
+</ul>
+<a id="toPolygon()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>toPolygon</h4>
+<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Polygon&nbsp;toPolygon()</pre>
+<div class="block">Generate a polygon from the circle.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>circular polygon</dd>
+</dl>
+</li>
+</ul>
+<a id="toShape(com.treasure.hunt.jts.awt.AdvancedShapeWriter)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>toShape</h4>
+<pre class="methodSignature">public&nbsp;java.awt.Shape&nbsp;toShape&#8203;(<a href="../awt/AdvancedShapeWriter.html" title="class in com.treasure.hunt.jts.awt">AdvancedShapeWriter</a>&nbsp;advancedShapeWriter)</pre>
+<div class="block">Shape the circle as an awt ellipse.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="Shapeable.html#toShape(com.treasure.hunt.jts.awt.AdvancedShapeWriter)">toShape</a></code>&nbsp;in interface&nbsp;<code><a href="Shapeable.html" title="interface in com.treasure.hunt.jts.geom">Shapeable</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>advancedShapeWriter</code> - shape writer for shape transformation</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>awt circle shape</dd>
+</dl>
+</li>
+</ul>
+<a id="toString()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>toString</h4>
+<pre class="methodSignature">public&nbsp;java.lang.String&nbsp;toString()</pre>
+<div class="block">Custom string serialization.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code>toString</code>&nbsp;in class&nbsp;<code>org.locationtech.jts.geom.Coordinate</code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>string representation for circle</dd>
+</dl>
+</li>
+</ul>
+<a id="copy()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>copy</h4>
+<pre class="methodSignature">public&nbsp;<a href="Circle.html" title="class in com.treasure.hunt.jts.geom">Circle</a>&nbsp;copy()</pre>
+<div class="block">Override the coordinate copy.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code>copy</code>&nbsp;in class&nbsp;<code>org.locationtech.jts.geom.Coordinate</code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>copied circle</dd>
 </dl>
 </li>
 </ul>
@@ -344,7 +543,7 @@ extends org.locationtech.jts.geom.Polygon</pre>
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
@@ -353,7 +552,7 @@ extends org.locationtech.jts.geom.Polygon</pre>
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li>Method</li>
+<li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
 <a id="skip.navbar.bottom">
