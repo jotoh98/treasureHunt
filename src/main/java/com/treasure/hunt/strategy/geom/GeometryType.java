@@ -30,6 +30,8 @@ public enum GeometryType {
     WAY_POINT_LINE(true, "way point line"),
     CURRENT_WAY_POINT(true, "Current way point", true),
 
+    HELPER_LINE(true, "helper line"),
+
     BOUNDING_CIRCE(false, "bounding circle", true),
     OUTER_CIRCLE(false, "outer circle", true),
     WORST_CONSTANT(false, "Point with worst Constant", true),

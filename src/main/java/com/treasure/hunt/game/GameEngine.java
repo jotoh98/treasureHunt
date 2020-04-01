@@ -1,6 +1,7 @@
 package com.treasure.hunt.game;
 
 import com.treasure.hunt.analysis.Statistic;
+import com.treasure.hunt.jts.geom.Circle;
 import com.treasure.hunt.jts.geom.GeometryAngle;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.Hint;
@@ -121,9 +122,10 @@ public class GameEngine {
      * Let the {@link GameEngine#hider} give its {@link Hint}.
      */
     protected void hiderMove() {
-        lastHint = hider.move(lastSearchPath);
-        assert (lastHint != null);
-        verifyHint(lastHint, treasurePos, lastSearchPath.getLastPoint());
+        Hint newHint = hider.move(lastSearchPath);
+        assert (newHint != null);
+        verifyHint(newHint, treasurePos, lastSearchPath.getLastPoint());
+        lastHint = newHint;
     }
 
     /**
@@ -144,7 +146,6 @@ public class GameEngine {
     /**
      * TODO implement:
      * AngleHints must be of angle [0, 180] !?
-     * CircleHints must contain each other !?
      * Verifies whether the {@link Hint} {@code hint} given by the {@link Hider} followed the rules.
      *
      * @param hint             {@link Hint} to be verified
@@ -162,10 +163,19 @@ public class GameEngine {
             }
         }
         if (hint instanceof CircleHint) {
-            if (((CircleHint) hint).getRadius() < ((CircleHint) hint).getCenter().distance(treasurePosition)) {
+            Circle lastCircleHint = ((CircleHint) hint).getCircle();
+            Circle newCircleHint = ((CircleHint) hint).getCircle();
+            // check, whether the CircleHint contains the treasure.
+            if (!newCircleHint.inside(treasurePosition.getCoordinate())) {
                 throw new IllegalArgumentException("The CircleHint does not contain the treasure.\n" +
-                        "It says, " + ((CircleHint) hint).getRadius() + " around " + ((CircleHint) hint).getCenter() + ", " +
-                        "but was " + ((CircleHint) hint).getCenter().distance(treasurePosition));
+                        "It says, " + newCircleHint.getRadius() + " around " + newCircleHint.getCenter() + ", " +
+                        "but was " + newCircleHint.getCenter().distance(treasurePosition.getCoordinate()));
+            }
+            // check, whether the current CircleHint lies completely in the previous.
+            if (lastHint != null) {
+                if (lastCircleHint.getRadius() > (lastCircleHint.distance(newCircleHint) + newCircleHint.getRadius())) {
+                    throw new IllegalArgumentException("New CircleHint does not completely lie in the last Circle Hint.");
+                }
             }
         }
     }

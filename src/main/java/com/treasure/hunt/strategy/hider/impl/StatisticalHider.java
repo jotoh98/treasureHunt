@@ -8,8 +8,8 @@ import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.algorithm.Angle;
-import org.locationtech.jts.geom.*;
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.*;
 import org.locationtech.jts.geom.util.AffineTransformation;
 
 import java.awt.*;
@@ -22,11 +22,11 @@ import java.util.stream.Collectors;
 /**
  * An abstract hider which implements methods to play a basic game
  * It also supplies methods to judge a given hint by generating statistics about the hint and saving them in {@link StatisticalHider}
- *
+ * <p>
  * How these hints are rated is up to the {@link StatisticalHider} subclasses by implementing the {@link #rateHint(AngleHintStatistic)} method
  */
 @Slf4j
-public abstract class StatisticalHider{
+public abstract class StatisticalHider {
 
     public static final String getRelativeAreaCutoffWeight_Preference = "relative area cutoff weight";
     public static final String DistanceFromNormalAngleLineToTreasureWeight_Preference = "distance to angle bisector line weight";
@@ -47,7 +47,6 @@ public abstract class StatisticalHider{
     protected double distanceFromNormalAngleRay;
 
 
-
     protected Point treasure;
     protected double preferredHintSize;
 
@@ -58,7 +57,7 @@ public abstract class StatisticalHider{
 
         PreferenceService pS = PreferenceService.getInstance();
         treasure = JTSUtils.shuffleTreasure();
-        preferredHintSize = pS.getPreference( PreferenceService.HintSize_Preference , 180 ).doubleValue();
+        preferredHintSize = pS.getPreference(PreferenceService.HintSize_Preference, 180).doubleValue();
 
         gameField.init(searcherStartPosition, treasure);
         this.currentPossibleArea = gameField.getPossibleArea();
@@ -129,7 +128,6 @@ public abstract class StatisticalHider{
         String bisectorDistPretty = new DecimalFormat("#.00").format(returnHint.getDistanceFromNormalAngleLineToTreasure());
         returnHint.getHint().getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.DISTANCE_ANGLE_BISECTOR_TREASURE, bisectorDistPretty ));
 
-
         return returnHint.getHint();
     }
 
@@ -168,8 +166,8 @@ public abstract class StatisticalHider{
         Geometry after = ahs.getAreaAfterHint();
         Point centroid = after.getCentroid();
 
-        GeometryStyle centroidStyle = new GeometryStyle(true, new Color(244,149,41));
-        GeometryItem<Point> centroidItem = new GeometryItem(centroid, GeometryType.CENTROID , centroidStyle);
+        GeometryStyle centroidStyle = new GeometryStyle(true, new Color(244, 149, 41));
+        GeometryItem<Point> centroidItem = new GeometryItem(centroid, GeometryType.CENTROID, centroidStyle);
         ahs.getHint().addAdditionalItem(centroidItem);
 
         double dist = centroid.distance(treasure);
@@ -177,22 +175,24 @@ public abstract class StatisticalHider{
         return dist;
     }
 
-    /** Todo
+    /**
+     * Todo
      *
      * @param statistic
      * @param searchPath
      * @return
      */
-    protected double fillStrategyFromPaper_RectangleCutQuality(AngleHintStatistic statistic, SearchPath searchPath){
+    protected double fillStrategyFromPaper_RectangleCutQuality(AngleHintStatistic statistic, SearchPath searchPath) {
         return 0.0;
     }
 
     /**
      * Filters the given Hints on the Predicate of being abel to see
+     *
      * @param stats the List of AngleHintStats to filter
      * @return
      */
-    protected List<AngleHintStatistic> filterForValidHints(List<AngleHintStatistic> stats){
+    protected List<AngleHintStatistic> filterForValidHints(List<AngleHintStatistic> stats) {
 
         stats = stats.stream().filter(hint -> hint.getHint().getGeometryAngle().inView(treasure.getCoordinate())).collect(Collectors.toList());
         log.debug("remaining possible Hints" + stats.size()); // hint: its always half the amount
@@ -232,7 +232,6 @@ public abstract class StatisticalHider{
         } else {
             log.info("generating " + samples + " hints of size " +  PreferenceService.getInstance().getPreference(PreferenceService.HintSize_Preference, 180).doubleValue());
 
-
             for (int i = 0; i < samples; i++) {
                 double rightAngle = twoPi * (((double) i) / samples);
                 double leftAngle = rightAngle + Angle.toRadians(preferredHintSize);
@@ -245,12 +244,11 @@ public abstract class StatisticalHider{
                 Point left = gf.createPoint(new Coordinate(hintCenter.getX() + dX_left, hintCenter.getY() + dY_left));
 
                 //check for possible HalfPlaneHint
-                if(preferredHintSize == 180){
+                if (preferredHintSize == 180) {
                     hint = new HalfPlaneHint(hintCenter.getCoordinate(), right.getCoordinate());
-                }else{
+                } else {
                     hint = new AngleHint(right.getCoordinate(), hintCenter.getCoordinate(), left.getCoordinate());
                 }
-
 
                 hints.add(hint);
             }
