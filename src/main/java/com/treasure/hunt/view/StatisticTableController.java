@@ -329,7 +329,7 @@ public class StatisticTableController {
         Class<? extends Searcher> selectedSearcher = searcherList.getSelectionModel().getSelectedItem();
         Class<? extends Hider> selectedHider = hiderList.getSelectionModel().getSelectedItem();
 
-        if (selectedSearcher != null || selectedHider != null || selectedGameEngine != null) {
+        if (selectedSearcher == null || selectedHider == null || selectedGameEngine == null) {
             EventBusUtils.LOG_LABEL_EVENT.trigger("No searcher, hider or game engine selected.");
             return;
         }
