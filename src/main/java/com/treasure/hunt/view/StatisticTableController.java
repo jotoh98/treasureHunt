@@ -330,8 +330,7 @@ public class StatisticTableController {
         Class<? extends Hider> selectedHider = hiderList.getSelectionModel().getSelectedItem();
 
         if (selectedSearcher == null || selectedHider == null || selectedGameEngine == null) {
-            EventBusUtils.LOG_LABEL_EVENT.trigger("No searcher, hider or game engine selected.");
-            return;
+            throw new IllegalStateException("No searcher, hider or game engine selected.");
         }
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/plotSettings.fxml"));
