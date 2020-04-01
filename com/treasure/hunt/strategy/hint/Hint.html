@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":6,"i5":10,"i6":10,"i7":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":6,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -221,32 +221,19 @@ extends <a href="../geom/HintAndMovement.html" title="class in com.treasure.hunt
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#equals(java.lang.Object)">equals</a></span>&#8203;(java.lang.Object&nbsp;o)</code></th>
-<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>java.util.List&lt;<a href="../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAdditionalGeometryItems()">getAdditionalGeometryItems</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i4" class="altColor">
 <td class="colFirst"><code>abstract java.util.List&lt;<a href="../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGeometryItems()">getGeometryItems</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hashCode()">hashCode</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAdditionalGeometryItems(java.util.List)">setAdditionalGeometryItems</a></span>&#8203;(java.util.List&lt;<a href="../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt;&nbsp;additionalGeometryItems)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i7" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toString()">toString</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -336,24 +323,6 @@ extends <a href="../geom/HintAndMovement.html" title="class in com.treasure.hunt
 </dl>
 </li>
 </ul>
-<a id="getAdditionalGeometryItems()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getAdditionalGeometryItems</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt;&nbsp;getAdditionalGeometryItems()</pre>
-</li>
-</ul>
-<a id="setAdditionalGeometryItems(java.util.List)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setAdditionalGeometryItems</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setAdditionalGeometryItems&#8203;(java.util.List&lt;<a href="../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt;&nbsp;additionalGeometryItems)</pre>
-</li>
-</ul>
 <a id="equals(java.lang.Object)">
 <!--   -->
 </a>
@@ -374,6 +343,12 @@ extends <a href="../geom/HintAndMovement.html" title="class in com.treasure.hunt
 <li class="blockList">
 <h4>canEqual</h4>
 <pre class="methodSignature">protected&nbsp;boolean&nbsp;canEqual&#8203;(java.lang.Object&nbsp;other)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>other</code> - the <code>Object</code>, we want to check the type of.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code>, if <code>other</code> is <code>instanceof</code> <a href="Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a>. <code>false</code>, otherwise.</dd>
+</dl>
 </li>
 </ul>
 <a id="hashCode()">
