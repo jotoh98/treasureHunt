@@ -9,23 +9,31 @@ import lombok.Getter;
  * @author jotoh
  */
 public enum GeometryType {
-    // hints
+    /**
+     * Hint relevant
+     */
     HINT_CENTER(false, "hint-center"),
 
-    // HalfPlaneHint
+    /**
+     * HalfPlaneHint relevant
+     */
     HALF_PLANE(true, "the treasure is not here", true),
     HALF_PLANE_LINE(true, "half plane line", true),
     HALF_PLANE_LINE_BLUE(true, "half plane line", true),
     HALF_PLANE_LINE_BROWN(true, "half plane line", true),
 
-    // treasure/no-treasure (areas)
+    /**
+     * treasure/no-treasure (areas) relevant
+     */
     TREASURE(true, "treasure", true),
     TREASURE_FLAG(true, "treasure flag", true),
     NO_TREASURE(false, "no treasure", true),
     POSSIBLE_TREASURE(false, "possible treasure", true),
     HINT_ANGLE(true, "angle hint", true),
 
-    // searcher movements
+    /**
+     * searcher movements relevant
+     */
     WAY_POINT(true, "way point"),
     WAY_POINT_LINE(true, "way point line"),
     CURRENT_WAY_POINT(true, "Current way point", true),
@@ -38,7 +46,9 @@ public enum GeometryType {
     INNER_BUFFER(true, "inner buffer area", true),
     CENTROID(true, "Centroid of remaining possible Area", true),
 
-    // StrategyFromPaper
+    /**
+     * StrategyFromPaper relevant
+     */
     CURRENT_PHASE(false, "current phase", true),
     CURRENT_RECTANGLE(true, "current rectangle", true),
     CURRENT_POLYGON(true, "current polygon", true),
