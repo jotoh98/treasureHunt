@@ -16,9 +16,11 @@ import org.locationtech.jts.geom.Point;
 @Preference(name = PreferenceService.MAX_TREASURE_DISTANCE, value = 100)
 public class HalfPlaneAdapter_MobileTreasure implements HideAndSeekHider<HalfPlaneHint> {
     private MobileTreasureHider adaptee;
-    public HalfPlaneAdapter_MobileTreasure(){
+
+    public HalfPlaneAdapter_MobileTreasure() {
         adaptee = new MobileTreasureHider();
     }
+
     @Override
     public void init(Point searcherStartPosition) {
         //PreferenceService.getInstance().putPreference();

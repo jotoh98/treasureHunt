@@ -9,44 +9,57 @@ import lombok.Getter;
  * @author jotoh
  */
 public enum GeometryType {
-    // hints
-    FALSE_HINT(false, "False Hint"),
+    /**
+     * Hint relevant
+     */
     HINT_CENTER(false, "hint-center"),
-    HINT_RADIUS(false, "hint-center"),
-    TRUE_HINT(false, "True Hint"),
 
-    // HalfPlaneHint
+    /**
+     * HalfPlaneHint relevant
+     */
     HALF_PLANE(true, "the treasure is not here", true),
     HALF_PLANE_LINE(true, "half plane line", true),
     HALF_PLANE_LINE_BLUE(true, "half plane line", true),
     HALF_PLANE_LINE_BROWN(true, "half plane line", true),
 
-    // treasure/no-treasure (areas)
+    /**
+     * treasure/no-treasure (areas) relevant
+     */
     TREASURE(true, "treasure", true),
     TREASURE_FLAG(true, "treasure flag", true),
     NO_TREASURE(false, "no treasure", true),
     POSSIBLE_TREASURE(false, "possible treasure", true),
     HINT_ANGLE(true, "angle hint", true),
 
-    // searcher movements
+    /**
+     * searcher movements relevant
+     */
     WAY_POINT(true, "way point"),
     WAY_POINT_LINE(true, "way point line"),
-    SEARCHER_MOVEMENT(true, "searcher movement"),
-    SEARCHER_LAST_MOVE(true, "the searchers last movement", true),
+    CURRENT_WAY_POINT(true, "Current way point", true),
+
+    HELPER_LINE(true, "helper line"),
 
     BOUNDING_CIRCE(false, "bounding circle", true),
     OUTER_CIRCLE(false, "outer circle", true),
-    WORST_CONSTANT(false, "Point with worst Constant",true),
-    INNER_BUFFER(true,"inner buffer area", true),
+    WORST_CONSTANT(false, "Point with worst Constant", true),
+    INNER_BUFFER(true, "inner buffer area", true),
     CENTROID(true, "Centroid of remaining possible Area", true),
 
-    // StrategyFromPaper
+    /**
+     * StrategyFromPaper relevant
+     */
     CURRENT_PHASE(false, "current phase", true),
     CURRENT_RECTANGLE(true, "current rectangle", true),
     CURRENT_POLYGON(true, "current polygon", true),
 
+    // XY Searcher
+    MAX_X(true, "max x", true),
+    MAX_Y(true, "max x", true),
+    MIN_X(true, "max x", true),
+    MIN_Y(true, "max x", true),
+
     STANDARD(true, ""),
-    CURRENT_WAY_POINT(true, "Current way point", true),
     GRID(true, "Grid", false),
     HIGHLIGHTER(true, "Highlighter", true),
     POLYHEDRON(true, "Polyhedron", true);
@@ -74,5 +87,4 @@ public enum GeometryType {
     GeometryType(boolean enabledByDefault, String displayName) {
         this(enabledByDefault, displayName, false);
     }
-
 }

@@ -39,8 +39,7 @@ public class SelectionService {
         if (currentGameManager.getVisibleGeometries()
                 .noneMatch(geometryItem -> geometryItem.equals(geometryItemSelected))) {
             if (geometryItemSelected != null) {
-                currentGameManager.getAdditional()
-                        .remove("Highlighter");
+                currentGameManager.removeAdditional("Highlighter");
             }
             EventBusUtils.GEOMETRY_ITEM_SELECTED.trigger(null);
 
@@ -76,8 +75,7 @@ public class SelectionService {
         if (mouseEvent.isShiftDown()) {
             if (foundItems.contains(geometryItemSelected)) {
                 if (geometryItemSelected != null) {
-                    gameManager.getAdditional()
-                            .remove("Highlighter");
+                    gameManager.removeAdditional("Highlighter");
                 }
                 EventBusUtils.GEOMETRY_ITEM_SELECTED.trigger(null);
                 geometryItemSelected = null;
@@ -88,8 +86,7 @@ public class SelectionService {
 
         if (foundItems.isEmpty()) {
             if (geometryItemSelected != null) {
-                gameManager.getAdditional()
-                        .remove("Highlighter");
+                gameManager.removeAdditional("Highlighter");
             }
             EventBusUtils.GEOMETRY_ITEM_SELECTED.trigger(null);
 
@@ -116,8 +113,7 @@ public class SelectionService {
         geometryItemSelected = geometryItem;
         geometrySelected = geometryItemSelected.getObject();
         EventBusUtils.GEOMETRY_ITEM_SELECTED.trigger(geometryItemSelected);
-        gameManager.getAdditional()
-                .put("Highlighter", createEnvelope(geometrySelected));
+        gameManager.addAdditional("Highlighter", createEnvelope(geometrySelected));
     }
 
     private GeometryItem<?> createEnvelope(Geometry item) {

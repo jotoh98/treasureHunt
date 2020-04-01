@@ -22,10 +22,13 @@ public class PreferenceService {
     public static final String ANGLE_UPPER_BOUND = "ANGLE_UPPER_BOUND";
     public static final String ANGLE_LOWER_BOUND = "ANGLE_LOWER_BOUND";
     public static final String ANGLE = "ANGLE";
+    public static final String GLOBAL_GREEDY = "GLOBAL_GREEDY";
 
     public static final String HintSize_Preference = "preferred hint size";
     public static final String TreasureLocationX_Preference = "preferred x-Value treasure";
     public static final String TreasureLocationY_Preference = "preferred y-Value treasure";
+
+    public static final String CIRCLE_INIT_RADIUS = "CIRCLE_INIT_RADIUS";
 
 
     public static final String PREF_PREFIX = "PREF_";

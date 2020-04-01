@@ -1,6 +1,7 @@
 package com.treasure.hunt.utils;
 
 import com.treasure.hunt.jts.awt.CanvasBoundary;
+import com.treasure.hunt.jts.geom.Circle;
 import com.treasure.hunt.jts.geom.GeometryAngle;
 import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
@@ -261,6 +262,37 @@ public final class JTSUtils {
     }
 
     /**
+     * Shuffles a new circle covered by the boundary circle, containing the pivot coordinate and obtaining the given radius;
+     *
+     * @param boundary circle to cover the generated circle
+     * @param pivot    coordinate, that must lay inside of the generated circle
+     * @param radius   radius of the generated circle
+     * @return a valid generated circle
+     */
+    public static Circle randomContainedCircle(Circle boundary, Coordinate pivot, double radius) {
+        assert boundary.inside(pivot);
+        assert boundary.getRadius() >= radius;
+        final Circle pivotBoundary = new Circle(pivot, radius);
+        final Circle innerBoundary = new Circle(boundary.getCenter(), boundary.getRadius() - radius);
+
+        Coordinate center;
+        if (innerBoundary.covers(pivotBoundary)) {
+            center = randomInCircle(pivotBoundary);
+        } else {
+            Circle generator = innerBoundary;
+            Circle tester = pivotBoundary;
+            if (2 * radius < boundary.getRadius()) {
+                generator = pivotBoundary;
+                tester = innerBoundary;
+            }
+            do {
+                center = randomInCircle(generator);
+            } while (!tester.inside(center));
+        }
+        return new Circle(center, radius);
+    }
+
+    /**
      * Get the {@link ConvexHull} for a list of {@link Coordinate}s.
      *
      * @param coordinates the list of coordinates
@@ -273,13 +305,12 @@ public final class JTSUtils {
         );
     }
 
+    /**
+     * Generates a treasure location according to set preferences.
+     *
+     * @return treasure point
+     */
     public static Point shuffleTreasure() {
-        double maxDistance = PreferenceService.getInstance()
-                .getPreference(PreferenceService.MAX_TREASURE_DISTANCE, 100)
-                .doubleValue();
-        double minDistance = PreferenceService.getInstance()
-                .getPreference(PreferenceService.MIN_TREASURE_DISTANCE, 0)
-                .doubleValue();
         Optional<Number> fixedDistance = PreferenceService.getInstance()
                 .getPreference(PreferenceService.TREASURE_DISTANCE);
 
@@ -288,7 +319,27 @@ public final class JTSUtils {
             return JTSUtils.GEOMETRY_FACTORY.createPoint(treasure);
         }
 
+        double maxDistance = PreferenceService.getInstance()
+                .getPreference(PreferenceService.MAX_TREASURE_DISTANCE, 100)
+                .doubleValue();
+        double minDistance = PreferenceService.getInstance()
+                .getPreference(PreferenceService.MIN_TREASURE_DISTANCE, 0)
+                .doubleValue();
+
         Coordinate treasure = Vector2D.create(Math.random() * (maxDistance - minDistance) + minDistance, 0).rotate(2 * Math.PI * Math.random()).translate(new Coordinate());
         return JTSUtils.GEOMETRY_FACTORY.createPoint(treasure);
+    }
+
+    /**
+     * Generate a random coordinate in the given circle.
+     *
+     * @param circle circle to cover the generated coordinate
+     * @return random coordinate in given circle
+     */
+    public static Coordinate randomInCircle(Circle circle) {
+        return Vector2D.create(circle.getRadius(), 0)
+                .rotate(Math.random() * 2 * Math.PI)
+                .multiply(Math.random())
+                .translate(circle.getCenter());
     }
 }
