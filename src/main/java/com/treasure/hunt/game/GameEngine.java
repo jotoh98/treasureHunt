@@ -68,6 +68,7 @@ public class GameEngine {
 
     /**
      * initialize searcher and treasure positions.
+     *
      * @return a {@link Turn}, since the initialization must be displayed.
      */
     public Turn init() {
@@ -108,7 +109,7 @@ public class GameEngine {
 
         searcherMove();
 
-        if (lastSearchPath.located(searchPathStart, treasurePos)) {
+        if (lastSearchPath.located(treasurePos)) {
             finished = true;
             return new Turn(null, lastSearchPath, treasurePos);
         } else {
@@ -140,6 +141,7 @@ public class GameEngine {
         }
         assert (lastSearchPath != null);
         assert (lastSearchPath.getPoints().size() != 0);
+        lastSearchPath.addPointToFront(searcherPos);
         searcherPos = lastSearchPath.getLastPoint();
     }
 
