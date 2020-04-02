@@ -395,13 +395,16 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
 
         List<GeometryItem<?>> subListGeometries = new ArrayList<>();
 
+        // add initial position
+        subListGeometries.add(new GeometryItem<>(turns.get(0).getSearchPath().getFirstPoint(), GeometryType.WAY_POINT));
+
         if (visibleSubList.size() > 0) {
-            subListGeometries.addAll(visibleSubList.get(0).getGeometryItems(null));
+            subListGeometries.addAll(visibleSubList.get(0).getGeometryItems());
         }
         if (visibleSubList.size() > 1) {
             subListGeometries.addAll(
                     ListUtils
-                            .consecutive(visibleSubList, (prev, next) -> next.getGeometryItems(prev.getSearchPath().getLastPoint()))
+                            .consecutive(visibleSubList, (prev, next) -> next.getGeometryItems())
                             .flatMap(Collection::stream)
                             .collect(Collectors.toList())
             );
