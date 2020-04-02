@@ -1,9 +1,9 @@
 package com.treasure.hunt.game;
 
 import com.treasure.hunt.service.preferences.PreferenceService;
-import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.Hint;
+import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
@@ -11,11 +11,9 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.math.Vector2D;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * This test evaluates the functionality of the early exit feature.
@@ -116,29 +114,31 @@ class EarlyExitTest {
      * A type of {@link Hider}, placing the treasore on {@code (10,0)} and does only give empty {@link Hint} objects.
      */
     public static class EmptyHider implements Hider<Hint> {
+        Point treasureLocation;
 
         /**
-         * {@inheritDoc}
+         * Places the treasure on {@code (10,0}.
+         *
+         * @param searcherStartPosition the {@link com.treasure.hunt.strategy.searcher.Searcher} starting position,
          */
         @Override
         public void init(final Point searcherStartPosition) {
+            treasureLocation = JTSUtils.createPoint(10, 0);
         }
 
         /**
          * @param searchPath the {@link SearchPath}, the {@link Searcher} did last
-         * @return a empty {@link Hint}
+         * @return a valid {@link com.treasure.hunt.jts.geom.HalfPlane}, parallel to the y-axis.
          */
         @Override
         public Hint move(final SearchPath searchPath) {
-            return new Hint() {
-                /**
-                 * {@inheritDoc}
-                 */
-                @Override
-                public List<GeometryItem<?>> getGeometryItems() {
-                    return Collections.emptyList();
-                }
-            };
+            if (searchPath.getLastPoint().getX() < treasureLocation.getX()) {
+                return new HalfPlaneHint(searchPath.getLastPoint().getCoordinate(),
+                        new Coordinate(searchPath.getLastPoint().getCoordinate().x, searchPath.getLastPoint().getCoordinate().y - 1));
+            } else {
+                return new HalfPlaneHint(searchPath.getLastPoint().getCoordinate(),
+                        new Coordinate(searchPath.getLastPoint().getCoordinate().x, searchPath.getLastPoint().getCoordinate().y + 1));
+            }
         }
 
         /**
@@ -146,7 +146,7 @@ class EarlyExitTest {
          */
         @Override
         public Point getTreasureLocation() {
-            return JTSUtils.createPoint(10, 0);
+            return treasureLocation;
         }
     }
 
