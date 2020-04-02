@@ -23,11 +23,11 @@ public class Statistic {
      */
     public double getTraceLength() {
         double length = ListUtils
-                .consecutive(turns, (turn, turn2) -> turn2.getSearchPath().getLength(turn.getSearchPath().getLastPoint()))
+                .consecutive(turns, (turn, turn2) -> turn2.getSearchPath().getLength())
                 .reduce(Double::sum)
                 .orElse(0d);
         if (turns.size() > 0) {
-            length += turns.get(0).getSearchPath().getLength(null);
+            length += turns.get(0).getSearchPath().getLength();
         }
         return length;
     }

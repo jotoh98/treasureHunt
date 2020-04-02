@@ -195,7 +195,7 @@ public class GameField {
         this.visitedPoints.addAll(newMovementPoints);
 
         log.trace("total Walked Path " + visitedPoints.toString());
-        this.walkedPathLength += searchPath.getLength(null);
+        this.walkedPathLength += searchPath.getLength();
         log.trace("total pathlength");
         Polygon checkedPoly;
         if (visitedPoints.size() > 1) {
