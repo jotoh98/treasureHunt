@@ -16,6 +16,11 @@ import org.locationtech.jts.geom.Polygon;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * This {@link Hider} only works against {@link StrategyFromPaper}.
+ *
+ * @author Ruben Kemna
+ */
 @Slf4j
 public class BadHintHider implements Hider<HalfPlaneHint> {
 
