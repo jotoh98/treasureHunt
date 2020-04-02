@@ -17,7 +17,6 @@ import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.AsyncUtils;
 import com.treasure.hunt.utils.GeometryPipeline;
 import com.treasure.hunt.utils.JTSUtils;
-import com.treasure.hunt.utils.ListUtils;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -38,8 +37,10 @@ import sun.reflect.ReflectionFactory;
 import java.awt.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
@@ -391,21 +392,12 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      * @return stream of visible geometry items
      */
     public Stream<GeometryItem<?>> getVisibleGeometries() {
-        List<Turn> visibleSubList = turns.subList(0, viewIndex.get() + 1);
-
         List<GeometryItem<?>> subListGeometries = new ArrayList<>();
 
-        if (visibleSubList.size() > 0) {
-            subListGeometries.addAll(visibleSubList.get(0).getGeometryItems(null));
-        }
-        if (visibleSubList.size() > 1) {
-            subListGeometries.addAll(
-                    ListUtils
-                            .consecutive(visibleSubList, (prev, next) -> next.getGeometryItems(prev.getSearchPath().getLastPoint()))
-                            .flatMap(Collection::stream)
-                            .collect(Collectors.toList())
-            );
-        }
+        subListGeometries.add(new GeometryItem<>(turns.get(0).getSearchPath().getFirstPoint(), GeometryType.WAY_POINT));
+
+        turns.subList(0, viewIndex.get() + 1)
+                .forEach(element -> subListGeometries.addAll(element.getGeometryItems()));
 
         final Stream<GeometryItem<?>> items = Stream.concat(subListGeometries.stream(), additional.values().stream());
 

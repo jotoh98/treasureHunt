@@ -108,7 +108,7 @@ public class GameEngine {
 
         searcherMove();
 
-        if (lastSearchPath.located(searchPathStart, treasurePos)) {
+        if (located(lastSearchPath)) {
             finished = true;
             return new Turn(null, lastSearchPath, treasurePos);
         } else {
@@ -139,7 +139,11 @@ public class GameEngine {
             lastSearchPath = searcher.move(lastHint);
         }
         assert (lastSearchPath != null);
+
+        lastSearchPath.addPointToFront(searcherPos);
+
         assert (lastSearchPath.getPoints().size() != 0);
+
         searcherPos = lastSearchPath.getLastPoint();
     }
 
@@ -178,5 +182,25 @@ public class GameEngine {
                 }
             }
         }
+    }
+
+    /**
+     * @param searchPath the {@link SearchPath}, the {@link Searcher} moved.
+     * @return {@code true}, if the {@link Searcher} found the treasure. {@code false}, otherwise.
+     * The {@link Searcher} found the treasure, if had a distance of &le; {@link Searcher#SCANNING_DISTANCE} in this SearchPath.
+     * @throws IllegalStateException if this SearchPath contains zero {@link Point}s.
+     */
+    public boolean located(SearchPath searchPath) {
+        if (searchPath.getPoints().size() < 1) {
+            throw new IllegalStateException("The SearchPath should never got zero points!");
+        }
+
+        if (searchPath.getPoints().size() == 1) {
+            return searchPath.getPoints().get(0).distance(treasurePos) <= Searcher.SCANNING_DISTANCE;
+        }
+
+        return searchPath.getLines().stream()
+                .map(line -> line.distance(treasurePos))
+                .anyMatch(distance -> distance <= Searcher.SCANNING_DISTANCE);
     }
 }
