@@ -146,7 +146,6 @@ public class Circle extends Coordinate implements Shapeable {
                 corner.multiply(-1).translate(getCenter())
         );
     }
-//TODO write tests
 
     /**
      * @param circle the {@link Circle} we want know test, whether it lies completely in this {@link Circle}
