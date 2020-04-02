@@ -3,7 +3,7 @@ package com.treasure.hunt.view.plot;
 import com.treasure.hunt.analysis.StatisticAggregation;
 import com.treasure.hunt.analysis.StatisticObject;
 import com.treasure.hunt.game.GameEngine;
-import com.treasure.hunt.service.preferences.Preference;
+import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import javafx.scene.control.CheckBox;
@@ -14,7 +14,6 @@ import javafx.util.StringConverter;
 import lombok.Value;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
@@ -128,7 +127,7 @@ public class PlotSettingsController {
     }
 
     public void setData(Class<? extends GameEngine> selectedGameEngine, Class<? extends Searcher> selectedSearcher, Class<? extends Hider> selectedHider) {
-        initPreferenceComboBox(selectedSearcher, selectedHider);
+        initPreferenceComboBox();
         initSelectStatisticComboBox();
         initSelectAggregationComboBox();
         this.selectedGameEngine = selectedGameEngine;
@@ -168,14 +167,20 @@ public class PlotSettingsController {
         });
     }
 
-    private void initPreferenceComboBox(Class<? extends Searcher> selectedSearcher, Class<? extends Hider> selectedHider) {
-        Preference[] annotationsByTypeSearcher = selectedSearcher.getAnnotationsByType(Preference.class);
-        Preference[] annotationsByTypeHider = selectedHider.getAnnotationsByType(Preference.class);
-
-        List<Preference> preferences = new ArrayList<>(Arrays.asList(annotationsByTypeHider));
-        preferences.addAll(Arrays.asList(annotationsByTypeSearcher));
-
-        final List<String> preferenceNames = preferences.stream().map(Preference::name).collect(Collectors.toList());
+    private void initPreferenceComboBox() {
+        final List<String> preferenceNames = Arrays.stream(PreferenceService.class.getDeclaredFields())
+                .filter(field -> field.getType().equals(String.class))
+                .filter(field -> !field.getName().equals("PREF_PREFIX"))
+                .peek(field -> field.setAccessible(true))
+                .map(field -> {
+                    try {
+                        return (String) field.get(null);
+                    } catch (Exception ignored) {
+                    }
+                    return "";
+                })
+                .filter(string -> !string.isEmpty())
+                .collect(Collectors.toList());
 
         selectPreference.getItems().setAll(preferenceNames);
     }

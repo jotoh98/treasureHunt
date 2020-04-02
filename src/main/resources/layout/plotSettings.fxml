@@ -35,7 +35,7 @@
                 <Label text="Save as PNG file?" GridPane.rowIndex="6"/>
                 <ComboBox fx:id="selectStatistic" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
                           GridPane.hgrow="ALWAYS"/>
-                <ComboBox fx:id="selectPreference" editable="true" maxWidth="1.7976931348623157E308"
+                <ComboBox fx:id="selectPreference" maxWidth="1.7976931348623157E308"
                           GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2"/>
                 <TextField fx:id="lowerBound" text="0" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
                 <TextField fx:id="upperBound" text="100" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
