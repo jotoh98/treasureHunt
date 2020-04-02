@@ -78,6 +78,7 @@ public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
     @Override
     public Point getTreasureLocation() {
         treasurePos = JTSUtils.shuffleTreasure();
+        //treasurePos = JTSUtils.createPoint(-34.534488969938,-88.74125888904);//todo rm
         return treasurePos;
     }
 }

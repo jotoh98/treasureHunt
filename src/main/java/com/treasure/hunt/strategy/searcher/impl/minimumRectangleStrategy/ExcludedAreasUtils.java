@@ -142,12 +142,12 @@ public class ExcludedAreasUtils {
             }
         }
         newPolygonCorners.add(newPolygonCorners.get(0));
-        Polygon newPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon(newPolygonCorners.toArray(new Coordinate[]{}));
-        newPolygon = (Polygon) newPolygon.convexHull();
+        Geometry newPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon(newPolygonCorners.toArray(new Coordinate[]{}));
+        newPolygon = newPolygon.convexHull();
         if (newPolygon.getArea() == 0) {
             return null;
         }
-        return newPolygon;
+        return (Polygon) newPolygon;
     }
 
     static Polygon reduceConvexPolygon(Polygon convexPolygon, List<HalfPlaneHint> halfPlaneHints) {//todo do better

@@ -82,6 +82,10 @@ public class TransformForAxisParallelism {
         return (Polygon) toInternalWithStartPointDisplacement.transform(polygon);
     }
 
+    Geometry toInternal(Geometry geom) {
+        return toInternalWithStartPointDisplacement.transform(geom);
+    }
+
     Coordinate toExternal(Coordinate c) {
         Coordinate transformedC = new Coordinate();
         toExternal.transform(c, transformedC);
@@ -94,8 +98,8 @@ public class TransformForAxisParallelism {
         return new HalfPlaneHint(toExternal(hint.getCenter()), toExternal(hint.getRight()));
     }
 
-    Polygon toExternal(Polygon polygon) {
-        return (Polygon) toExternalWithStartPointDisplacement.transform(polygon);
+    Polygon toExternal(Polygon geom) {
+        return (Polygon) toExternalWithStartPointDisplacement.transform(geom);
     }
 
     Geometry toExternal(Geometry geometry) {

@@ -195,13 +195,18 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      */
     protected SearchPath addState(SearchPath move, Coordinate[] currentRectanglePoints, Coordinate[] phaseRectanglePoints) {
         // add current rectangle which the strategy is working on
-        Coordinate[] curCoords = new Coordinate[5];
-        for (int i = 0; i < 4; i++) {
-            curCoords[i] = currentRectanglePoints[i];
+        if (currentRectanglePoints != null) {
+            Coordinate[] curCoords = new Coordinate[5];
+            for (int i = 0; i < 4; i++) {
+                curCoords[i] = currentRectanglePoints[i];
+            }
+            curCoords[4] = currentRectanglePoints[0];
+            GeometryItem<Polygon> curPoly = new GeometryItem<>(GEOMETRY_FACTORY.createPolygon(curCoords), CURRENT_RECTANGLE);
+            move.addAdditionalItem(curPoly);
+        } else {
+            GeometryItem<Polygon> curPoly = new GeometryItem<>(GEOMETRY_FACTORY.createPolygon(), CURRENT_RECTANGLE);
+            move.addAdditionalItem(curPoly);
         }
-        curCoords[4] = currentRectanglePoints[0];
-        GeometryItem<Polygon> curPoly = new GeometryItem<>(GEOMETRY_FACTORY.createPolygon(curCoords), CURRENT_RECTANGLE);
-        move.addAdditionalItem(curPoly);
 
         // add the rectangle of the current phase
         Coordinate[] phasePolygon = new Coordinate[5];
