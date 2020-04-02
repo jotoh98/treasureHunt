@@ -4,7 +4,9 @@ import com.treasure.hunt.jts.awt.AdvancedShapeWriter;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.Getter;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.math.Vector2D;
 import org.locationtech.jts.util.GeometricShapeFactory;
 
 import java.awt.*;
@@ -135,5 +137,13 @@ public class Circle extends Coordinate implements Shapeable {
     @Override
     public Circle copy() {
         return new Circle(super.copy(), radius);
+    }
+
+    public Envelope getEnvelope() {
+        final Vector2D corner = Vector2D.create(radius, radius);
+        return new Envelope(
+                corner.translate(getCenter()),
+                corner.multiply(-1).translate(getCenter())
+        );
     }
 }
