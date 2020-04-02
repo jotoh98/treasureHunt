@@ -396,17 +396,21 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     public Stream<GeometryItem<?>> getVisibleGeometries() {
         List<Turn> visibleSubList = turns.subList(0, viewIndex.get() + 1);
 
-        Stream<GeometryItem<?>> subListGeometries = Stream.empty();
+        List<GeometryItem<?>> subListGeometries = new ArrayList<>();
 
-        if (visibleSubList.size() == 1) {
-            subListGeometries = visibleSubList.get(0).getGeometryItems(null).stream();
-        } else if (visibleSubList.size() > 1) {
-            subListGeometries = ListUtils
-                    .consecutive(visibleSubList, (prev, next) -> next.getGeometryItems(prev.getSearchPath().getLastPoint()))
-                    .flatMap(Collection::stream);
+        if (visibleSubList.size() > 0) {
+            subListGeometries.addAll(visibleSubList.get(0).getGeometryItems(null));
+        }
+        if (visibleSubList.size() > 1) {
+            subListGeometries.addAll(
+                    ListUtils
+                            .consecutive(visibleSubList, (prev, next) -> next.getGeometryItems(prev.getSearchPath().getLastPoint()))
+                            .flatMap(Collection::stream)
+                            .collect(Collectors.toList())
+            );
         }
 
-        final Stream<GeometryItem<?>> items = Stream.concat(subListGeometries, additional.values().stream());
+        final Stream<GeometryItem<?>> items = Stream.concat(subListGeometries.stream(), additional.values().stream());
 
         return GeometryPipeline.pipe(items);
     }
