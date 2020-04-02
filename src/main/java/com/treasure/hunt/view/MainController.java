@@ -37,6 +37,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * @author jotoh
@@ -136,12 +137,25 @@ public class MainController {
     }
 
     public void saveSession() {
-        if (SettingsService.getInstance().getSettings().isPreserveConfiguration()) {
-            Session session = SettingsService.getInstance().getSession();
-            session.setSearcher(searcherList.getSelectionModel().getSelectedItem());
-            session.setHider(hiderList.getSelectionModel().getSelectedItem());
-            session.setEngine(gameEngineList.getSelectionModel().getSelectedItem());
+        if (!SettingsService.getInstance().getSettings().isPreserveConfiguration()) {
+            return;
         }
+
+        final Session session = SettingsService.getInstance().getSession();
+
+        session.setSearcher(searcherList.getSelectionModel().getSelectedItem());
+        session.setHider(hiderList.getSelectionModel().getSelectedItem());
+        session.setEngine(gameEngineList.getSelectionModel().getSelectedItem());
+
+        bindListSelectionToSession(searcherList, session::setSearcher);
+        bindListSelectionToSession(hiderList, session::setHider);
+        bindListSelectionToSession(gameEngineList, session::setEngine);
+    }
+
+    private <T> void bindListSelectionToSession(final ComboBox<T> searcherList, final Consumer<T> consumer) {
+        searcherList.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((observable, oldValue, newValue) -> consumer.accept(newValue));
     }
 
     private void insertSessionConfiguration() {
@@ -154,7 +168,6 @@ public class MainController {
     }
 
     private void addGameIndependentWidgets() {
-
         Widget<StatisticTableController, ?> statisticsTableWidget = new Widget<>("/layout/statisticsTable.fxml");
         statisticsTableWidget.getController().init(gameManager, searcherList, hiderList, gameEngineList);
         insertWidget(SplitPaneLocation.BOTTOM_LEFT, "Statistics", statisticsTableWidget.getComponent(), false);
