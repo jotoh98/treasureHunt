@@ -86,7 +86,7 @@ public class SearchPath extends HintAndMovement {
     /**
      * @return a list, containing every {@link Point} of this SearchPath, except the first.
      * List could be empty.
-     * @throws {@link IllegalStateException}, when this SearchPath contains zero {@link Point}s.
+     * @throws IllegalStateException if this SearchPath contains zero {@link Point}s.
      */
     public List<GeometryItem<Point>> getPointList() {
         if (points.size() < 1) {
@@ -128,8 +128,8 @@ public class SearchPath extends HintAndMovement {
     /**
      * @param treasure the {@link Point}, where the treasure lies.
      * @return {@code true}, if the {@link Searcher} found the treasure. {@code false}, otherwise.
-     * The {@link Searcher} found the treasure, if had a distance of <= {@link Searcher#SCANNING_DISTANCE} in this SearchPath.
-     * @throws {@link IllegalStateException}, when this SearchPath contains zero {@link Point}s.
+     * The {@link Searcher} found the treasure, if had a distance of &le; {@link Searcher#SCANNING_DISTANCE} in this SearchPath.
+     * @throws IllegalStateException if this SearchPath contains zero {@link Point}s.
      */
     public boolean located(Point treasure) {
         if (points.size() < 1) {
