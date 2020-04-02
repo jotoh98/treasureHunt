@@ -128,7 +128,7 @@ public class MainController {
         popupGroup.setTranslateX(args.getValue().getKey() - bounds.getMinX());
         popupGroup.setTranslateY(args.getValue().getValue() - bounds.getMinY());
         popupGroup.setVisible(true);
-        popupGroup.getChildren().addAll(args.getKey());
+        popupGroup.getChildren().setAll(args.getKey());
     }
 
     private void setUpPopUpPane() {
