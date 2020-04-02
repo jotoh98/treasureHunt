@@ -4,6 +4,7 @@ import com.treasure.hunt.game.mods.hideandseek.HideAndSeekSearcher;
 import com.treasure.hunt.strategy.hint.impl.CircleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
+import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Point;
 
 /**
@@ -36,6 +37,6 @@ public class NaiveCircleSearcher implements HideAndSeekSearcher<CircleHint> {
      */
     @Override
     public SearchPath move(CircleHint circleHint) {
-        return new SearchPath(circleHint.getCenter());
+        return new SearchPath(JTSUtils.createPoint(circleHint.getCircle().getCenter()));
     }
 }

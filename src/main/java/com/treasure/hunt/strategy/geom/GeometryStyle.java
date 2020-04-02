@@ -21,13 +21,12 @@ public class GeometryStyle {
 
     static {
         HashMap defaultsMapAdd = new HashMap(Map.of(
-                GeometryType.WAY_POINT, new GeometryStyle(true, new Color(0xFFFFFF)),
-                GeometryType.TREASURE, new GeometryStyle(true, new Color(0xFFD700)),
+                GeometryType.WAY_POINT, new GeometryStyle(true, new Color(0xFFFFFF), 1),
+                GeometryType.TREASURE, new GeometryStyle(true, new Color(0xFFD700), 2),
                 GeometryType.HINT_ANGLE, new GeometryStyle(true, new Color(0x575757)),
                 GeometryType.GRID, new GeometryStyle(true, false, new Color(0x555555), null, -1),
-                GeometryType.CURRENT_PHASE, new GeometryStyle(true, new Color(0x008504)),
-                GeometryType.CURRENT_RECTANGLE, new GeometryStyle(true, new Color(0x00e007)),
                 GeometryType.SEARCHER_LAST_MOVE, new GeometryStyle(true, new Color(0x007A1D)),
+                GeometryType.CURRENT_WAY_POINT, new GeometryStyle(true, new Color(0x007A1D)),
                 GeometryType.HALF_PLANE, new GeometryStyle(true, new Color(0x777777), new Color(0x22777777, true)),
                 GeometryType.HALF_PLANE_CURRENT_RED, new GeometryStyle(true, new Color(0x33ff0000, true), new Color(0x33ff0000, true)),
                 GeometryType.HALF_PLANE_PREVIOUS_LIGHT_RED, new GeometryStyle(true, new Color(0x18ff0000, true), new Color(0x18ff0000, true))
@@ -36,6 +35,14 @@ public class GeometryStyle {
         defaultsMapAdd.put(GeometryType.HALF_PLANE_BEFORE_PREVIOUS_ORANGE, new GeometryStyle(true, new Color(0x11ff9933, true), new Color(0x11ff9933, true)));
         defaultsMapAdd.put(GeometryType.WAY_POINT_LINE, new GeometryStyle(true, new Color(0xFFFFFF)));
         defaultsMapAdd.put(GeometryType.HIGHLIGHTER, new GeometryStyle(true, Color.GREEN, Integer.MAX_VALUE));
+        defaultsMapAdd.put(GeometryType.CURRENT_PHASE, new GeometryStyle(true, new Color(0x008504)));
+        defaultsMapAdd.put(GeometryType.CURRENT_RECTANGLE, new GeometryStyle(true, new Color(0x00e007)));
+        defaultsMapAdd.put(GeometryType.HELPER_LINE, new GeometryStyle(true, Color.DARK_GRAY, -1));
+        defaultsMap.putAll(defaultsMapAdd);
+        defaultsMapAdd.put(GeometryType.MAX_X, new GeometryStyle(true, new Color(0x000000)));
+        defaultsMapAdd.put(GeometryType.MAX_Y, new GeometryStyle(true, new Color(0x000000)));
+        defaultsMapAdd.put(GeometryType.MIN_X, new GeometryStyle(true, new Color(0x000000)));
+        defaultsMapAdd.put(GeometryType.MIN_Y, new GeometryStyle(true, new Color(0x000000)));
         defaultsMapAdd.put(GeometryType.L1_DOUBLE_APOS, new GeometryStyle(true, Color.BLUE));
         defaultsMap.putAll(defaultsMapAdd);
     }

@@ -1,5 +1,6 @@
 package com.treasure.hunt.view.settings;
 
+import com.treasure.hunt.JavaFxApplication;
 import com.treasure.hunt.Main;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -15,15 +16,11 @@ import java.util.Optional;
 public class SettingsWindow {
 
     public static void show() throws Exception {
-        Stage stage = new Stage();
         final FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/layout/settings/settings.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        scene.getStylesheets().add(Main.class.getResource("/layout/style.css").toExternalForm());
         SettingsController controller = fxmlLoader.getController();
-        stage.setScene(scene);
-        stage.setTitle("Preferences");
+        Stage stage = JavaFxApplication.createPopUpStage("Settings", scene);
         stage.setMaxHeight(500);
-        stage.setResizable(false);
         stage.setOnCloseRequest(event -> exitClicked(event, controller));
         stage.show();
     }

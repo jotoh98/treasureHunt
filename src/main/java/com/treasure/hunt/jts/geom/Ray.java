@@ -40,29 +40,6 @@ public class Ray extends LineSegment implements Shapeable {
         this(start, direction.translate(start));
     }
 
-    public Ray() {
-        super();
-    }
-
-    /**
-     * Checks, if a given {@link Coordinate} lays in the ray.
-     *
-     * @param coordinate coordinate to check
-     * @return whether point lays in ray or not
-     */
-    public boolean inRay(Coordinate coordinate) {
-        if (!inLine(coordinate)) {
-            return false;
-        }
-        Vector2D rayVector = new Vector2D(p0, p1);
-        Vector2D testVector = new Vector2D(p0, coordinate);
-        return JTSUtils.signsEqual(rayVector, testVector);
-    }
-
-    public boolean inSegment(Coordinate coordinate) {
-        return distance(coordinate) < 1e-10;
-    }
-
     /**
      * Intersect ray with {@link LineSegment}
      *
@@ -74,7 +51,10 @@ public class Ray extends LineSegment implements Shapeable {
         Coordinate intersection = lineIntersection(line);
 
         if (intersection != null && inRay(intersection)) {
-            return intersection;
+            double factor = line.projectionFactor(intersection);
+            if (factor >= 0 && factor <= 1) {
+                return intersection;
+            }
         }
 
         return null;
@@ -152,9 +132,34 @@ public class Ray extends LineSegment implements Shapeable {
      * @return whether or not the coordinate lays in the infinite line
      */
     public boolean inLine(Coordinate coordinate) {
-        return distancePerpendicular(coordinate) < 1e-10;
+        return JTSUtils.doubleEqual(distancePerpendicular(coordinate), 0);
     }
 
+    /**
+     * Checks, if a given {@link Coordinate} lays in the ray.
+     *
+     * @param coordinate coordinate to check
+     * @return whether point lays in ray or not
+     */
+    public boolean inRay(Coordinate coordinate) {
+        return inLine(coordinate) && projectionFactor(coordinate) >= 0;
+    }
+
+    /**
+     * Checks, if a given {@link Coordinate} lays in the segment.
+     *
+     * @param coordinate coordinate to check
+     * @return whether point lays in segment or not
+     */
+    public boolean inSegment(Coordinate coordinate) {
+        return JTSUtils.doubleEqual(distance(coordinate), 0);
+    }
+
+    /**
+     * Get the ray's direction vector.
+     *
+     * @return direction vector of ray
+     */
     public Vector2D getDirection() {
         return Vector2D.create(p0, p1);
     }

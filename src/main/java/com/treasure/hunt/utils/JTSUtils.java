@@ -1,6 +1,7 @@
 package com.treasure.hunt.utils;
 
 import com.treasure.hunt.jts.awt.CanvasBoundary;
+import com.treasure.hunt.jts.geom.Circle;
 import com.treasure.hunt.jts.geom.GeometryAngle;
 import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
@@ -11,6 +12,7 @@ import org.locationtech.jts.math.Vector2D;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -100,6 +102,10 @@ public final class JTSUtils {
 
     public static boolean doubleEqual(double a, double b) {
         return (0 == GEOMETRY_FACTORY.getPrecisionModel().makePrecise(a - b));
+    }
+
+    public static boolean coordinateEqual(Coordinate a, Coordinate b) {
+        return doubleEqual(a.x, b.x) && doubleEqual(a.y, b.y);
     }
 
     public static boolean doubleEqualApproximately(double a, double b) {
@@ -287,6 +293,37 @@ public final class JTSUtils {
     }
 
     /**
+     * Shuffles a new circle covered by the boundary circle, containing the pivot coordinate and obtaining the given radius;
+     *
+     * @param boundary circle to cover the generated circle
+     * @param pivot    coordinate, that must lay inside of the generated circle
+     * @param radius   radius of the generated circle
+     * @return a valid generated circle
+     */
+    public static Circle randomContainedCircle(Circle boundary, Coordinate pivot, double radius) {
+        assert boundary.inside(pivot);
+        assert boundary.getRadius() >= radius;
+        final Circle pivotBoundary = new Circle(pivot, radius);
+        final Circle innerBoundary = new Circle(boundary.getCenter(), boundary.getRadius() - radius);
+
+        Coordinate center;
+        if (innerBoundary.covers(pivotBoundary)) {
+            center = randomInCircle(pivotBoundary);
+        } else {
+            Circle generator = innerBoundary;
+            Circle tester = pivotBoundary;
+            if (2 * radius < boundary.getRadius()) {
+                generator = pivotBoundary;
+                tester = innerBoundary;
+            }
+            do {
+                center = randomInCircle(generator);
+            } while (!tester.inside(center));
+        }
+        return new Circle(center, radius);
+    }
+
+    /**
      * Get the {@link ConvexHull} for a list of {@link Coordinate}s.
      *
      * @param coordinates the list of coordinates
@@ -299,15 +336,45 @@ public final class JTSUtils {
         );
     }
 
+    /**
+     * Generates a treasure location according to set preferences.
+     *
+     * @return treasure point
+     */
     public static Point shuffleTreasure() {
-        double distance = PreferenceService.getInstance()
+        Optional<Number> fixedDistance = PreferenceService.getInstance()
+                .getPreference(PreferenceService.TREASURE_DISTANCE);
+
+        if (fixedDistance.isPresent()) {
+            Coordinate treasure = Vector2D.create(fixedDistance.get().doubleValue(), 0).rotate(2 * Math.PI * Math.random()).translate(new Coordinate());
+            return JTSUtils.GEOMETRY_FACTORY.createPoint(treasure);
+        }
+
+        double maxDistance = PreferenceService.getInstance()
                 .getPreference(PreferenceService.MAX_TREASURE_DISTANCE, 100)
                 .doubleValue();
-        Coordinate treasure = Vector2D.create(Math.random() * distance, 0).rotate(2 * Math.PI * Math.random()).translate(new Coordinate());
+        double minDistance = PreferenceService.getInstance()
+                .getPreference(PreferenceService.MIN_TREASURE_DISTANCE, 0)
+                .doubleValue();
+
+        Coordinate treasure = Vector2D.create(Math.random() * (maxDistance - minDistance) + minDistance, 0).rotate(2 * Math.PI * Math.random()).translate(new Coordinate());
         return JTSUtils.GEOMETRY_FACTORY.createPoint(treasure);
     }
 
     public static boolean isApproximatelyOnLine(Coordinate point, LineSegment line) {
         return APPROXIMATELY_PRECISION.makePrecise((point.x - line.p0.x) / (line.p1.x - line.p0.x) - (point.y - line.p0.y) / (line.p1.y - line.p0.y)) == 0;
+    }
+
+    /**
+     * Generate a random coordinate in the given circle.
+     *
+     * @param circle circle to cover the generated coordinate
+     * @return random coordinate in given circle
+     */
+    public static Coordinate randomInCircle(Circle circle) {
+        return Vector2D.create(circle.getRadius(), 0)
+                .rotate(Math.random() * 2 * Math.PI)
+                .multiply(Math.random())
+                .translate(circle.getCenter());
     }
 }

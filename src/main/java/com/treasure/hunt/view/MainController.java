@@ -331,12 +331,12 @@ public class MainController {
         Set<Class<? extends Hider>> allHiders = ReflectionUtils.getAllHiders();
         Set<Class<? extends GameEngine>> allGameEngines = ReflectionUtils.getAllGameEngines();
 
-        ObservableList<Class<? extends Searcher>> observableSearchers = FXCollections.observableArrayList(allSearchers);
+        ObservableList<Class<? extends Searcher>> observableSearchers = FXCollections.observableArrayList(allSearchers).sorted();
         FilteredList<Class<? extends Searcher>> filteredSearchers = new FilteredList<>(observableSearchers);
 
         searcherList.setItems(filteredSearchers);
 
-        ObservableList<Class<? extends Hider>> observableHiders = FXCollections.observableArrayList(allHiders);
+        ObservableList<Class<? extends Hider>> observableHiders = FXCollections.observableArrayList(allHiders).sorted();
         FilteredList<Class<? extends Hider>> filteredHiders = new FilteredList<>(observableHiders);
 
         hiderList.setItems(filteredHiders);
@@ -380,7 +380,6 @@ public class MainController {
     private void addRequiredListener(ComboBox comboBox) {
         comboBox.getSelectionModel().selectedItemProperty().addListener((observableValue, aClass, t1) -> {
             if (t1 == null) {
-                //TODO maybe... ...list to f*****g button cell
                 comboBox.getStyleClass().add("required");
             } else {
                 comboBox.getStyleClass().remove("required");
