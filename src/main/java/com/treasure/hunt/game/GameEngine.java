@@ -110,15 +110,6 @@ public class GameEngine {
     }
 
     /**
-     * Let the {@link GameEngine#hider} give its {@link Hint}.
-     */
-    protected void hiderMove() {
-        Hint newHint = hider.move(lastSearchPath);
-        verifyHint(newHint, treasurePos, lastSearchPath.getLastPoint());
-        lastHint = newHint;
-    }
-
-    /**
      * This simulates just one step of the simulation.
      * The searcher begins since we want not force him,
      * to take a initial hint, he eventually do not need,
@@ -141,6 +132,15 @@ public class GameEngine {
         }
 
         return new Turn(lastHint, lastSearchPath, treasurePos);
+    }
+
+    /**
+     * Let the {@link GameEngine#hider} give its {@link Hint}.
+     */
+    protected void hiderMove() {
+        Hint newHint = hider.move(lastSearchPath);
+        verifyHint(newHint, treasurePos, lastSearchPath.getLastPoint());
+        lastHint = newHint;
     }
 
     /**
