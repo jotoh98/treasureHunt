@@ -128,7 +128,7 @@ public class MainController {
         popupGroup.setTranslateX(args.getValue().getKey() - bounds.getMinX());
         popupGroup.setTranslateY(args.getValue().getValue() - bounds.getMinY());
         popupGroup.setVisible(true);
-        popupGroup.getChildren().addAll(args.getKey());
+        popupGroup.getChildren().setAll(args.getKey());
     }
 
     private void setUpPopUpPane() {
@@ -167,7 +167,8 @@ public class MainController {
         preferencesWidgetControllerPaneWidget.getController().init(
                 searcherList.getSelectionModel().selectedItemProperty(),
                 hiderList.getSelectionModel().selectedItemProperty(),
-                gameEngineList.getSelectionModel().selectedItemProperty()
+                gameEngineList.getSelectionModel().selectedItemProperty(),
+                gameManager
         );
         insertWidget(SplitPaneLocation.LEFT_LOWER, "Preferences", preferencesWidgetControllerPaneWidget.getComponent(), true);
     }
@@ -380,7 +381,6 @@ public class MainController {
     private void addRequiredListener(ComboBox comboBox) {
         comboBox.getSelectionModel().selectedItemProperty().addListener((observableValue, aClass, t1) -> {
             if (t1 == null) {
-                //TODO maybe... ...list to f*****g button cell
                 comboBox.getStyleClass().add("required");
             } else {
                 comboBox.getStyleClass().remove("required");
