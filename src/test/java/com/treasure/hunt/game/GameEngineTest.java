@@ -11,7 +11,6 @@ import com.treasure.hunt.strategy.searcher.impl.*;
 import com.treasure.hunt.utils.JTSUtils;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
 import static org.junit.Assert.assertFalse;
