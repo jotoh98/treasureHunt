@@ -110,8 +110,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         Hider newHider = hiderClass.getDeclaredConstructor().newInstance();
 
         this.gameEngine = gameEngineClass
-                .getDeclaredConstructor(Searcher.class, Hider.class, Coordinate.class)
-                .newInstance(newSearcher, newHider, new Coordinate(0, 0));
+                .getDeclaredConstructor(Searcher.class, Hider.class, Point.class)
+                .newInstance(newSearcher, newHider, JTSUtils.createPoint(0, 0));
 
         setProperties();
         setBindings();

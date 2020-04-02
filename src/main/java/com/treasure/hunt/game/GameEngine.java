@@ -12,7 +12,6 @@ import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.Requires;
 import lombok.Getter;
-import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
 /**
@@ -26,7 +25,7 @@ public class GameEngine {
     protected final Searcher searcher;
     @Getter
     protected final Hider hider;
-    protected final Coordinate initialSearcherCoordinate;
+    protected final Point initialSearcherPoint;
     @Getter
     private final Statistic statistics = new Statistic();
     /**
@@ -50,28 +49,29 @@ public class GameEngine {
      * @param hider    playing the game
      */
     public GameEngine(Searcher searcher, Hider hider) {
-        this(searcher, hider, new Coordinate(0, 0));
+        this(searcher, hider, JTSUtils.createPoint(0, 0));
     }
 
     /**
      * The constructor.
      *
-     * @param searcher                  playing the game
-     * @param hider                     playing the game
-     * @param initialSearcherCoordinate the initial Searcher {@link Coordinate}.
+     * @param searcher             playing the game
+     * @param hider                playing the game
+     * @param initialSearcherPoint the initial Searcher {@link Point}.
      */
-    public GameEngine(Searcher searcher, Hider hider, Coordinate initialSearcherCoordinate) {
+    public GameEngine(Searcher searcher, Hider hider, Point initialSearcherPoint) {
         this.searcher = searcher;
         this.hider = hider;
-        this.initialSearcherCoordinate = initialSearcherCoordinate;
+        this.initialSearcherPoint = initialSearcherPoint;
     }
 
     /**
      * initialize searcher and treasure positions.
+     *
      * @return a {@link Turn}, since the initialization must be displayed.
      */
     public Turn init() {
-        searcherPos = JTSUtils.GEOMETRY_FACTORY.createPoint(initialSearcherCoordinate);
+        searcherPos = initialSearcherPoint;
         searcher.init(searcherPos);
         hider.init(searcherPos);
 
