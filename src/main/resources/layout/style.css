@@ -397,7 +397,7 @@
     -fx-background-color: BACKGROUND_COLOR;
 }
 
-.settings > .viewport {
+.settings > .viewport, .settings {
     -fx-background-color: BACKGROUND_COLOR;
 }
 

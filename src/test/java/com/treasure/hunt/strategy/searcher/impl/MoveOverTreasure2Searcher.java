@@ -28,11 +28,7 @@ public class MoveOverTreasure2Searcher implements Searcher<CircleHint> {
     @Override
     public SearchPath move(CircleHint hint) {
         SearchPath searchPath = new SearchPath(startPosition);
-        searchPath.addPoint(JTSUtils.createPoint(
-                hint.getCenter().getX() * 2,
-                hint.getCenter().getY() * 2
-
-        ));
+        searchPath.addPoint(JTSUtils.createPoint(hint.getCircle().getCenter()));
         return searchPath;
     }
 }

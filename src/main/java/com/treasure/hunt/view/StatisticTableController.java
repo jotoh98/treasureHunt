@@ -1,6 +1,7 @@
 package com.treasure.hunt.view;
 
 import com.opencsv.CSVWriter;
+import com.treasure.hunt.JavaFxApplication;
 import com.treasure.hunt.analysis.StatisticObject;
 import com.treasure.hunt.analysis.StatisticsWithId;
 import com.treasure.hunt.analysis.StatisticsWithIdsAndPath;
@@ -17,6 +18,7 @@ import com.treasure.hunt.view.plot.PlotController;
 import com.treasure.hunt.view.plot.PlotSettingsController;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -29,9 +31,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,6 +61,7 @@ public class StatisticTableController {
     public ComboBox<Class<? extends Hider>> hiderList;
     public ComboBox<Class<? extends GameEngine>> gameEngineList;
     public Spinner<Integer> maxStepsSpinner;
+    public Button superPlot;
     HashMap<StatisticObject.StatisticInfo, List<StatisticObject>> statisticsMeasureHashMap = new HashMap<>();
     private Path path;
     private ObjectProperty<GameManager> gameManager;
@@ -198,27 +199,22 @@ public class StatisticTableController {
         this.searcherList = searcherList;
         this.hiderList = hiderList;
         this.gameEngineList = gameEngineList;
-        runMultipleButton.disableProperty().bind(searcherList.getSelectionModel().selectedItemProperty().isNull()
+        final BooleanBinding somethingNotSelectedBinding = searcherList.getSelectionModel().selectedItemProperty().isNull()
                 .or(hiderList.getSelectionModel().selectedItemProperty().isNull())
-                .or(gameEngineList.getSelectionModel().selectedItemProperty().isNull())
-        );
+                .or(gameEngineList.getSelectionModel().selectedItemProperty().isNull());
+
+        runMultipleButton.disableProperty().bind(somethingNotSelectedBinding);
 
         final String initialText = runMultipleButton.getText();
         runMultipleButton.textProperty().bind(
-                Bindings.when(
-                        searcherList.getSelectionModel().selectedItemProperty().isNull()
-                                .or(hiderList.getSelectionModel().selectedItemProperty().isNull())
-                                .or(gameEngineList.getSelectionModel().selectedItemProperty().isNull())
-                )
+                Bindings.when(somethingNotSelectedBinding)
                         .then("Select a game")
                         .otherwise(initialText)
         );
 
-        roundSpinner.disableProperty().bind(searcherList.getSelectionModel().selectedItemProperty().isNull()
-                .or(hiderList.getSelectionModel().selectedItemProperty().isNull())
-                .or(gameEngineList.getSelectionModel().selectedItemProperty().isNull())
-        );
+        superPlot.disableProperty().bind(somethingNotSelectedBinding);
 
+        roundSpinner.disableProperty().bind(somethingNotSelectedBinding);
     }
 
     public void onSeriesRun(ActionEvent actionEvent) {
@@ -318,19 +314,21 @@ public class StatisticTableController {
     }
 
     public void onPlot() throws IOException {
-
-        Stage stage = new Stage(StageStyle.DECORATED);
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle("Statistic Plot");
-
         Class<? extends GameEngine> selectedGameEngine = gameEngineList.getSelectionModel().getSelectedItem();
         Class<? extends Searcher> selectedSearcher = searcherList.getSelectionModel().getSelectedItem();
         Class<? extends Hider> selectedHider = hiderList.getSelectionModel().getSelectedItem();
+
+        if (selectedSearcher == null || selectedHider == null || selectedGameEngine == null) {
+            throw new IllegalStateException("No searcher, hider or game engine selected.");
+        }
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/plotSettings.fxml"));
         GridPane root = fxmlLoader.load();
         PlotSettingsController plotSettingsController = fxmlLoader.getController();
         plotSettingsController.setData(selectedGameEngine, selectedSearcher, selectedHider);
+
+        Scene scene = new Scene(root);
+        Stage stage = JavaFxApplication.createPopUpStage("Plot Settings", scene);
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/layout/plot.fxml"));
         Parent plot = loader.load();
@@ -340,10 +338,6 @@ public class StatisticTableController {
             plotController.setData(settings, selectedGameEngine, selectedSearcher, selectedHider);
             stage.setMaximized(true);
         });
-
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        scene.getStylesheets().add(getClass().getResource("/layout/style.css").toExternalForm());
 
         stage.show();
 
