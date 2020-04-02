@@ -4,7 +4,6 @@ import com.treasure.hunt.analysis.StatisticAggregation;
 import com.treasure.hunt.analysis.StatisticObject;
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.service.preferences.Preference;
-import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import javafx.scene.control.CheckBox;
@@ -15,14 +14,15 @@ import javafx.util.StringConverter;
 import lombok.Value;
 
 import java.io.IOException;
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class PlotSettingsController {
     public CheckBox savePNGCheckBox;
-    public ComboBox<Preference> selectPreference;
+    public ComboBox<String> selectPreference;
     public ComboBox<StatisticObject.StatisticInfo> selectStatistic;
     public TextField lowerBound;
     public TextField upperBound;
@@ -96,16 +96,16 @@ public class PlotSettingsController {
             return;
         }
 
-        Preference preferenceValue = selectPreference.getValue();
-        if (preferenceValue == null) {
+        String preferenceValue = selectPreference.getValue();
+        if (preferenceValue == null || preferenceValue.isEmpty()) {
             error("Choose a Preference");
             return;
         }
 
         Integer maxSteps = null;
-        try{
+        try {
             maxSteps = Integer.parseInt(maxStepField.getText());
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
 
         }
 
@@ -169,32 +169,22 @@ public class PlotSettingsController {
     }
 
     private void initPreferenceComboBox(Class<? extends Searcher> selectedSearcher, Class<? extends Hider> selectedHider) {
+        Preference[] annotationsByTypeSearcher = selectedSearcher.getAnnotationsByType(Preference.class);
+        Preference[] annotationsByTypeHider = selectedHider.getAnnotationsByType(Preference.class);
 
-        selectPreference.setConverter(new StringConverter<>() {
-            @Override
-            public String toString(Preference preference) {
-                return preference == null ? null : preference.name();
-            }
+        List<Preference> preferences = new ArrayList<>(Arrays.asList(annotationsByTypeHider));
+        preferences.addAll(Arrays.asList(annotationsByTypeSearcher));
 
-            @Override
-            public Preference fromString(String s) {
-                throw new UnsupportedOperationException();
-            }
-        });
+        final List<String> preferenceNames = preferences.stream().map(Preference::name).collect(Collectors.toList());
 
-        final PreferenceService service = PreferenceService.getInstance();
-
-        final Set linkedHashSet = new LinkedHashSet(service.getAnnotated(selectedSearcher));
-        linkedHashSet.addAll(service.getAnnotated(selectedHider));
-
-        selectPreference.getItems().setAll(linkedHashSet);
+        selectPreference.getItems().setAll(preferenceNames);
     }
 
     @Value
     public static class Settings {
         StatisticAggregation type;
         StatisticObject.StatisticInfo statisticInfo;
-        Preference preference;
+        String preferenceName;
         double lowerBoundValue;
         double upperBoundValue;
         double stepSizeValue;
