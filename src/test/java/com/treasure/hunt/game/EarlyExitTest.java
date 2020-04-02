@@ -6,6 +6,7 @@ import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
+import com.treasure.hunt.strategy.searcher.impl.StandingSearcher;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -38,12 +39,13 @@ class EarlyExitTest {
         gameManager.next();
         Assertions.assertFalse(gameManager.earlyExit());
         gameManager.next();
+        Assertions.assertFalse(gameManager.earlyExit());
         gameManager.next();
         Assertions.assertTrue(gameManager.earlyExit());
     }
 
     /**
-     * This test demonstrates, that a EARLY_EXIT_AMOUNT smaller than 2 results in no early exit.
+     * This test demonstrates, that a EARLY_EXIT_AMOUNT &le; 1 results in no early exit.
      */
     @SneakyThrows
     @Test
@@ -68,7 +70,7 @@ class EarlyExitTest {
         PreferenceService.getInstance().putPreference(PreferenceService.EARLY_EXIT_AMOUNT, 2);
         PreferenceService.getInstance().putPreference(PreferenceService.EARLY_EXIT_RADIUS, 1e-10);
 
-        final GameManager gameManager = new GameManager(EmptySearcher.class, EmptyHider.class, GameEngine.class);
+        final GameManager gameManager = new GameManager(StandingSearcher.class, EmptyHider.class, GameEngine.class);
         gameManager.init();
         while (!gameManager.getFinishedProperty().get()) {
             gameManager.next();
