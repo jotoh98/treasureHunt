@@ -2,6 +2,7 @@ package com.treasure.hunt.strategy.hint;
 
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.HintAndMovement;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  * @author jotoh
  */
 public abstract class Hint extends HintAndMovement {
+    @Getter
     protected List<GeometryItem<?>> additionalGeometryItems = new ArrayList<>();
 
     /**
@@ -27,14 +29,10 @@ public abstract class Hint extends HintAndMovement {
      */
     public abstract List<GeometryItem<?>> getGeometryItems();
 
-    public List<GeometryItem<?>> getAdditionalGeometryItems() {
-        return this.additionalGeometryItems;
-    }
-
-    public void setAdditionalGeometryItems(List<GeometryItem<?>> additionalGeometryItems) {
-        this.additionalGeometryItems = additionalGeometryItems;
-    }
-
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean equals(final Object o) {
         if (o == this) {
             return true;
@@ -51,10 +49,18 @@ public abstract class Hint extends HintAndMovement {
         return this$additionalGeometryItems == null ? other$additionalGeometryItems == null : this$additionalGeometryItems.equals(other$additionalGeometryItems);
     }
 
+    /**
+     * @param other the {@link Object}, we want to check the type of.
+     * @return {@code true}, if {@code other} is {@code instanceof} {@link Hint}. {@code false}, otherwise.
+     */
     protected boolean canEqual(final Object other) {
         return other instanceof Hint;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
@@ -63,6 +69,10 @@ public abstract class Hint extends HintAndMovement {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String toString() {
         return "Hint(additionalGeometryItems=" + this.getAdditionalGeometryItems() + ")";
     }

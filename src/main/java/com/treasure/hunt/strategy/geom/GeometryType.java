@@ -53,6 +53,12 @@ public enum GeometryType {
     CURRENT_RECTANGLE(true, "current rectangle", true),
     CURRENT_POLYGON(true, "current polygon", true),
 
+    // XY Searcher
+    MAX_X(true, "max x", true),
+    MAX_Y(true, "max x", true),
+    MIN_X(true, "max x", true),
+    MIN_Y(true, "max x", true),
+
     STANDARD(true, ""),
     GRID(true, "Grid", false),
     HIGHLIGHTER(true, "Highlighter", true),

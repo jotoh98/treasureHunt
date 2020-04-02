@@ -23,6 +23,9 @@ public class RandomCircleHintHider implements Hider<CircleHint> {
     Point treasureLocation = JTSUtils.shuffleTreasure();
     Circle lastCircle = null;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void init(Point searcherStartPosition) {
     }
@@ -50,6 +53,9 @@ public class RandomCircleHintHider implements Hider<CircleHint> {
         return new CircleHint(lastCircle.copy());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Point getTreasureLocation() {
         return treasureLocation;
