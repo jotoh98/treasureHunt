@@ -10,7 +10,9 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: install xvfb
-        run: apt-get install xvfb
+        run: |
+        sudo apt-get update
+        sudo apt-get install xvfb
       - name: Build with Gradle
         run: xvfb-run ./gradlew test
       - name: Cleanup xvfb pidx
