@@ -141,12 +141,10 @@ public class GameEngine {
         }
         assert (lastSearchPath != null);
 
-        // add the first point
         lastSearchPath.addPointToFront(searcherPos);
 
         assert (lastSearchPath.getPoints().size() != 0);
 
-        // update the searcherPos
         searcherPos = lastSearchPath.getLastPoint();
     }
 
