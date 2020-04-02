@@ -109,8 +109,8 @@ public class TreeConstructor {
         } else if (hint instanceof CircleHint) {
             CircleHint circleHint = (CircleHint) hint;
             root.getChildren().addAll(
-                    createItem("center: %s", print(circleHint.getCenter().getCoordinate())),
-                    createItem("radius: %s", SettingsService.getInstance().getSettings().round(circleHint.getRadius()))
+                    createItem("center: %s", print(circleHint.getCircle().getCenter())),
+                    createItem("radius: %s", SettingsService.getInstance().getSettings().round(circleHint.getCircle().getRadius()))
             );
         } else {
             root.setValue(hint.toString());
