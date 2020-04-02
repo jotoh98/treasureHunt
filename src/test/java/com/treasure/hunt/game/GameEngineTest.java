@@ -4,16 +4,18 @@ import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hider.impl.InstantWinHider;
 import com.treasure.hunt.strategy.hider.impl.RevealingHider;
 import com.treasure.hunt.strategy.hint.Hint;
+import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.hint.impl.CircleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.impl.*;
+import com.treasure.hunt.utils.JTSUtils;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Tests for the {@link GameEngine}.
@@ -106,7 +108,7 @@ class GameEngineTest {
     }
 
     /**
-     * {@link SearchPath#located(Point, Point)} test.
+     * {@link GameEngine#located(SearchPath, Point)} test.
      * In this test, the searcher moves <b>past</b> the treasure
      * with a minimum distance of 1.
      * searcher starts at (0,0) as usual.
@@ -117,8 +119,7 @@ class GameEngineTest {
     void narrowMove() {
         GameEngine gameEngine = new GameEngine(new NaiveCircleSearcher(), new Hider() {
 
-            private GeometryFactory gf = new GeometryFactory();
-            private Point treasurePos = gf.createPoint(new Coordinate(1, 1));
+            private Point treasurePos = JTSUtils.createPoint(1, 1);
 
             @Override
             public Point getTreasureLocation() {
@@ -131,11 +132,123 @@ class GameEngineTest {
 
             @Override
             public Hint move(SearchPath moves) {
-                return new CircleHint(gf.createPoint(new Coordinate(0, 2)), 2);
+                return new CircleHint(JTSUtils.createPoint(0, 2), 2);
             }
         });
         gameEngine.init();
         simulateSteps(gameEngine, 2);
         assertTrue(gameEngine.isFinished());
+    }
+
+    /**
+     * Tests {@link GameEngine#verifyHint(AngleHint, AngleHint, Point, Point)}
+     */
+    @Test
+    void verifyHintTest1() {
+        // current AngleHint must not be null
+        assertThrows(IllegalArgumentException.class, () ->
+                GameEngine.verifyHint(new AngleHint(new Coordinate(1, 0), new Coordinate(0, 0), new Coordinate(0, 1)),
+                        null, JTSUtils.createPoint(1, 1), JTSUtils.createPoint(0, 0)));
+        assertThrows(IllegalArgumentException.class, () ->
+                GameEngine.verifyHint(new CircleHint(new Coordinate(1, 1), 1),
+                        null, JTSUtils.createPoint(1, 1), JTSUtils.createPoint(0, 0)));
+    }
+
+    /**
+     * Tests {@link GameEngine#verifyHint(CircleHint, CircleHint, Point, Point)},
+     * especially, whether the {@link CircleHint} contain the treasure
+     */
+    @Test
+    void verifyCircleHintTest1() {
+        GameEngine.verifyHint(null, new CircleHint(new Coordinate(0, 0), 1),
+                JTSUtils.createPoint(1, 0), null);
+        assertThrows(IllegalArgumentException.class, () ->
+                GameEngine.verifyHint(null, new CircleHint(new Coordinate(0, 0), 1),
+                        JTSUtils.createPoint(2, 0), null));
+    }
+
+    /**
+     * Tests {@link GameEngine#verifyHint(CircleHint, CircleHint, Point, Point)},
+     * especially, whether the previous {@link CircleHint} contain the current {@link CircleHint}.
+     */
+    @Test
+    void verifyCircleHintTest2() {
+        GameEngine.verifyHint(new CircleHint(new Coordinate(0, 0), 2),
+                new CircleHint(new Coordinate(0, 0), 1), JTSUtils.createPoint(0, 0), null);
+        GameEngine.verifyHint(new CircleHint(new Coordinate(0, 0), 1),
+                new CircleHint(new Coordinate(0, 0), 1), JTSUtils.createPoint(0, 0), null);
+        GameEngine.verifyHint(new CircleHint(new Coordinate(0, 0), 4),
+                new CircleHint(new Coordinate(1, 0), 1), JTSUtils.createPoint(1, 0), null);
+        // small circle cannot contain a bigger one
+        assertThrows(IllegalArgumentException.class, () ->
+                GameEngine.verifyHint(new CircleHint(new Coordinate(0, 0), 1),
+                        new CircleHint(new Coordinate(0, 0), 2), JTSUtils.createPoint(0, 0), null));
+        // circles disjoint
+        assertThrows(IllegalArgumentException.class, () ->
+                GameEngine.verifyHint(new CircleHint(new Coordinate(0, 0), 1),
+                        new CircleHint(new Coordinate(2, 0), 1), JTSUtils.createPoint(2, 0), null));
+        // circle not completely containing.
+        assertThrows(IllegalArgumentException.class, () ->
+                GameEngine.verifyHint(new CircleHint(new Coordinate(0, 0), 2),
+                        new CircleHint(new Coordinate(2, 0), 1), JTSUtils.createPoint(2, 0), null));
+    }
+
+    /**
+     * Tests {@link GameEngine#verifyHint(AngleHint, AngleHint, Point, Point)},
+     * especially, whether it lies on the {@link com.treasure.hunt.strategy.searcher.Searcher}s position.
+     */
+    @Test
+    void verifyAngleHintTest1() {
+        GameEngine.verifyHint(null,
+                new AngleHint(new Coordinate(1, 0), new Coordinate(0, 0), new Coordinate(0, 1)),
+                JTSUtils.createPoint(1, 1), JTSUtils.createPoint(0, 0));
+        assertThrows(IllegalArgumentException.class, () ->
+                GameEngine.verifyHint(null,
+                        new AngleHint(new Coordinate(1, 0), new Coordinate(0, 0), new Coordinate(0, 1)),
+                        JTSUtils.createPoint(1, 1), JTSUtils.createPoint(1, 1))
+        );
+    }
+
+    /**
+     * Tests {@link GameEngine#verifyHint(AngleHint, AngleHint, Point, Point)},
+     * especially, whether the treasure lies in the given {@link AngleHint}.
+     */
+    @Test
+    void verifyAngleHintTest2() {
+        GameEngine.verifyHint(null,
+                new AngleHint(new Coordinate(1, 0), new Coordinate(0, 0), new Coordinate(0, 1)),
+                JTSUtils.createPoint(1, 1), JTSUtils.createPoint(0, 0));
+        GameEngine.verifyHint(null,
+                new AngleHint(new Coordinate(1, 0), new Coordinate(0, 0), new Coordinate(0, 1)),
+                JTSUtils.createPoint(1, 0), JTSUtils.createPoint(0, 0));
+        GameEngine.verifyHint(null,
+                new AngleHint(new Coordinate(1, 0), new Coordinate(0, 0), new Coordinate(0, 1)),
+                JTSUtils.createPoint(0, 1), JTSUtils.createPoint(0, 0));
+        GameEngine.verifyHint(null,
+                new AngleHint(new Coordinate(1, 0), new Coordinate(0, 0), new Coordinate(0, 1)),
+                JTSUtils.createPoint(0, 0), JTSUtils.createPoint(0, 0));
+        GameEngine.verifyHint(null,
+                new AngleHint(new Coordinate(1, 0), new Coordinate(0, 0), new Coordinate(0, 1)),
+                JTSUtils.createPoint(0, 400), JTSUtils.createPoint(0, 0));
+        assertThrows(IllegalArgumentException.class, () ->
+                GameEngine.verifyHint(null,
+                        new AngleHint(new Coordinate(1, 0), new Coordinate(0, 0), new Coordinate(0, 1)),
+                        JTSUtils.createPoint(-1, -1), JTSUtils.createPoint(1, 1))
+        );
+        assertThrows(IllegalArgumentException.class, () ->
+                GameEngine.verifyHint(null,
+                        new AngleHint(new Coordinate(1, 0), new Coordinate(0, 0), new Coordinate(0, 1)),
+                        JTSUtils.createPoint(-1, 0), JTSUtils.createPoint(1, 1))
+        );
+        assertThrows(IllegalArgumentException.class, () ->
+                GameEngine.verifyHint(null,
+                        new AngleHint(new Coordinate(1, 0), new Coordinate(0, 0), new Coordinate(0, 1)),
+                        JTSUtils.createPoint(0, -1), JTSUtils.createPoint(1, 1))
+        );
+        assertThrows(IllegalArgumentException.class, () ->
+                GameEngine.verifyHint(null,
+                        new AngleHint(new Coordinate(1, 0), new Coordinate(0, 0), new Coordinate(0, 1)),
+                        JTSUtils.createPoint(-.1, 400), JTSUtils.createPoint(1, 1))
+        );
     }
 }

@@ -28,22 +28,12 @@ public class HideAndSeekGameEngine extends GameEngine {
     /**
      * Let the {@link GameEngine#hider} reset the treasure position and give his {@link com.treasure.hunt.strategy.hint.Hint}.
      */
-    protected void moveHider() {
-        treasurePos = hider.getTreasureLocation(); // Difference between GameEngine and HideAndSeekGameEngine.
-        Hint newHint = hider.move(lastSearchPath);
-        assert (newHint != null);
-        verifyHint(newHint, treasurePos, lastSearchPath.getLastPoint());
-        lastHint = newHint;
-    }
-
-    /**
-     * Let the {@link GameEngine#hider} reset the treasure position and give his {@link com.treasure.hunt.strategy.hint.Hint}.
-     */
+    @Override
     protected void hiderMove() {
-        lastHint = hider.move(lastSearchPath);
+        Hint newHint = hider.move(lastSearchPath);
         treasurePos = hider.getTreasureLocation(); // Difference between GameEngine and HideAndSeekGameEngine.
-        assert (lastHint != null);
-        verifyHint(lastHint, treasurePos, lastSearchPath.getLastPoint());
+        verifyHint(lastHint, newHint, treasurePos, lastSearchPath.getLastPoint());
+        lastHint = newHint;
     }
 
 }

@@ -146,4 +146,13 @@ public class Circle extends Coordinate implements Shapeable {
                 corner.multiply(-1).translate(getCenter())
         );
     }
+//TODO write tests
+
+    /**
+     * @param circle the {@link Circle} we want know test, whether it lies completely in this {@link Circle}
+     * @return {@code true} if this contains {@code circle}. {@code false}, otherwise
+     */
+    public boolean contains(Circle circle) {
+        return (this.getRadius() >= (this.distance(circle) + circle.getRadius()));
+    }
 }
