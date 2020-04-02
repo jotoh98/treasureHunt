@@ -2,7 +2,6 @@ package com.treasure.hunt.game.mods.hideandseek;
 
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.strategy.hider.Hider;
-import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.Requires;
@@ -28,18 +27,9 @@ public class HideAndSeekGameEngine extends GameEngine {
     /**
      * Let the {@link GameEngine#hider} reset the treasure position and give his {@link com.treasure.hunt.strategy.hint.Hint}.
      */
-    protected void moveHider() {
-        treasurePos = hider.getTreasureLocation(); // Difference between GameEngine and HideAndSeekGameEngine.
-        Hint newHint = hider.move(lastSearchPath);
-        assert (newHint != null);
-        verifyHint(newHint, treasurePos, lastSearchPath.getLastPoint());
-        lastHint = newHint;
-    }
-
-    /**
-     * Let the {@link GameEngine#hider} reset the treasure position and give his {@link com.treasure.hunt.strategy.hint.Hint}.
-     */
+    @Override
     protected void hiderMove() {
+        statistics.incrementHintRequests();
         lastHint = hider.move(lastSearchPath);
         treasurePos = hider.getTreasureLocation(); // Difference between GameEngine and HideAndSeekGameEngine.
         assert (lastHint != null);

@@ -28,7 +28,7 @@ public class GameEngine {
     protected final Hider hider;
     protected final Coordinate initialSearcherCoordinate;
     @Getter
-    private final Statistic statistics = new Statistic();
+    protected final Statistic statistics = new Statistic();
     /**
      * Tells, whether the game is done or not.
      */
@@ -123,6 +123,7 @@ public class GameEngine {
      * Let the {@link GameEngine#hider} give its {@link Hint}.
      */
     protected void hiderMove() {
+        statistics.incrementHintRequests();
         Hint newHint = hider.move(lastSearchPath);
         assert (newHint != null);
         verifyHint(newHint, treasurePos, lastSearchPath.getLastPoint());

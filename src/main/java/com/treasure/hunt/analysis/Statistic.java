@@ -3,6 +3,7 @@ package com.treasure.hunt.analysis;
 import com.treasure.hunt.game.Turn;
 import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.utils.ListUtils;
+import lombok.Getter;
 import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
@@ -15,6 +16,11 @@ import java.util.stream.Collectors;
  */
 public class Statistic {
     private List<Turn> turns;
+    /**
+     * This stores the number of {@link com.treasure.hunt.strategy.hint.Hint}s, the {@link com.treasure.hunt.strategy.searcher.Searcher} needed.
+     */
+    @Getter
+    private int hintRequests;
 
     public double getTraceLength() {
         double length = ListUtils
@@ -62,19 +68,19 @@ public class Statistic {
         return getLocalOptimumSolution() / getOptimumSolution();
     }
 
-    public int getHintRequests() {
-        if (turns.size() > 1 && turns.get(turns.size() - 1).getHint() == null) {
-            return turns.size() - 2;
-        }
-        return turns.size() - 1;
-    }
-
     public double getHintTraceLengthRatio() {
         final double traceLength = getTraceLength();
         if (traceLength == 0) {
             return 1;
         }
         return getHintRequests() / traceLength;
+    }
+
+    /**
+     * This increments the number of {@link com.treasure.hunt.strategy.hint.Hint}s, the {@link com.treasure.hunt.strategy.searcher.Searcher} needed.
+     */
+    public void incrementHintRequests() {
+        this.hintRequests++;
     }
 
     public static List<Number> filterBy(List<StatisticsWithId> list, StatisticObject.StatisticInfo info) {
@@ -100,7 +106,7 @@ public class Statistic {
                 new StatisticObject(StatisticObject.StatisticInfo.HINT_REQUEST, getHintRequests()),
                 new StatisticObject(StatisticObject.StatisticInfo.HINT_TRACE_LENGTH_RATION, getHintTraceLengthRatio()),
                 new StatisticObject(StatisticObject.StatisticInfo.OPTIMAL_SOLUTION, getOptimumSolution()),
-                new StatisticObject(StatisticObject.StatisticInfo.FINISHED_AND_FOUND, finished? 1:0)
+                new StatisticObject(StatisticObject.StatisticInfo.FINISHED_AND_FOUND, finished ? 1 : 0)
         ));
         PreferenceService.getInstance()
                 .getPreferences()
