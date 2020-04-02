@@ -10,10 +10,14 @@ import com.treasure.hunt.strategy.hint.impl.CircleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
+import com.treasure.hunt.utils.ListUtils;
 import com.treasure.hunt.utils.Requires;
 import lombok.Getter;
+import org.locationtech.jts.algorithm.Distance;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
+
+import java.util.stream.Collectors;
 
 /**
  * This is the engine which runs a simulation of a treasure hunt.
@@ -109,7 +113,7 @@ public class GameEngine {
 
         searcherMove();
 
-        if (lastSearchPath.located(treasurePos)) {
+        if (located(lastSearchPath)) {
             finished = true;
             return new Turn(null, lastSearchPath, treasurePos);
         } else {
@@ -140,8 +144,13 @@ public class GameEngine {
             lastSearchPath = searcher.move(lastHint);
         }
         assert (lastSearchPath != null);
-        assert (lastSearchPath.getPoints().size() != 0);
+
+        // add the first point
         lastSearchPath.addPointToFront(searcherPos);
+
+        assert (lastSearchPath.getPoints().size() != 0);
+
+        // update the searcherPos
         searcherPos = lastSearchPath.getLastPoint();
     }
 
@@ -180,5 +189,29 @@ public class GameEngine {
                 }
             }
         }
+    }
+
+    /**
+     * @param searchPath the {@link SearchPath}, the {@link Searcher} moved.
+     * @return {@code true}, if the {@link Searcher} found the treasure. {@code false}, otherwise.
+     * The {@link Searcher} found the treasure, if had a distance of &le; {@link Searcher#SCANNING_DISTANCE} in this SearchPath.
+     * @throws IllegalStateException if this SearchPath contains zero {@link Point}s.
+     */
+    public boolean located(SearchPath searchPath) {
+        if (searchPath.getPoints().size() < 1) {
+            throw new IllegalStateException("The SearchPath should never got zero points!");
+        }
+
+        if (searchPath.getPoints().size() == 1) {
+            return searchPath.getPoints().get(0).distance(treasurePos) <= Searcher.SCANNING_DISTANCE;
+        }
+
+        return ListUtils
+                .consecutive(searchPath.getPoints().stream()
+                                .map(Point::getCoordinate)
+                                .collect(Collectors.toList()),
+                        (firstCoordinate, nextCoordinate) ->
+                                Distance.pointToSegment(treasurePos.getCoordinate(), firstCoordinate, nextCoordinate))
+                .anyMatch(distance -> distance <= Searcher.SCANNING_DISTANCE);
     }
 }

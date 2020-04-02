@@ -72,8 +72,8 @@ public class Turn {
     }
 
     private List<GeometryItem<?>> getSearchPathGeometries() {
-        List<GeometryItem<?>> items = new ArrayList<>(searchPath.getPointList());
-        items.addAll(searchPath.getLines());
+        List<GeometryItem<?>> items = new ArrayList<>(searchPath.getPointsExceptTheFirst());
+        items.addAll(searchPath.getLineGeometryItems());
         items.addAll(searchPath.getAdditional());
 
         items.add(new GeometryItem<>(new ImageItem(searchPath.getLastPoint().getCoordinate(), 20, 20, "/images/pin.png", ImageItem.Alignment.BOTTOM_CENTER), GeometryType.CURRENT_WAY_POINT));

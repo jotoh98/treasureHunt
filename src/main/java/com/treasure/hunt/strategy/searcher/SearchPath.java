@@ -7,7 +7,6 @@ import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.ListUtils;
 import lombok.Getter;
 import lombok.Setter;
-import org.locationtech.jts.algorithm.Distance;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
@@ -88,7 +87,7 @@ public class SearchPath extends HintAndMovement {
      * List could be empty.
      * @throws IllegalStateException if this SearchPath contains zero {@link Point}s.
      */
-    public List<GeometryItem<Point>> getPointList() {
+    public List<GeometryItem<Point>> getPointsExceptTheFirst() {
         if (points.size() < 1) {
             throw new IllegalStateException("The SearchPath should never got zero points!");
         }
@@ -104,9 +103,20 @@ public class SearchPath extends HintAndMovement {
     }
 
     /**
-     * @return A list of {@link LineString}, describing the movement of the {@link Searcher}.
+     * @return A list of {@link GeometryItem}s, each containing a {@link LineString}. This describes the movement of the {@link Searcher}.
+     * @throws IllegalStateException if this searchPath contains zero {@link Point}s.
      */
-    public List<GeometryItem<LineString>> getLines() {
+    public List<GeometryItem<LineString>> getLineGeometryItems() {
+        return getLines().stream()
+                .map(lineString -> new GeometryItem<>(lineString, GeometryType.WAY_POINT_LINE))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * @return A list of {@link LineString}, describing the movement of the {@link Searcher}.
+     * @throws IllegalStateException if this searchPath contains zero {@link Point}s.
+     */
+    public List<LineString> getLines() {
         if (points.size() < 1) {
             throw new IllegalStateException("The SearchPath should never got zero points!");
         }
@@ -117,36 +127,9 @@ public class SearchPath extends HintAndMovement {
 
         return ListUtils
                 .consecutive(JTSUtils.getCoordinateList(points), (c1, c2) ->
-                        new GeometryItem<>(
-                                JTSUtils.GEOMETRY_FACTORY.createLineString(new Coordinate[]{c1, c2}),
-                                GeometryType.WAY_POINT_LINE
-                        )
+                        JTSUtils.GEOMETRY_FACTORY.createLineString(new Coordinate[]{c1, c2})
                 )
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * @param treasure the {@link Point}, where the treasure lies.
-     * @return {@code true}, if the {@link Searcher} found the treasure. {@code false}, otherwise.
-     * The {@link Searcher} found the treasure, if had a distance of &le; {@link Searcher#SCANNING_DISTANCE} in this SearchPath.
-     * @throws IllegalStateException if this SearchPath contains zero {@link Point}s.
-     */
-    public boolean located(Point treasure) {
-        if (points.size() < 1) {
-            throw new IllegalStateException("The SearchPath should never got zero points!");
-        }
-
-        if (points.size() == 1) {
-            return points.get(0).getCoordinate().distance(treasure.getCoordinate()) <= Searcher.SCANNING_DISTANCE;
-        }
-
-        return ListUtils
-                .consecutive(points.stream()
-                                .map(Point::getCoordinate)
-                                .collect(Collectors.toList()),
-                        (firstCoordinate, nextCoordinate) ->
-                                Distance.pointToSegment(treasure.getCoordinate(), firstCoordinate, nextCoordinate))
-                .anyMatch(distance -> distance <= Searcher.SCANNING_DISTANCE);
     }
 
     /**
