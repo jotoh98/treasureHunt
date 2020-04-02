@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -272,20 +272,25 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#located(com.treasure.hunt.strategy.searcher.SearchPath)">located</a></span>&#8203;(<a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="Turn.html" title="class in com.treasure.hunt.game">Turn</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#move()">move</a></span>()</code></th>
 <td class="colLast">
 <div class="block">This simulates just one step of the simulation.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#searcherMove()">searcherMove</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Let the <a href="#searcher"><code>searcher</code></a> make <a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a>.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#verifyHint(com.treasure.hunt.strategy.hint.Hint,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">verifyHint</a></span>&#8203;(<a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;hint,
           org.locationtech.jts.geom.Point&nbsp;treasurePosition,
@@ -511,7 +516,7 @@ extends java.lang.Object</pre>
 <a id="verifyHint(com.treasure.hunt.strategy.hint.Hint,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>verifyHint</h4>
 <pre class="methodSignature">protected&nbsp;void&nbsp;verifyHint&#8203;(<a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;hint,
@@ -525,6 +530,24 @@ extends java.lang.Object</pre>
 <dd><code>hint</code> - <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a> to be verified</dd>
 <dd><code>treasurePosition</code> - treasure position</dd>
 <dd><code>searcherPosition</code> - searcher position</dd>
+</dl>
+</li>
+</ul>
+<a id="located(com.treasure.hunt.strategy.searcher.SearchPath)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>located</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;located&#8203;(<a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>searchPath</code> - the <a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a>, the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> moved.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code>, if the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> found the treasure. <code>false</code>, otherwise.
+ The <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> found the treasure, if had a distance of &le; <a href="../strategy/searcher/Searcher.html#SCANNING_DISTANCE"><code>Searcher.SCANNING_DISTANCE</code></a> in this SearchPath.</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.lang.IllegalStateException</code> - if this SearchPath contains zero <code>Point</code>s.</dd>
 </dl>
 </li>
 </ul>

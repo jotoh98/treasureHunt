@@ -89,13 +89,13 @@ loadScripts(document, 'script');</script>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -146,29 +146,6 @@ extends <a href="../geom/HintAndMovement.html" title="class in com.treasure.hunt
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- =========== FIELD SUMMARY =========== -->
-<section role="region">
-<ul class="blockList">
-<li class="blockList"><a id="field.summary">
-<!--   -->
-</a>
-<h3>Field Summary</h3>
-<table class="memberSummary">
-<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colSecond" scope="col">Field</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>protected java.util.List&lt;<a href="../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#additional">additional</a></span></code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-</table>
-</li>
-</ul>
-</section>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <section role="region">
 <ul class="blockList">
@@ -215,8 +192,8 @@ extends <a href="../geom/HintAndMovement.html" title="class in com.treasure.hunt
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>java.util.List&lt;<a href="../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAdditional()">getAdditional</a></span>()</code></th>
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addPointToFront(org.locationtech.jts.geom.Point)">addPointToFront</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;point)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
@@ -231,23 +208,22 @@ extends <a href="../geom/HintAndMovement.html" title="class in com.treasure.hunt
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>double</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLength(org.locationtech.jts.geom.Point)">getLength</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;start)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLength()">getLength</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;org.locationtech.jts.geom.LineString&gt;&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLines()">getLines</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLineGeometryItems()">getLineGeometryItems</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i7" class="rowColor">
-<td class="colFirst"><code>java.util.List&lt;<a href="../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;org.locationtech.jts.geom.Point&gt;&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPointList()">getPointList</a></span>()</code></th>
+<td class="colFirst"><code>java.util.List&lt;org.locationtech.jts.geom.LineString&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLines()">getLines</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i8" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#located(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">located</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;pathStart,
-       org.locationtech.jts.geom.Point&nbsp;treasure)</code></th>
+<td class="colFirst"><code>java.util.List&lt;<a href="../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;org.locationtech.jts.geom.Point&gt;&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPointsExceptTheFirst()">getPointsExceptTheFirst</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -267,25 +243,6 @@ extends <a href="../geom/HintAndMovement.html" title="class in com.treasure.hunt
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ============ FIELD DETAIL =========== -->
-<section role="region">
-<ul class="blockList">
-<li class="blockList"><a id="field.detail">
-<!--   -->
-</a>
-<h3>Field Detail</h3>
-<a id="additional">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>additional</h4>
-<pre>protected&nbsp;java.util.List&lt;<a href="../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt; additional</pre>
-</li>
-</ul>
-</li>
-</ul>
-</section>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <section role="region">
 <ul class="blockList">
@@ -347,7 +304,20 @@ extends <a href="../geom/HintAndMovement.html" title="class in com.treasure.hunt
 <pre class="methodSignature">public&nbsp;void&nbsp;addPoint&#8203;(org.locationtech.jts.geom.Point&nbsp;point)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>point</code> - The next point, visited in this movement.</dd>
+<dd><code>point</code> - The next <code>Point</code>, visited in this movement.</dd>
+</dl>
+</li>
+</ul>
+<a id="addPointToFront(org.locationtech.jts.geom.Point)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addPointToFront</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;addPointToFront&#8203;(org.locationtech.jts.geom.Point&nbsp;point)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>point</code> - the <code>Point</code>, the <a href="Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> starts its movement from.</dd>
 </dl>
 </li>
 </ul>
@@ -364,13 +334,35 @@ extends <a href="../geom/HintAndMovement.html" title="class in com.treasure.hunt
 </dl>
 </li>
 </ul>
-<a id="getPointList()">
+<a id="getPointsExceptTheFirst()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getPointList</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;org.locationtech.jts.geom.Point&gt;&gt;&nbsp;getPointList()</pre>
+<h4>getPointsExceptTheFirst</h4>
+<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;org.locationtech.jts.geom.Point&gt;&gt;&nbsp;getPointsExceptTheFirst()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a list, containing every <code>Point</code> of this SearchPath, except the first.
+ List could be empty.</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.lang.IllegalStateException</code> - if this SearchPath contains zero <code>Point</code>s.</dd>
+</dl>
+</li>
+</ul>
+<a id="getLineGeometryItems()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getLineGeometryItems</h4>
+<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;org.locationtech.jts.geom.LineString&gt;&gt;&nbsp;getLineGeometryItems()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A list of <a href="../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryItem</code></a>s, each containing a <code>LineString</code>. This describes the movement of the <a href="Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a>.</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.lang.IllegalStateException</code> - if this searchPath contains zero <code>Point</code>s.</dd>
+</dl>
 </li>
 </ul>
 <a id="getLines()">
@@ -379,35 +371,26 @@ extends <a href="../geom/HintAndMovement.html" title="class in com.treasure.hunt
 <ul class="blockList">
 <li class="blockList">
 <h4>getLines</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;org.locationtech.jts.geom.LineString&gt;&gt;&nbsp;getLines()</pre>
+<pre class="methodSignature">public&nbsp;java.util.List&lt;org.locationtech.jts.geom.LineString&gt;&nbsp;getLines()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A list of <code>LineString</code>, describing the movement of the <a href="Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a>.</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.lang.IllegalStateException</code> - if this searchPath contains zero <code>Point</code>s.</dd>
+</dl>
 </li>
 </ul>
-<a id="getAdditional()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getAdditional</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt;&nbsp;getAdditional()</pre>
-</li>
-</ul>
-<a id="located(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>located</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;located&#8203;(org.locationtech.jts.geom.Point&nbsp;pathStart,
-                       org.locationtech.jts.geom.Point&nbsp;treasure)</pre>
-</li>
-</ul>
-<a id="getLength(org.locationtech.jts.geom.Point)">
+<a id="getLength()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getLength</h4>
-<pre class="methodSignature">public&nbsp;double&nbsp;getLength&#8203;(org.locationtech.jts.geom.Point&nbsp;start)</pre>
+<pre class="methodSignature">public&nbsp;double&nbsp;getLength()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the distance, of this searchPath.</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -462,13 +445,13 @@ extends <a href="../geom/HintAndMovement.html" title="class in com.treasure.hunt
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
