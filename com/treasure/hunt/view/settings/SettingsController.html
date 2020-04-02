@@ -156,17 +156,23 @@ extends java.lang.Object</pre>
 <tr class="altColor">
 <td class="colFirst"><code>javafx.scene.control.Button</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#cancelButton">cancelButton</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Button to cancel the settings changes.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>javafx.scene.control.Button</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#saveButton">saveButton</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Button to save the altered settings.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>javafx.scene.layout.VBox</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#settingsList">settingsList</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">List of setting boxes.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -210,17 +216,23 @@ extends java.lang.Object</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#cancel()">cancel</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Cancel action.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#initialize()">initialize</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Setup of the settings window.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#save()">save</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Save action overrides the settings.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -253,6 +265,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>settingsList</h4>
 <pre>public&nbsp;javafx.scene.layout.VBox settingsList</pre>
+<div class="block">List of setting boxes.</div>
 </li>
 </ul>
 <a id="cancelButton">
@@ -262,6 +275,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>cancelButton</h4>
 <pre>public&nbsp;javafx.scene.control.Button cancelButton</pre>
+<div class="block">Button to cancel the settings changes.</div>
 </li>
 </ul>
 <a id="saveButton">
@@ -271,6 +285,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>saveButton</h4>
 <pre>public&nbsp;javafx.scene.control.Button saveButton</pre>
+<div class="block">Button to save the altered settings.</div>
 </li>
 </ul>
 </li>
@@ -309,6 +324,8 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>initialize</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;initialize()</pre>
+<div class="block">Setup of the settings window.
+ Binds the field converters.</div>
 </li>
 </ul>
 <a id="cancel()">
@@ -318,6 +335,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>cancel</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;cancel()</pre>
+<div class="block">Cancel action. Closes the settings window.</div>
 </li>
 </ul>
 <a id="save()">
@@ -327,6 +345,8 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>save</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;save()</pre>
+<div class="block">Save action overrides the settings.
+ Thus invalidating the "something-changed" bindings.</div>
 </li>
 </ul>
 </li>
