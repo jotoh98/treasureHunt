@@ -1,7 +1,6 @@
 package com.treasure.hunt.view;
 
 import com.opencsv.CSVWriter;
-import com.treasure.hunt.JavaFxApplication;
 import com.treasure.hunt.analysis.StatisticObject;
 import com.treasure.hunt.analysis.StatisticsWithId;
 import com.treasure.hunt.analysis.StatisticsWithIdsAndPath;
@@ -330,6 +329,8 @@ public class StatisticTableController {
         final Widget<PlotController, Region> plotWidget = new Widget<>("/layout/plot.fxml");
 
         final PlotSettingsController plotSettingsController = plotSettingsWidget.getController();
+
+        final Stage stage = new Stage();
 
         plotSettingsController.init(settings -> {
             plotSettingsController.errorLabel.getScene().setRoot(plotWidget.getComponent());
