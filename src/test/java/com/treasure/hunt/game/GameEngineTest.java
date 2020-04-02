@@ -54,7 +54,7 @@ class GameEngineTest {
     }
 
     /**
-     * This tests the {@link SearchPath#located(Point, Point)} method.
+     * This tests the {@link GameEngine#located(SearchPath, Point)} method.
      */
     @Test
     void bruteForceTest1() {
