@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -257,34 +257,39 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 </td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code>org.locationtech.jts.geom.Envelope</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getEnvelope()">getEnvelope</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#inside(org.locationtech.jts.geom.Coordinate)">inside</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;c)</code></th>
 <td class="colLast">
 <div class="block">Tests whether a coordinate lays inside the circle or not.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#project(org.locationtech.jts.geom.Coordinate)">project</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;c)</code></th>
 <td class="colLast">
 <div class="block">Project a coordinate on the edge of the circle.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Polygon</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toPolygon()">toPolygon</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Generate a polygon from the circle.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.awt.Shape</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toShape(com.treasure.hunt.jts.awt.AdvancedShapeWriter)">toShape</a></span>&#8203;(<a href="../awt/AdvancedShapeWriter.html" title="class in com.treasure.hunt.jts.awt">AdvancedShapeWriter</a>&nbsp;advancedShapeWriter)</code></th>
 <td class="colLast">
 <div class="block">Shape the circle as an awt ellipse.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toString()">toString</a></span>()</code></th>
 <td class="colLast">
@@ -479,7 +484,7 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <a id="copy()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>copy</h4>
 <pre class="methodSignature">public&nbsp;<a href="Circle.html" title="class in com.treasure.hunt.jts.geom">Circle</a>&nbsp;copy()</pre>
@@ -490,6 +495,15 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>copied circle</dd>
 </dl>
+</li>
+</ul>
+<a id="getEnvelope()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getEnvelope</h4>
+<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Envelope&nbsp;getEnvelope()</pre>
 </li>
 </ul>
 </li>
