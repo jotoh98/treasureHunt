@@ -17,6 +17,7 @@ import com.treasure.hunt.view.plot.PlotSettingsController;
 import com.treasure.hunt.view.widget.Widget;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -57,6 +58,7 @@ public class StatisticTableController {
     public ComboBox<Class<? extends Hider>> hiderList;
     public ComboBox<Class<? extends GameEngine>> gameEngineList;
     public Spinner<Integer> maxStepsSpinner;
+    public Button superPlot;
     HashMap<StatisticObject.StatisticInfo, List<StatisticObject>> statisticsMeasureHashMap = new HashMap<>();
     private Path path;
     private ObjectProperty<GameManager> gameManager;
@@ -202,26 +204,21 @@ public class StatisticTableController {
         this.searcherList = searcherList;
         this.hiderList = hiderList;
         this.gameEngineList = gameEngineList;
-        runMultipleButton.disableProperty().bind(searcherList.getSelectionModel().selectedItemProperty().isNull()
+        final BooleanBinding somethingNotSelectedBinding = searcherList.getSelectionModel().selectedItemProperty().isNull()
                 .or(hiderList.getSelectionModel().selectedItemProperty().isNull())
-                .or(gameEngineList.getSelectionModel().selectedItemProperty().isNull())
-        );
+                .or(gameEngineList.getSelectionModel().selectedItemProperty().isNull());
+
+        runMultipleButton.disableProperty().bind(somethingNotSelectedBinding);
 
         runMultipleButton.textProperty().bind(
-                Bindings.when(
-                        searcherList.getSelectionModel().selectedItemProperty().isNull()
-                                .or(hiderList.getSelectionModel().selectedItemProperty().isNull())
-                                .or(gameEngineList.getSelectionModel().selectedItemProperty().isNull())
-                )
+                Bindings.when(somethingNotSelectedBinding)
                         .then("Select a game")
                         .otherwise("Run multiple games")
         );
 
-        roundSpinner.disableProperty().bind(searcherList.getSelectionModel().selectedItemProperty().isNull()
-                .or(hiderList.getSelectionModel().selectedItemProperty().isNull())
-                .or(gameEngineList.getSelectionModel().selectedItemProperty().isNull())
-        );
+        superPlot.disableProperty().bind(somethingNotSelectedBinding);
 
+        roundSpinner.disableProperty().bind(somethingNotSelectedBinding);
     }
 
     public void onSeriesRun(ActionEvent actionEvent) {
@@ -235,7 +232,7 @@ public class StatisticTableController {
                     SeriesService.getInstance().runSeries(roundSpinner.getValue(), newGameManager, aDouble ->
                             Platform.runLater(() ->
                                     progressIndicator.setProgress(aDouble)
-                            ), maxStepsSpinner.getValue()==0? null : maxStepsSpinner.getValue()
+                            ), maxStepsSpinner.getValue() == 0 ? null : maxStepsSpinner.getValue()
                     )
             )
                     .exceptionally(throwable -> {
@@ -330,6 +327,10 @@ public class StatisticTableController {
         Class<? extends GameEngine> selectedGameEngine = gameEngineList.getSelectionModel().getSelectedItem();
         Class<? extends Searcher> selectedSearcher = searcherList.getSelectionModel().getSelectedItem();
         Class<? extends Hider> selectedHider = hiderList.getSelectionModel().getSelectedItem();
+
+        if (selectedSearcher == null || selectedHider == null || selectedGameEngine == null) {
+            throw new IllegalStateException("No searcher, hider or game engine selected.");
+        }
 
         final Widget<PlotSettingsController, Region> plotSettingsWidget = new Widget<>("/layout/plotSettings.fxml");
         final Widget<PlotController, Region> plotWidget = new Widget<>("/layout/plot.fxml");

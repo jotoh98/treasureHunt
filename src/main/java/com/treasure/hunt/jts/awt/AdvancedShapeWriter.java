@@ -53,8 +53,8 @@ public class AdvancedShapeWriter extends ShapeWriter {
     /**
      * Wrapper function for {@link ShapeWriter#toShape(Geometry)} to extend functionality for {@link Shapeable} instances.
      *
-     * @param object object to transfer to a shape
-     * @return {@link Shape} representing the object
+     * @param object object to transfer to a {@link Shape}
+     * @return {@link Shape} representing the {@code object}. Could be {@code null}.
      */
     public Shape toShape(Object object) {
         if (object instanceof Shapeable) {
