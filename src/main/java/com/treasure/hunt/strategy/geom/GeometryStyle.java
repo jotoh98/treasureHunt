@@ -34,6 +34,7 @@ public class GeometryStyle {
     public static final GeometryStyle HIGHLIGHTER = new GeometryStyle(true, Color.GREEN, Integer.MAX_VALUE);
     public static final GeometryStyle HELPER_LINE = new GeometryStyle(true, Color.DARK_GRAY, -1);
     public static final GeometryStyle STANDARD = new GeometryStyle(true, Color.lightGray);
+    public static final GeometryStyle HINT_CIRCLE = new GeometryStyle(true, Color.WHITE, new Color(1, 1, 1, 0.01f));
     public static final GeometryStyle MAX_X = new GeometryStyle(true, new Color(0x000000));
     public static final GeometryStyle MAX_Y = new GeometryStyle(true, new Color(0x000000));
     public static final GeometryStyle MIN_X = new GeometryStyle(true, new Color(0x000000));

@@ -38,7 +38,7 @@ public class CircleHint extends Hint {
      */
     public List<GeometryItem<?>> getGeometryItems() {
         List<GeometryItem<?>> output = new ArrayList<>();
-        output.add(new GeometryItem<>(circle, GeometryType.HINT_CENTER));
+        output.add(new GeometryItem<>(circle, GeometryType.HINT_CIRCLE));
         return output;
     }
 }
