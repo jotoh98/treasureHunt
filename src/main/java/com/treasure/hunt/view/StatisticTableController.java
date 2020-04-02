@@ -1,6 +1,7 @@
 package com.treasure.hunt.view;
 
 import com.opencsv.CSVWriter;
+import com.treasure.hunt.JavaFxApplication;
 import com.treasure.hunt.analysis.StatisticObject;
 import com.treasure.hunt.analysis.StatisticsWithId;
 import com.treasure.hunt.analysis.StatisticsWithIdsAndPath;
@@ -28,9 +29,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -319,11 +318,6 @@ public class StatisticTableController {
     }
 
     public void onPlot() throws IOException {
-
-        Stage stage = new Stage(StageStyle.DECORATED);
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle("Statistic Plot");
-
         Class<? extends GameEngine> selectedGameEngine = gameEngineList.getSelectionModel().getSelectedItem();
         Class<? extends Searcher> selectedSearcher = searcherList.getSelectionModel().getSelectedItem();
         Class<? extends Hider> selectedHider = hiderList.getSelectionModel().getSelectedItem();
