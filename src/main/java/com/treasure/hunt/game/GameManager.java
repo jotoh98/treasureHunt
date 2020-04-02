@@ -7,14 +7,16 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.google.common.annotations.VisibleForTesting;
 import com.treasure.hunt.analysis.StatisticObject;
-import com.treasure.hunt.strategy.geom.GeometryItem;
-import com.treasure.hunt.strategy.geom.StatusMessageItem;
-import com.treasure.hunt.strategy.geom.StatusMessageType;
+import com.treasure.hunt.jts.geom.Circle;
+import com.treasure.hunt.service.preferences.Preference;
+import com.treasure.hunt.service.preferences.PreferenceService;
+import com.treasure.hunt.strategy.geom.*;
 import com.treasure.hunt.strategy.hider.Hider;
+import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.AsyncUtils;
 import com.treasure.hunt.utils.GeometryPipeline;
-import com.treasure.hunt.utils.ListUtils;
+import com.treasure.hunt.utils.JTSUtils;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -32,9 +34,13 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 import sun.reflect.ReflectionFactory;
 
+import java.awt.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
@@ -47,6 +53,8 @@ import java.util.stream.Stream;
  *
  * @author dorianreineccius
  */
+@Preference(name = PreferenceService.EARLY_EXIT_AMOUNT, value = 0)
+@Preference(name = PreferenceService.EARLY_EXIT_RADIUS, value = 1.0)
 @Slf4j
 public class GameManager implements KryoSerializable, KryoCopyable<GameManager> {
 
@@ -174,6 +182,9 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         if (gameEngine.isFinished()) {
             finishedProperty.set(true);
         }
+        if (earlyExit()) {
+            finishedProperty.setValue(true);
+        }
     }
 
     /**
@@ -256,8 +267,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         beatThreadRunning.set(true);
         AsyncUtils.EXECUTOR_SERVICE.submit(() -> {
             log.trace("Start beating thread");
-            int steps =1;
-            while (!stepForwardImpossibleBinding.get() && beatThreadRunning.get() && (maxSteps == null || steps<= maxSteps)) {
+            int steps = 1;
+            while (!stepForwardImpossibleBinding.get() && beatThreadRunning.get() && (maxSteps == null || steps <= maxSteps)) {
                 if (executeNextOnJavaFxThread) {
                     CountDownLatch latch = new CountDownLatch(1);
                     Platform.runLater(() -> {
@@ -381,20 +392,52 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      * @return stream of visible geometry items
      */
     public Stream<GeometryItem<?>> getVisibleGeometries() {
-        List<Turn> visibleSubList = turns.subList(0, viewIndex.get() + 1);
+        List<GeometryItem<?>> subListGeometries = new ArrayList<>();
 
-        Stream<GeometryItem<?>> subListGeometries = Stream.empty();
+        subListGeometries.add(new GeometryItem<>(turns.get(0).getSearchPath().getFirstPoint(), GeometryType.WAY_POINT));
 
-        if (visibleSubList.size() == 1) {
-            subListGeometries = visibleSubList.get(0).getGeometryItems(null).stream();
-        } else if (visibleSubList.size() > 1) {
-            subListGeometries = ListUtils
-                    .consecutive(visibleSubList, (prev, next) -> next.getGeometryItems(prev.getSearchPath().getLastPoint()))
-                    .flatMap(Collection::stream);
-        }
+        turns.subList(0, viewIndex.get() + 1)
+                .forEach(element -> subListGeometries.addAll(element.getGeometryItems()));
 
-        final Stream<GeometryItem<?>> items = Stream.concat(subListGeometries, additional.values().stream());
+        final Stream<GeometryItem<?>> items = Stream.concat(subListGeometries.stream(), additional.values().stream());
 
         return GeometryPipeline.pipe(items);
+    }
+
+    /**
+     * Whether the game exits early because of the search being stuck in a specified circular area.
+     *
+     * @return whether the game exits early or not
+     */
+    protected boolean earlyExit() {
+        final double radius = PreferenceService.getInstance()
+                .getPreference(PreferenceService.EARLY_EXIT_RADIUS, 1.0)
+                .doubleValue();
+        final int amount = PreferenceService.getInstance()
+                .getPreference(PreferenceService.EARLY_EXIT_AMOUNT, 0)
+                .intValue();
+
+        if (turns.size() < 1 || amount < 2 || amount > turns.size() - 1) {
+            return false;
+        }
+
+        final int toIndex = turns.size() - 1;
+        final int fromIndex = Math.max(0, turns.size() - 1 - amount);
+
+        final List<Turn> turnList = this.turns.subList(fromIndex, toIndex);
+
+        final Coordinate origin = turnList.get(amount / 2).getSearchPath().getLastPoint().getCoordinate();
+
+        final boolean isEarlyExit = turnList.stream()
+                .map(Turn::getSearchPath)
+                .map(SearchPath::getLastPoint)
+                .map(Point::getCoordinate)
+                .allMatch(coordinate -> origin.distance(coordinate) < radius);
+
+        if (isEarlyExit) {
+            turns.get(turns.size() - 1).getSearchPath().addAdditionalItem(new GeometryItem<>(new Circle(origin, radius), GeometryType.BOUNDING_CIRCE));
+            turns.get(turns.size() - 1).getSearchPath().addAdditionalItem(new GeometryItem<>(JTSUtils.createPoint(origin), GeometryType.NO_TREASURE, new GeometryStyle(true, Color.CYAN, Color.red)));
+        }
+        return isEarlyExit;
     }
 }
