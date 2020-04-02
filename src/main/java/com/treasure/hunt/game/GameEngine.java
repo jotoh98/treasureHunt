@@ -10,14 +10,10 @@ import com.treasure.hunt.strategy.hint.impl.CircleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
-import com.treasure.hunt.utils.ListUtils;
 import com.treasure.hunt.utils.Requires;
 import lombok.Getter;
-import org.locationtech.jts.algorithm.Distance;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
-
-import java.util.stream.Collectors;
 
 /**
  * This is the engine which runs a simulation of a treasure hunt.
@@ -206,12 +202,8 @@ public class GameEngine {
             return searchPath.getPoints().get(0).distance(treasurePos) <= Searcher.SCANNING_DISTANCE;
         }
 
-        return ListUtils
-                .consecutive(searchPath.getPoints().stream()
-                                .map(Point::getCoordinate)
-                                .collect(Collectors.toList()),
-                        (firstCoordinate, nextCoordinate) ->
-                                Distance.pointToSegment(treasurePos.getCoordinate(), firstCoordinate, nextCoordinate))
+        return searchPath.getLines().stream()
+                .map(line -> line.distance(treasurePos))
                 .anyMatch(distance -> distance <= Searcher.SCANNING_DISTANCE);
     }
 }
