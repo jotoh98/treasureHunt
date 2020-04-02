@@ -167,7 +167,8 @@ public class MainController {
         preferencesWidgetControllerPaneWidget.getController().init(
                 searcherList.getSelectionModel().selectedItemProperty(),
                 hiderList.getSelectionModel().selectedItemProperty(),
-                gameEngineList.getSelectionModel().selectedItemProperty()
+                gameEngineList.getSelectionModel().selectedItemProperty(),
+                gameManager
         );
         insertWidget(SplitPaneLocation.LEFT_LOWER, "Preferences", preferencesWidgetControllerPaneWidget.getComponent(), true);
     }
