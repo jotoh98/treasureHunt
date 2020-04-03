@@ -63,7 +63,7 @@ public class MobileTreasureHider extends StatisticalHider implements HideAndSeek
             List<AngleHint> possibleHints = generateHints(360, searchPath.getLastPoint());
 
             // evaluateHints --> use the GameField
-            hint = eval(possibleHints);
+            hint = eval(possibleHints, searchPath);
 
             // commitHint
             gameField.commitHint(hint);
@@ -74,7 +74,7 @@ public class MobileTreasureHider extends StatisticalHider implements HideAndSeek
             List<AngleHint> possibleHints = generateHints(360, searchPath.getLastPoint());
 
             // evaluateHints --> use the GameField
-            hint = eval(possibleHints);
+            hint = eval(possibleHints, searchPath);
 
             // commitHint
             gameField.commitHint(hint);
