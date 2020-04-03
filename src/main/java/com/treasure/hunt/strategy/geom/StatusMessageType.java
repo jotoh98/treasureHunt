@@ -10,12 +10,21 @@ public enum StatusMessageType {
             false, "The quality of the hint received before the previous hint"),
     EXPLANATION_MOVEMENT("An explanation for the movement of the searcher", true, false,
             "An explanation for the movement of the searcher"),
+    EXPLANATION_STRATEGY("An explanation for the general idea of the strategy", true, false,
+            "An explanation for the general idea of the strategy"),
+    EXPLANATION_VISUALISATION_SEARCHER("An explanation for the visualisation used by the searcher", true,
+            false, "An explanation for the visualisation used by the searcher"),
+    ROTATION_RECTANGLE("The angle the rectangles are rotated by (in radians)", true, false,
+            "The rotation of the phase and current rectangle (in radians)"),
+    // hider:
+    EXPLANATION_VISUALISATION_HIDER("An explanation for the visualisation used by the hider", true,
+            true, "An explanation for the visualisation used by the hider"),
     PREFERRED_SIZE_OF_HINT("the size of an AngleHint", true, true, "the size of the hint in radians."), // maybe to preferences
     REMAINING_POSSIBLE_AREA("the remaining area in which the treasure could be", true, true, "The area which has not been excluded by previous hints"),
-    RELATIVE_AREA_CUTOFF("relative area cutoff" , true, true, "the area which has been excluded by this area in percent"),
+    RELATIVE_AREA_CUTOFF("relative area cutoff", true, true, "the area which has been excluded by this area in percent"),
     DISTANCE_TREASURE_TO_CENTROID(" the distance beetween Centroid and the tresure", true, true, "the distance of the remaining possible area's centroid and the treasure"),
-    DISTANCE_ANGLE_BISECTOR_TREASURE("distance from Normal AngleLine to treasure" , true, true, "distance from AngleHint bisector to treasure"),
-    CURRENT_TREASURE_POSITION("current treasure position", true,true, "the current x and y values of the treasure");
+    DISTANCE_ANGLE_BISECTOR_TREASURE("distance from Normal AngleLine to treasure", true, true, "distance from AngleHint bisector to treasure"),
+    CURRENT_TREASURE_POSITION("current treasure position", true, true, "the current x and y values of the treasure");
 
     @Getter
     private final String name;
