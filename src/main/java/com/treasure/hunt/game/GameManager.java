@@ -250,7 +250,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      * This starts a thread, executing {@link GameManager#next()} in each timeinterval of {@code delay}.
      *
      * @param delay the time interval, the thread executes {@link GameManager#next()}
-     * @return a thread {@link CompletableFuture<Void>}, executing {@link GameManager#next()} in each timeinterval of {@code delay}.
+     * @return a thread {@link CompletableFuture}, executing {@link GameManager#next()} in each timeinterval of {@code delay}.
      * @see GameManager#beat(ReadOnlyObjectProperty, Boolean, Integer)
      */
     public CompletableFuture<Void> beat(ReadOnlyObjectProperty<Double> delay) {
