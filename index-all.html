@@ -195,6 +195,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/StrategyFromPaper.HintQuality.html#bad">bad</a></span> - com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.<a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/StrategyFromPaper.HintQuality.html" title="enum in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">StrategyFromPaper.HintQuality</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/treasure/hunt/strategy/hider/impl/BadHintHider.html" title="class in com.treasure.hunt.strategy.hider.impl"><span class="typeNameLink">BadHintHider</span></a> - Class in <a href="com/treasure/hunt/strategy/hider/impl/package-summary.html">com.treasure.hunt.strategy.hider.impl</a></dt>
+<dd>
+<div class="block">This <a href="com/treasure/hunt/strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> only works against <a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/StrategyFromPaper.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper"><code>StrategyFromPaper</code></a>.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/hider/impl/BadHintHider.html#%3Cinit%3E()">BadHintHider()</a></span> - Constructor for class com.treasure.hunt.strategy.hider.impl.<a href="com/treasure/hunt/strategy/hider/impl/BadHintHider.html" title="class in com.treasure.hunt.strategy.hider.impl">BadHintHider</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameManager.html#beat(java.lang.Integer)">beat(Integer)</a></span> - Method in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a></dt>
 <dd>
 <div class="block">This simulates the whole game, until its finished.</div>
@@ -276,7 +282,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/jts/other/ImageItem.Alignment.html#CENTER_CENTER">CENTER_CENTER</a></span> - com.treasure.hunt.jts.other.<a href="com/treasure/hunt/jts/other/ImageItem.Alignment.html" title="enum in com.treasure.hunt.jts.other">ImageItem.Alignment</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/GeometricUtils.html#centerOfRectangle(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">centerOfRectangle(Point, Point, Point, Point)</a></span> - Static method in class com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.<a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/GeometricUtils.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">GeometricUtils</a></dt>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/GeometricUtils.html#centerOfRectangle(org.locationtech.jts.geom.Coordinate%5B%5D)">centerOfRectangle(Coordinate[])</a></span> - Static method in class com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.<a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/GeometricUtils.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">GeometricUtils</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/geom/GeometryType.html#CENTROID">CENTROID</a></span> - com.treasure.hunt.strategy.geom.<a href="com/treasure/hunt/strategy/geom/GeometryType.html" title="enum in com.treasure.hunt.strategy.geom">GeometryType</a></dt>
 <dd>&nbsp;</dd>
@@ -641,7 +647,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/view/widget/PreferencesWidgetController.html#errorLabel">errorLabel</a></span> - Variable in class com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/PreferencesWidgetController.html" title="class in com.treasure.hunt.view.widget">PreferencesWidgetController</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/hider/impl/StatisticalHider.html#eval(java.util.List)">eval(List&lt;AngleHint&gt;)</a></span> - Method in class com.treasure.hunt.strategy.hider.impl.<a href="com/treasure/hunt/strategy/hider/impl/StatisticalHider.html" title="class in com.treasure.hunt.strategy.hider.impl">StatisticalHider</a></dt>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/hider/impl/StatisticalHider.html#eval(java.util.List,com.treasure.hunt.strategy.searcher.SearchPath)">eval(List&lt;AngleHint&gt;, SearchPath)</a></span> - Method in class com.treasure.hunt.strategy.hider.impl.<a href="com/treasure/hunt/strategy/hider/impl/StatisticalHider.html" title="class in com.treasure.hunt.strategy.hider.impl">StatisticalHider</a></dt>
 <dd>
 <div class="block">Evaluates the Hints by generating some statistics on them,
  rating the Hints, and returning the best.</div>
@@ -1032,6 +1038,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/hider/Hider.html#getTreasureLocation()">getTreasureLocation()</a></span> - Method in interface com.treasure.hunt.strategy.hider.<a href="com/treasure/hunt/strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider">Hider</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/hider/impl/BadHintHider.html#getTreasureLocation()">getTreasureLocation()</a></span> - Method in class com.treasure.hunt.strategy.hider.impl.<a href="com/treasure/hunt/strategy/hider/impl/BadHintHider.html" title="class in com.treasure.hunt.strategy.hider.impl">BadHintHider</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/hider/impl/FixedTreasureHider.html#getTreasureLocation()">getTreasureLocation()</a></span> - Method in class com.treasure.hunt.strategy.hider.impl.<a href="com/treasure/hunt/strategy/hider/impl/FixedTreasureHider.html" title="class in com.treasure.hunt.strategy.hider.impl">FixedTreasureHider</a></dt>
 <dd>
 <div class="block">This method will be invoked at the start of the Game.</div>
@@ -1294,6 +1302,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/hider/Hider.html#init(org.locationtech.jts.geom.Point)">init(Point)</a></span> - Method in interface com.treasure.hunt.strategy.hider.<a href="com/treasure/hunt/strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider">Hider</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/hider/impl/BadHintHider.html#init(org.locationtech.jts.geom.Point)">init(Point)</a></span> - Method in class com.treasure.hunt.strategy.hider.impl.<a href="com/treasure/hunt/strategy/hider/impl/BadHintHider.html" title="class in com.treasure.hunt.strategy.hider.impl">BadHintHider</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/hider/impl/HalfPlaneAdapter_FixedTreasure.html#init(org.locationtech.jts.geom.Point)">init(Point)</a></span> - Method in class com.treasure.hunt.strategy.hider.impl.<a href="com/treasure/hunt/strategy/hider/impl/HalfPlaneAdapter_FixedTreasure.html" title="class in com.treasure.hunt.strategy.hider.impl">HalfPlaneAdapter_FixedTreasure</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/hider/impl/HalfPlaneAdapter_MobileTreasure.html#init(org.locationtech.jts.geom.Point)">init(Point)</a></span> - Method in class com.treasure.hunt.strategy.hider.impl.<a href="com/treasure/hunt/strategy/hider/impl/HalfPlaneAdapter_MobileTreasure.html" title="class in com.treasure.hunt.strategy.hider.impl">HalfPlaneAdapter_MobileTreasure</a></dt>
@@ -1448,6 +1458,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/JTSUtils.html#isApproximatelyOnLine(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.LineSegment)">isApproximatelyOnLine(Coordinate, LineSegment)</a></span> - Static method in class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/JTSUtils.html" title="class in com.treasure.hunt.utils">JTSUtils</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/JTSUtils.html#isBadHint(org.locationtech.jts.geom.Polygon,com.treasure.hunt.strategy.hint.impl.AngleHint)">isBadHint(Polygon, AngleHint)</a></span> - Static method in class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/JTSUtils.html" title="class in com.treasure.hunt.utils">JTSUtils</a></dt>
+<dd>
+<div class="block">this function can be called to determine if the specified hint is a bad Hint
+ defined be the paper in the context of the specified rectangle</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/jts/geom/GeometryUtility.html#isEmpty()">isEmpty()</a></span> - Method in class com.treasure.hunt.jts.geom.<a href="com/treasure/hunt/jts/geom/GeometryUtility.html" title="class in com.treasure.hunt.jts.geom">GeometryUtility</a></dt>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/jts/geom/GeometryUtility.html#isSimple()">isSimple()</a></span> - Method in class com.treasure.hunt.jts.geom.<a href="com/treasure/hunt/jts/geom/GeometryUtility.html" title="class in com.treasure.hunt.jts.geom">GeometryUtility</a></dt>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/hider/impl/GameField.html#isWithinGameField(org.locationtech.jts.geom.Point)">isWithinGameField(Point)</a></span> - Method in class com.treasure.hunt.strategy.hider.impl.<a href="com/treasure/hunt/strategy/hider/impl/GameField.html" title="class in com.treasure.hunt.strategy.hider.impl">GameField</a></dt>
@@ -1708,6 +1723,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/StrategyFromPaper.html#move(com.treasure.hunt.strategy.hint.impl.HalfPlaneHint)">move(HalfPlaneHint)</a></span> - Method in class com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.<a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/StrategyFromPaper.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">StrategyFromPaper</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/hider/Hider.html#move(com.treasure.hunt.strategy.searcher.SearchPath)">move(SearchPath)</a></span> - Method in interface com.treasure.hunt.strategy.hider.<a href="com/treasure/hunt/strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider">Hider</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/hider/impl/BadHintHider.html#move(com.treasure.hunt.strategy.searcher.SearchPath)">move(SearchPath)</a></span> - Method in class com.treasure.hunt.strategy.hider.impl.<a href="com/treasure/hunt/strategy/hider/impl/BadHintHider.html" title="class in com.treasure.hunt.strategy.hider.impl">BadHintHider</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/hider/impl/HalfPlaneAdapter_FixedTreasure.html#move(com.treasure.hunt.strategy.searcher.SearchPath)">move(SearchPath)</a></span> - Method in class com.treasure.hunt.strategy.hider.impl.<a href="com/treasure/hunt/strategy/hider/impl/HalfPlaneAdapter_FixedTreasure.html" title="class in com.treasure.hunt.strategy.hider.impl">HalfPlaneAdapter_FixedTreasure</a></dt>
 <dd>&nbsp;</dd>
