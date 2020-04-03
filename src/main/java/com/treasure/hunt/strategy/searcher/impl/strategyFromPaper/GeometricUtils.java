@@ -29,7 +29,7 @@ public class GeometricUtils {
         return line13.getCentroid();
     }
 
-    static Coordinate centerOfRectangle(Coordinate[] rect) {
+    public static Coordinate centerOfRectangle(Coordinate[] rect) {
         LineSegment lineAC = new LineSegment(rect[0], rect[2]);
         return lineAC.midPoint();
     }
