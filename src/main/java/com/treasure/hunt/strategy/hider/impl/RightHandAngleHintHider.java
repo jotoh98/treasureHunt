@@ -14,7 +14,7 @@ import org.locationtech.jts.math.Vector2D;
 
 /**
  * A type of {@link Hider}, generating a valid {@link AngleHint},
- * which contains an angle of the provided {@link PreferenceService#ANGLE} (standard is {@link Math#PI})
+ * which contains an angle of the provided {@link PreferenceService#HintSize_Preference} (standard is {@link Math#PI})
  * with his right wing pointing at the treasure.
  *
  * @author dorianreineccius
