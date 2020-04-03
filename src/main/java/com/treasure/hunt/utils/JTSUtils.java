@@ -395,14 +395,12 @@ public final class JTSUtils {
         double caX = center.getX() - pointA.getX();
         double caY = center.getY() - pointA.getY();
 
-        double a = baX * baX + baY * baY;
-        double bBy2 = baX * caX + baY * caY;
-        double c = caX * caX + caY * caY - radius * radius;
+        double a = Math.pow(baX, 2) + Math.pow(baY, 2);
 
-        double pBy2 = bBy2 / a;
-        double q = c / a;
+        double pBy2 = (baX * caX + baY * caY) / a;
+        double q = (Math.pow(caX, 2) + Math.pow(caY, 2) - Math.pow(radius, 2)) / a;
 
-        double disc = pBy2 * pBy2 - q;
+        double disc = Math.pow(pBy2, 2) - q;
         if (disc < 0) {
             return Collections.emptyList();
         }
@@ -411,13 +409,13 @@ public final class JTSUtils {
         double abScalingFactor1 = -pBy2 + tmpSqrt;
         double abScalingFactor2 = -pBy2 - tmpSqrt;
 
-        Point p1 = createPoint(pointA.getX() - baX * abScalingFactor1, pointA.getY()
-                - baY * abScalingFactor1);
+        Point p1 = createPoint(pointA.getX() - baX * abScalingFactor1,
+                pointA.getY() - baY * abScalingFactor1);
         if (disc == 0) { // abScalingFactor1 == abScalingFactor2
             return Collections.singletonList(p1);
         }
-        Point p2 = createPoint(pointA.getX() - baX * abScalingFactor2, pointA.getY()
-                - baY * abScalingFactor2);
+        Point p2 = createPoint(pointA.getX() - baX * abScalingFactor2,
+                pointA.getY() - baY * abScalingFactor2);
         return Arrays.asList(p1, p2);
     }
 }

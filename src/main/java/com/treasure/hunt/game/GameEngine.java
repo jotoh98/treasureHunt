@@ -12,6 +12,7 @@ import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.Requires;
 import lombok.Getter;
+import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Point;
 
 import java.util.List;
@@ -113,8 +114,13 @@ public class GameEngine {
                 } else if (treasureIntersections.size() == 1) {
                     cutSearchPath.addPoint(treasureIntersections.get(0));
                 } else {
-                    throw new IllegalStateException("The Searcher located the treasure, but a second test failed.\n" +
-                            "This must be an rounding error in JTSUtils.circleLineIntersectionPoints or searchPath.getLines().get(i).distance(treasurePos).");
+                    /**
+                     * got some rounding issue here.
+                     * Our line located the treasure, but we could not found the intersection between the line and the {@link GameEngine#SCANNING_DISTANCE}.
+                     * Thus, we choose the point on the line, which is the closest to the treasure.
+                     */
+                    LineSegment lineSegment = new LineSegment(searchPath.getPoints().get(i).getCoordinate(), searchPath.getPoints().get(i + 1).getCoordinate());
+                    cutSearchPath.addPoint(JTSUtils.createPoint(lineSegment.closestPoint(treasurePos.getCoordinate())));
                 }
                 return cutSearchPath;
             }
