@@ -187,7 +187,7 @@ public class GameEngine {
 
     /**
      * @param searchPath the {@link SearchPath}, the {@link Searcher} moved.
-     * @return {@code true}, if the {@link Searcher} found the treasure. {@code false}, otherwise.
+     * @return {@code true} if the {@link Searcher} found the treasure. {@code false} otherwise.
      * The {@link Searcher} found the treasure, if had a distance of &le; {@link Searcher#SCANNING_DISTANCE} in this SearchPath.
      * @throws IllegalStateException if this SearchPath contains zero {@link Point}s.
      */

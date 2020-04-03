@@ -206,6 +206,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
+     * Shows the simulation-state, before the last {@link Turn}.
      * Works only for stepView &gt; 0
      */
     public void previous() {
