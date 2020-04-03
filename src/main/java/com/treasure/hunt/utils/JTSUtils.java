@@ -360,11 +360,12 @@ public final class JTSUtils {
     public static boolean isBadHint(Polygon rectangle, AngleHint hint) {
         if (!(hint instanceof HalfPlaneHint)) {
             log.debug("can't be a bad hint,, only HalfPlaneHints can be bad hints");
-            EventBusUtils.LOG_LABEL_EVENT.trigger("Supplied hint is not a halfplane: Are you playing with w HalfPlaneHint hider?");
+            EventBusUtils.LOG_LABEL_EVENT.trigger("Supplied hint is not a halfplane: Are you playing with a HalfPlaneHint hider?");
             return false;
         }
 
         if (!rectangle.isRectangle()) {
+            EventBusUtils.LOG_LABEL_EVENT.trigger("Supplied polyon is not a rectangle: Are you playing against StrategyFromPaper?");
             log.debug("can't be a bad hint, specified polygon is not a rectangle");
             return false;
         }
@@ -380,8 +381,6 @@ public final class JTSUtils {
             log.debug("can't be a bad hint, player is not in center of current rectangle");
             return false;
         }
-
-        RobustLineIntersector intersector = new RobustLineIntersector();
 
         Coordinate topLeft = rectangleCoordinates[0];
         Coordinate bottomLeft = rectangleCoordinates[3];
@@ -399,8 +398,6 @@ public final class JTSUtils {
         log.trace("intersect with top " + topIntersect);
 
         if (topIntersect != null) { // in case of parallel
-            intersector.computeIntersection(topIntersect, topLeft, topRight);
-            log.trace("is on top segment?" + intersector.hasIntersection());
 
             // topleft
             if (topIntersect.x >= topLeft.x && topIntersect.x <= topLeft.x + length_y) {
@@ -418,8 +415,6 @@ public final class JTSUtils {
         log.trace("intersect with left " + leftIntersect);
 
         if (leftIntersect != null) {// in case of parallel
-            intersector.computeIntersection(leftIntersect, bottomLeft, topLeft);
-            log.trace("is on left segment?" + intersector.hasIntersection());
 
             // left top
             if (leftIntersect.y >= topLeft.y - length_y && leftIntersect.y <= topLeft.y) {
@@ -432,9 +427,8 @@ public final class JTSUtils {
                 log.debug("bad hint:  left edge, bottom side");
                 return true;
             }
-
         }
-
+        log.debug("good hint");
         return false;
     }
 }
