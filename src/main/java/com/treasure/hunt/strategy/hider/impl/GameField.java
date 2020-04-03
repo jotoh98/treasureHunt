@@ -388,17 +388,6 @@ public class GameField {
         }
     }
 
-
-    /**
-     * Todo
-     *
-     * @param geometry the geometry whose LineSegment are educed to its best Point according to the worstConstant - formula
-     * @return a List of {@link org.locationtech.jts.geom.Coordinate} with their corresponding Constant of (Coordinates C ; their associated Value of {dist(C-Player)/dist(C-Origin)} )
-     */
-    public List<Pair<Coordinate, Double>> getWorstPointOnGeometry(LineString geometry) {
-        return null;
-    }
-
     /**
      * Alternate to {@link this.sampleMaxConstantPointOnLineSegment}
      * Calculates the Point on the boundarySegment described by p1,p2 of the possible Area which results in the largest Constant of PathMin * C = PathActual
