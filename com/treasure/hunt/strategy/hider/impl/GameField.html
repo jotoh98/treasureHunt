@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -227,19 +227,12 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;javafx.util.Pair&lt;org.locationtech.jts.geom.Coordinate,&#8203;java.lang.Double&gt;&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getWorstPointOnGeometry(org.locationtech.jts.geom.LineString)">getWorstPointOnGeometry</a></span>&#8203;(org.locationtech.jts.geom.LineString&nbsp;geometry)</code></th>
-<td class="colLast">
-<div class="block">Todo</div>
-</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>java.util.List&lt;javafx.util.Pair&lt;org.locationtech.jts.geom.Coordinate,&#8203;java.lang.Double&gt;&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getWorstPointsOnAllEdges(double)">getWorstPointsOnAllEdges</a></span>&#8203;(double&nbsp;minDistance)</code></th>
 <td class="colLast">
 <div class="block">Checks all edges of the possibleArea for the Coordinate which maximizes the value of {dist(C - Player) / dist( C -Origin) }</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#init(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">init</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;searcherStartPosition,
     org.locationtech.jts.geom.Point&nbsp;treasureLocation)</code></th>
@@ -247,7 +240,7 @@ extends java.lang.Object</pre>
 <div class="block">Initializes the Gamefield with its initial values</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isWithinGameField(org.locationtech.jts.geom.Point)">isWithinGameField</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;p)</code></th>
 <td class="colLast">
@@ -255,14 +248,14 @@ extends java.lang.Object</pre>
  treasure could live in</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#moveTreasure(org.locationtech.jts.geom.Point)">moveTreasure</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;newTreasureLocation)</code></th>
 <td class="colLast">
 <div class="block">Asks the Gamefield to move the treasure to the speciefied new location</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Geometry</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#testHint(com.treasure.hunt.strategy.hint.impl.AngleHint)">testHint</a></span>&#8203;(<a href="../../hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&nbsp;hint)</code></th>
 <td class="colLast">
@@ -456,28 +449,12 @@ extends java.lang.Object</pre>
 <a id="getWorstPointsOnAllEdges(double)">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>getWorstPointsOnAllEdges</h4>
 <pre class="methodSignature">public&nbsp;java.util.List&lt;javafx.util.Pair&lt;org.locationtech.jts.geom.Coordinate,&#8203;java.lang.Double&gt;&gt;&nbsp;getWorstPointsOnAllEdges&#8203;(double&nbsp;minDistance)</pre>
 <div class="block">Checks all edges of the possibleArea for the Coordinate which maximizes the value of {dist(C - Player) / dist( C -Origin) }</div>
 <dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>a List of <code>Coordinate</code> with their corresponding Constant of (Coordinates C ; their associated Value of {dist(C-Player)/dist(C-Origin)} )</dd>
-</dl>
-</li>
-</ul>
-<a id="getWorstPointOnGeometry(org.locationtech.jts.geom.LineString)">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>getWorstPointOnGeometry</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;javafx.util.Pair&lt;org.locationtech.jts.geom.Coordinate,&#8203;java.lang.Double&gt;&gt;&nbsp;getWorstPointOnGeometry&#8203;(org.locationtech.jts.geom.LineString&nbsp;geometry)</pre>
-<div class="block">Todo</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>geometry</code> - the geometry whose LineSegment are educed to its best Point according to the worstConstant - formula</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a List of <code>Coordinate</code> with their corresponding Constant of (Coordinates C ; their associated Value of {dist(C-Player)/dist(C-Origin)} )</dd>
 </dl>
