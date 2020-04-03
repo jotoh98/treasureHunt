@@ -43,7 +43,7 @@ public class RightHandAngleHintHider implements Hider<AngleHint> {
     /**
      * @param searchPath the {@link SearchPath}, the {@link com.treasure.hunt.strategy.searcher.Searcher} did last
      * @return a valid {@link AngleHint},
-     * which contains an angle of the provided {@link PreferenceService#ANGLE} (standard is {@link Math#PI})
+     * which contains an angle of the provided {@link PreferenceService#HintSize_Preference} (standard is {@link Math#PI})
      * with his right wing pointing at the treasure.
      */
     @Override
