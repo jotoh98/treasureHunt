@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":9,"i2":10,"i3":10,"i4":10};
+var data = {"i0":10,"i1":10,"i2":9,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -240,26 +240,31 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#deletePreferences(java.lang.String)">deletePreferences</a></span>&#8203;(java.lang.String&nbsp;name)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#deletePreference(java.lang.String)">deletePreference</a></span>&#8203;(java.lang.String&nbsp;name)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>java.util.Set&lt;<a href="Preference.html" title="annotation in com.treasure.hunt.service.preferences">Preference</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAnnotated(java.lang.Class)">getAnnotated</a></span>&#8203;(java.lang.Class&lt;?&gt;&nbsp;annotated)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static <a href="PreferenceService.html" title="class in com.treasure.hunt.service.preferences">PreferenceService</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getInstance()">getInstance</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.util.Optional&lt;java.lang.Number&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPreference(java.lang.String)">getPreference</a></span>&#8203;(java.lang.String&nbsp;name)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>java.lang.Number</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPreference(java.lang.String,java.lang.Number)">getPreference</a></span>&#8203;(java.lang.String&nbsp;name,
              java.lang.Number&nbsp;defaultNumber)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#putPreference(java.lang.String,java.lang.Number)">putPreference</a></span>&#8203;(java.lang.String&nbsp;name,
              java.lang.Number&nbsp;value)</code></th>
@@ -487,13 +492,13 @@ extends java.lang.Object</pre>
                           java.lang.Number&nbsp;value)</pre>
 </li>
 </ul>
-<a id="deletePreferences(java.lang.String)">
+<a id="deletePreference(java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>deletePreferences</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;deletePreferences&#8203;(java.lang.String&nbsp;name)</pre>
+<h4>deletePreference</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;deletePreference&#8203;(java.lang.String&nbsp;name)</pre>
 </li>
 </ul>
 <a id="getPreference(java.lang.String,java.lang.Number)">
@@ -509,10 +514,19 @@ extends java.lang.Object</pre>
 <a id="getPreference(java.lang.String)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getPreference</h4>
 <pre class="methodSignature">public&nbsp;java.util.Optional&lt;java.lang.Number&gt;&nbsp;getPreference&#8203;(java.lang.String&nbsp;name)</pre>
+</li>
+</ul>
+<a id="getAnnotated(java.lang.Class)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getAnnotated</h4>
+<pre class="methodSignature">public&nbsp;java.util.Set&lt;<a href="Preference.html" title="annotation in com.treasure.hunt.service.preferences">Preference</a>&gt;&nbsp;getAnnotated&#8203;(java.lang.Class&lt;?&gt;&nbsp;annotated)</pre>
 </li>
 </ul>
 </li>
