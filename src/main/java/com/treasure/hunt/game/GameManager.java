@@ -225,7 +225,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
-     * Stops the Thread from beating.
+     * Stops the beating thread from executing {@link GameManager#next()}.
      */
     public void stopBeat() {
         log.debug("Stopping beating thread");
@@ -240,15 +240,17 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
-     * @return only viewed moves
+     * @return a list, containing only the {@link Turn}s, which are visible now.
      */
     public List<Turn> getVisibleTurns() {
         return turns.subList(0, viewIndex.get() + 1);
     }
 
     /**
-     * {@code executeNextOnJavaFxThread} defaults to {@code true}.
+     * This starts a thread, executing {@link GameManager#next()} in each timeinterval of {@code delay}.
      *
+     * @param delay the time interval, the thread executes {@link GameManager#next()}
+     * @return a thread {@link CompletableFuture<Void>}, executing {@link GameManager#next()} in each timeinterval of {@code delay}.
      * @see GameManager#beat(ReadOnlyObjectProperty, Boolean, Integer)
      */
     public CompletableFuture<Void> beat(ReadOnlyObjectProperty<Double> delay) {
