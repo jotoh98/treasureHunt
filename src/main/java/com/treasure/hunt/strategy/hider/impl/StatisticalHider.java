@@ -5,10 +5,13 @@ import com.treasure.hunt.strategy.geom.*;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StrategyFromPaper;
+import com.treasure.hunt.utils.EventBusUtils;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.geom.util.AffineTransformation;
 
@@ -72,7 +75,7 @@ public abstract class StatisticalHider {
         List<AngleHint> possibleHints = generateHints(360, searchPath.getLastPoint());
 
         // evaluateHints --> use the GameField
-        AngleHint hint = eval(possibleHints);
+        AngleHint hint = eval(possibleHints, searchPath);
 
         // commitHint
         gameField.commitHint(hint);
@@ -88,11 +91,25 @@ public abstract class StatisticalHider {
      * @param hints the AngleHints to evaluate
      * @return the chosen AngleHint
      */
-    public AngleHint eval(List<AngleHint> hints) {
+    public AngleHint eval(List<AngleHint> hints, SearchPath searchPath) {
 
         List<AngleHintStatistic> stats = new ArrayList<>();
         Geometry before = this.currentPossibleArea;
         log.info("current possibleArea size " + before.getArea());
+
+        // if playing against StrategyFromPaper try giving bad hints
+        List<GeometryItem<?>> geometryItems = searchPath.getAdditional();
+        Polygon currentRectangle = null;
+
+        try {
+
+            GeometryItem<Polygon> currentRectangleGeometryItem = (GeometryItem<Polygon>) geometryItems.stream().filter(item -> item.getGeometryType().getDisplayName().equals("current rectangle")).findFirst().get();
+            currentRectangle = currentRectangleGeometryItem.getObject();
+        } catch (Exception e) {
+            EventBusUtils.LOG_LABEL_EVENT.trigger(getClass().getSimpleName() + " didn't find current rectangle. Are you playing against " + StrategyFromPaper.class.getSimpleName() + "?");
+
+        }
+
         for (AngleHint hint : hints) {
 
             Geometry after = gameField.testHint(hint);
@@ -101,6 +118,7 @@ public abstract class StatisticalHider {
             //calc some Statistics
             fillDistanceToNormalLine(hs);
             fillDistanceToCentroid(hs);
+            JTSUtils.isBadHint(currentRectangle, hint);
 
             stats.add(hs);
             rateHint(hs);
