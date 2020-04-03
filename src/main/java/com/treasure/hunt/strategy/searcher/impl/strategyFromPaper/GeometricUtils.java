@@ -10,6 +10,7 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.math.Vector2D;
 
 import static com.treasure.hunt.utils.JTSUtils.doubleEqual;
+import static org.locationtech.jts.algorithm.Angle.normalizePositive;
 
 /**
  * @author Rank
@@ -24,7 +25,7 @@ public class GeometricUtils {
         }
     }
 
-    static Point centerOfRectangle(Point P1, Point P2, Point P3, Point P4) {
+    public static Point centerOfRectangle(Point P1, Point P2, Point P3, Point P4) {
         LineString line13 = JTSUtils.createLineString(P1, P3);
         return line13.getCentroid();
     }
@@ -72,53 +73,34 @@ public class GeometricUtils {
             minX = Math.min(minX, x);
             minY = Math.min(minY, y);
 
-            if (doubleEqual(minX, x) && doubleEqual(maxY, y)) {
-                newA = rect[i];
-            }
-            if (doubleEqual(maxX, x) && doubleEqual(maxY, y)) {
-                newB = rect[i];
-            }
-            if (doubleEqual(maxX, x) && doubleEqual(minY, y)) {
-                newC = rect[i];
-            }
-            if (doubleEqual(minX, x) && doubleEqual(minY, y)) {
-                newD = rect[i];
-            }
-        }
-        if (newA == null || newB == null || newC == null || newD == null) {
-            throw new IllegalArgumentException("rect is malformed. It equals " + rect[0] + rect[1] + rect[2] + rect[3]);
         }
 
-        if (newA.equals2D(newB) || newA.equals2D(newC) || newA.equals2D(newD) || newB.equals2D(newC) || newB.equals2D(newD) || newC.equals2D(newD)) {
-            throw new IllegalArgumentException("rect is malformed. It equals " + rect[0] + rect[1] + rect[2] + rect[3]);
-        }
+        newA = new Coordinate(minX, maxY);
+        newB = new Coordinate(maxX, maxY);
+        newC = new Coordinate(maxX, minY);
+        newD = new Coordinate(minX, minY);
 
-        if (!doubleEqual(newA.x, newD.x) || !doubleEqual(newA.y, newB.y) || !doubleEqual(newB.x, newC.x) || !doubleEqual(newC.y, newD.y)) {
-            throw new IllegalArgumentException("rect is not parallel to x an y axis:" +
-                    "\nrect[0] = " + rect[0] +
-                    "\nrect[1] = " + rect[1] +
-                    "\nrect[2] = " + rect[2] +
-                    "\nrect[3] = " + rect[3] +
-                    "\nnewA = " + newA +
-                    "\nnewB = " + newB +
-                    "\nnewC = " + newC +
-                    "\nnewD = " + newD
-            );
+        if (doubleEqual(maxX, minX) || doubleEqual(maxY, minY)) {
+            throw new IllegalArgumentException("rect is malformed. It equals:\n" + rect[0] + rect[1] + rect[2] + rect[3]);
         }
-        Coordinate[] rectRes = new Coordinate[]{newA, newB, newC, newD};
-        return rectRes;
+        return new Coordinate[]{newA, newB, newC, newD};
     }
 
-    static Coordinate twoStepsOrthogonal(HalfPlaneHint hint, Point P) {
+    public static Coordinate twoStepsOrthogonal(HalfPlaneHint hint, Point P) {
         return twoStepsOrthogonal(hint, P.getCoordinate());
     }
 
-    static Coordinate twoStepsOrthogonal(HalfPlaneHint hint, Coordinate cur_pos) {
+    public static Coordinate twoStepsOrthogonal(HalfPlaneHint hint, Coordinate cur_pos) {
         Vector2D hintVector = new Vector2D(hint.getCenter(),
                 hint.getRight());
 
         hintVector = hintVector.divide(hintVector.length() / 2);
         hintVector = hintVector.rotateByQuarterCircle(1);
         return new Coordinate(cur_pos.getX() + hintVector.getX(), cur_pos.getY() + hintVector.getY());
+    }
+
+    public static double minimumAngleToXAxis(LineSegment line) {
+        LineSegment lineReverse = new LineSegment(line.p1, line.p0);
+        return Math.min(normalizePositive(line.angle()), normalizePositive(lineReverse.angle()));
     }
 }
