@@ -399,7 +399,7 @@ public final class JTSUtils {
             return false;
         }
 
-        if (!rectangle.isRectangle()) {
+        if (rectangle == null || !rectangle.isRectangle()) {
             EventBusUtils.LOG_LABEL_EVENT.trigger("Supplied polyon is not a rectangle: Are you playing against StrategyFromPaper?");
             log.debug("can't be a bad hint, specified polygon is not a rectangle");
             return false;
