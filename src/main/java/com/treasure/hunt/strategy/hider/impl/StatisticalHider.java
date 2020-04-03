@@ -176,17 +176,6 @@ public abstract class StatisticalHider {
     }
 
     /**
-     * Todo
-     *
-     * @param statistic
-     * @param searchPath
-     * @return
-     */
-    protected double fillStrategyFromPaper_RectangleCutQuality(AngleHintStatistic statistic, SearchPath searchPath) {
-        return 0.0;
-    }
-
-    /**
      * Filters the given Hints on the Predicate of being abel to see
      *
      * @param stats the List of AngleHintStats to filter
