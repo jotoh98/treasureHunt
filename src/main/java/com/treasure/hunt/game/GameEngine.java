@@ -91,7 +91,7 @@ public class GameEngine {
         for (int i = 0; searchPath.getLines().size() > i; i++) {
             if (searchPath.getLines().get(i).distance(treasurePos) <= Searcher.SCANNING_DISTANCE) {
                 SearchPath cutSearchPath = new SearchPath();
-                cutSearchPath.setPoints(searchPath.getPoints().subList(0, i + 1));
+                cutSearchPath.setPoints(searchPath.getPoints().subList(0, i + 2));
                 return cutSearchPath;
             }
         }
