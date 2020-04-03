@@ -188,21 +188,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
-     * Simulates a fixed number of moves.
-     * Breaks, when the game is finished.
-     *
-     * @param steps number of steps
-     */
-    public void move(int steps) {
-        for (int i = 0; i < steps; i++) {
-            if (gameEngine.isFinished()) {
-                break;
-            }
-            next();
-        }
-    }
-
-    /**
      * Works only for stepView &gt; 0
      */
     public void previous() {
