@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -142,8 +142,23 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">StrategyFromPaper</span>
 extends java.lang.Object
 implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.strategy.searcher">Searcher</a>&lt;<a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a>&gt;, <a href="../../../../game/mods/hideandseek/HideAndSeekSearcher.html" title="interface in com.treasure.hunt.game.mods.hideandseek">HideAndSeekSearcher</a>&lt;<a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a>&gt;</pre>
-<div class="block">This implements the strategy from the paper:
- Treasure Hunt in the Plane with Angular Hints</div>
+<div class="block">This strategy implements the strategy from the paper "Deterministic Treasure Hunt in the Plane with Angular Hints"
+ from Bouchard et al..
+ <p>
+ Generally this strategy works in phases i=1, 2, ... in which it searchers the treasure in rectangles of the side
+ length 2^i.
+ The rectangles are centered in the start position of the searcher and are axis parallel.
+ We will call the rectangle of the current phase the phase rectangle.
+ The strategy uses a second rectangle, called the current rectangle, which equals the phase rectangle at the beginning
+ of each phase.
+ In some draws (most draws) the searcher can exclude a part of the current rectangle by using areas seen and the current hint
+ gotten and lower its area.
+ The previous rectangle is the current rectangle from the previous draw.
+ When the current rectangle is small enough, the rectangle gets scanned which means the player walks a route in such a way
+ that it sees all points of the current rectangle.
+ When this happens the phase is incremented and the current rectangle is again set to the phase rectangle.
+ <p>
+ For more information please look in the paper.</div>
 </li>
 </ul>
 </div>
@@ -193,25 +208,25 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>protected com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.LastHintBadSubroutine</code></td>
+<td class="colFirst"><code>protected <a href="LastHintBadSubroutine.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">LastHintBadSubroutine</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lastHintBadSubroutine">lastHintBadSubroutine</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>protected <a href="StrategyFromPaper.HintQuality.html" title="enum in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">StrategyFromPaper.HintQuality</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lastHintQuality">lastHintQuality</a></span></code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="rowColor">
 <td class="colFirst"><code>protected int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#phase">phase</a></span></code></th>
 <td class="colLast">
 <div class="block">phase equals i in Algorithm2 (TreasureHunt1) in the paper.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected <a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#previousHint">previousHint</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected <a href="StrategyFromPaper.HintQuality.html" title="enum in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">StrategyFromPaper.HintQuality</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#previousHintQuality">previousHintQuality</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
@@ -290,11 +305,6 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>protected <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addState(com.treasure.hunt.strategy.searcher.SearchPath)">addState</a></span>&#8203;(<a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>protected <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addState(com.treasure.hunt.strategy.searcher.SearchPath,org.locationtech.jts.geom.Coordinate%5B%5D,org.locationtech.jts.geom.Coordinate%5B%5D)">addState</a></span>&#8203;(<a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move,
         org.locationtech.jts.geom.Coordinate[]&nbsp;currentRectanglePoints,
         org.locationtech.jts.geom.Coordinate[]&nbsp;phaseRectanglePoints)</code></th>
@@ -302,7 +312,7 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 <div class="block">This method is used to visualize the current phases rectangle and the current search rectangle.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>protected org.locationtech.jts.geom.Coordinate[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#currentPhaseRectangle()">currentPhaseRectangle</a></span>()</code></th>
 <td class="colLast">
@@ -310,42 +320,40 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
  the phase-field in this implementation)</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#init(org.locationtech.jts.geom.Point)">init</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;startPosition)</code></th>
 </tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>protected void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#init(org.locationtech.jts.geom.Point,int,int)">init</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;startPosition,
-    int&nbsp;w,
-    int&nbsp;h)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i5" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#move()">move</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Use this to perform a initial move, without a hint given.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#move(com.treasure.hunt.strategy.hint.impl.HalfPlaneHint)">move</a></span>&#8203;(<a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a>&nbsp;hint)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>protected org.locationtech.jts.geom.Coordinate[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#phaseRectangle(int)">phaseRectangle</a></span>&#8203;(int&nbsp;phase)</code></th>
 <td class="colLast">
 <div class="block">Returnes the rectangle of the current phase, by using a specified phase index</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>protected boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rectangleNotLargeEnough()">rectangleNotLargeEnough</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>protected <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#returnHandling(com.treasure.hunt.strategy.searcher.SearchPath)">returnHandling</a></span>&#8203;(<a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>protected <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#specificRectangleScan(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,com.treasure.hunt.strategy.searcher.SearchPath)">specificRectangleScan</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner1,
                      org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner2,
@@ -357,7 +365,7 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
  RoutinesFromPaper is used (this method is required for the MinimumRectangleStrategy which inherits from this class.)</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>protected <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#specificRectangleScan(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.searcher.SearchPath)">specificRectangleScan</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;rectangleCorner1,
                      org.locationtech.jts.geom.Point&nbsp;rectangleCorner2,
@@ -369,28 +377,26 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
  RoutinesFromPaper is used (this method is required for the MinimumRectangleStrategy which inherits from this class.)</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>protected org.locationtech.jts.geom.Point[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#splitRectangleHorizontally(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,org.locationtech.jts.geom.LineSegment,boolean)">splitRectangleHorizontally</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;A,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#splitRectangleHorizontally(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,org.locationtech.jts.geom.LineSegment)">splitRectangleHorizontally</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;A,
                           org.locationtech.jts.geom.Point&nbsp;B,
                           org.locationtech.jts.geom.Point&nbsp;C,
                           org.locationtech.jts.geom.Point&nbsp;D,
                           <a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a>&nbsp;hint,
-                          org.locationtech.jts.geom.LineSegment&nbsp;hintLine,
-                          boolean&nbsp;checkIfHintGood)</code></th>
+                          org.locationtech.jts.geom.LineSegment&nbsp;hintLine)</code></th>
 <td class="colLast">
 <div class="block">If the checkIfHintGood is true and the hint is bad (i.e.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>protected org.locationtech.jts.geom.Point[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#splitRectangleVertically(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,org.locationtech.jts.geom.LineSegment,boolean)">splitRectangleVertically</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;A,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#splitRectangleVertically(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,org.locationtech.jts.geom.LineSegment)">splitRectangleVertically</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;A,
                         org.locationtech.jts.geom.Point&nbsp;B,
                         org.locationtech.jts.geom.Point&nbsp;C,
                         org.locationtech.jts.geom.Point&nbsp;D,
                         <a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a>&nbsp;hint,
-                        org.locationtech.jts.geom.LineSegment&nbsp;hintLine,
-                        boolean&nbsp;checkIfHintGood)</code></th>
+                        org.locationtech.jts.geom.LineSegment&nbsp;hintLine)</code></th>
 <td class="colLast">
 <div class="block">If the checkIfHintGood is true and the hint is bad (i.e.</div>
 </td>
@@ -505,13 +511,13 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 <pre>protected&nbsp;<a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a> currentHint</pre>
 </li>
 </ul>
-<a id="lastHintQuality">
+<a id="previousHintQuality">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>lastHintQuality</h4>
-<pre>protected&nbsp;<a href="StrategyFromPaper.HintQuality.html" title="enum in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">StrategyFromPaper.HintQuality</a> lastHintQuality</pre>
+<h4>previousHintQuality</h4>
+<pre>protected&nbsp;<a href="StrategyFromPaper.HintQuality.html" title="enum in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">StrategyFromPaper.HintQuality</a> previousHintQuality</pre>
 </li>
 </ul>
 <a id="lastHintBadSubroutine">
@@ -520,7 +526,7 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 <ul class="blockListLast">
 <li class="blockList">
 <h4>lastHintBadSubroutine</h4>
-<pre>protected&nbsp;com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.LastHintBadSubroutine lastHintBadSubroutine</pre>
+<pre>protected&nbsp;<a href="LastHintBadSubroutine.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">LastHintBadSubroutine</a> lastHintBadSubroutine</pre>
 </li>
 </ul>
 </li>
@@ -566,17 +572,6 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 <dd><code>startPosition</code> - the <a href="../../Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> starting position,
                               he will initialized on.</dd>
 </dl>
-</li>
-</ul>
-<a id="init(org.locationtech.jts.geom.Point,int,int)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>init</h4>
-<pre class="methodSignature">protected&nbsp;void&nbsp;init&#8203;(org.locationtech.jts.geom.Point&nbsp;startPosition,
-                    int&nbsp;w,
-                    int&nbsp;h)</pre>
 </li>
 </ul>
 <a id="move()">
@@ -642,16 +637,16 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 </dl>
 </li>
 </ul>
-<a id="addState(com.treasure.hunt.strategy.searcher.SearchPath)">
+<a id="returnHandling(com.treasure.hunt.strategy.searcher.SearchPath)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>addState</h4>
-<pre class="methodSignature">protected&nbsp;<a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;addState&#8203;(<a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</pre>
+<h4>returnHandling</h4>
+<pre class="methodSignature">protected&nbsp;<a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;returnHandling&#8203;(<a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</pre>
 </li>
 </ul>
-<a id="splitRectangleHorizontally(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,org.locationtech.jts.geom.LineSegment,boolean)">
+<a id="splitRectangleHorizontally(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,org.locationtech.jts.geom.LineSegment)">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -662,8 +657,7 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
                                                                        org.locationtech.jts.geom.Point&nbsp;C,
                                                                        org.locationtech.jts.geom.Point&nbsp;D,
                                                                        <a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a>&nbsp;hint,
-                                                                       org.locationtech.jts.geom.LineSegment&nbsp;hintLine,
-                                                                       boolean&nbsp;checkIfHintGood)</pre>
+                                                                       org.locationtech.jts.geom.LineSegment&nbsp;hintLine)</pre>
 <div class="block">If the checkIfHintGood is true and the hint is bad (i.e. does not divide one side of the rectangle ABCD
  in two parts such that both are bigger or equal to 1), null is returned.
  If the hint-line goes through AD and BC, the biggest axis parallel-rectangle which
@@ -676,7 +670,6 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 <dd><code>C</code> - </dd>
 <dd><code>D</code> - </dd>
 <dd><code>hint</code> - </dd>
-<dd><code>checkIfHintGood</code> - </dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
@@ -729,7 +722,7 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 </dl>
 </li>
 </ul>
-<a id="splitRectangleVertically(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,org.locationtech.jts.geom.LineSegment,boolean)">
+<a id="splitRectangleVertically(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,org.locationtech.jts.geom.LineSegment)">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -740,8 +733,7 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
                                                                      org.locationtech.jts.geom.Point&nbsp;C,
                                                                      org.locationtech.jts.geom.Point&nbsp;D,
                                                                      <a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a>&nbsp;hint,
-                                                                     org.locationtech.jts.geom.LineSegment&nbsp;hintLine,
-                                                                     boolean&nbsp;checkIfHintGood)</pre>
+                                                                     org.locationtech.jts.geom.LineSegment&nbsp;hintLine)</pre>
 <div class="block">If the checkIfHintGood is true and the hint is bad (i.e. does not divide one side of the rectangle ABCD
  in two parts such that both are bigger or equal to 1), null is returned.
  If the hint-line goes through AB and CD, the biggest axis-parallel rectangle which
@@ -754,7 +746,6 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 <dd><code>C</code> - </dd>
 <dd><code>D</code> - </dd>
 <dd><code>hint</code> - </dd>
-<dd><code>checkIfHintGood</code> - </dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>

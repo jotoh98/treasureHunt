@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -213,6 +213,12 @@ extends <a href="AngleHint.html" title="class in com.treasure.hunt.strategy.hint
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,boolean)">HalfPlaneHint</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;center,
+             org.locationtech.jts.geom.Coordinate&nbsp;right,
+             boolean&nbsp;visualisation)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction)">HalfPlaneHint</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;pointOne,
              org.locationtech.jts.geom.Coordinate&nbsp;pointTwo,
              <a href="HalfPlaneHint.Direction.html" title="enum in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint.Direction</a>&nbsp;direction)</code></th>
@@ -240,55 +246,70 @@ extends <a href="AngleHint.html" title="class in com.treasure.hunt.strategy.hint
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#approximatelyInHalfPlane(org.locationtech.jts.geom.Coordinate)">approximatelyInHalfPlane</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCenter()">getCenter</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
+<td class="colFirst"><code><a href="HalfPlaneHint.Direction.html" title="enum in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint.Direction</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDirection()">getDirection</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGeometryItems()">getGeometryItems</a></span>()</code></th>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.LineSegment</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHalfPlaneLine()">getHalfPlaneLine</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>org.locationtech.jts.geom.LineString</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHalfPlaneLineGeometry()">getHalfPlaneLineGeometry</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLeft()">getLeft</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLowerHintPoint()">getLowerHintPoint</a></span>()</code></th>
+<td class="colFirst"><code>org.locationtech.jts.geom.LineString</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHalfPlaneLineString()">getHalfPlaneLineString</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i6" class="altColor">
-<td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRight()">getRight</a></span>()</code></th>
+<td class="colFirst"><code><a href="../../../jts/geom/HalfPlane.html" title="class in com.treasure.hunt.jts.geom">HalfPlane</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHalfPlaneTheTreasureIsNotIn()">getHalfPlaneTheTreasureIsNotIn</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUpperHintPoint()">getUpperHintPoint</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLeft()">getLeft</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i8" class="altColor">
+<td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLowerHintPoint()">getLowerHintPoint</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRight()">getRight</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUpperHintPoint()">getUpperHintPoint</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#inHalfPlane(org.locationtech.jts.geom.Coordinate)">inHalfPlane</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#pointsDownwards()">pointsDownwards</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#pointsUpwards()">pointsUpwards</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -324,6 +345,17 @@ extends <a href="AngleHint.html" title="class in com.treasure.hunt.strategy.hint
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
+<a id="&lt;init&gt;(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>HalfPlaneHint</h4>
+<pre>public&nbsp;HalfPlaneHint&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;center,
+                     org.locationtech.jts.geom.Coordinate&nbsp;right,
+                     boolean&nbsp;visualisation)</pre>
+</li>
+</ul>
 <a id="&lt;init&gt;(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate)">
 <!--   -->
 </a>
@@ -363,6 +395,15 @@ extends <a href="AngleHint.html" title="class in com.treasure.hunt.strategy.hint
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a id="getDirection()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getDirection</h4>
+<pre class="methodSignature">public&nbsp;<a href="HalfPlaneHint.Direction.html" title="enum in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint.Direction</a>&nbsp;getDirection()</pre>
+</li>
+</ul>
 <a id="getCenter()">
 <!--   -->
 </a>
@@ -390,13 +431,13 @@ extends <a href="AngleHint.html" title="class in com.treasure.hunt.strategy.hint
 <pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Coordinate&nbsp;getLeft()</pre>
 </li>
 </ul>
-<a id="getHalfPlaneLineGeometry()">
+<a id="getHalfPlaneTheTreasureIsNotIn()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getHalfPlaneLineGeometry</h4>
-<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.LineString&nbsp;getHalfPlaneLineGeometry()</pre>
+<h4>getHalfPlaneTheTreasureIsNotIn</h4>
+<pre class="methodSignature">public&nbsp;<a href="../../../jts/geom/HalfPlane.html" title="class in com.treasure.hunt.jts.geom">HalfPlane</a>&nbsp;getHalfPlaneTheTreasureIsNotIn()</pre>
 </li>
 </ul>
 <a id="getHalfPlaneLine()">
@@ -408,6 +449,15 @@ extends <a href="AngleHint.html" title="class in com.treasure.hunt.strategy.hint
 <pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.LineSegment&nbsp;getHalfPlaneLine()</pre>
 </li>
 </ul>
+<a id="getHalfPlaneLineString()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getHalfPlaneLineString</h4>
+<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.LineString&nbsp;getHalfPlaneLineString()</pre>
+</li>
+</ul>
 <a id="inHalfPlane(org.locationtech.jts.geom.Coordinate)">
 <!--   -->
 </a>
@@ -415,6 +465,15 @@ extends <a href="AngleHint.html" title="class in com.treasure.hunt.strategy.hint
 <li class="blockList">
 <h4>inHalfPlane</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;inHalfPlane&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</pre>
+</li>
+</ul>
+<a id="approximatelyInHalfPlane(org.locationtech.jts.geom.Coordinate)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>approximatelyInHalfPlane</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;approximatelyInHalfPlane&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</pre>
 </li>
 </ul>
 <a id="getGeometryItems()">

@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9};
+var data = {"i0":9,"i1":9,"i2":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -135,7 +135,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 extends java.lang.Object</pre>
 <div class="block">For an explanation what each method does, it is recommended to look in the paper (Deterministic Treasure Hunt in the
  Plane with Angular Hints from Bouchard et al.).
- There the same symbols are used.</div>
+ There the same symbols are used.
+ The functionality of rectangleScan is explained there on page 3.
+ Phi, rho, sigma and the basic-transformation are explained on pages 7ff.</div>
 </li>
 </ul>
 </div>
@@ -158,24 +160,32 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rectangleScan(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,com.treasure.hunt.strategy.searcher.SearchPath)">rectangleScan</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;A,
-             org.locationtech.jts.geom.Coordinate&nbsp;B,
-             org.locationtech.jts.geom.Coordinate&nbsp;C,
-             org.locationtech.jts.geom.Coordinate&nbsp;D,
-             <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</code></th>
-<td class="colLast">
-<div class="block">Does the same as the routine rectangleScan in the paper.</div>
-</td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#meanderThroughLines(org.locationtech.jts.geom.Point%5B%5D,org.locationtech.jts.geom.Point%5B%5D,int,com.treasure.hunt.strategy.searcher.SearchPath)">meanderThroughLines</a></span>&#8203;(org.locationtech.jts.geom.Point[]&nbsp;a,
+                   org.locationtech.jts.geom.Point[]&nbsp;b,
+                   int&nbsp;k,
+                   <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath)</code></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rectangleScan(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.searcher.SearchPath)">rectangleScan</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;A,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rectangleScan(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,com.treasure.hunt.strategy.searcher.SearchPath,org.locationtech.jts.geom.Point)">rectangleScan</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;A,
+             org.locationtech.jts.geom.Coordinate&nbsp;B,
+             org.locationtech.jts.geom.Coordinate&nbsp;C,
+             org.locationtech.jts.geom.Coordinate&nbsp;D,
+             <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath,
+             org.locationtech.jts.geom.Point&nbsp;lastPosition)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>static <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rectangleScan(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.searcher.SearchPath,org.locationtech.jts.geom.Point)">rectangleScan</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;A,
              org.locationtech.jts.geom.Point&nbsp;B,
              org.locationtech.jts.geom.Point&nbsp;C,
              org.locationtech.jts.geom.Point&nbsp;D,
-             <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</code></th>
+             <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath,
+             org.locationtech.jts.geom.Point&nbsp;lastPosition)</code></th>
 <td class="colLast">
-<div class="block">Does the same as the routine rectangleScan in the paper.</div>
+<div class="block">Does the same as the routine RectangleScan in the paper.</div>
 </td>
 </tr>
 </table>
@@ -202,7 +212,7 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="rectangleScan(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.searcher.SearchPath)">
+<a id="rectangleScan(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.searcher.SearchPath,org.locationtech.jts.geom.Point)">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -212,42 +222,47 @@ extends java.lang.Object</pre>
                                        org.locationtech.jts.geom.Point&nbsp;B,
                                        org.locationtech.jts.geom.Point&nbsp;C,
                                        org.locationtech.jts.geom.Point&nbsp;D,
-                                       <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</pre>
-<div class="block">Does the same as the routine rectangleScan in the paper.
- It adds the Points to move so that the player sees all points in the rectangle ABCD.</div>
+                                       <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath,
+                                       org.locationtech.jts.geom.Point&nbsp;lastPosition)</pre>
+<div class="block">Does the same as the routine RectangleScan in the paper.
+ It adds the Points to searchPath so that the player sees all points in the rectangle ABCD.
+ Unlike the paper it does not add the point where the procedure started to the search-path.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>A</code> - </dd>
-<dd><code>B</code> - </dd>
-<dd><code>C</code> - </dd>
-<dd><code>D</code> - </dd>
-<dd><code>move</code> - </dd>
-<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>searchPath</code> - the searchPath the rectangle scan path gets added to</dd>
+<dd><code>lastPosition</code> - when the searchPath is empty, it is assumed that this was the point where the procedure
+                     rectangleScan got started and the searcher returns there afterwards</dd>
 </dl>
 </li>
 </ul>
-<a id="rectangleScan(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,com.treasure.hunt.strategy.searcher.SearchPath)">
+<a id="rectangleScan(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,com.treasure.hunt.strategy.searcher.SearchPath,org.locationtech.jts.geom.Point)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>rectangleScan</h4>
 <pre class="methodSignature">public static&nbsp;<a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;rectangleScan&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;A,
                                        org.locationtech.jts.geom.Coordinate&nbsp;B,
                                        org.locationtech.jts.geom.Coordinate&nbsp;C,
                                        org.locationtech.jts.geom.Coordinate&nbsp;D,
-                                       <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</pre>
-<div class="block">Does the same as the routine rectangleScan in the paper.
- It adds the Points to move so that the player sees all points in the rectangle ABCD.</div>
+                                       <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath,
+                                       org.locationtech.jts.geom.Point&nbsp;lastPosition)</pre>
 <dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>A</code> - </dd>
-<dd><code>B</code> - </dd>
-<dd><code>C</code> - </dd>
-<dd><code>D</code> - </dd>
-<dd><code>move</code> - </dd>
-<dt><span class="returnLabel">Returns:</span></dt>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="#rectangleScan(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.searcher.SearchPath,org.locationtech.jts.geom.Point)"><code>rectangleScan(Point, Point, Point, Point, SearchPath, Point)</code></a></dd>
 </dl>
+</li>
+</ul>
+<a id="meanderThroughLines(org.locationtech.jts.geom.Point[],org.locationtech.jts.geom.Point[],int,com.treasure.hunt.strategy.searcher.SearchPath)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>meanderThroughLines</h4>
+<pre class="methodSignature">public static&nbsp;<a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;meanderThroughLines&#8203;(org.locationtech.jts.geom.Point[]&nbsp;a,
+                                             org.locationtech.jts.geom.Point[]&nbsp;b,
+                                             int&nbsp;k,
+                                             <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath)</pre>
 </li>
 </ul>
 </li>
