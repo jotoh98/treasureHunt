@@ -31,7 +31,8 @@ public final class JTSUtils {
      * A static final shared {@link GeometryFactory} we use, such that every usage
      * uses the same settings of the geometry factory.
      */
-    public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(1000000000));
+    public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(1000000));
+    public static final PrecisionModel APPROXIMATELY_PRECISION = new PrecisionModel(10000);
 
     private JTSUtils() {
     }
@@ -68,15 +69,41 @@ public final class JTSUtils {
      * @return an intersection {@link Point} of the {@link LineSegment} objects {@code line} and {@code lineSegment}
      */
     public static Coordinate lineWayIntersection(LineSegment line, LineSegment segment) {
+        if (doubleEqualApproximately(line.distancePerpendicular(segment.p0), 0)) {
+            return segment.p0;
+        }
+        if (doubleEqualApproximately(line.distancePerpendicular(segment.p1), 0)) {
+            return segment.p1;
+        }
+
         Coordinate intersection = line.lineIntersection(segment);
         if (intersection == null) {
             return null;
         }
-        double distance = GEOMETRY_FACTORY.getPrecisionModel().makePrecise(segment.distance(intersection));
-        if (distance != 0) {
+        if (!doubleEqual(segment.distance(intersection), 0)) {
             return null;
         }
         return intersection;
+    }
+
+    /**
+     * Tests whether the convex polygon polygon intersects with the line line and returns the intersecting coordinates
+     * if it does.
+     *
+     * @param polygon a {@link Polygon}
+     * @param line    a {@link LineSegment}
+     * @return an ArrayList of the intersecting coordinates if they exist, a empty ArrayList otherwise
+     */
+    public static ArrayList<Coordinate> convexPolygonLineIntersection(Polygon polygon, LineSegment line) {
+        ArrayList<Coordinate> result = new ArrayList<>();
+        Coordinate[] coordinatesPolygon = polygon.getCoordinates();
+        for (int i = 0; i < coordinatesPolygon.length - 1 && result.size() < 3; i++) {
+            Coordinate intersection = lineWayIntersection(line, new LineSegment(coordinatesPolygon[i], coordinatesPolygon[i + 1]));
+            if (intersection != null) {
+                result.add(intersection);
+            }
+        }
+        return result;
     }
 
     public static boolean doubleEqual(double a, double b) {
@@ -85,6 +112,10 @@ public final class JTSUtils {
 
     public static boolean coordinateEqual(Coordinate a, Coordinate b) {
         return doubleEqual(a.x, b.x) && doubleEqual(a.y, b.y);
+    }
+
+    public static boolean doubleEqualApproximately(double a, double b) {
+        return (0 == APPROXIMATELY_PRECISION.makePrecise(a - b));
     }
 
     /**
@@ -334,6 +365,10 @@ public final class JTSUtils {
 
         Coordinate treasure = Vector2D.create(Math.random() * (maxDistance - minDistance) + minDistance, 0).rotate(2 * Math.PI * Math.random()).translate(new Coordinate());
         return JTSUtils.GEOMETRY_FACTORY.createPoint(treasure);
+    }
+
+    public static boolean isApproximatelyOnLine(Coordinate point, LineSegment line) {
+        return APPROXIMATELY_PRECISION.makePrecise((point.x - line.p0.x) / (line.p1.x - line.p0.x) - (point.y - line.p0.y) / (line.p1.y - line.p0.y)) == 0;
     }
 
     /**
