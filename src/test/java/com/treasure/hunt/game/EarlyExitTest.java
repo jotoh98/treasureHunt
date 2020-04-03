@@ -6,7 +6,6 @@ import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
-import com.treasure.hunt.strategy.searcher.impl.StandingSearcher;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -70,7 +69,7 @@ class EarlyExitTest {
         PreferenceService.getInstance().putPreference(PreferenceService.EARLY_EXIT_AMOUNT, 2);
         PreferenceService.getInstance().putPreference(PreferenceService.EARLY_EXIT_RADIUS, 1e-10);
 
-        final GameManager gameManager = new GameManager(StandingSearcher.class, EmptyHider.class, GameEngine.class);
+        final GameManager gameManager = new GameManager(EmptySearcher.class, EmptyHider.class, GameEngine.class);
         gameManager.init();
         while (!gameManager.getFinishedProperty().get()) {
             gameManager.next();
