@@ -33,6 +33,24 @@ public class BadHintHider implements Hider<HalfPlaneHint> {
 
     }
 
+    /** returns a correct 45degree / 135degree hint relative to the x-axis
+     * oritinating from the player's position
+     *
+     * @param playerPosition
+     * @return
+     */
+    private HalfPlaneHint generateGenericHint(Point playerPosition){
+        //up right facing first
+        HalfPlaneHint genericHint = new HalfPlaneHint(playerPosition.getCoordinate(), new Coordinate(playerPosition.getX() + 1, playerPosition.getY() - 1));
+
+        if (!genericHint.getGeometryAngle().inView(treasure.getCoordinate())) {
+            //else bottom left facing
+            genericHint = new HalfPlaneHint(playerPosition.getCoordinate(), new Coordinate(playerPosition.getX() - 1, playerPosition.getY() + 1));
+        }
+        return genericHint;
+    }
+
+
     @Override
     public HalfPlaneHint move(final SearchPath searchPath) {
         Point playerPosition = searchPath.getLastPoint();
@@ -48,19 +66,13 @@ public class BadHintHider implements Hider<HalfPlaneHint> {
         } catch (NoSuchElementException e) {
             EventBusUtils.LOG_LABEL_EVENT.trigger(getClass().getSimpleName() + " didn't find current rectangle. Are you playing against " + StrategyFromPaper.class.getSimpleName() + "?");
             log.trace("generic rectangle");
-            // else give a 45degree / 135degree Hint relative to x-axis
-            Coordinate[] rectangleCoords = new Coordinate[5];
-            rectangleCoords[0] = new Coordinate(-10000, 10000);
-            rectangleCoords[1] = new Coordinate(10000, 10000);
-            rectangleCoords[2] = new Coordinate(10000, -10000);
-            rectangleCoords[3] = new Coordinate(-10000, -10000);
-            rectangleCoords[4] = new Coordinate(-10000, 10000);
-            currentRectangle = GEOMETRY_FACTORY.createPolygon(rectangleCoords);
-
+            return generateGenericHint(playerPosition);
         }
+
         // quick sanity check
         log.trace("is rectangle?" + currentRectangle.isRectangle());
 
+        // try nudging the nodes a bit to avoid calculation inconsistencies in StrategyFromPaper
         Coordinate topLeft = currentRectangle.getCoordinates()[0].copy();
         topLeft.y = topLeft.y - 0.1;
         Coordinate bottomRight = currentRectangle.getCoordinates()[2].copy();
@@ -77,23 +89,16 @@ public class BadHintHider implements Hider<HalfPlaneHint> {
         log.trace("the up right facing Hint contains treasure: " + badHint.getGeometryAngle().inView(treasure.getCoordinate()));
         if (!badHint.getGeometryAngle().inView(treasure.getCoordinate())) {
 
-            badHint = new HalfPlaneHint(playerPosition.getCoordinate(), bottomRight); // bottom left facing
+            badHint = new HalfPlaneHint(playerPosition.getCoordinate(), topLeft); // bottom left facing
             log.trace("the bottom left facing Hint contains treasure: " + badHint.getGeometryAngle().inView(treasure.getCoordinate()));
 
             // strategyFromPaper is currently performing a scan or the 2-distance step away from the centroid
             if (!badHint.getGeometryAngle().inView(treasure.getCoordinate())) {
-
-                log.info("can't give diagonal Hint, returning generic 45degree one");
-
-                badHint = new HalfPlaneHint(playerPosition.getCoordinate(), new Coordinate(playerPosition.getX() + 1, playerPosition.getY() - 1)); //up right first again
-
-                if (!badHint.getGeometryAngle().inView(treasure.getCoordinate())) {
-                    badHint = new HalfPlaneHint(playerPosition.getCoordinate(), new Coordinate(playerPosition.getX() - 1, playerPosition.getY() + 1)); //else bottom left
-                }
+                log.info("can't give diagonal Hint, returning generic one");
+                return generateGenericHint(playerPosition);
             }
-
         }
-        log.info("given Hint" + badHint.getGeometryAngle().toString());
+        log.trace("given Hint" + badHint.getGeometryAngle().toString());
         return badHint;
     }
 
