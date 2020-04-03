@@ -3,7 +3,7 @@ package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import lombok.Getter;
-mport org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
