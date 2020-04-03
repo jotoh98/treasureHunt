@@ -3,10 +3,9 @@ package com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.LineSegment;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.Polygon;
+import lombok.Getter;
+import org.locationtech.jts.algorithm.Angle;
+import org.locationtech.jts.geom.*;
 import org.locationtech.jts.geom.util.AffineTransformation;
 
 /**
@@ -18,13 +17,15 @@ public class TransformForAxisParallelism {
     private AffineTransformation toInternal;
     private AffineTransformation toExternalWithStartPointDisplacement;
     private AffineTransformation toInternalWithStartPointDisplacement;
+    @Getter
+    private double angle;
 
     /**
      * Creates a transformer where the HalfPlaneHint hint in internal coordinates is parallel to the x-axis and shows
      * upwards and the internalCenterInExternalRepresentation is the point (0,0) in internal coordinates.
      *
-     * @param hint
-     * @param internalCenterInExternalRepresentation
+     * @param hint                                   the internal x-axis is parallel to
+     * @param internalCenterInExternalRepresentation the internal center (point (0,0)) in external coordinates
      */
     public TransformForAxisParallelism(HalfPlaneHint hint, Point internalCenterInExternalRepresentation) {
         this.internalCenterInExternalRepresentation = internalCenterInExternalRepresentation;
@@ -45,6 +46,8 @@ public class TransformForAxisParallelism {
         double sinHintAngle = (right.y - left.y) / radius;
         double cosHintAngle = (right.x - left.x) / radius;
         toExternal = AffineTransformation.rotationInstance(sinHintAngle, cosHintAngle);
+
+        angle = Angle.normalizePositive(Math.atan2(sinHintAngle, cosHintAngle));
 
         double sinHintAngleReverse = (left.y - right.y) / radius;
         double cosHintAngleReverse = (right.x - left.x) / radius;
@@ -79,6 +82,10 @@ public class TransformForAxisParallelism {
         return (Polygon) toInternalWithStartPointDisplacement.transform(polygon);
     }
 
+    Geometry toInternal(Geometry geom) {
+        return toInternalWithStartPointDisplacement.transform(geom);
+    }
+
     Coordinate toExternal(Coordinate c) {
         Coordinate transformedC = new Coordinate();
         toExternal.transform(c, transformedC);
@@ -91,8 +98,12 @@ public class TransformForAxisParallelism {
         return new HalfPlaneHint(toExternal(hint.getCenter()), toExternal(hint.getRight()));
     }
 
-    Polygon toExternal(Polygon polygon) {
-        return (Polygon) toExternalWithStartPointDisplacement.transform(polygon);
+    Polygon toExternal(Polygon geom) {
+        return (Polygon) toExternalWithStartPointDisplacement.transform(geom);
+    }
+
+    Geometry toExternal(Geometry geometry) {
+        return toExternalWithStartPointDisplacement.transform(geometry);
     }
 
     Point toExternal(Point point) {

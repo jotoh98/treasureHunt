@@ -2,6 +2,8 @@ package com.treasure.hunt.strategy.hider.impl;
 
 import com.treasure.hunt.service.preferences.Preference;
 import com.treasure.hunt.service.preferences.PreferenceService;
+import com.treasure.hunt.strategy.geom.StatusMessageItem;
+import com.treasure.hunt.strategy.geom.StatusMessageType;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
@@ -19,17 +21,25 @@ import org.locationtech.jts.geom.Point;
  */
 @Preference(name = PreferenceService.MAX_TREASURE_DISTANCE, value = 100)
 public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
+    public static final String TREASURE_DISTANCE = "treasure distance";
     double xmax = 1000;
     double ymax = 1000;
     HalfPlaneHint lastHint = null;
+    StatusMessageItem visualisationMessage;
     private Point treasurePos = null;
+    private boolean firstMove = true;
+    private boolean secondMove = true;
 
     /**
      * @param searcherStartPosition the {@link Searcher} starting position,
-     *                              he will initia^lized on.
+     *                              he will initialized on.
      */
     @Override
     public void init(Point searcherStartPosition) {
+        visualisationMessage = new StatusMessageItem(
+                StatusMessageType.EXPLANATION_VISUALISATION_HIDER,
+                "This hider (RandomHalfPlaneHintHider) does not show the current hint."
+        );
     }
 
 
@@ -47,7 +57,17 @@ public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
         double rightX = searcherPos.getX() + Math.cos(rightAngle);
         double rightY = searcherPos.getY() + Math.sin(rightAngle);
 
-        HalfPlaneHint newHint = new HalfPlaneHint(searcherPos.getCoordinate(), new Coordinate(rightX, rightY));
+        HalfPlaneHint newHint = new HalfPlaneHint(searcherPos.getCoordinate(), new Coordinate(rightX, rightY),
+                false);
+        if (firstMove) {
+            firstMove = false;
+            newHint.getStatusMessageItemsToBeAdded().add(visualisationMessage);
+        } else {
+            if (secondMove) {
+                secondMove = false;
+                newHint.getStatusMessageItemsToBeRemoved().add(visualisationMessage);
+            }
+        }
         lastHint = newHint;
         return newHint;
     }
@@ -58,6 +78,7 @@ public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
     @Override
     public Point getTreasureLocation() {
         treasurePos = JTSUtils.shuffleTreasure();
+        //treasurePos = JTSUtils.createPoint(-34.534488969938,-88.74125888904);//todo rm
         return treasurePos;
     }
 }
