@@ -21,7 +21,6 @@ public class PreferenceService {
     public static final String TREASURE_DISTANCE = "TREASURE_DISTANCE";
     public static final String ANGLE_UPPER_BOUND = "ANGLE_UPPER_BOUND";
     public static final String ANGLE_LOWER_BOUND = "ANGLE_LOWER_BOUND";
-    public static final String ANGLE = "ANGLE";
     public static final String GLOBAL_GREEDY = "GLOBAL_GREEDY";
     public static final String EARLY_EXIT_AMOUNT = "EARLY_EXIT_AMOUNT";
     public static final String EARLY_EXIT_RADIUS = "EARLY_EXIT_RADIUS";
