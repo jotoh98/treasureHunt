@@ -14,6 +14,8 @@ import com.treasure.hunt.utils.Requires;
 import lombok.Getter;
 import org.locationtech.jts.geom.Point;
 
+import java.util.List;
+
 /**
  * This is the engine which runs a simulation of a treasure hunt.
  *
@@ -21,6 +23,8 @@ import org.locationtech.jts.geom.Point;
  */
 @Requires(hider = Hider.class, searcher = Searcher.class)
 public class GameEngine {
+    public static double SCANNING_DISTANCE = 1.0;
+
     @Getter
     protected final Searcher searcher;
     @Getter
@@ -68,15 +72,15 @@ public class GameEngine {
     /**
      * @param searchPath a valid {@link SearchPath}, the {@link Searcher} moved.
      * @return {@code true}, if the {@link Searcher} found the treasure. {@code false}, otherwise.
-     * The {@link Searcher} found the treasure, if had a distance of &le; {@link Searcher#SCANNING_DISTANCE} in this SearchPath.
+     * The {@link Searcher} found the treasure, if had a distance of &le; {@link GameEngine#SCANNING_DISTANCE} in this SearchPath.
      */
     public static boolean located(SearchPath searchPath, Point treasurePos) {
         if (searchPath.getPoints().size() == 1) {
-            return searchPath.getPoints().get(0).distance(treasurePos) <= Searcher.SCANNING_DISTANCE;
+            return searchPath.getPoints().get(0).distance(treasurePos) <= SCANNING_DISTANCE;
         }
         return searchPath.getLines().stream()
                 .map(line -> line.distance(treasurePos))
-                .anyMatch(distance -> distance <= Searcher.SCANNING_DISTANCE);
+                .anyMatch(distance -> distance <= SCANNING_DISTANCE);
     }
 
     /**
@@ -89,13 +93,34 @@ public class GameEngine {
             return searchPath;
         }
         for (int i = 0; searchPath.getLines().size() > i; i++) {
-            if (searchPath.getLines().get(i).distance(treasurePos) <= Searcher.SCANNING_DISTANCE) {
+            if (searchPath.getLines().get(i).distance(treasurePos) <= SCANNING_DISTANCE) {
                 SearchPath cutSearchPath = new SearchPath();
-                cutSearchPath.setPoints(searchPath.getPoints().subList(0, i + 2));
+                /**
+                 * This command takes the points 0,..,i since i + 1 is exclusive.
+                 * The point i + 1 will added after.
+                 */
+                cutSearchPath.setPoints(searchPath.getPoints().subList(0, i + 1));
+                List<Point> treasureIntersections = JTSUtils.circleLineIntersectionPoints(
+                        searchPath.getPoints().get(i), searchPath.getPoints().get(i + 1), treasurePos, SCANNING_DISTANCE);
+                // pick the point, closer to the i't points of the SearchPath
+                if (treasureIntersections.size() == 2) {
+                    if (treasureIntersections.get(0).distance(searchPath.getPoints().get(i)) <
+                            treasureIntersections.get(1).distance(searchPath.getPoints().get(i))) {
+                        cutSearchPath.addPoint(treasureIntersections.get(0));
+                    } else {
+                        cutSearchPath.addPoint(treasureIntersections.get(1));
+                    }
+                } else if (treasureIntersections.size() == 1) {
+                    cutSearchPath.addPoint(treasureIntersections.get(0));
+                } else {
+                    throw new IllegalStateException("The Searcher located the treasure, but a second test failed.\n" +
+                            "This must be an rounding error in JTSUtils.circleLineIntersectionPoints or searchPath.getLines().get(i).distance(treasurePos).");
+                }
                 return cutSearchPath;
             }
         }
-        throw new IllegalStateException("Since the SearchPath found the treasure, there must have been a cut SearchPath returned!");
+        throw new IllegalStateException("The Searcher located the treasure, but a second test failed.\n" +
+                "This must be an rounding error in searchPath.getLines().get(i).distance(treasurePos)");
     }
 
     /**
