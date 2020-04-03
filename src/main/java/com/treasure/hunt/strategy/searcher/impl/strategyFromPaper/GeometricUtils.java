@@ -25,8 +25,8 @@ public class GeometricUtils {
     }
 
     static Point centerOfRectangle(Point P1, Point P2, Point P3, Point P4) {
-        LineString line13 = JTSUtils.createLineString(P1, P3);
-        return line13.getCentroid();
+        Coordinate[] coordinates = new Coordinate[]{P1.getCoordinate(), P2.getCoordinate(), P3.getCoordinate(), P4.getCoordinate()};
+        return JTSUtils.GEOMETRY_FACTORY.createPoint(centerOfRectangle(coordinates));
     }
 
     public static Coordinate centerOfRectangle(Coordinate[] rect) {
