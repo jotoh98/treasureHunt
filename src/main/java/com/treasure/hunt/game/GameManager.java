@@ -317,18 +317,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         setBindings();
     }
 
-    public Class<? extends Searcher> getSearcherClass() {
-        return gameEngine.getSearcher().getClass();
-    }
-
-    public Class<? extends Hider> getHiderClass() {
-        return gameEngine.getHider().getClass();
-    }
-
-    public Class<? extends GameEngine> getGameEngineClass() {
-        return gameEngine.getClass();
-    }
-
     @SneakyThrows
     @Override
     public GameManager copy(Kryo kryo) {
