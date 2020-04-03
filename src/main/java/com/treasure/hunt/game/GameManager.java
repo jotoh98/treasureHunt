@@ -217,6 +217,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
 
     /**
      * This simulates the whole game, until its finished.
+     *
+     * @param maxSteps the maximum number of steps, which will be simulated.
      */
     public CompletableFuture<Void> beat(Integer maxSteps) {
         return beat(new SimpleObjectProperty<>(0d), false, maxSteps);
