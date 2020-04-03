@@ -80,6 +80,25 @@ public class GameEngine {
     }
 
     /**
+     * @param searchPath  the {@link SearchPath}, in which the {@link Searcher} found the treasure.
+     * @param treasurePos the {@link Point} the treasure lies on.
+     * @return a cut {@link SearchPath}, containing only the points needed, to find the treasure.
+     */
+    public static SearchPath cutSearchPath(SearchPath searchPath, Point treasurePos) {
+        if (searchPath.getPoints().size() == 1) {
+            return searchPath;
+        }
+        for (int i = 0; searchPath.getLines().size() > i; i++) {
+            if (searchPath.getLines().get(i).distance(treasurePos) <= Searcher.SCANNING_DISTANCE) {
+                SearchPath cutSearchPath = new SearchPath();
+                cutSearchPath.setPoints(searchPath.getPoints().subList(0, i + 1));
+                return cutSearchPath;
+            }
+        }
+        throw new IllegalStateException("Since the SearchPath found the treasure, there must have been a cut SearchPath returned!");
+    }
+
+    /**
      * Initializes {@link Searcher}, {@link Hider} and the treasure position
      * and simulates an initial Step.
      *
@@ -125,7 +144,7 @@ public class GameEngine {
 
         if (located(lastSearchPath, treasurePos)) {
             finished = true;
-            return new Turn(null, lastSearchPath, treasurePos);
+            return new Turn(null, cutSearchPath(lastSearchPath, treasurePos), treasurePos);
         } else {
             hiderMove();
         }
