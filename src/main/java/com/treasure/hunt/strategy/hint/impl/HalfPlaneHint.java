@@ -172,14 +172,16 @@ public class HalfPlaneHint extends AngleHint {
     }
 
     public boolean inHalfPlane(Coordinate coordinate) {
-        /*double angleHintLine = new LineSegment(getCenter(), getRight()).angle();
+        return !getHalfPlaneTheTreasureIsNotIn().inside(coordinate);
+    }
+
+    public boolean approximatelyInHalfPlane(Coordinate coordinate) {
+        double angleHintLine = new LineSegment(getCenter(), getRight()).angle();
         double angleCenterP = new LineSegment(getCenter(), coordinate).angle();
         double halfPlaneToPAngle = Angle.normalizePositive((angleCenterP - angleHintLine));
         return halfPlaneToPAngle < Math.PI || JTSUtils.doubleEqualApproximately(halfPlaneToPAngle, 0) ||
                 JTSUtils.doubleEqualApproximately(halfPlaneToPAngle, Math.PI) ||
                 JTSUtils.doubleEqualApproximately(halfPlaneToPAngle, Math.PI * 2);
-        */
-        return !getHalfPlaneTheTreasureIsNotIn().inside(coordinate);
     }
 
     /**

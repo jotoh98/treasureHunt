@@ -3,8 +3,7 @@ package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.locationtech.jts.geom.Coordinate;
+mport org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
@@ -18,7 +17,6 @@ import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
 /**
  * @author Rank
  */
-@Slf4j  //todo rm
 public class LastHintBadSubroutine {
     /**
      * Variable names are equivalent to the paper, but since a', d', etc. is not a valid variable name in Java,
@@ -206,8 +204,6 @@ public class LastHintBadSubroutine {
                     new Coordinate[]{A, B, j, jApos});
         }
 
-        log.debug("caseIndex = " + caseIndex + " basicTransformation= " + basicTransformation);//todo rm
-
         if (caseIndex == -1) {
             throw new AssertionError("No case got used.\n basicTransformation = " + basicTransformation +
                     "\n current rectangle " + strategy.searchAreaCornerA + "\n " +
@@ -220,7 +216,7 @@ public class LastHintBadSubroutine {
         }
         addCaseDescriptionToStatus(move, basicTransformation, caseIndex, this);
 
-        if(changeABCD) {
+        if (changeABCD) {
             strategy.searchAreaCornerA = GEOMETRY_FACTORY.createPoint(newRectangle[0]);
             strategy.searchAreaCornerB = GEOMETRY_FACTORY.createPoint(newRectangle[1]);
             strategy.searchAreaCornerC = GEOMETRY_FACTORY.createPoint(newRectangle[2]);

@@ -13,7 +13,6 @@ import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.LastHintBadSub
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StrategyFromPaper;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.util.AssertionFailedException;
 
@@ -62,7 +61,6 @@ import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
  *
  * @author Rank
  */
-@Slf4j
 public class MinimumRectangleStrategy extends StrategyFromPaper implements Searcher<HalfPlaneHint> {
     Point realSearcherStartPosition;
     RectangleScanEnhanced rectangleScanEnhanced = new RectangleScanEnhanced(this);
@@ -187,7 +185,6 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
             transformer = new TransformForAxisParallelism(hint, realSearcherStartPosition);
             StatusMessageItem angleStatus = new StatusMessageItem(StatusMessageType.ROTATION_RECTANGLE, "" + transformer.getAngle());
             statusMessagesOfThisMove.add(angleStatus);
-            //statusMessagesToBeRemovedNextMoveInMinimumRectangleStrategy.add(angleStatus);
 
             lastLocation = JTSUtils.createPoint(0, 0); // the point the searcher moved to in the previous move
             visitedPolygon.union(visitedPolygon(lastLocation, new SearchPath()));
@@ -203,7 +200,6 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         SearchPath move = new SearchPath();
         move.addPoint(lastLocation);
         reducePolygons(currentHint);
-        //log.debug("currentMultiPolygonIsEmpty: " + currentMultiPolygonIsEmpty());
         if (currentMultiPolygonIsEmpty()) {
             currentHintQuality = HintQuality.none;
             return returnHandlingMinimumRectangleStrategy(setNewPhaseAndMove(move));
@@ -221,7 +217,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
                     move, false);
             updateVisitedPolygon(move);
             setABCDinStrategy();
-            if (currentMultiPolygonIsEmpty()) {// the phase is increased next move todo kucken ob das so durchgeht
+            if (currentMultiPolygonIsEmpty()) {// the phase is increased next move
                 return returnHandlingMinimumRectangleStrategy(move);
             }
             return returnHandlingMinimumRectangleStrategy(GeometricUtils.moveToCenterOfRectangle(searchAreaCornerA,
@@ -234,16 +230,6 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
             move.addPoint(destination);
             return returnHandlingMinimumRectangleStrategy(move);
         }
-        /*
-        if (rectangleNotLargeEnough() && !currentMultiPolygonIsEmpty()) {
-            currentHintQuality = HintQuality.none;
-            return returnHandlingMinimumRectangleStrategy(scanCurrentRectangle(move, currentHint));
-        }
-        if (currentMultiPolygonIsEmpty()) {
-            currentHintQuality = HintQuality.none;
-            return returnHandlingMinimumRectangleStrategy(setNewPhaseAndMove(move));
-        }
-         */
         return returnHandlingMinimumRectangleStrategy(goodHintSubroutine());
     }
 
@@ -278,15 +264,10 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         updateVisitedPolygon(move);
         do {
             phase++;
-            //log.debug("phase updated to " + phase);
             updatePhaseHints();
             hintPolygon = intersectHints(obtainedHints, phaseHints);
             if (hintPolygon != null) {
                 newMultiPolygon = hintPolygon.difference(visitedPolygon);
-            }
-            if (phase >= 100) {
-                //log.debug("current hint quality is " + currentHintQuality);
-                //log.debug("previous hint quality was " + previousHintQuality);
             }
         }
         while (newMultiPolygon == null || newMultiPolygon.getArea() == 0);
@@ -421,8 +402,6 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
 
         move.getStatusMessageItemsToBeAdded().addAll(statusMessagesOfThisMove);
         statusMessagesOfThisMove.clear();
-        //log.debug("ABCD is: " + searchAreaCornerA + searchAreaCornerB + searchAreaCornerC + searchAreaCornerD);
-        //log.debug("MinimumRectangleStrategy returning");//todo rm
         // add search rectangle and phase rectangle
         SearchPath ret;
         if (searchAreaCornerA == null) {
@@ -432,16 +411,12 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
             ret = super.addState(move, transformer.toExternal(searchRectangle()),
                     transformer.toExternal(phaseRectangle(phase)));
         }
-        //log.debug("returning " + ret.getPoints());//todo rm
         return ret;
     }
 
     @Override
     protected SearchPath specificRectangleScan(Coordinate rectangleCorner1, Coordinate rectangleCorner2,
                                                Coordinate rectangleCorner3, Coordinate rectangleCorner4, SearchPath move) {
-        //return RoutinesFromPaper.rectangleScan(rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4, move, lastLocation); //todo rm
-        //return rectangleScanEnhanced.rectangleScanMinimal(rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4,
-        //       move);
         return rectangleScanEnhanced.rectangleScanMinimal(rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4,
                 move);
     }
@@ -479,10 +454,6 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
             return;
         }
         Coordinate[] coordinatesABCD = currentMultiPolygon.getEnvelope().getCoordinates();
-        if (coordinatesABCD[2] == null) {
-            log.debug("--------------------------------------------------------" +
-                    "\n coordinatesABCD[2] equals null");
-        }
         searchAreaCornerA = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[1]);
         searchAreaCornerB = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[2]);
         searchAreaCornerC = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[3]);

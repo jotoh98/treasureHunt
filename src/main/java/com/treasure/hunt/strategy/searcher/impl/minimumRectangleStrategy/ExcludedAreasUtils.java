@@ -39,7 +39,7 @@ public class ExcludedAreasUtils {
 
         for (HalfPlaneHint hint : otherHintsOne) {
             if (hint != hintOne && hint != hintTwo) {
-                if (!hint.inHalfPlane(intersection)) {
+                if (!hint.approximatelyInHalfPlane(intersection)) {
                     return;
                 }
             }
@@ -47,7 +47,7 @@ public class ExcludedAreasUtils {
 
         for (HalfPlaneHint hint : otherHintsTwo) {
             if (hint != hintOne && hint != hintTwo) {
-                if (!hint.inHalfPlane(intersection)) {
+                if (!hint.approximatelyInHalfPlane(intersection)) {
                     return;
                 }
             }
@@ -91,7 +91,7 @@ public class ExcludedAreasUtils {
         newPolygonCorners.add(newPolygonCorners.get(0));
         Geometry newPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon(
                 newPolygonCorners.toArray(new Coordinate[]{}));
-        newPolygon = newPolygon.convexHull();
+        newPolygon = newPolygon.convexHull(); //todo maybe that step could be implemented by normalizing the polygon
 
         if (newPolygon.getArea() == 0) {
             return null;

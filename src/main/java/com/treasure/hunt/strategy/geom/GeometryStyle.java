@@ -25,7 +25,6 @@ public class GeometryStyle {
                 GeometryType.TREASURE, new GeometryStyle(true, new Color(0xFFD700), 2),
                 GeometryType.HINT_ANGLE, new GeometryStyle(true, new Color(0x575757)),
                 GeometryType.GRID, new GeometryStyle(true, false, new Color(0x555555), null, -1),
-                GeometryType.SEARCHER_LAST_MOVE, new GeometryStyle(true, new Color(0x007A1D)),
                 GeometryType.CURRENT_WAY_POINT, new GeometryStyle(true, new Color(0x007A1D)),
                 GeometryType.HALF_PLANE, new GeometryStyle(true, new Color(0x777777), new Color(0x22777777, true)),
                 GeometryType.HALF_PLANE_CURRENT_RED, new GeometryStyle(true, new Color(0x33ff0000, true), new Color(0x33ff0000, true)),
