@@ -3,13 +3,10 @@ package com.treasure.hunt.utils;
 import com.treasure.hunt.jts.awt.CanvasBoundary;
 import com.treasure.hunt.jts.geom.Circle;
 import com.treasure.hunt.jts.geom.GeometryAngle;
-import com.treasure.hunt.jts.geom.GeometryUtility;
-import com.treasure.hunt.jts.geom.HalfPlane;
 import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils;
-import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.algorithm.ConvexHull;
@@ -351,31 +348,32 @@ public final class JTSUtils {
                 .translate(circle.getCenter());
     }
 
-    /** this function can be called to determine if the specified hint is a bad Hint
+    /**
+     * this function can be called to determine if the specified hint is a bad Hint
      * defined be the paper in the context of the specified rectangle
      *
      * @param rectangle the rectangle as polygon
-     * @param hint the hint
+     * @param hint      the hint
      * @return
      */
-    public static boolean isBadHint(Polygon rectangle, AngleHint hint){
-        if( ! (hint instanceof HalfPlaneHint)){
+    public static boolean isBadHint(Polygon rectangle, AngleHint hint) {
+        if (!(hint instanceof HalfPlaneHint)) {
             log.debug("can't be a bad hint,, only HalfPlaneHints can be bad hints");
             return false;
         }
-        if( ! rectangle.isRectangle()){
+        if (!rectangle.isRectangle()) {
             log.debug("can't be a bad hint, specified polygon is not a rectangle");
             return false;
         }
 
         Coordinate[] rectangleCoordinates = rectangle.getCoordinates();
-        for (Coordinate c : rectangleCoordinates){
+        for (Coordinate c : rectangleCoordinates) {
             log.trace("coord" + c);
         }
         Coordinate centroid = GeometricUtils.centerOfRectangle(rectangleCoordinates);
         log.trace("centroid" + centroid);
         log.trace("player" + hint.getGeometryAngle().getCenter());
-        if(! centroid.equals2D(hint.getGeometryAngle().getCenter())){
+        if (!centroid.equals2D(hint.getGeometryAngle().getCenter())) {
             log.debug("can't be a bad hint, player is not in center of current rectangle");
             return false;
         }
@@ -389,7 +387,7 @@ public final class JTSUtils {
         // since a halfPlane - rectangle cut through the centroid is point symmetrical, only 2 adjacent edges need to be checked
         // one of them has the intersection, sometimes both if the Line goes on the diagonal of the rectangle
         LineSegment top = new LineSegment(topLeft, topRight);
-        LineSegment left = new LineSegment(bottomLeft,topLeft);
+        LineSegment left = new LineSegment(bottomLeft, topLeft);
         LineSegment hintLineSegment = new LineSegment(hint.getGeometryAngle().getCenter(), hint.getGeometryAngle().getRight());
 
         double length_y = 1; // distance y from paper paper (page 5)
@@ -397,17 +395,17 @@ public final class JTSUtils {
         Coordinate topIntersect = top.lineIntersection(hintLineSegment);
         log.trace("intersect with top " + topIntersect);
 
-        if( topIntersect != null){ // in case of parallel
+        if (topIntersect != null) { // in case of parallel
             intersector.computeIntersection(topIntersect, topLeft, topRight);
             log.trace("is on top segment?" + intersector.hasIntersection());
 
             // topleft
-            if(topIntersect.x >= topLeft.x && topIntersect.x <= topLeft.x + length_y){
+            if (topIntersect.x >= topLeft.x && topIntersect.x <= topLeft.x + length_y) {
                 log.debug("bad hint: top edge, left side");
                 return true;
             }
             // top right
-            if(topIntersect.x <= topRight.x && topIntersect.x >= topRight.x - length_y){
+            if (topIntersect.x <= topRight.x && topIntersect.x >= topRight.x - length_y) {
                 log.debug("bad hint: top edge, right side");
                 return true;
             }
@@ -416,18 +414,18 @@ public final class JTSUtils {
         Coordinate leftIntersect = left.lineIntersection(hintLineSegment);
         log.trace("intersect with left " + leftIntersect);
 
-        if( leftIntersect != null){// in case of parallel
+        if (leftIntersect != null) {// in case of parallel
             intersector.computeIntersection(leftIntersect, bottomLeft, topLeft);
             log.trace("is on left segment?" + intersector.hasIntersection());
 
             // left top
-            if(leftIntersect.y >= topLeft.y - length_y && leftIntersect.y <= topLeft.y){
+            if (leftIntersect.y >= topLeft.y - length_y && leftIntersect.y <= topLeft.y) {
                 log.debug("bad hint:  left edge, top side");
                 return true;
             }
 
             // left bottom
-            if(leftIntersect.y >=  bottomLeft.y && leftIntersect.y <= bottomLeft.y + length_y){
+            if (leftIntersect.y >= bottomLeft.y && leftIntersect.y <= bottomLeft.y + length_y) {
                 log.debug("bad hint:  left edge, bottom side");
                 return true;
             }

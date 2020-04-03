@@ -33,13 +33,14 @@ public class BadHintHider implements Hider<HalfPlaneHint> {
 
     }
 
-    /** returns a correct 45degree / 135degree hint relative to the x-axis
+    /**
+     * returns a correct 45degree / 135degree hint relative to the x-axis
      * oritinating from the player's position
      *
      * @param playerPosition
      * @return
      */
-    private HalfPlaneHint generateGenericHint(Point playerPosition){
+    private HalfPlaneHint generateGenericHint(Point playerPosition) {
         //up right facing first
         HalfPlaneHint genericHint = new HalfPlaneHint(playerPosition.getCoordinate(), new Coordinate(playerPosition.getX() + 1, playerPosition.getY() - 1));
 
