@@ -7,6 +7,7 @@ import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils;
+import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StrategyFromPaper;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.algorithm.ConvexHull;
@@ -359,8 +360,10 @@ public final class JTSUtils {
     public static boolean isBadHint(Polygon rectangle, AngleHint hint) {
         if (!(hint instanceof HalfPlaneHint)) {
             log.debug("can't be a bad hint,, only HalfPlaneHints can be bad hints");
+            EventBusUtils.LOG_LABEL_EVENT.trigger("Supplied hint is not a halfplane: Are you playing with w HalfPlaneHint hider?");
             return false;
         }
+
         if (!rectangle.isRectangle()) {
             log.debug("can't be a bad hint, specified polygon is not a rectangle");
             return false;

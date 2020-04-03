@@ -30,7 +30,6 @@ public class BadHintHider implements Hider<HalfPlaneHint> {
     @Override
     public void init(final Point searcherStartPosition) {
         treasure = JTSUtils.shuffleTreasure();
-
     }
 
     /**
