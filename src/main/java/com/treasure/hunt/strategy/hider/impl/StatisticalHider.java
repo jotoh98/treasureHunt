@@ -5,10 +5,13 @@ import com.treasure.hunt.strategy.geom.*;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StrategyFromPaper;
+import com.treasure.hunt.utils.EventBusUtils;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.geom.util.AffineTransformation;
 
@@ -69,10 +72,10 @@ public abstract class StatisticalHider {
         gameField.commitPlayerMovement(searchPath);
 
         // generate Hints
-        List<AngleHint> possibleHints = generateHints(360, searchPath.getLastPoint() );
+        List<AngleHint> possibleHints = generateHints(360, searchPath.getLastPoint());
 
         // evaluateHints --> use the GameField
-        AngleHint hint = eval(possibleHints);
+        AngleHint hint = eval(possibleHints, searchPath);
 
         // commitHint
         gameField.commitHint(hint);
@@ -84,22 +87,38 @@ public abstract class StatisticalHider {
     /**
      * Evaluates the Hints by generating some statistics on them,
      * rating the Hints, and returning the best.
+     *
      * @param hints the AngleHints to evaluate
      * @return the chosen AngleHint
      */
-    public AngleHint eval(List<AngleHint> hints) {
+    public AngleHint eval(List<AngleHint> hints, SearchPath searchPath) {
 
         List<AngleHintStatistic> stats = new ArrayList<>();
         Geometry before = this.currentPossibleArea;
         log.info("current possibleArea size " + before.getArea());
-        for(AngleHint hint: hints){
+
+        // if playing against StrategyFromPaper try giving bad hints
+        List<GeometryItem<?>> geometryItems = searchPath.getAdditional();
+        Polygon currentRectangle = null;
+
+        try {
+
+            GeometryItem<Polygon> currentRectangleGeometryItem = (GeometryItem<Polygon>) geometryItems.stream().filter(item -> item.getGeometryType().getDisplayName().equals("current rectangle")).findFirst().get();
+            currentRectangle = currentRectangleGeometryItem.getObject();
+        } catch (Exception e) {
+            EventBusUtils.LOG_LABEL_EVENT.trigger(getClass().getSimpleName() + " didn't find current rectangle. Are you playing against " + StrategyFromPaper.class.getSimpleName() + "?");
+
+        }
+
+        for (AngleHint hint : hints) {
 
             Geometry after = gameField.testHint(hint);
-            AngleHintStatistic hs = new AngleHintStatistic(hint,before,after); // autofills the absolute/relative area cutoffs
+            AngleHintStatistic hs = new AngleHintStatistic(hint, before, after); // autofills the absolute/relative area cutoffs
 
             //calc some Statistics
             fillDistanceToNormalLine(hs);
             fillDistanceToCentroid(hs);
+            JTSUtils.isBadHint(currentRectangle, hint);
 
             stats.add(hs);
             rateHint(hs);
@@ -117,7 +136,7 @@ public abstract class StatisticalHider {
 
         //add some status information
         String possibleAreaPretty = new DecimalFormat("#.00").format(returnHint.getAreaAfterHint().getArea());
-        returnHint.getHint().getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.REMAINING_POSSIBLE_AREA, possibleAreaPretty ));
+        returnHint.getHint().getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.REMAINING_POSSIBLE_AREA, possibleAreaPretty));
 
         String relAeaCutoffPretty = new DecimalFormat("#.00").format(returnHint.getRelativeAreaCutoff() * 100) + "%";
         returnHint.getHint().getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.RELATIVE_AREA_CUTOFF, relAeaCutoffPretty));
@@ -126,13 +145,14 @@ public abstract class StatisticalHider {
         returnHint.getHint().getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.DISTANCE_TREASURE_TO_CENTROID, cDistPretty));
 
         String bisectorDistPretty = new DecimalFormat("#.00").format(returnHint.getDistanceFromNormalAngleLineToTreasure());
-        returnHint.getHint().getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.DISTANCE_ANGLE_BISECTOR_TREASURE, bisectorDistPretty ));
+        returnHint.getHint().getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.DISTANCE_ANGLE_BISECTOR_TREASURE, bisectorDistPretty));
 
         return returnHint.getHint();
     }
 
     /**
      * Rates the Given Hint with a custom function, saves the result in the AngleHintStatistic - Wrapper and returns the result
+     *
      * @param ahs The AngleHint - Wrapper , in which the result is saved
      * @return the rating of the hint
      */
@@ -145,10 +165,10 @@ public abstract class StatisticalHider {
      * @param ahs the AngleHintStatistic Wrapper containing the Hint
      * @return the distance
      */
-    protected double fillDistanceToNormalLine(AngleHintStatistic ahs){
+    protected double fillDistanceToNormalLine(AngleHintStatistic ahs) {
         Coordinate center = ahs.getHint().getGeometryAngle().getCenter();
         Coordinate middlePoint = JTSUtils.middleOfAngleHint(ahs.getHint());
-        LineSegment normalLine = new LineSegment(center,middlePoint);
+        LineSegment normalLine = new LineSegment(center, middlePoint);
 
         double distToNormal = normalLine.project(treasure.getCoordinate()).distance(treasure.getCoordinate());
         ahs.setDistanceFromNormalAngleLineToTreasure(distToNormal);
@@ -162,7 +182,7 @@ public abstract class StatisticalHider {
      * @param ahs the AngleHintStatistic Wrapper containing the Hint
      * @return the distance
      */
-    protected double fillDistanceToCentroid(AngleHintStatistic ahs){
+    protected double fillDistanceToCentroid(AngleHintStatistic ahs) {
         Geometry after = ahs.getAreaAfterHint();
         Point centroid = after.getCentroid();
 
@@ -188,7 +208,8 @@ public abstract class StatisticalHider {
         return stats;
     }
 
-    /** Todo: if hint is 180degree make it an explicit HalfPlaneHint/ hack it such that StrategyFromPaper receives a halfplaneHint
+    /**
+     * Todo: if hint is 180degree make it an explicit HalfPlaneHint/ hack it such that StrategyFromPaper receives a halfplaneHint
      * Generates {@code samples } evenly spaced {@link com.treasure.hunt.strategy.hint.impl} .
      * Generated hints are not always exactly the preferred hint Size, the diverge about 3 * e-13
      *
@@ -219,7 +240,7 @@ public abstract class StatisticalHider {
 
 
         } else {
-            log.info("generating " + samples + " hints of size " +  PreferenceService.getInstance().getPreference(PreferenceService.HintSize_Preference, 180).doubleValue());
+            log.info("generating " + samples + " hints of size " + PreferenceService.getInstance().getPreference(PreferenceService.HintSize_Preference, 180).doubleValue());
 
             for (int i = 0; i < samples; i++) {
                 double rightAngle = twoPi * (((double) i) / samples);
@@ -245,7 +266,7 @@ public abstract class StatisticalHider {
         return hints;
     }
 
-    public Point getTreasureLocation(){
+    public Point getTreasureLocation() {
         return this.treasure;
     }
 
