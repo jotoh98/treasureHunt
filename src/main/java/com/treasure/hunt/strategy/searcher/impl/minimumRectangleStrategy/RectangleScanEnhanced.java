@@ -11,7 +11,6 @@ import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.Routine
 /**
  * @author Rank
  */
-@Slf4j
 public class RectangleScanEnhanced {
     MinimumRectangleStrategy strategy;
 
@@ -73,28 +72,14 @@ public class RectangleScanEnhanced {
 
     SearchPath rectangleScanMinimal(Coordinate rectangleCorner1, Coordinate rectangleCorner2,
                                     Coordinate rectangleCorner3, Coordinate rectangleCorner4, SearchPath move) {
-        //log.debug("rectangleScanMinimal of " + (rectangleCorner1) + ", " + (rectangleCorner2) + ", "
-        //+ (rectangleCorner3) + ", " + (rectangleCorner4) + ", ");
-
         TransformForAxisParallelism transformerForRectangleAxisParallelism =
                 new TransformForAxisParallelism(new LineSegment(rectangleCorner1, rectangleCorner2));
         strategy.updateVisitedPolygon(move);
-        //Polygon newAreaToScan = intersectHints(strategy.getObtainedHints(), rectangleToScanHints);
         Polygon rectanglePolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon(new Coordinate[]{
                 rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4, rectangleCorner1});
-        //Polygon newAreaToScan = reduceConvexPolygon(rectanglePolygon, strategy.getObtainedHints());
 
-        /*
-        Geometry[] polygonsToIntersect = new Geometry[(strategy.getCurrentMultiPolygon().getNumGeometries() + 1)];
-        for (int i = 0; i < strategy.getCurrentMultiPolygon().getNumGeometries(); i++) {
-            polygonsToIntersect[i] = strategy.getCurrentMultiPolygon().getGeometryN(i);
-        }
-        polygonsToIntersect[polygonsToIntersect.length - 1] = rectanglePolygon;
-        Geometry newAreaToScan = JTSUtils.GEOMETRY_FACTORY.createGeometryCollection(polygonsToIntersect);
-        newAreaToScan = UnaryUnionOp.union(newAreaToScan);*/
         Geometry newAreaToScan = strategy.getCurrentMultiPolygon().intersection(rectanglePolygon);
 
-        //Polygon newAreaToScan = intersectHints(new ArrayList<>(), rectangleToScanHints);
         if (newAreaToScan == null || newAreaToScan.getArea() == 0) {
             return move;
         }
