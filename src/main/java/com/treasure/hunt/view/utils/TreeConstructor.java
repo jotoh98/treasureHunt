@@ -18,9 +18,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineSegment;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 /**
  * Constructs an object tree primarily used for the list of turns in the game.
  * The tree is formed in a recursive way by invoking {@link #getTree(Turn)}.
@@ -115,7 +112,7 @@ public class TreeConstructor {
             CircleHint circleHint = (CircleHint) hint;
             root.getChildren().addAll(
                     createItem("center: %s", print(circleHint.getCircle().getCenter())),
-                    createItem("radius: %s", round(circleHint.getCircle().getRadius()))
+                    createItem("radius: %s", SettingsService.getInstance().getSettings().round(circleHint.getCircle().getRadius()))
             );
         } else {
             root.setValue(hint.toString());
@@ -334,25 +331,7 @@ public class TreeConstructor {
      * @return rounded coordinate string representation
      */
     private static String print(Coordinate c) {
-        return String.format("(%s, %s)", round(c.x), round(c.y));
-    }
-
-    /**
-     * Round a double to a specified decimal place.
-     *
-     * @param value double value to round
-     * @return rounded double value
-     * @see BigDecimal
-     * @see Settings#getDecimalPlaces()
-     */
-    private static double round(double value) {
-        int places = SettingsService.getInstance().getSettings().getDecimalPlaces();
-        if (places < 0) {
-            return value;
-        }
-
-        BigDecimal bd = BigDecimal.valueOf(value);
-        bd = bd.setScale(places, RoundingMode.HALF_UP);
-        return bd.doubleValue();
+        final Settings settings = SettingsService.getInstance().getSettings();
+        return String.format("(%s, %s)", settings.round(c.x), settings.round(c.y));
     }
 }
