@@ -192,6 +192,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint>, HideAndSeekSe
      * Adds their values to move
      *
      * @param move
+     * @param currentRectanglePoints
+     * @param phaseRectanglePoints
      * @return the input with the visualisations of the current phase and the search rectangle added
      */
     protected SearchPath addState(SearchPath move, Coordinate[] currentRectanglePoints, Coordinate[] phaseRectanglePoints) {
@@ -305,6 +307,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint>, HideAndSeekSe
      * @param C
      * @param D
      * @param hint
+     * @param hintLine
      * @return
      */
     protected Point[] splitRectangleHorizontally(Point A, Point B, Point C, Point D, HalfPlaneHint hint,

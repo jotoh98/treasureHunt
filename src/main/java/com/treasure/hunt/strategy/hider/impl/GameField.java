@@ -220,15 +220,15 @@ public class GameField {
      * <p>
      * The resulting area is NOT committed, therefore this method can be used to test a possibleHint for its result
      *
-     * @param hint The hint to integrate
+     * @param angleHint The hint to integrate
      * @return the resulting Geometry
      **/
-    public Geometry testHint(AngleHint hint) {
+    public Geometry testHint(AngleHint angleHint) {
         if (treasureMovedthisTurn) {
-            hint.addAdditionalItem(innerBufferItem);
+            angleHint.addAdditionalItem(innerBufferItem);
         }
 
-        GeometryAngle angle = hint.getGeometryAngle();
+        GeometryAngle angle = angleHint.getGeometryAngle();
 
         double rightAngle = Angle.angle(angle.getCenter(), angle.getRight());
         double extend = angle.extend();
@@ -260,10 +260,10 @@ public class GameField {
         GeometryItem<Geometry> circleIntersection = new GeometryItem<>(arc, GeometryType.OUTER_CIRCLE, new GeometryStyle(true, new Color(0x800080)));
 
         // now fill Hint with HelperStructs
-        hint.addAdditionalItem(circleIntersection);
-        hint.addAdditionalItem(checkedArea);
-        hint.addAdditionalItem(new GeometryItem<>(resultingPossibleArea, GeometryType.POSSIBLE_TREASURE, possibleAreaStyle));
-        hint.addAdditionalItem(boundingCircle);
+        angleHint.addAdditionalItem(circleIntersection);
+        angleHint.addAdditionalItem(checkedArea);
+        angleHint.addAdditionalItem(new GeometryItem<>(resultingPossibleArea, GeometryType.POSSIBLE_TREASURE, possibleAreaStyle));
+        angleHint.addAdditionalItem(boundingCircle);
 
         return resultingPossibleArea;
     }
@@ -297,7 +297,7 @@ public class GameField {
     /**
      * Checks all edges of the possibleArea for the Coordinate which maximizes the value of {dist(C - Player) / dist( C -Origin) }
      *
-     * @param
+     * @param minDistance
      * @return a list of pairs, containing {@link org.locationtech.jts.geom.Coordinate}s with their corresponding constant of ({@link Coordinate} C ; their associated Value of {dist(C-Player)/dist(C-Origin)} )
      */
     public List<Pair<Coordinate, Double>> getWorstPointsOnAllEdges(double minDistance) {
