@@ -7,9 +7,8 @@ import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.hint.impl.CircleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.impl.*;
+import com.treasure.hunt.utils.JTSUtils;
 import org.junit.jupiter.api.Test;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -46,7 +45,7 @@ class GameEngineTest {
      */
     @Test
     void moveOnTreasure() {
-        GameEngine gameEngine = new GameEngine(new NaiveCircleSearcher(), new RevealingHider(), new Coordinate(0, 0));
+        GameEngine gameEngine = new GameEngine(new NaiveCircleSearcher(), new RevealingHider(), JTSUtils.createPoint(0, 0));
         gameEngine.init();
         simulateSteps(gameEngine, 2);
         assertTrue(gameEngine.isFinished());
@@ -117,8 +116,7 @@ class GameEngineTest {
     void narrowMove() {
         GameEngine gameEngine = new GameEngine(new NaiveCircleSearcher(), new Hider() {
 
-            private GeometryFactory gf = new GeometryFactory();
-            private Point treasurePos = gf.createPoint(new Coordinate(1, 1));
+            private Point treasurePos = JTSUtils.createPoint(1, 1);
 
             @Override
             public Point getTreasureLocation() {
@@ -131,7 +129,7 @@ class GameEngineTest {
 
             @Override
             public Hint move(SearchPath moves) {
-                return new CircleHint(gf.createPoint(new Coordinate(0, 2)), 2);
+                return new CircleHint(JTSUtils.createPoint(0, 2), 2);
             }
         });
         gameEngine.init();
