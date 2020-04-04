@@ -432,6 +432,17 @@
     -fx-text-fill: REQUIRED_RED;
 }
 
+.check-box .box {
+    -fx-border-color: TEXT_SECONDARY;
+    -fx-border-width: 1pt;
+    -fx-border-radius: 2pt;
+    -fx-background-insets: 1pt;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: TEXT_PRIMARY;
+}
+
 /*---- Settings customization -----*/
 
 .settings-list > * {
