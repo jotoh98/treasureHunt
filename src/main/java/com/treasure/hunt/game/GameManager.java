@@ -188,21 +188,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
-     * Simulates a fixed number of moves.
-     * Breaks, when the game is finished.
-     *
-     * @param steps number of steps
-     */
-    public void move(int steps) {
-        for (int i = 0; i < steps; i++) {
-            if (gameEngine.isFinished()) {
-                break;
-            }
-            next();
-        }
-    }
-
-    /**
      * Works only for stepView &gt; 0
      */
     public void previous() {
@@ -330,18 +315,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         additional = FXCollections.observableHashMap();
         additional.putAll(hashMap);
         setBindings();
-    }
-
-    public Class<? extends Searcher> getSearcherClass() {
-        return gameEngine.getSearcher().getClass();
-    }
-
-    public Class<? extends Hider> getHiderClass() {
-        return gameEngine.getHider().getClass();
-    }
-
-    public Class<? extends GameEngine> getGameEngineClass() {
-        return gameEngine.getClass();
     }
 
     @SneakyThrows
