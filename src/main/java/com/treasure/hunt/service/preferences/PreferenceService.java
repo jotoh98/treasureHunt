@@ -9,6 +9,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Service that holds all the preferences, you can pass those to the searcher and hider. Either preferences are set via the UI or via env variables that start with PREF_ followed by the preference name.
@@ -60,7 +61,7 @@ public class PreferenceService {
         preferences.put(name, value);
     }
 
-    public void deletePreferences(String name) {
+    public void deletePreference(String name) {
         preferences.remove(name);
     }
 
@@ -70,6 +71,10 @@ public class PreferenceService {
 
     public Optional<Number> getPreference(String name) {
         return Optional.ofNullable(preferences.get(name));
+    }
+
+    public Set<Preference> getAnnotated(Class<?> annotated) {
+        return Set.of(annotated.getAnnotationsByType(Preference.class));
     }
 
 }

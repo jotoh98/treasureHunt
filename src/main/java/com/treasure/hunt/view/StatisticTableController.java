@@ -1,7 +1,6 @@
 package com.treasure.hunt.view;
 
 import com.opencsv.CSVWriter;
-import com.treasure.hunt.JavaFxApplication;
 import com.treasure.hunt.analysis.StatisticObject;
 import com.treasure.hunt.analysis.StatisticsWithId;
 import com.treasure.hunt.analysis.StatisticsWithIdsAndPath;
@@ -15,6 +14,7 @@ import com.treasure.hunt.utils.EventBusUtils;
 import com.treasure.hunt.utils.ListUtils;
 import com.treasure.hunt.view.plot.PlotController;
 import com.treasure.hunt.view.plot.PlotSettingsController;
+import com.treasure.hunt.view.widget.Widget;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -23,12 +23,10 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
@@ -327,22 +325,24 @@ public class StatisticTableController {
             throw new IllegalStateException("No searcher, hider or game engine selected.");
         }
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/plotSettings.fxml"));
-        GridPane root = fxmlLoader.load();
-        PlotSettingsController plotSettingsController = fxmlLoader.getController();
-        plotSettingsController.setData(selectedGameEngine, selectedSearcher, selectedHider);
+        final Widget<PlotSettingsController, Region> plotSettingsWidget = new Widget<>("/layout/plotSettings.fxml");
+        final Widget<PlotController, Region> plotWidget = new Widget<>("/layout/plot.fxml");
 
-        Scene scene = new Scene(root);
-        Stage stage = JavaFxApplication.createPopUpStage("Plot Settings", scene);
+        final PlotSettingsController plotSettingsController = plotSettingsWidget.getController();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/layout/plot.fxml"));
-        Parent plot = loader.load();
-        PlotController plotController = loader.getController();
+        final Stage stage = new Stage();
+
         plotSettingsController.init(settings -> {
-            plotSettingsController.errorLabel.getScene().setRoot(plot);
-            plotController.setData(settings, selectedGameEngine, selectedSearcher, selectedHider);
+            plotSettingsController.errorLabel.getScene().setRoot(plotWidget.getComponent());
+            plotWidget.getController().setData(settings, selectedGameEngine, selectedSearcher, selectedHider);
             stage.setMaximized(true);
         });
+
+        plotSettingsController.setData(selectedGameEngine, selectedSearcher, selectedHider);
+
+        Scene scene = new Scene(plotSettingsWidget.getComponent());
+        stage.setScene(scene);
+        scene.getStylesheets().add(getClass().getResource("/layout/style.css").toExternalForm());
 
         stage.show();
 
