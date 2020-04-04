@@ -11,4 +11,7 @@ public class Settings {
 
     @UserSetting(name = "Decimal places", desc = "Amount of decimal places to display")
     private int decimalPlaces = 12;
+
+    @UserSetting(name = "Round size", desc = "Amount of runs to execute between each save in mass runs")
+    private int smallRoundSize = 500;
 }
