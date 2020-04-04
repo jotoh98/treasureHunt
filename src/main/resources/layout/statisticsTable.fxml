@@ -33,7 +33,7 @@
             </children>
             <styleClass>
                 <String fx:value="toolbar"/>
-                <String fx:value="bottom"/>
+                <String fx:value="top"/>
             </styleClass>
             <opaqueInsets>
                 <Insets top="5.0"/>

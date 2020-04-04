@@ -35,11 +35,11 @@
                     </columns>
                 </TableView>
                 <VBox fx:id="popupPane" alignment="CENTER" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity"
-                      spacing="10.0" styleClass="inner_popup">
+                      spacing="10.0" styleClass="dark-bg">
                     <children>
                         <TextField fx:id="nameTextField" promptText="name"/>
                         <TextField fx:id="valueTextField" promptText="vaule (only numbers)"/>
-                        <Label fx:id="errorLabel" styleClass="error_label" text="Value is no valid Number"/>
+                        <Label fx:id="errorLabel" styleClass="bg-red" text="Value is no valid Number"/>
                         <HBox alignment="CENTER" spacing="10.0">
                             <children>
                                 <Button mnemonicParsing="false" onAction="#addCancel" text="Cancel"/>

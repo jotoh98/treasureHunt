@@ -65,6 +65,7 @@ public class WidgetBarController {
         AnchorPane.setRightAnchor(widget, 0d);
         AnchorPane.setBottomAnchor(widget, 0d);
         AnchorPane.setLeftAnchor(widget, 0d);
+        widget.getStyleClass().add("widget");
         widget.setPrefWidth(0);
         widget.setPrefHeight(0);
         (first ? firstPane : secondPane).getChildren().add(widget);
