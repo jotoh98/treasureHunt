@@ -142,16 +142,14 @@ public class GameField {
     }
 
     /**
-     * returns the possible area in which the treasure could be
-     *
-     * @return
+     * @return a {@link Polygon} containing the possible area, in which the treasure could be
      */
     public Geometry getPossibleArea() {
         return this.possibleArea.getObject();
     }
 
     /**
-     * Extends the bounding Area when the player comes close to its edge or the player has exited the bounding Area
+     * Extends the bounding area when the player comes close to its edge or the player has exited the bounding area.
      * At later stages the circle could be extended to a lineString, which only extends around the player, not the starting point
      */
     private void adaptBoundingCircle() {
@@ -287,21 +285,20 @@ public class GameField {
     }
 
     /**
-     * Returns whether the specified point lies within the possible Area,
-     * treasure could live in
-     *
-     * @param p
-     * @return
+     * @param point the {@link Point} we want to know, whether it lies in this area
+     * @return {@code true} if the specified {@link Point} {@code point} lies within the this area,
+     * {@code false} otherwise
      */
-    public boolean isWithinGameField(Point p) {
-        return boundingCircle.getObject().inside(p.getCoordinate());
+    public boolean isWithinGameField(Point point) {
+        return boundingCircle.getObject().inside(point.getCoordinate());
     }
 
 
     /**
      * Checks all edges of the possibleArea for the Coordinate which maximizes the value of {dist(C - Player) / dist( C -Origin) }
      *
-     * @return a List of {@link org.locationtech.jts.geom.Coordinate} with their corresponding Constant of (Coordinates C ; their associated Value of {dist(C-Player)/dist(C-Origin)} )
+     * @param
+     * @return a list of pairs, containing {@link org.locationtech.jts.geom.Coordinate}s with their corresponding constant of ({@link Coordinate} C ; their associated Value of {dist(C-Player)/dist(C-Origin)} )
      */
     public List<Pair<Coordinate, Double>> getWorstPointsOnAllEdges(double minDistance) {
 

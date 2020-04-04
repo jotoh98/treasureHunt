@@ -16,6 +16,9 @@ import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.down;
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.up;
 
 /**
+ * A special ase of {@link AngleHint} with 180 degrees or {@link Math#PI} radians,
+ * defining a {@link HalfPlane} in which the treasure lies
+ *
  * @author bsen
  */
 
