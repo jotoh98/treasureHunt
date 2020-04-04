@@ -5,29 +5,32 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.String?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="Infinity" minHeight="-Infinity"
-      minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1"
+<VBox xmlns:fx="http://javafx.com/fxml/1" id="statisticsTable" maxHeight="-Infinity" maxWidth="Infinity"
+      minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1"
       fx:controller="com.treasure.hunt.view.StatisticTableController">
     <children>
-        <HBox alignment="CENTER_LEFT" fillHeight="false" prefHeight="30.0" prefWidth="600.0" spacing="10.0"
-              VBox.vgrow="NEVER">
+        <HBox alignment="CENTER" fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0"
+              prefWidth="600.0" styleClass="toolbar" VBox.vgrow="ALWAYS">
             <children>
+                <Label minWidth="-Infinity" text="Rounds:"/>
                 <Spinner fx:id="roundSpinner"/>
-                <Label maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity"
-                       minWidth="-Infinity" text="rounds"/>
+                <Label minWidth="-Infinity" text="Max. steps:"/>
                 <Spinner fx:id="maxStepsSpinner"/>
-                <Label maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity"
-                       minWidth="-Infinity" text="Max steps till exit"/>
-                <Button fx:id="runMultipleButton" mnemonicParsing="false" onAction="#onSeriesRun"
-                        text="Run multiple games"/>
-                <Button fx:id="superPlot" onAction="#onPlot" text="Create custom plot"/>
+                <Button fx:id="runMultipleButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSeriesRun"
+                        text="Run"/>
 
-                <CoinProgress fx:id="progressIndicator" progress="0.0" visible="false" prefHeight="30" prefWidth="30"/>
-                <Button mnemonicParsing="false" onAction="#onSeriesLoad" text="Load series file"/>
-                <HBox alignment="TOP_RIGHT" spacing="8.0" HBox.hgrow="ALWAYS">
+                <CoinProgress fx:id="progressIndicator" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                              minWidth="-Infinity" prefHeight="30" prefWidth="30.0" progress="0.0" visible="false">
+                    <HBox.margin>
+                        <Insets right="20.0"/>
+                    </HBox.margin>
+                </CoinProgress>
+                <HBox alignment="CENTER_RIGHT" spacing="10.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Button mnemonicParsing="false" onAction="#exportCSV" text="CSV Export"/>
-                        <Button mnemonicParsing="false" onAction="#copyClipboard" text="📋 Copy Table"/>
+                        <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#onSeriesLoad" text="Load"/>
+                        <Button fx:id="superPlot" minWidth="-Infinity" onAction="#onPlot" text="Plot"/>
+                        <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#exportCSV" text="Export CSV"/>
+                        <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#copyClipboard" text="Copy"/>
                     </children>
                 </HBox>
             </children>
@@ -36,7 +39,7 @@
                 <String fx:value="top"/>
             </styleClass>
             <opaqueInsets>
-                <Insets top="5.0"/>
+                <Insets/>
             </opaqueInsets>
         </HBox>
         <SplitPane dividerPositions="0.4925575101488498" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0"
