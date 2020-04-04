@@ -114,8 +114,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         Hider newHider = hiderClass.getDeclaredConstructor().newInstance();
 
         this.gameEngine = gameEngineClass
-                .getDeclaredConstructor(Searcher.class, Hider.class, Coordinate.class)
-                .newInstance(newSearcher, newHider, new Coordinate(0, 0));
+                .getDeclaredConstructor(Searcher.class, Hider.class, Point.class)
+                .newInstance(newSearcher, newHider, JTSUtils.createPoint(0, 0));
 
         setProperties();
         setBindings();
@@ -187,21 +187,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         }
         if (earlyExit()) {
             finishedProperty.setValue(true);
-        }
-    }
-
-    /**
-     * Simulates a fixed number of moves.
-     * Breaks, when the game is finished.
-     *
-     * @param steps number of steps
-     */
-    public void move(int steps) {
-        for (int i = 0; i < steps; i++) {
-            if (gameEngine.isFinished()) {
-                break;
-            }
-            next();
         }
     }
 
@@ -338,18 +323,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         additional = FXCollections.observableHashMap();
         additional.putAll(hashMap);
         setBindings();
-    }
-
-    public Class<? extends Searcher> getSearcherClass() {
-        return gameEngine.getSearcher().getClass();
-    }
-
-    public Class<? extends Hider> getHiderClass() {
-        return gameEngine.getHider().getClass();
-    }
-
-    public Class<? extends GameEngine> getGameEngineClass() {
-        return gameEngine.getClass();
     }
 
     @SneakyThrows

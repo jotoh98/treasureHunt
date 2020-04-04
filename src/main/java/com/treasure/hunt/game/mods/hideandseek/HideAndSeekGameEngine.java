@@ -6,7 +6,7 @@ import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.Requires;
-import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Point;
 
 /**
  * In this modification, the hider may reset the
@@ -21,8 +21,8 @@ public class HideAndSeekGameEngine extends GameEngine {
         super(searcher, hider);
     }
 
-    public HideAndSeekGameEngine(Searcher searcher, Hider hider, Coordinate coordinate) {
-        super(searcher, hider, coordinate);
+    public HideAndSeekGameEngine(Searcher searcher, Hider hider, Point point) {
+        super(searcher, hider, point);
     }
 
     /**
