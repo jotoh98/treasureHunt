@@ -46,10 +46,14 @@ public class PolygonStrategy
     @Override
     public SearchPath move(AngleHint hint) {
         hints.add(hint.getGeometryAngle().copy());
+
+        Envelope envelope = searchArea.getEnvelopeInternal();
         Geometry polyHint = createPolygonHintFrom(hint.getGeometryAngle());
-        if ((searchArea.getArea() < Math.pow(2, 4) || searchArea.getArea() / searchArea.getLength() < 2) && currentSearchFieldDim < Math.pow(2, 20)) {
+        if ((searchArea.getArea() < Math.pow(2, 4) || envelope.getWidth() < 2 || envelope.getHeight() < 2)) {
             extendSearchSquare();
-            if (searchArea.getArea() / searchArea.getLength() < 1) {
+            envelope = searchArea.getEnvelopeInternal();
+            if (envelope.getWidth() < 1.1 || envelope.getHeight() < 1.1) {
+                extendSearchSquare();
                 return scanCompleteSearchArea();
             }
         }
@@ -71,6 +75,7 @@ public class PolygonStrategy
         for (Coordinate vertices : searchArea.getCoordinates()) {
             currentPath.addPoint(JTSUtils.createPoint(vertices));
         }
+        currentPosition = currentPath.getLastPoint();
         return currentPath;
     }
 
@@ -131,26 +136,16 @@ public class PolygonStrategy
      * @return the point the instance will next head to
      */
     public Point nextPosition() {
-        double length = searchArea.getInteriorPoint().getCoordinate().distance(new Coordinate(0, 0));
-        for (double currentScale = 1; currentScale < length; currentScale += length / 20) {
-            Point point = JTSUtils.createPoint(
-                    JTSUtils.coordinateInDistance(
-                            currentPosition.getCoordinate(),
-                            searchArea.getInteriorPoint().getCoordinate(),
-                            currentScale
-                    )
-            );
-            if (searchArea.contains(point)) {
-                return point;
-            }
-        }
-        return searchArea.getInteriorPoint();
+        return JTSUtils.createPoint(JTSUtils.coordinateInDistance(currentPosition.getCoordinate(), searchArea.getInteriorPoint().getCoordinate(), 1));
     }
 
     /**
      * extends the current search area by creating a square, doubled dimension of previous square, and intersecting with every previous hint
      */
     public void extendSearchSquare() {
+        if (currentSearchFieldDim >= Math.pow(2, 19)) {
+            return;
+        }
         currentSearchFieldDim = 2 * currentSearchFieldDim;
         Geometry nextSquare = createSquare(currentSearchFieldDim);
         nextSquare = intersectWithPrevious(hints, nextSquare);
