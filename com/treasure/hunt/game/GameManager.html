@@ -246,7 +246,7 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#latestStepViewed()">latestStepViewed</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isLatestStepViewed()">isLatestStepViewed</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i10" class="altColor">
@@ -376,16 +376,6 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <div class="block">Works only for stepView &gt; 0</div>
 </li>
 </ul>
-<a id="beat(java.lang.Integer)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>beat</h4>
-<pre class="methodSignature">public&nbsp;java.util.concurrent.CompletableFuture&lt;java.lang.Void&gt;&nbsp;beat&#8203;(java.lang.Integer&nbsp;maxSteps)</pre>
-<div class="block">This simulates the whole game, until its finished.</div>
-</li>
-</ul>
 <a id="stopBeat()">
 <!--   -->
 </a>
@@ -394,32 +384,6 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <h4>stopBeat</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;stopBeat()</pre>
 <div class="block">Stops the Thread from beating.</div>
-</li>
-</ul>
-<a id="latestStepViewed()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>latestStepViewed</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;latestStepViewed()</pre>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd><code>true</code>, if the shown step is the most up to date one. <code>false</code>, otherwise.</dd>
-</dl>
-</li>
-</ul>
-<a id="getVisibleTurns()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getVisibleTurns</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="Turn.html" title="class in com.treasure.hunt.game">Turn</a>&gt;&nbsp;getVisibleTurns()</pre>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>only viewed moves</dd>
-</dl>
 </li>
 </ul>
 <a id="beat(javafx.beans.property.ReadOnlyObjectProperty)">
@@ -434,6 +398,16 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="#beat(javafx.beans.property.ReadOnlyObjectProperty,java.lang.Boolean,java.lang.Integer)"><code>beat(ReadOnlyObjectProperty, Boolean, Integer)</code></a></dd>
 </dl>
+</li>
+</ul>
+<a id="beat(java.lang.Integer)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>beat</h4>
+<pre class="methodSignature">public&nbsp;java.util.concurrent.CompletableFuture&lt;java.lang.Void&gt;&nbsp;beat&#8203;(java.lang.Integer&nbsp;maxSteps)</pre>
+<div class="block">This simulates the whole game, until its finished.</div>
 </li>
 </ul>
 <a id="beat(javafx.beans.property.ReadOnlyObjectProperty,java.lang.Boolean,java.lang.Integer)">
@@ -451,6 +425,77 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <dd><code>delay</code> - time between each move</dd>
 <dd><code>executeNextOnJavaFxThread</code> - if set to true the next call is made on javafx thread that is important when UI is attached to the GameManager,
                                   if it false the delay parameter is ignored</dd>
+</dl>
+</li>
+</ul>
+<a id="getVisibleGeometries()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getVisibleGeometries</h4>
+<pre class="methodSignature">public&nbsp;java.util.stream.Stream&lt;<a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt;&nbsp;getVisibleGeometries()</pre>
+<div class="block">Get visible geometry items.
+ The visible <a href="Turn.html" title="class in com.treasure.hunt.game"><code>Turn</code></a>s determine which <a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryItem</code></a> are visible.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>stream of visible geometry items</dd>
+</dl>
+</li>
+</ul>
+<a id="getVisibleTurns()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getVisibleTurns</h4>
+<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="Turn.html" title="class in com.treasure.hunt.game">Turn</a>&gt;&nbsp;getVisibleTurns()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>only viewed moves</dd>
+</dl>
+</li>
+</ul>
+<a id="isLatestStepViewed()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isLatestStepViewed</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isLatestStepViewed()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code>, if the shown step is the most up to date one. <code>false</code>, otherwise.</dd>
+</dl>
+</li>
+</ul>
+<a id="addAdditional(java.lang.String,com.treasure.hunt.strategy.geom.GeometryItem)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addAdditional</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;addAdditional&#8203;(java.lang.String&nbsp;key,
+                          <a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&nbsp;item)</pre>
+<div class="block">Add an additional <a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryItem</code></a> to the rendering queue.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - name of the additional item</dd>
+<dd><code>item</code> - the additional item</dd>
+</dl>
+</li>
+</ul>
+<a id="removeAdditional(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>removeAdditional</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;removeAdditional&#8203;(java.lang.String&nbsp;key)</pre>
+<div class="block">Remove an additional <a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryItem</code></a> from the rendering queue.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - name of the additional item to be removed</dd>
 </dl>
 </li>
 </ul>
@@ -492,51 +537,6 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code>copy</code>&nbsp;in interface&nbsp;<code>com.esotericsoftware.kryo.KryoCopyable&lt;<a href="GameManager.html" title="class in com.treasure.hunt.game">GameManager</a>&gt;</code></dd>
-</dl>
-</li>
-</ul>
-<a id="addAdditional(java.lang.String,com.treasure.hunt.strategy.geom.GeometryItem)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>addAdditional</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;addAdditional&#8203;(java.lang.String&nbsp;key,
-                          <a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&nbsp;item)</pre>
-<div class="block">Add an additional <a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryItem</code></a> to the rendering queue.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>key</code> - name of the additional item</dd>
-<dd><code>item</code> - the additional item</dd>
-</dl>
-</li>
-</ul>
-<a id="removeAdditional(java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>removeAdditional</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;removeAdditional&#8203;(java.lang.String&nbsp;key)</pre>
-<div class="block">Remove an additional <a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryItem</code></a> from the rendering queue.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>key</code> - name of the additional item to be removed</dd>
-</dl>
-</li>
-</ul>
-<a id="getVisibleGeometries()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getVisibleGeometries</h4>
-<pre class="methodSignature">public&nbsp;java.util.stream.Stream&lt;<a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt;&nbsp;getVisibleGeometries()</pre>
-<div class="block">Get visible geometry items.
- The visible <a href="Turn.html" title="class in com.treasure.hunt.game"><code>Turn</code></a>s determine which <a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryItem</code></a> are visible.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>stream of visible geometry items</dd>
 </dl>
 </li>
 </ul>
