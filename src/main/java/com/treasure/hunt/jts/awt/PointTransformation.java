@@ -27,9 +27,9 @@ import java.awt.geom.Point2D;
 @NoArgsConstructor
 public class PointTransformation implements org.locationtech.jts.awt.PointTransformation {
 
-    private static final double INITIAL_SCALE = 25.0;
-    public static final double MIN_SCALE = 1e-4;
-    public static final double MAX_SCALE = 10;
+    public static final double INITIAL_SCALE = 25.0;
+    public static final double MIN_SCALE = 1e-2;
+    public static final double MAX_SCALE = 3;
 
     /**
      * The scale translates the source coordinates multiplicative in {@link PointTransformation#transform(Coordinate)}.
