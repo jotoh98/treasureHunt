@@ -154,16 +154,21 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>javafx.scene.canvas.Canvas</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#navigatorCanvas">navigatorCanvas</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>javafx.scene.control.Slider</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#slider">slider</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>javafx.scene.control.TextField</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#textField">textField</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>javafx.scene.layout.VBox</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#wrapper">wrapper</a></span></code></th>
 <td class="colLast">&nbsp;</td>
@@ -209,7 +214,8 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#init(com.treasure.hunt.view.CanvasController)">init</a></span>&#8203;(<a href="../CanvasController.html" title="class in com.treasure.hunt.view">CanvasController</a>&nbsp;canvasController)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#init(javafx.beans.property.ObjectProperty,com.treasure.hunt.view.CanvasController)">init</a></span>&#8203;(javafx.beans.property.ObjectProperty&lt;<a href="../../game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a>&gt;&nbsp;gameManagerProperty,
+    <a href="../CanvasController.html" title="class in com.treasure.hunt.view">CanvasController</a>&nbsp;canvasController)</code></th>
 <td class="colLast">
 <div class="block">Bind the transformation properties to the slider and text field.</div>
 </td>
@@ -266,10 +272,19 @@ extends java.lang.Object</pre>
 <a id="wrapper">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>wrapper</h4>
 <pre>public&nbsp;javafx.scene.layout.VBox wrapper</pre>
+</li>
+</ul>
+<a id="navigatorCanvas">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>navigatorCanvas</h4>
+<pre>public&nbsp;javafx.scene.canvas.Canvas navigatorCanvas</pre>
 </li>
 </ul>
 </li>
@@ -311,13 +326,14 @@ extends java.lang.Object</pre>
 <div class="block">Behaviour of user entering a scale.</div>
 </li>
 </ul>
-<a id="init(com.treasure.hunt.view.CanvasController)">
+<a id="init(javafx.beans.property.ObjectProperty,com.treasure.hunt.view.CanvasController)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>init</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;init&#8203;(<a href="../CanvasController.html" title="class in com.treasure.hunt.view">CanvasController</a>&nbsp;canvasController)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;init&#8203;(javafx.beans.property.ObjectProperty&lt;<a href="../../game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a>&gt;&nbsp;gameManagerProperty,
+                 <a href="../CanvasController.html" title="class in com.treasure.hunt.view">CanvasController</a>&nbsp;canvasController)</pre>
 <div class="block">Bind the transformation properties to the slider and text field.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
