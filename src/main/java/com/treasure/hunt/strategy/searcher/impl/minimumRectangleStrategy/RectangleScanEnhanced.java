@@ -2,7 +2,6 @@ package com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy;
 
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.math.Vector2D;
 
