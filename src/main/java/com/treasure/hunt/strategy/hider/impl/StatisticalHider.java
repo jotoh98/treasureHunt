@@ -2,6 +2,7 @@ package com.treasure.hunt.strategy.hider.impl;
 
 import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.geom.*;
+import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
  * How these hints are rated is up to the {@link StatisticalHider} subclasses by implementing the {@link #rateHint(AngleHintStatistic)} method
  */
 @Slf4j
-public abstract class StatisticalHider {
+public abstract class StatisticalHider implements Hider<AngleHint> {
 
     public static final String getRelativeAreaCutoffWeight_Preference = "relative area cutoff weight";
     public static final String DistanceFromNormalAngleLineToTreasureWeight_Preference = "distance to angle bisector line weight";
