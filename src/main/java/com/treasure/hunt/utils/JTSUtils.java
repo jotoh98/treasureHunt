@@ -11,7 +11,6 @@ import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StrategyFromPa
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.algorithm.ConvexHull;
-import org.locationtech.jts.algorithm.RobustLineIntersector;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.math.Vector2D;
 
@@ -405,12 +404,13 @@ public final class JTSUtils {
      * this function can be called to determine if the specified hint is a bad Hint
      * defined be the paper in the context of the specified rectangle
      *
-     * @param rectangle the rectangle as polygon
-     * @param hint      the hint
-     * @return
+     * @param rectangle the rectangle as {@link Polygon}
+     * @param angleHint the {@link AngleHint}
+     * @return {@code true} if the given {@code angleHint} is a bad hint, related on the {@link StrategyFromPaper}.
+     * {@code false} otherwise.
      */
-    public static boolean isBadHint(Polygon rectangle, AngleHint hint) {
-        if (!(hint instanceof HalfPlaneHint)) {
+    public static boolean isBadHint(Polygon rectangle, AngleHint angleHint) {
+        if (!(angleHint instanceof HalfPlaneHint)) {
             log.debug("can't be a bad hint,, only HalfPlaneHints can be bad hints");
             EventBusUtils.LOG_LABEL_EVENT.trigger("Supplied hint is not a halfplane: Are you playing with a HalfPlaneHint hider?");
             return false;
@@ -428,8 +428,8 @@ public final class JTSUtils {
         }
         Coordinate centroid = GeometricUtils.centerOfRectangle(rectangleCoordinates);
         log.trace("centroid" + centroid);
-        log.trace("player" + hint.getGeometryAngle().getCenter());
-        if (!centroid.equals2D(hint.getGeometryAngle().getCenter())) {
+        log.trace("player" + angleHint.getGeometryAngle().getCenter());
+        if (!centroid.equals2D(angleHint.getGeometryAngle().getCenter())) {
             log.debug("can't be a bad hint, player is not in center of current rectangle");
             return false;
         }
@@ -442,7 +442,7 @@ public final class JTSUtils {
         // one of them has the intersection, sometimes both if the Line goes on the diagonal of the rectangle
         LineSegment top = new LineSegment(topLeft, topRight);
         LineSegment left = new LineSegment(bottomLeft, topLeft);
-        LineSegment hintLineSegment = new LineSegment(hint.getGeometryAngle().getCenter(), hint.getGeometryAngle().getRight());
+        LineSegment hintLineSegment = new LineSegment(angleHint.getGeometryAngle().getCenter(), angleHint.getGeometryAngle().getRight());
 
         double length_y = 1; // distance y from paper paper (page 5)
 
