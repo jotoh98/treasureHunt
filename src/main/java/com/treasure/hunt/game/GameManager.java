@@ -131,53 +131,12 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         }
     }
 
-    private void setProperties() {
-        viewIndex = new SimpleIntegerProperty(0);
-        finishedProperty = new SimpleBooleanProperty(false);
-    }
-
-    private void setBindings() {
-        latestStepViewedBinding = Bindings.createBooleanBinding(() -> turns.size() - 1 == viewIndex.get(), viewIndex, turns);
-        stepForwardImpossibleBinding = finishedProperty.and(latestStepViewedBinding);
-        statistics = Bindings.createObjectBinding(() -> gameEngine.getStatistics().calculate(getVisibleTurns(), gameEngine.isFinished()), viewIndex);
-        stepBackwardImpossibleBinding = viewIndex.isEqualTo(0);
-        lastMoveBinding = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()), viewIndex, turns);
-        lastTreasureBindings = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()).getTreasureLocation(), viewIndex, turns);
-        lastPointBinding = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()).getSearchPath().getLastPoint(), viewIndex, turns);
-        moveSizeBinding = Bindings.size(turns);
-        statusMessageItemsBinding = Bindings.createObjectBinding(this::getStatusMessageItems, viewIndex);
-    }
-
-    @NotNull
-    private List<StatusMessageItem> getStatusMessageItems() {
-        Map<StatusMessageType, List<StatusMessageItem>> statusByType = getVisibleTurns().stream()
-                .flatMap(turn -> Stream.of(turn.getHint(), turn.getSearchPath()))
-                .flatMap(hintAndMovement -> hintAndMovement == null ? Stream.empty() : hintAndMovement.getStatusMessageItemsToBeAdded().stream())
-                .collect(Collectors.groupingBy(StatusMessageItem::getStatusMessageType));
-
-        return statusByType.keySet()
-                .stream()
-                .flatMap(type -> {
-                    List<StatusMessageItem> itemsOfType = statusByType.get(type);
-                    if (!type.isOverride()) {
-                        return itemsOfType.stream();
-                    } else {
-                        return Stream.of(itemsOfType.get(itemsOfType.size() - 1));
-                    }
-                })
-                .filter(statusMessageItem -> getVisibleTurns().stream().noneMatch(turn ->
-                        turn.getHint() != null && turn.getHint().getStatusMessageItemsToBeRemoved().contains(statusMessageItem) ||
-                                turn.getSearchPath() != null && turn.getSearchPath().getStatusMessageItemsToBeRemoved().contains(statusMessageItem)
-                ))
-                .collect(Collectors.toList());
-    }
-
     /**
      * Works only for stepSim &le; stepView 
      */
     public void next() {
         if (viewIndex.get() < turns.size()) {
-            if (latestStepViewed()) {
+            if (isLatestStepViewed()) {
                 turns.add(gameEngine.move());
             }
             viewIndex.set(viewIndex.get() + 1);
@@ -198,15 +157,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         if (viewIndex.get() > 0) {
             viewIndex.set(viewIndex.get() - 1);
         }
-    }
-
-    /**
-     * This simulates the whole game, until its finished.
-     *
-     * @param maxSteps the maximum number of steps, which will be simulated.
-     */
-    public CompletableFuture<Void> beat(Integer maxSteps) {
-        return beat(new SimpleObjectProperty<>(0d), false, maxSteps);
     }
 
     /**
@@ -240,6 +190,15 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      */
     public CompletableFuture<Void> beat(ReadOnlyObjectProperty<Double> delay) {
         return beat(delay, true, null);
+    }
+
+    /**
+     * This simulates the whole game, until its finished.
+     *
+     * @param maxSteps the maximum number of steps, which will be simulated.
+     */
+    public CompletableFuture<Void> beat(Integer maxSteps) {
+        return beat(new SimpleObjectProperty<>(0d), false, maxSteps);
     }
 
     /**
@@ -297,6 +256,58 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
+     * Get visible geometry items.
+     * The visible {@link Turn}s determine which {@link GeometryItem} are visible.
+     *
+     * @return stream of visible geometry items
+     */
+    public Stream<GeometryItem<?>> getVisibleGeometries() {
+        List<GeometryItem<?>> subListGeometries = new ArrayList<>();
+
+        subListGeometries.add(new GeometryItem<>(turns.get(0).getSearchPath().getFirstPoint(), GeometryType.WAY_POINT));
+
+        turns.subList(0, viewIndex.get() + 1)
+                .forEach(element -> subListGeometries.addAll(element.getGeometryItems()));
+
+        final Stream<GeometryItem<?>> items = Stream.concat(subListGeometries.stream(), additional.values().stream());
+
+        return GeometryPipeline.pipe(items);
+    }
+
+    /**
+     * @return only viewed moves
+     */
+    public List<Turn> getVisibleTurns() {
+        return turns.subList(0, viewIndex.get() + 1);
+    }
+
+    /**
+     * @return {@code true}, if the shown step is the most up to date one. {@code false}, otherwise.
+     */
+    public boolean isLatestStepViewed() {
+        return turns.size() - 1 == viewIndex.get();
+    }
+
+    /**
+     * Add an additional {@link GeometryItem} to the rendering queue.
+     *
+     * @param key  name of the additional item
+     * @param item the additional item
+     */
+    public void addAdditional(String key, GeometryItem<?> item) {
+        additional.put(key, item);
+    }
+
+    /**
+     * Remove an additional {@link GeometryItem} from the rendering queue.
+     *
+     * @param key name of the additional item to be removed
+     */
+    public void removeAdditional(String key) {
+        additional.remove(key);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -346,45 +357,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         return gameManager;
     }
 
-
-    /**
-     * Add an additional {@link GeometryItem} to the rendering queue.
-     *
-     * @param key  name of the additional item
-     * @param item the additional item
-     */
-    public void addAdditional(String key, GeometryItem<?> item) {
-        additional.put(key, item);
-    }
-
-    /**
-     * Remove an additional {@link GeometryItem} from the rendering queue.
-     *
-     * @param key name of the additional item to be removed
-     */
-    public void removeAdditional(String key) {
-        additional.remove(key);
-    }
-
-    /**
-     * Get visible geometry items.
-     * The visible {@link Turn}s determine which {@link GeometryItem} are visible.
-     *
-     * @return stream of visible geometry items
-     */
-    public Stream<GeometryItem<?>> getVisibleGeometries() {
-        List<GeometryItem<?>> subListGeometries = new ArrayList<>();
-
-        subListGeometries.add(new GeometryItem<>(turns.get(0).getSearchPath().getFirstPoint(), GeometryType.WAY_POINT));
-
-        turns.subList(0, viewIndex.get() + 1)
-                .forEach(element -> subListGeometries.addAll(element.getGeometryItems()));
-
-        final Stream<GeometryItem<?>> items = Stream.concat(subListGeometries.stream(), additional.values().stream());
-
-        return GeometryPipeline.pipe(items);
-    }
-
     /**
      * Whether the game exits early because of the search being stuck in a specified circular area.
      *
@@ -420,5 +392,46 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
             turns.get(turns.size() - 1).getSearchPath().addAdditionalItem(new GeometryItem<>(JTSUtils.createPoint(origin), GeometryType.NO_TREASURE, new GeometryStyle(true, Color.CYAN, Color.red)));
         }
         return isEarlyExit;
+    }
+
+    private void setProperties() {
+        viewIndex = new SimpleIntegerProperty(0);
+        finishedProperty = new SimpleBooleanProperty(false);
+    }
+
+    private void setBindings() {
+        latestStepViewedBinding = Bindings.createBooleanBinding(() -> turns.size() - 1 == viewIndex.get(), viewIndex, turns);
+        stepForwardImpossibleBinding = finishedProperty.and(latestStepViewedBinding);
+        statistics = Bindings.createObjectBinding(() -> gameEngine.getStatistics().calculate(getVisibleTurns(), gameEngine.isFinished()), viewIndex);
+        stepBackwardImpossibleBinding = viewIndex.isEqualTo(0);
+        lastMoveBinding = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()), viewIndex, turns);
+        lastTreasureBindings = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()).getTreasureLocation(), viewIndex, turns);
+        lastPointBinding = Bindings.createObjectBinding(() -> turns.get(viewIndex.get()).getSearchPath().getLastPoint(), viewIndex, turns);
+        moveSizeBinding = Bindings.size(turns);
+        statusMessageItemsBinding = Bindings.createObjectBinding(this::getStatusMessageItems, viewIndex);
+    }
+
+    @NotNull
+    private List<StatusMessageItem> getStatusMessageItems() {
+        Map<StatusMessageType, List<StatusMessageItem>> statusByType = getVisibleTurns().stream()
+                .flatMap(turn -> Stream.of(turn.getHint(), turn.getSearchPath()))
+                .flatMap(hintAndMovement -> hintAndMovement == null ? Stream.empty() : hintAndMovement.getStatusMessageItemsToBeAdded().stream())
+                .collect(Collectors.groupingBy(StatusMessageItem::getStatusMessageType));
+
+        return statusByType.keySet()
+                .stream()
+                .flatMap(type -> {
+                    List<StatusMessageItem> itemsOfType = statusByType.get(type);
+                    if (!type.isOverride()) {
+                        return itemsOfType.stream();
+                    } else {
+                        return Stream.of(itemsOfType.get(itemsOfType.size() - 1));
+                    }
+                })
+                .filter(statusMessageItem -> getVisibleTurns().stream().noneMatch(turn ->
+                        turn.getHint() != null && turn.getHint().getStatusMessageItemsToBeRemoved().contains(statusMessageItem) ||
+                                turn.getSearchPath() != null && turn.getSearchPath().getStatusMessageItemsToBeRemoved().contains(statusMessageItem)
+                ))
+                .collect(Collectors.toList());
     }
 }
