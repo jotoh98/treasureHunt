@@ -47,6 +47,16 @@
     -fx-background-color: BACKGROUND_COLOR;
 }
 
+.combo-box .text-field {
+    -fx-border-width: 0;
+    -fx-padding: 0 5px;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+
 .toolbar {
     -fx-padding: 0 7pt;
     -fx-border-color: BORDER_COLOR;
@@ -414,4 +424,17 @@
     -fx-border-width: 1pt 0 0 0;
     -fx-border-color: LIGHTER_BACKGROUND;
     -fx-padding: 10pt;
+}
+
+.dark-bg {
+    -fx-background-color: BACKGROUND_COLOR;
+    -fx-text-fill: white;
+}
+
+.dark-bg * {
+    -fx-text-fill: inherit;
+}
+
+.text-red {
+    -fx-text-fill: red;
 }

@@ -40,7 +40,7 @@ public class PlotController {
         for (double currentStatisticValue = settings.getLowerBoundValue(); currentStatisticValue < settings.getUpperBoundValue(); currentStatisticValue += settings.getStepSizeValue(), step += 1) {
 
             log.info("Currently at {}", step);
-            PreferenceService.getInstance().putPreference(settings.getPreference().name(), currentStatisticValue);
+            PreferenceService.getInstance().putPreference(settings.getPreferenceName(), currentStatisticValue);
             GameManager newGameManager = new GameManager(selectedSearcher, selectedHider, selectedGameEngine);
 
             StatisticsWithIdsAndPath currentStatistics = SeriesService.getInstance().runSeriesAndSaveToFile(settings.getSeriesAccuracyValue(), newGameManager, a -> {
@@ -58,7 +58,7 @@ public class PlotController {
 
     public void setData(PlotSettingsController.Settings settings, Class<? extends GameEngine> selectedGameEngine, Class<? extends Searcher> selectedSearcher, Class<? extends Hider> selectedHider) {
         lineChart.setTitle(selectedSearcher.getSimpleName());
-        xAxis.setLabel(settings.getPreference().name());
+        xAxis.setLabel(settings.getPreferenceName());
         yAxis.setLabel(settings.getType().name() + "_OF_" + settings.getStatisticInfo().getName());
         CompletableFuture.supplyAsync(() -> {
             try {
