@@ -184,6 +184,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      * This simulates the whole game, until its finished.
      *
      * @param maxSteps the maximum number of steps, which will be simulated.
+     * @return the {@link CompletableFuture} executing, running {@code maxSteps} times {@link GameManager#next()}.
      */
     public CompletableFuture<Void> beat(Integer maxSteps) {
         return beat(new SimpleObjectProperty<>(0d), false, maxSteps);
@@ -195,6 +196,9 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      * @param delay                     time between each move
      * @param executeNextOnJavaFxThread if set to true the next call is made on javafx thread that is important when UI is attached to the GameManager,
      *                                  if it false the delay parameter is ignored
+     * @param maxSteps                  the number of time, the beating thread should execute {@link GameManager#next()}. Could be {@code null}.
+     * @return the {@link CompletableFuture} thread, executing {@link GameManager#next()} {@code maxSteps} times, if its not {@code null},
+     * each timeinterval of {@code delay}, if {@code executeNextOnJavaFxThread} is {@code true}.
      */
     public CompletableFuture<Void> beat(ReadOnlyObjectProperty<Double> delay, Boolean executeNextOnJavaFxThread, Integer maxSteps) {
         CompletableFuture<Void> completableFuture = new CompletableFuture<>();
