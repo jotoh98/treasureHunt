@@ -1,11 +1,12 @@
 package com.treasure.hunt.view.widget;
 
 import com.treasure.hunt.game.GameEngine;
-import com.treasure.hunt.service.preferences.Preference;
+import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import javafx.beans.InvalidationListener;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -71,32 +72,33 @@ public class PreferencesWidgetController {
     }
 
     public void init(
-            ReadOnlyObjectProperty<Class<? extends Searcher>> selectedItemProperty,
-            ReadOnlyObjectProperty<Class<? extends Hider>> selectedItemProperty1,
-            ReadOnlyObjectProperty<Class<? extends GameEngine>> selectedItemProperty2
+            ReadOnlyObjectProperty<Class<? extends Searcher>> selectedSearcher,
+            ReadOnlyObjectProperty<Class<? extends Hider>> selectedHider,
+            ReadOnlyObjectProperty<Class<? extends GameEngine>> selectedEngine,
+            ObjectProperty<GameManager> gameManagerProperty
     ) {
         HashMap<String, Number> searcherPreferences = new HashMap<>();
         HashMap<String, Number> hiderPreferences = new HashMap<>();
+        HashMap<String, Number> enginePreferences = new HashMap<>();
         HashMap<String, Number> managerPreferences = new HashMap<>();
 
-        selectedItemProperty.addListener((observable, oldValue, newValue) -> updatePreferences(searcherPreferences, oldValue, newValue));
-        selectedItemProperty1.addListener((observable, oldValue, newValue) -> updatePreferences(hiderPreferences, oldValue, newValue));
-        selectedItemProperty2.addListener((observable, oldValue, newValue) -> updatePreferences(managerPreferences, oldValue, newValue));
+        selectedSearcher.addListener((observable, oldValue, newValue) -> updatePreferences(searcherPreferences, oldValue, newValue));
+        selectedHider.addListener((observable, oldValue, newValue) -> updatePreferences(hiderPreferences, oldValue, newValue));
+        selectedEngine.addListener((observable, oldValue, newValue) -> updatePreferences(enginePreferences, oldValue, newValue));
+        gameManagerProperty.addListener(observable -> updatePreferences(managerPreferences, null, GameManager.class));
     }
 
     private void updatePreferences(HashMap<String, Number> associated, Class<?> deselected, Class<?> selected) {
         if (selected == null || selected == deselected) {
             return;
         }
-
         final PreferenceService service = PreferenceService.getInstance();
-        associated.keySet().forEach(service::deletePreferences);
+        associated.keySet().forEach(service::deletePreference);
         associated.clear();
-
-        for (Preference preference : selected.getAnnotationsByType(Preference.class)) {
+        service.getAnnotated(selected).forEach(preference -> {
             associated.put(preference.name(), preference.value());
-        }
-        associated.forEach(service::putPreference);
+            service.putPreference(preference.name(), preference.value());
+        });
     }
 
     public void addItem() {
@@ -113,7 +115,7 @@ public class PreferencesWidgetController {
             return;
         }
         PreferenceService.getInstance()
-                .deletePreferences(selectedItem.getKey());
+                .deletePreference(selectedItem.getKey());
     }
 
     public void addCancel() {

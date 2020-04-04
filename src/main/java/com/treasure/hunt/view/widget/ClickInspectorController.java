@@ -5,7 +5,6 @@ import com.treasure.hunt.utils.EventBusUtils;
 import com.treasure.hunt.view.utils.TreeConstructor;
 import javafx.scene.control.TreeView;
 import lombok.extern.slf4j.Slf4j;
-import org.locationtech.jts.geom.Geometry;
 
 /**
  * @author axel1200
@@ -20,7 +19,7 @@ public class ClickInspectorController {
         EventBusUtils.GEOMETRY_ITEM_SELECTED.addListener(this::itemSelected);
     }
 
-    private void itemSelected(GeometryItem<? extends Geometry> geometrySelected) {
+    private void itemSelected(GeometryItem<?> geometrySelected) {
         if (geometrySelected == null) {
             inspectorView.setShowRoot(true);
             inspectorView.setRoot(TreeConstructor.createItem("Nothing selected"));

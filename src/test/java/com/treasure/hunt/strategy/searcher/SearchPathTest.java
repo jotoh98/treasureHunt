@@ -37,7 +37,7 @@ public class SearchPathTest {
         Point point7 = JTSUtils.createPoint(random.nextInt(), random.nextInt());
         points.add(point7);
         searchPath.setPoints(points);
-        List<GeometryItem<LineString>> lines = searchPath.getLines();
+        List<GeometryItem<LineString>> lines = searchPath.getLineGeometryItems();
         assertLineHasPoint(lines.get(0), point1);
         assertLineHasPoint(lines.get(0), point2);
         assertLineHasPoint(lines.get(1), point2);

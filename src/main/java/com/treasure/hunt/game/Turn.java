@@ -5,7 +5,6 @@ import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
-import com.treasure.hunt.utils.JTSUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.locationtech.jts.geom.Point;
@@ -39,7 +38,7 @@ public class Turn {
     /**
      * @return a list of all geometryItems of this.
      */
-    public List<GeometryItem<?>> getGeometryItems(Point movementStart) {
+    public List<GeometryItem<?>> getGeometryItems() {
         List<GeometryItem<?>> output = new ArrayList<>();
 
         if (hint != null) {
@@ -47,7 +46,7 @@ public class Turn {
         }
 
         if (searchPath != null) {
-            output.addAll(getSearchPathGeometries(movementStart));
+            output.addAll(getSearchPathGeometries());
         }
 
         if (treasureLocation != null) {
@@ -72,22 +71,12 @@ public class Turn {
         );
     }
 
-    private List<GeometryItem<?>> getSearchPathGeometries(Point lastPoint) {
-        List<GeometryItem<?>> items = new ArrayList<>(searchPath.getPointList());
-
-        items.addAll(searchPath.getLines());
+    private List<GeometryItem<?>> getSearchPathGeometries() {
+        List<GeometryItem<?>> items = new ArrayList<>(searchPath.getPointsExceptTheFirst());
+        items.addAll(searchPath.getLineGeometryItems());
         items.addAll(searchPath.getAdditional());
 
-        if (searchPath.getFirstPoint() != null) {
-            if (lastPoint != null) {
-                items.add(new GeometryItem<>(
-                        JTSUtils.createLineString(lastPoint, searchPath.getFirstPoint()),
-                        GeometryType.WAY_POINT_LINE
-                ));
-            }
-
-            items.add(new GeometryItem<>(new ImageItem(searchPath.getLastPoint().getCoordinate(), 20, 20, "/images/pin.png", ImageItem.Alignment.BOTTOM_CENTER), GeometryType.SEARCHER_LAST_MOVE));
-        }
+        items.add(new GeometryItem<>(new ImageItem(searchPath.getLastPoint().getCoordinate(), 20, 20, "/images/pin.png", ImageItem.Alignment.BOTTOM_CENTER), GeometryType.CURRENT_WAY_POINT));
 
         return items;
 

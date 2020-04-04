@@ -12,10 +12,6 @@ import java.awt.*;
 @Slf4j
 public class Main {
 
-    static {
-        System.getProperties().setProperty("-Xdock:name", "TreasureHunt");
-    }
-
     public static void main(String[] args) {
         log.info("Starting Javafx UI application");
         setTaskBarIcon();

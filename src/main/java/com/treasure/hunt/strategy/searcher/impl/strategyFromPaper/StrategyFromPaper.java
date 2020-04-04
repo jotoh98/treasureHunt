@@ -1,5 +1,6 @@
 package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 
+import com.treasure.hunt.game.mods.hideandseek.HideAndSeekSearcher;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.geom.StatusMessageItem;
@@ -22,15 +23,32 @@ import static com.treasure.hunt.strategy.geom.GeometryType.CURRENT_RECTANGLE;
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.*;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.rectangleScan;
+import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StatusMessages.explainingStrategyMessage;
+import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StatusMessages.visualisationMessage;
 import static com.treasure.hunt.utils.JTSUtils.*;
 
 /**
- * This implements the strategy from the paper:
- * {@literal Treasure Hunt in the Plane with Angular Hints}
+ * This strategy implements the strategy from the paper "Deterministic Treasure Hunt in the Plane with Angular Hints"
+ * from Bouchard et al..
+ * <p>
+ * Generally this strategy works in phases i=1, 2, ... in which it searchers the treasure in rectangles of the side
+ * length 2^i.
+ * The rectangles are centered in the start position of the searcher and are axis parallel.
+ * We will call the rectangle of the current phase the phase rectangle.
+ * The strategy uses a second rectangle, called the current rectangle, which equals the phase rectangle at the beginning
+ * of each phase.
+ * In some draws (most draws) the searcher can exclude a part of the current rectangle by using areas seen and the current hint
+ * gotten and lower its area.
+ * The previous rectangle is the current rectangle from the previous draw.
+ * When the current rectangle is small enough, the rectangle gets scanned which means the player walks a route in such a way
+ * that it sees all points of the current rectangle.
+ * When this happens the phase is incremented and the current rectangle is again set to the phase rectangle.
+ * <p>
+ * For more information please look in the paper.
  *
  * @author Rank
  */
-public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
+public class StrategyFromPaper implements Searcher<HalfPlaneHint>, HideAndSeekSearcher<HalfPlaneHint> {
     /**
      * phase equals i in Algorithm2 (TreasureHunt1) in the paper.
      * In phase k, the algorithm checks, if the treasure is located in a rectangle
@@ -47,10 +65,12 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     protected Point searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD;
     protected HalfPlaneHint previousHint;
     protected HalfPlaneHint currentHint;
-    protected HintQuality lastHintQuality = HintQuality.none;
+    protected HintQuality previousHintQuality = HintQuality.none;
     protected LastHintBadSubroutine lastHintBadSubroutine = new LastHintBadSubroutine(this);
     Point start; // the initial position of the player
     List<StatusMessageItem> statusMessageItemsToBeRemovedNextMove = new ArrayList<>();
+    List<GeometryItem> geometryItemsToBeAddedNextMove = new ArrayList<>();
+    Point lastPosition;
 
     /**
      * {@inheritDoc}
@@ -61,17 +81,18 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         setRectToPhase();
         currentHint = null;
         previousHint = null;
-    }
-
-    protected void init(Point startPosition, int w, int h) {
-        init(startPosition);
+        lastPosition = start;
     }
 
     @Override
     public SearchPath move() {
         SearchPath move = new SearchPath();
+        move.getStatusMessageItemsToBeAdded().add(visualisationMessage);
+        move.getStatusMessageItemsToBeAdded().add(explainingStrategyMessage);
+        statusMessageItemsToBeRemovedNextMove.add(visualisationMessage);
+        statusMessageItemsToBeRemovedNextMove.add(explainingStrategyMessage);
         setRectToPhase();
-        return (addState(incrementPhase(move)));
+        return (returnHandling(incrementPhase(move)));
     }
 
     @Override
@@ -84,16 +105,24 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         // remove old status messages
         move.getStatusMessageItemsToBeRemoved().addAll(statusMessageItemsToBeRemovedNextMove);
         statusMessageItemsToBeRemovedNextMove.clear();
-
-        //update status messages:
-        StatusMessageItem goodStatusMessage = new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY, "good");
-        move.getStatusMessageItemsToBeAdded().add(goodStatusMessage);
+        // add new geometry items
+        for (GeometryItem item : geometryItemsToBeAddedNextMove) {
+            move.addAdditionalItem(item);
+        }
+        geometryItemsToBeAddedNextMove.clear();
 
         StatusMessageItem lastHintQualityStatus;
-        switch (lastHintQuality) {
+        switch (previousHintQuality) {
             case bad:
-                lastHintQualityStatus = new StatusMessageItem(StatusMessageType.BEFORE_PREVIOUS_QUALITY, "bad");
-                break;
+                previousHintQuality = HintQuality.none;
+                move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.BEFORE_PREVIOUS_QUALITY,
+                        "bad"));
+                move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY,
+                        "none, because the hint before this hint was bad."));
+                SearchPath lastHintBadSteps = lastHintBadSubroutine.lastHintBadSubroutine(hint, previousHint, move, true);
+                moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD,
+                        lastHintBadSteps);
+                return returnHandling(lastHintBadSteps);
             case good:
                 lastHintQualityStatus = new StatusMessageItem(StatusMessageType.BEFORE_PREVIOUS_QUALITY, "good");
                 break;
@@ -106,49 +135,50 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         move.getStatusMessageItemsToBeAdded().add(lastHintQualityStatus);
 
         if (rectangleNotLargeEnough()) {
-            return addState(incrementPhase(move));
+            previousHintQuality = HintQuality.none;
+            move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY,
+                    "none, because the previous rectangle was small enough to be scanned directly."));
+            return returnHandling(incrementPhase(move));
         }
-        //now analyse the hint:
-        if (lastHintQuality == HintQuality.bad) {
-            return addState(lastHintBadSubroutine.
-                    lastHintBadSubroutine(hint, previousHint, move));
-        }
-        lastHintQuality = HintQuality.good; //If the current hint isn't good, the hint quality is set below again
 
-        LineSegment hintLine = new LineSegment(hint.getCenter(),
-                hint.getRight());
+        //now analyse the hint:
+        LineSegment hintLine = hint.getHalfPlaneLine();
 
         Point[] horizontalSplit = splitRectangleHorizontally(searchAreaCornerA, searchAreaCornerB,
-                searchAreaCornerC, searchAreaCornerD, hint, hintLine, true);
+                searchAreaCornerC, searchAreaCornerD, hint, hintLine);
         if (horizontalSplit != null) {
+            previousHintQuality = HintQuality.good;
+            move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY, "good"));
             searchAreaCornerA = horizontalSplit[0];
             searchAreaCornerB = horizontalSplit[1];
             searchAreaCornerC = horizontalSplit[2];
             searchAreaCornerD = horizontalSplit[3];
             // "good" case (as defined in the paper)
-            return addState(moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB,
+            return returnHandling(moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB,
                     searchAreaCornerC, searchAreaCornerD, move));
         }
         Point[] verticalSplit = splitRectangleVertically(searchAreaCornerA, searchAreaCornerB,
-                searchAreaCornerC, searchAreaCornerD, hint, hintLine, true);
+                searchAreaCornerC, searchAreaCornerD, hint, hintLine);
         if (verticalSplit != null) {
+            previousHintQuality = HintQuality.good;
+            move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY, "good"));
             searchAreaCornerA = verticalSplit[0];
             searchAreaCornerB = verticalSplit[1];
             searchAreaCornerC = verticalSplit[2];
             searchAreaCornerD = verticalSplit[3];
             // "good" case (as defined in the paper)
-            return addState(moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB,
+            return returnHandling(moveToCenterOfRectangle(searchAreaCornerA, searchAreaCornerB,
                     searchAreaCornerC, searchAreaCornerD, move));
         }
         // when none of this cases takes place, the hint is bad (as defined in the paper). This gets handled here:
-        move.getStatusMessageItemsToBeAdded().remove(goodStatusMessage);
-        move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY, "bad"));
+        previousHintQuality = HintQuality.bad;
+        move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY,
+                "bad"));
 
         Point destination = GEOMETRY_FACTORY.createPoint(twoStepsOrthogonal(hint,
                 centerOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD)));
         move.addPoint(destination);
-        lastHintQuality = HintQuality.bad;
-        return addState(move);
+        return returnHandling(move);
     }
 
     protected boolean rectangleNotLargeEnough() {
@@ -166,13 +196,18 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      */
     protected SearchPath addState(SearchPath move, Coordinate[] currentRectanglePoints, Coordinate[] phaseRectanglePoints) {
         // add current rectangle which the strategy is working on
-        Coordinate[] curCoords = new Coordinate[5];
-        for (int i = 0; i < 4; i++) {
-            curCoords[i] = currentRectanglePoints[i];
+        if (currentRectanglePoints != null) {
+            Coordinate[] curCoords = new Coordinate[5];
+            for (int i = 0; i < 4; i++) {
+                curCoords[i] = currentRectanglePoints[i];
+            }
+            curCoords[4] = currentRectanglePoints[0];
+            GeometryItem<Polygon> curPoly = new GeometryItem<>(GEOMETRY_FACTORY.createPolygon(curCoords), CURRENT_RECTANGLE);
+            move.addAdditionalItem(curPoly);
+        } else {
+            GeometryItem<Polygon> curPoly = new GeometryItem<>(GEOMETRY_FACTORY.createPolygon(), CURRENT_RECTANGLE);
+            move.addAdditionalItem(curPoly);
         }
-        curCoords[4] = currentRectanglePoints[0];
-        GeometryItem<Polygon> curPoly = new GeometryItem<>(GEOMETRY_FACTORY.createPolygon(curCoords), CURRENT_RECTANGLE);
-        move.addAdditionalItem(curPoly);
 
         // add the rectangle of the current phase
         Coordinate[] phasePolygon = new Coordinate[5];
@@ -186,7 +221,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return move;
     }
 
-    protected SearchPath addState(SearchPath move) {
+    protected SearchPath returnHandling(SearchPath move) {
         Coordinate[] curCoords = new Coordinate[4];
         curCoords[0] = searchAreaCornerA.getCoordinate();
         curCoords[1] = searchAreaCornerB.getCoordinate();
@@ -232,7 +267,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                                 && searchAreaCornerD.getY() < rect[2].getY()
         ) {
             throw new AssertionError(
-                    "phaseRect:\n" +
+                    "The current rectangle is not inside the current phases rectangle.\n" +
+                            "phaseRect:\n" +
                             rect[0].toString() + "\n" +
                             rect[1].toString() + "\n" +
                             rect[2].toString() + "\n" +
@@ -246,13 +282,14 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         }
         //add hints
         if (currentHint != null) {
-            move.addAdditionalItem(new GeometryItem<>(currentHint.getHalfPlaneLineGeometry(),
-                    GeometryType.HALF_PLANE_LINE_BLUE));
+            move.addAdditionalItem(new GeometryItem<>(currentHint.getHalfPlaneTheTreasureIsNotIn(),
+                    GeometryType.HALF_PLANE_PREVIOUS_LIGHT_RED));
         }
         if (previousHint != null) {
-            move.addAdditionalItem(new GeometryItem<>(previousHint.getHalfPlaneLineGeometry(),
-                    GeometryType.HALF_PLANE_LINE_BROWN));
+            move.addAdditionalItem(new GeometryItem<>(previousHint.getHalfPlaneTheTreasureIsNotIn(),
+                    GeometryType.HALF_PLANE_BEFORE_PREVIOUS_ORANGE));
         }
+        lastPosition = move.getLastPoint();
         return addState(move, curCoords, currentPhaseRectangle());
     }
 
@@ -268,11 +305,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * @param C
      * @param D
      * @param hint
-     * @param checkIfHintGood
      * @return
      */
     protected Point[] splitRectangleHorizontally(Point A, Point B, Point C, Point D, HalfPlaneHint hint,
-                                                 LineSegment hintLine, boolean checkIfHintGood) {
+                                                 LineSegment hintLine) {
         LineSegment BC = new LineSegment(searchAreaCornerB.getCoordinate(), searchAreaCornerC.getCoordinate());
         LineSegment AD = new LineSegment(searchAreaCornerA.getCoordinate(), searchAreaCornerD.getCoordinate());
 
@@ -280,11 +316,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         Coordinate intersectionBCHint = JTSUtils.lineWayIntersection(hintLine, BC);
 
         if (intersectionADHint == null || intersectionBCHint == null ||
-                (checkIfHintGood && (
-                        intersectionADHint.distance(A.getCoordinate()) < 1
-                                || intersectionADHint.distance(D.getCoordinate()) < 1
-                                || intersectionBCHint.distance(B.getCoordinate()) < 1
-                                || intersectionBCHint.distance(C.getCoordinate()) < 1))
+                ((intersectionADHint.distance(A.getCoordinate()) < 1
+                        || intersectionADHint.distance(D.getCoordinate()) < 1
+                        || intersectionBCHint.distance(B.getCoordinate()) < 1
+                        || intersectionBCHint.distance(C.getCoordinate()) < 1))
         ) {
             return null;
         }
@@ -340,7 +375,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      */
     protected SearchPath specificRectangleScan(Coordinate rectangleCorner1, Coordinate rectangleCorner2,
                                                Coordinate rectangleCorner3, Coordinate rectangleCorner4, SearchPath move) {
-        return rectangleScan(rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4, move);
+        return rectangleScan(rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4, move, lastPosition);
     }
 
     /**
@@ -372,11 +407,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * @param C
      * @param D
      * @param hint
-     * @param checkIfHintGood
      * @return
      */
     protected Point[] splitRectangleVertically(Point A, Point B, Point C, Point D, HalfPlaneHint hint,
-                                               LineSegment hintLine, boolean checkIfHintGood) {
+                                               LineSegment hintLine) {
         LineSegment AB = new LineSegment(searchAreaCornerA.getCoordinate(), searchAreaCornerB.getCoordinate());
         LineSegment CD = new LineSegment(searchAreaCornerC.getCoordinate(), searchAreaCornerD.getCoordinate());
 
@@ -385,11 +419,10 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
 
         // checks if the hint is good, if checkIfHintGood is true
         if (intersectionABHint == null || intersectionCDHint == null ||
-                (checkIfHintGood &&
-                        (intersectionABHint.distance(A.getCoordinate()) < 1
-                                || intersectionABHint.distance(B.getCoordinate()) < 1
-                                || intersectionCDHint.distance(C.getCoordinate()) < 1
-                                || intersectionCDHint.distance(D.getCoordinate()) < 1))
+                ((intersectionABHint.distance(A.getCoordinate()) < 1
+                        || intersectionABHint.distance(B.getCoordinate()) < 1
+                        || intersectionCDHint.distance(C.getCoordinate()) < 1
+                        || intersectionCDHint.distance(D.getCoordinate()) < 1))
         ) {
             return null;
         }
@@ -483,5 +516,4 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     public enum HintQuality {
         good, bad, none
     }
-
 }

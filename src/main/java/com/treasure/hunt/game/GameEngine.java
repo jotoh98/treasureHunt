@@ -1,6 +1,7 @@
 package com.treasure.hunt.game;
 
 import com.treasure.hunt.analysis.Statistic;
+import com.treasure.hunt.jts.geom.Circle;
 import com.treasure.hunt.jts.geom.GeometryAngle;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.hint.Hint;
@@ -11,7 +12,6 @@ import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.Requires;
 import lombok.Getter;
-import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
 /**
@@ -25,7 +25,7 @@ public class GameEngine {
     protected final Searcher searcher;
     @Getter
     protected final Hider hider;
-    protected final Coordinate initialSearcherCoordinate;
+    protected final Point initialSearcherPoint;
     @Getter
     private final Statistic statistics = new Statistic();
     /**
@@ -49,20 +49,20 @@ public class GameEngine {
      * @param hider    playing the game
      */
     public GameEngine(Searcher searcher, Hider hider) {
-        this(searcher, hider, new Coordinate(0, 0));
+        this(searcher, hider, JTSUtils.createPoint(0, 0));
     }
 
     /**
      * The constructor.
      *
-     * @param searcher                  playing the game
-     * @param hider                     playing the game
-     * @param initialSearcherCoordinate the initial Searcher {@link Coordinate}.
+     * @param searcher             playing the game
+     * @param hider                playing the game
+     * @param initialSearcherPoint the initial Searcher {@link Point}.
      */
-    public GameEngine(Searcher searcher, Hider hider, Coordinate initialSearcherCoordinate) {
+    public GameEngine(Searcher searcher, Hider hider, Point initialSearcherPoint) {
         this.searcher = searcher;
         this.hider = hider;
-        this.initialSearcherCoordinate = initialSearcherCoordinate;
+        this.initialSearcherPoint = initialSearcherPoint;
     }
 
     /**
@@ -71,7 +71,7 @@ public class GameEngine {
      * @return a {@link Turn}, since the initialization must be displayed.
      */
     public Turn init() {
-        searcherPos = JTSUtils.GEOMETRY_FACTORY.createPoint(initialSearcherCoordinate);
+        searcherPos = initialSearcherPoint;
         searcher.init(searcherPos);
         hider.init(searcherPos);
 
@@ -108,7 +108,7 @@ public class GameEngine {
 
         searcherMove();
 
-        if (lastSearchPath.located(searchPathStart, treasurePos)) {
+        if (located(lastSearchPath)) {
             finished = true;
             return new Turn(null, lastSearchPath, treasurePos);
         } else {
@@ -122,9 +122,10 @@ public class GameEngine {
      * Let the {@link GameEngine#hider} give its {@link Hint}.
      */
     protected void hiderMove() {
-        lastHint = hider.move(lastSearchPath);
-        assert (lastHint != null);
-        verifyHint(lastHint, treasurePos, lastSearchPath.getLastPoint());
+        Hint newHint = hider.move(lastSearchPath);
+        assert (newHint != null);
+        verifyHint(newHint, treasurePos, lastSearchPath.getLastPoint());
+        lastHint = newHint;
     }
 
     /**
@@ -138,14 +139,17 @@ public class GameEngine {
             lastSearchPath = searcher.move(lastHint);
         }
         assert (lastSearchPath != null);
+
+        lastSearchPath.addPointToFront(searcherPos);
+
         assert (lastSearchPath.getPoints().size() != 0);
+
         searcherPos = lastSearchPath.getLastPoint();
     }
 
     /**
      * TODO implement:
      * AngleHints must be of angle [0, 180] !?
-     * CircleHints must contain each other !?
      * Verifies whether the {@link Hint} {@code hint} given by the {@link Hider} followed the rules.
      *
      * @param hint             {@link Hint} to be verified
@@ -163,11 +167,40 @@ public class GameEngine {
             }
         }
         if (hint instanceof CircleHint) {
-            if (((CircleHint) hint).getRadius() < ((CircleHint) hint).getCenter().distance(treasurePosition)) {
+            Circle lastCircleHint = ((CircleHint) hint).getCircle();
+            Circle newCircleHint = ((CircleHint) hint).getCircle();
+            // check, whether the CircleHint contains the treasure.
+            if (!newCircleHint.inside(treasurePosition.getCoordinate())) {
                 throw new IllegalArgumentException("The CircleHint does not contain the treasure.\n" +
-                        "It says, " + ((CircleHint) hint).getRadius() + " around " + ((CircleHint) hint).getCenter() + ", " +
-                        "but was " + ((CircleHint) hint).getCenter().distance(treasurePosition));
+                        "It says, " + newCircleHint.getRadius() + " around " + newCircleHint.getCenter() + ", " +
+                        "but was " + newCircleHint.getCenter().distance(treasurePosition.getCoordinate()));
+            }
+            // check, whether the current CircleHint lies completely in the previous.
+            if (lastHint != null) {
+                if (lastCircleHint.getRadius() > (lastCircleHint.distance(newCircleHint) + newCircleHint.getRadius())) {
+                    throw new IllegalArgumentException("New CircleHint does not completely lie in the last Circle Hint.");
+                }
             }
         }
+    }
+
+    /**
+     * @param searchPath the {@link SearchPath}, the {@link Searcher} moved.
+     * @return {@code true}, if the {@link Searcher} found the treasure. {@code false}, otherwise.
+     * The {@link Searcher} found the treasure, if had a distance of &le; {@link Searcher#SCANNING_DISTANCE} in this SearchPath.
+     * @throws IllegalStateException if this SearchPath contains zero {@link Point}s.
+     */
+    public boolean located(SearchPath searchPath) {
+        if (searchPath.getPoints().size() < 1) {
+            throw new IllegalStateException("The SearchPath should never got zero points!");
+        }
+
+        if (searchPath.getPoints().size() == 1) {
+            return searchPath.getPoints().get(0).distance(treasurePos) <= Searcher.SCANNING_DISTANCE;
+        }
+
+        return searchPath.getLines().stream()
+                .map(line -> line.distance(treasurePos))
+                .anyMatch(distance -> distance <= Searcher.SCANNING_DISTANCE);
     }
 }

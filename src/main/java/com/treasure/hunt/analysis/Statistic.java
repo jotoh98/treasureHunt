@@ -18,11 +18,11 @@ public class Statistic {
 
     public double getTraceLength() {
         double length = ListUtils
-                .consecutive(turns, (turn, turn2) -> turn2.getSearchPath().getLength(turn.getSearchPath().getLastPoint()))
+                .consecutive(turns, (turn, turn2) -> turn2.getSearchPath().getLength())
                 .reduce(Double::sum)
                 .orElse(0d);
         if (turns.size() > 0) {
-            length += turns.get(0).getSearchPath().getLength(null);
+            length += turns.get(0).getSearchPath().getLength();
         }
         return length;
     }
@@ -62,7 +62,10 @@ public class Statistic {
         return getLocalOptimumSolution() / getOptimumSolution();
     }
 
-    public double getHintRequests() {
+    public int getHintRequests() {
+        if (turns.size() > 1 && turns.get(turns.size() - 1).getHint() == null) {
+            return turns.size() - 2;
+        }
         return turns.size() - 1;
     }
 

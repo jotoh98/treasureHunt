@@ -8,7 +8,9 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CompletableFuture;
@@ -51,7 +53,7 @@ public class JavaFxApplication extends Application {
         });
     }
 
-    private void setStageIcon(Stage stage) {
+    private static void setStageIcon(Stage stage) {
         try {
             stage.getIcons().add(new javafx.scene.image.Image(JavaFxApplication.class.getResourceAsStream("/images/icon.png")));
         } catch (Exception e) {
@@ -76,6 +78,16 @@ public class JavaFxApplication extends Application {
         session.setWindowHeight(stage.getHeight());
         session.setFullscreen(stage.isFullScreen());
         SettingsService.getInstance().saveSession();
+    }
+
+    public static Stage createPopUpStage(String title, Scene scene) {
+        Stage stage = new Stage(StageStyle.DECORATED);
+        setStageIcon(stage);
+        scene.getStylesheets().add(JavaFxApplication.class.getResource("/layout/style.css").toExternalForm());
+        stage.setScene(scene);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setTitle(title);
+        return stage;
     }
 
 }

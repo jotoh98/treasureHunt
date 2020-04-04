@@ -97,9 +97,6 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-applicationDefaultJvmArgs = [
-        "-Xdock:name=\"TreasureHunt\""
-]
 jar {
     manifest {
         attributes 'Main-Class': 'com.treasure.hunt.Main',

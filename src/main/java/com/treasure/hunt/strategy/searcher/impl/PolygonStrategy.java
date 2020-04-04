@@ -54,6 +54,7 @@ public class PolygonStrategy
             envelope = searchArea.getEnvelopeInternal();
             if (envelope.getWidth() < 1.1 || envelope.getHeight() < 1.1) {
                 extendSearchSquare();
+
                 return scanCompleteSearchArea();
             }
         }
@@ -75,7 +76,9 @@ public class PolygonStrategy
         for (Coordinate vertices : searchArea.getCoordinates()) {
             currentPath.addPoint(JTSUtils.createPoint(vertices));
         }
+
         currentPosition = currentPath.getLastPoint();
+
         return currentPath;
     }
 

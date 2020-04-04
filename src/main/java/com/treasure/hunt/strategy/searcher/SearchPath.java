@@ -7,13 +7,13 @@ import com.treasure.hunt.utils.JTSUtils;
 import com.treasure.hunt.utils.ListUtils;
 import lombok.Getter;
 import lombok.Setter;
-import org.locationtech.jts.algorithm.Distance;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,15 +24,17 @@ import java.util.stream.Collectors;
  * @author dorianreineccius, hassel
  */
 public class SearchPath extends HintAndMovement {
-    protected List<GeometryItem<?>> additional = new ArrayList<>();
-
     /**
-     * The list of points representing the searching path
-     * of the corresponding searcher.
+     * The list of points representing the searching path of the corresponding searcher.
      */
     @Getter
     @Setter
     private List<Point> points;
+    /**
+     * The list of additional items which should be displayed with this SearchPath.
+     */
+    @Getter
+    private List<GeometryItem<?>> additional = new ArrayList<>();
 
     public SearchPath(Point... points) {
         this.points = new ArrayList<>(Arrays.asList(points));
@@ -60,13 +62,17 @@ public class SearchPath extends HintAndMovement {
     }
 
     /**
-     * @param point The next point, visited in this movement.
+     * @param point The next {@link Point}, visited in this movement.
      */
     public void addPoint(Point point) {
-        if (Double.isNaN(point.getX()) || Double.isNaN(point.getY())) {
-            throw new IllegalArgumentException("Point with NAN as coordinate is invalid");
-        }
         points.add(point);
+    }
+
+    /**
+     * @param point the {@link Point}, the {@link Searcher} starts its movement from.
+     */
+    public void addPointToFront(Point point) {
+        points.add(0, point);
     }
 
     /**
@@ -76,62 +82,61 @@ public class SearchPath extends HintAndMovement {
         additional.add(geometryItem);
     }
 
-    public List<GeometryItem<Point>> getPointList() {
-        return points.stream()
-                .map(point -> new GeometryItem<>(point, GeometryType.WAY_POINT))
-                .collect(Collectors.toList());
-    }
-
-    public List<GeometryItem<LineString>> getLines() {
-        List<Coordinate> coordinateList = JTSUtils.getCoordinateList(points);
-
-        return ListUtils
-                .consecutive(coordinateList, (c1, c2) ->
-                        new GeometryItem<>(
-                                JTSUtils.GEOMETRY_FACTORY.createLineString(new Coordinate[]{c1, c2}),
-                                GeometryType.WAY_POINT_LINE
-                        )
-                )
-                .collect(Collectors.toList());
-    }
-
-    public List<GeometryItem<?>> getAdditional() {
-        return this.additional;
-    }
-
-    public boolean located(Point pathStart, Point treasure) {
+    /**
+     * @return a list, containing every {@link Point} of this SearchPath, except the first.
+     * List could be empty.
+     * @throws IllegalStateException if this SearchPath contains zero {@link Point}s.
+     */
+    public List<GeometryItem<Point>> getPointsExceptTheFirst() {
         if (points.size() < 1) {
-            return false;
+            throw new IllegalStateException("The SearchPath should never got zero points!");
         }
 
         if (points.size() == 1) {
-            return Distance.pointToSegment(
-                    treasure.getCoordinate(),
-                    pathStart.getCoordinate(),
-                    points.get(0).getCoordinate()) <= Searcher.SCANNING_DISTANCE;
+            return Collections.emptyList();
         }
 
-        List<Coordinate> wayCoordinates = points.stream()
-                .map(Point::getCoordinate)
+        return points.subList(1, points.size()).stream()
+                .map(point -> new GeometryItem<>(point, GeometryType.WAY_POINT))
                 .collect(Collectors.toList());
 
-        wayCoordinates.add(0, pathStart.getCoordinate());
-
-        return ListUtils
-                .consecutive(wayCoordinates, (firstCoordinate, nextCoordinate) ->
-                        Distance.pointToSegment(treasure.getCoordinate(), firstCoordinate, nextCoordinate)
-                )
-                .anyMatch(distance -> distance <= Searcher.SCANNING_DISTANCE);
     }
 
-    public double getLength(Point start) {
-        List<Coordinate> way = JTSUtils.getCoordinateList(points);
+    /**
+     * @return A list of {@link GeometryItem}s, each containing a {@link LineString}. This describes the movement of the {@link Searcher}.
+     * @throws IllegalStateException if this searchPath contains zero {@link Point}s.
+     */
+    public List<GeometryItem<LineString>> getLineGeometryItems() {
+        return getLines().stream()
+                .map(lineString -> new GeometryItem<>(lineString, GeometryType.WAY_POINT_LINE))
+                .collect(Collectors.toList());
+    }
 
-        if (start != null) {
-            way.add(0, start.getCoordinate());
+    /**
+     * @return A list of {@link LineString}, describing the movement of the {@link Searcher}.
+     * @throws IllegalStateException if this searchPath contains zero {@link Point}s.
+     */
+    public List<LineString> getLines() {
+        if (points.size() < 1) {
+            throw new IllegalStateException("The SearchPath should never got zero points!");
         }
 
-        return ListUtils.consecutive(way, Coordinate::distance)
+        if (points.size() == 1) {
+            return Collections.emptyList();
+        }
+
+        return ListUtils
+                .consecutive(JTSUtils.getCoordinateList(points), (c1, c2) ->
+                        JTSUtils.GEOMETRY_FACTORY.createLineString(new Coordinate[]{c1, c2})
+                )
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * @return the distance, of this searchPath.
+     */
+    public double getLength() {
+        return ListUtils.consecutive(JTSUtils.getCoordinateList(points), Coordinate::distance)
                 .reduce(Double::sum)
                 .orElse(0d);
     }
