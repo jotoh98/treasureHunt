@@ -328,10 +328,10 @@ public class GameField {
         Pair<Coordinate, Double> bestCalc = new Pair(this.favoredTreasureLocation.getObject().getCoordinate(), this.favoredTreasureLocation.getObject().getCoordinate().distance(this.currentPlayersPosition.getCoordinate()) / this.favoredTreasureLocation.getObject().getCoordinate().distance(this.startingPoint.getCoordinate()));
 
         // always consider just leaving the treasure as is
-        List<Pair<Coordinate, Double>> worstEdgePoints = new ArrayList<>();
-        worstEdgePoints.add(bestCalc);
-        List<Pair<Coordinate, Double>> worstEdgePointsSampled = new ArrayList<>();
-        worstEdgePointsSampled.add(bestSampled);
+        List<Pair<Coordinate, Double>> worstPointsWithoutPathlength = new ArrayList<>();
+        worstPointsWithoutPathlength.add(bestCalc);
+        List<Pair<Coordinate, Double>> worstPointsWithPathlength = new ArrayList<>();
+        worstPointsWithPathlength.add(bestSampled);
 
         // for the case, that the player's visited area divides the possible area into 2 or more Polygons, a seperate search for each geometry is required
         for (int geomNumber = 0; geomNumber < geometryToCheck.getNumGeometries(); geomNumber++) {
@@ -346,10 +346,15 @@ public class GameField {
 
             // now iterate over the Coordinates of the current Geometry
             for (int currentCoordinateIndex = 1; currentCoordinateIndex < edges.length; currentCoordinateIndex++) {
+
+                // the calc without the pathlength
                 calcOnEdge = calcMaxConstantPointOnSegment(edges[currentCoordinateIndex - 1], edges[currentCoordinateIndex], this.currentPlayersPosition.getCoordinate());
-                worstEdgePoints.add(calcOnEdge);
+                worstPointsWithoutPathlength.add(calcOnEdge);
+
+                // the calc with path length
                 sampledOnEdge = sampleMaxConstantWithPathOnLineSegment(edges[currentCoordinateIndex - 1], edges[currentCoordinateIndex], this.currentPlayersPosition.getCoordinate());
-                worstEdgePointsSampled.add(sampledOnEdge);
+                worstPointsWithPathlength.add(sampledOnEdge);
+
                 log.trace("line (" + edges[currentCoordinateIndex - 1] + ", " + edges[currentCoordinateIndex] + ")");
                 log.trace("Calc " + calcOnEdge);
                 log.trace("Samp " + sampledOnEdge);
@@ -364,27 +369,27 @@ public class GameField {
         }
 
         //sort for constant
-        worstEdgePoints.sort(new Comparator<Pair<Coordinate, Double>>() {
+        worstPointsWithoutPathlength.sort(new Comparator<Pair<Coordinate, Double>>() {
             @Override
             public int compare(Pair<Coordinate, Double> coordinateDoublePair, Pair<Coordinate, Double> t1) {
                 return coordinateDoublePair.getValue().compareTo(t1.getValue());
             }
         }.reversed());
 
-        worstEdgePointsSampled.sort(new Comparator<Pair<Coordinate, Double>>() {
+        worstPointsWithPathlength.sort(new Comparator<Pair<Coordinate, Double>>() {
             @Override
             public int compare(Pair<Coordinate, Double> coordinateDoublePair, Pair<Coordinate, Double> t1) {
                 return coordinateDoublePair.getValue().compareTo(t1.getValue());
             }
         }.reversed());
 
-        log.trace("worst Point List:" + worstEdgePoints.size() + "first element: " + worstEdgePoints.get(0));
+        log.trace("worst Point List:" + worstPointsWithoutPathlength.size() + "first element: " + worstPointsWithoutPathlength.get(0));
         log.debug("best overall Sampled constant is" + bestSampled.getValue() + " at " + bestSampled.getKey().toString());
         log.debug("best overall calculated constant is" + bestCalc.getValue() + " at " + bestCalc.getKey().toString());
         if (PreferenceService.getInstance().getPreference(MobileTreasureHider.walkedPathLengthForTreasureRelocation_Preference, 1).intValue() == 1) {
-            return worstEdgePointsSampled;
+            return worstPointsWithPathlength;
         } else {
-            return worstEdgePoints;
+            return worstPointsWithoutPathlength;
         }
     }
 
@@ -406,6 +411,11 @@ public class GameField {
         Coordinate projection = unscaled.project(origin.getCoordinate());
         double scalingFactor = 1.0 / projection.distance(origin.getCoordinate());
 
+        if(Double.isInfinite( scalingFactor)){ // add some non optimal solution
+            log.trace("cant transform, returning viable, but probably non-optimal Pair");
+            Pair<Coordinate,Double> dummyPair = new Pair<>(p1.copy(), player.distance(p1) / origin.getCoordinate().distance(p1));
+            return dummyPair;
+        }
         AffineTransformation scalingTransform = AffineTransformation.scaleInstance(scalingFactor, scalingFactor);
 
         //determine rotation angle to put ProjectionPoint onto the Y-Axis

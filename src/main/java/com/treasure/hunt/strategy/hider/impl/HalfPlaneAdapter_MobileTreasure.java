@@ -13,7 +13,8 @@ import org.locationtech.jts.geom.Point;
 @Preference(name = StatisticalHider.DistanceFromNormalAngleLineToTreasureWeight_Preference, value = 2)
 @Preference(name = StatisticalHider.DistanceFromResultingCentroidToTreasureWeight_Preference, value = 3)
 @Preference(name = MobileTreasureHider.treasureBeforeHintFirst_Preference, value = 1)
-@Preference(name = PreferenceService.MAX_TREASURE_DISTANCE, value = 100)
+@Preference(name = MobileTreasureHider.walkedPathLengthForTreasureRelocation_Preference, value = 0)
+@Preference(name = MobileTreasureHider.mindTreasureRelocationDistance_Preference, value = 3)
 public class HalfPlaneAdapter_MobileTreasure implements HideAndSeekHider<HalfPlaneHint> {
     private MobileTreasureHider adaptee;
 

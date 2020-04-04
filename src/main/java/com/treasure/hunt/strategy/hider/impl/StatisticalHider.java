@@ -95,14 +95,13 @@ public abstract class StatisticalHider {
 
         List<AngleHintStatistic> stats = new ArrayList<>();
         Geometry before = this.currentPossibleArea;
-        log.info("current possibleArea size " + before.getArea());
+        log.trace("current possibleArea size " + before.getArea());
 
         // if playing against StrategyFromPaper try giving bad hints
         List<GeometryItem<?>> geometryItems = searchPath.getAdditional();
         Polygon currentRectangle = null;
 
         try {
-
             GeometryItem<Polygon> currentRectangleGeometryItem = (GeometryItem<Polygon>) geometryItems.stream().filter(item -> item.getGeometryType().getDisplayName().equals("current rectangle")).findFirst().get();
             currentRectangle = currentRectangleGeometryItem.getObject();
         } catch (Exception e) {
@@ -215,7 +214,7 @@ public abstract class StatisticalHider {
     protected List<AngleHintStatistic> filterForValidHints(List<AngleHintStatistic> stats) {
 
         stats = stats.stream().filter(hint -> hint.getHint().getGeometryAngle().inView(treasure.getCoordinate())).collect(Collectors.toList());
-        log.debug("remaining possible Hints" + stats.size()); // hint: its always half the amount
+        log.trace("remaining possible Hints" + stats.size()); // hint: its always half the amount
         return stats;
     }
 
