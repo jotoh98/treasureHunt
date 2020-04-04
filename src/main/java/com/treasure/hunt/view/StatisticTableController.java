@@ -8,6 +8,7 @@ import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.service.io.FileService;
 import com.treasure.hunt.service.io.SeriesService;
+import com.treasure.hunt.service.settings.SettingsService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.EventBusUtils;
@@ -43,7 +44,9 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 @Slf4j
 public class StatisticTableController {
@@ -60,6 +63,8 @@ public class StatisticTableController {
     HashMap<StatisticObject.StatisticInfo, List<StatisticObject>> statisticsMeasureHashMap = new HashMap<>();
     private Path path;
     private ObjectProperty<GameManager> gameManager;
+
+    private static final Function<Double, String> rounder = SettingsService.getInstance().getSettings()::round;
 
     public void initialize() {
         statisticsMeasuresTableInit();
@@ -92,40 +97,28 @@ public class StatisticTableController {
     }
 
     private void statisticsMeasuresTableInit() {
-        TableColumn<HashMap.Entry<StatisticObject.StatisticInfo, List<StatisticObject>>, String> nameColumn = new TableColumn<>();
-        nameColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getKey().getName()));
-        statisticsMeasuresTable.getColumns().add(nameColumn);
-        nameColumn.setText("name");
+        adMeasureColumn("Name", null);
+        adMeasureColumn("Min", DoubleStream::min);
+        adMeasureColumn("Max", DoubleStream::max);
+        adMeasureColumn("Average", DoubleStream::average);
+    }
 
-        TableColumn<HashMap.Entry<StatisticObject.StatisticInfo, List<StatisticObject>>, Double> averageColumn = new TableColumn<>();
-        averageColumn.setCellValueFactory(param -> {
-            List<StatisticObject> value = param.getValue().getValue();
-            return new SimpleObjectProperty<>(value.stream().map(StatisticObject::getValue)
-                    .mapToDouble(Number::doubleValue)
-                    .average().getAsDouble());
-        });
-        averageColumn.setText("average");
-        statisticsMeasuresTable.getColumns().add(averageColumn);
+    private void adMeasureColumn(String text, Function<DoubleStream, OptionalDouble> aggregate) {
+        TableColumn<HashMap.Entry<StatisticObject.StatisticInfo, List<StatisticObject>>, String> newColumn = new TableColumn<>();
 
-        TableColumn<HashMap.Entry<StatisticObject.StatisticInfo, List<StatisticObject>>, Double> minColumn = new TableColumn<>();
-        minColumn.setCellValueFactory(param -> {
-            List<StatisticObject> value = param.getValue().getValue();
-            return new SimpleObjectProperty<>(value.stream().map(StatisticObject::getValue)
-                    .mapToDouble(Number::doubleValue)
-                    .min().getAsDouble());
-        });
-        minColumn.setText("min");
-        statisticsMeasuresTable.getColumns().add(minColumn);
+        if (aggregate != null) {
+            newColumn.setCellValueFactory(param -> {
+                final DoubleStream entries = param.getValue().getValue().stream().map(StatisticObject::getValue)
+                        .mapToDouble(Number::doubleValue);
+                final double aggregated = aggregate.apply(entries).orElse(0);
+                return new SimpleStringProperty(rounder.apply(aggregated));
+            });
+        } else {
+            newColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getKey().getName()));
+        }
 
-        TableColumn<HashMap.Entry<StatisticObject.StatisticInfo, List<StatisticObject>>, Double> maxColumn = new TableColumn<>();
-        maxColumn.setCellValueFactory(param -> {
-            List<StatisticObject> value = param.getValue().getValue();
-            return new SimpleObjectProperty<>(value.stream().map(StatisticObject::getValue)
-                    .mapToDouble(Number::doubleValue)
-                    .max().getAsDouble());
-        });
-        maxColumn.setText("max");
-        statisticsMeasuresTable.getColumns().add(maxColumn);
+        newColumn.setText(text);
+        statisticsMeasuresTable.getColumns().add(newColumn);
     }
 
     private void instanceTableInit() {
@@ -153,11 +146,11 @@ public class StatisticTableController {
         TableColumn<StatisticsWithId, Integer> idColumn = new TableColumn<>();
         idColumn.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getId()));
         instanceStatisticsTableView.getColumns().add(idColumn);
-        idColumn.setText("id");
+        idColumn.setText("ID");
 
         statisticsMeasureHashMap.keySet()
                 .forEach(statisticInfo -> {
-                    TableColumn<StatisticsWithId, Double> statisticColumn = new TableColumn<>();
+                    TableColumn<StatisticsWithId, String> statisticColumn = new TableColumn<>();
                     statisticColumn.setCellValueFactory(param -> {
                         StatisticsWithId value = param.getValue();
                         List<StatisticObject> statisticObjects = value.getStatisticObjects();
@@ -165,7 +158,7 @@ public class StatisticTableController {
                                 .filter(statisticObject -> statisticObject.getStatisticInfo().equals(statisticInfo))
                                 .findFirst();
                         StatisticObject statisticObject = first.orElseThrow();
-                        return new SimpleObjectProperty<>(statisticObject.getValue().doubleValue());
+                        return new SimpleStringProperty(rounder.apply(statisticObject.getValue().doubleValue()));
                     });
 
                     instanceStatisticsTableView.getColumns().add(statisticColumn);
@@ -197,7 +190,9 @@ public class StatisticTableController {
         instanceStatisticsTableView.getColumns().clear();
     }
 
-    public void init(ObjectProperty<GameManager> gameManager, ComboBox<Class<? extends Searcher>> searcherList, ComboBox<Class<? extends Hider>> hiderList, ComboBox<Class<? extends GameEngine>> gameEngineList) {
+    public void init(ObjectProperty<GameManager> gameManager, ComboBox<Class<? extends
+            Searcher>> searcherList, ComboBox<Class<? extends Hider>> hiderList, ComboBox<Class<? extends
+            GameEngine>> gameEngineList) {
         this.gameManager = gameManager;
         this.searcherList = searcherList;
         this.hiderList = hiderList;
@@ -208,10 +203,11 @@ public class StatisticTableController {
 
         runMultipleButton.disableProperty().bind(somethingNotSelectedBinding);
 
+        final String initialText = runMultipleButton.getText();
         runMultipleButton.textProperty().bind(
                 Bindings.when(somethingNotSelectedBinding)
                         .then("Select a game")
-                        .otherwise("Run multiple games")
+                        .otherwise(initialText)
         );
 
         superPlot.disableProperty().bind(somethingNotSelectedBinding);
@@ -250,7 +246,6 @@ public class StatisticTableController {
     public void onSeriesLoad() {
         SeriesService.getInstance().readStatistics();
     }
-
 
     public void copyClipboard() {
         StringSelection stringSelection = new StringSelection(generateCopyString());
