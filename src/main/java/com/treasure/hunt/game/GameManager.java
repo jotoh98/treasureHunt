@@ -121,8 +121,10 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         setBindings();
     }
 
+    /**
+     * Initializes the internal {@link GameEngine}
+     */
     public void init() {
-        // Do initial move
         if (turns.size() == 0) {
             turns.add(gameEngine.init());
         }
@@ -132,7 +134,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
-     * Works only for stepSim &le; stepView 
+     * (Simulates) and shows the next {@link Turn}, if the game is not finished.
      */
     public void next() {
         if (viewIndex.get() < turns.size()) {
@@ -151,7 +153,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
 
     /**
      * Shows the simulation-state, before the last {@link Turn}.
-     * Works only for stepView &gt; 0
+     * Works only for stepView &gt; 0.
      */
     public void previous() {
         if (viewIndex.get() > 0) {
@@ -165,20 +167,6 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     public void stopBeat() {
         log.debug("Stopping beating thread");
         beatThreadRunning.set(false);
-    }
-
-    /**
-     * @return {@code true}, if the shown step is the most up to date one. {@code false}, otherwise.
-     */
-    public boolean latestStepViewed() {
-        return turns.size() - 1 == viewIndex.get();
-    }
-
-    /**
-     * @return a list, containing only the {@link Turn}s, which are visible now.
-     */
-    public List<Turn> getVisibleTurns() {
-        return turns.subList(0, viewIndex.get() + 1);
     }
 
     /**
