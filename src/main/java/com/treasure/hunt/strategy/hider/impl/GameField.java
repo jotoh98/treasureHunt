@@ -20,12 +20,11 @@ import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.geom.util.AffineTransformation;
 import org.locationtech.jts.geom.util.NoninvertibleTransformationException;
+import org.locationtech.jts.operation.union.UnaryUnionOp;
 import org.locationtech.jts.util.GeometricShapeFactory;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -202,14 +201,24 @@ public class GameField {
 
             Coordinate[] visitedCoords = visitedPoints.stream().map(p -> p.getCoordinate()).toArray(Coordinate[]::new);
             LineString walkedPath = geometryFactory.createLineString(visitedCoords);
-            checkedPoly = (Polygon) walkedPath.buffer(searcherScoutRadius);
+            checkedPoly = (Polygon) walkedPath.buffer(searcherScoutRadius).copy();
             this.walkedPathLength = walkedPath.getLength();
         } else {
             log.trace("1 point visited so far");
-            checkedPoly = (Polygon) startingPoint.buffer(searcherScoutRadius);
+            checkedPoly = (Polygon) startingPoint.buffer(searcherScoutRadius).copy();
         }
 
-        Geometry possible = possibleArea.getObject().difference(checkedPoly);
+        log.debug("possible area has " + possibleArea.getObject().getNumGeometries() +"geoms");
+        Collection<Geometry> geomCollection = new ArrayList<>();
+
+        // difference operation separately
+        for(int geom = 0; geom < possibleArea.getObject().getNumGeometries(); geom++){
+            geomCollection.add(possibleArea.getObject().getGeometryN(geom).difference(checkedPoly));
+        }
+        //union as one
+        Geometry possible = UnaryUnionOp.union(geomCollection, JTSUtils.GEOMETRY_FACTORY);
+
+        //Geometry possible = possibleArea.getObject().difference(checkedPoly);
         checkedArea = new GeometryItem<>(checkedPoly, GeometryType.NO_TREASURE, checkedAreaStyle);
         possibleArea = new GeometryItem<>(possible, GeometryType.POSSIBLE_TREASURE, possibleAreaStyle);
 
