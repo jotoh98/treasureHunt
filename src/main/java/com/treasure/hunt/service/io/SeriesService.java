@@ -97,7 +97,10 @@ public class SeriesService {
             zipOutputStream = new ZipOutputStream(new FileOutputStream(selectedFile));
         }
         ExecutorService executorService = AsyncUtils.newExhaustingThreadPoolExecutor();
-        final int smallRoundSize = SettingsService.getInstance().getSettings().getSmallRoundSize();
+        int smallRoundSize = SettingsService.getInstance().getSettings().getSmallRoundSize();
+        if (smallRoundSize <= 0) {
+            smallRoundSize = 500;
+        }
         List<CompletableFuture<Void>> runFutures = new ArrayList<>(smallRoundSize);
         List<StatisticsWithId> statisticsWithIds = new ArrayList<>(rounds);
         for (int id = 0; id < rounds; id++) {
