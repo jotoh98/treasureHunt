@@ -21,9 +21,20 @@ public enum StatusMessageType {
             true, "An explanation for the visualisation used by the hider"),
     PREFERRED_SIZE_OF_HINT("the size of an AngleHint", true, true, "the size of the hint in radians."), // maybe to preferences
     REMAINING_POSSIBLE_AREA("the remaining area in which the treasure could be", true, true, "The area which has not been excluded by previous hints"),
+
     RELATIVE_AREA_CUTOFF("relative area cutoff", true, true, "the area which has been excluded by this area in percent"),
-    DISTANCE_TREASURE_TO_CENTROID(" the distance beetween Centroid and the tresure", true, true, "the distance of the remaining possible area's centroid and the treasure"),
-    DISTANCE_ANGLE_BISECTOR_TREASURE("distance from Normal AngleLine to treasure", true, true, "distance from AngleHint bisector to treasure"),
+    RELATIVE_AREA_CUTOFF_RATING("rating: relative area cutoff", true, true, "the rating the relative area adds to the overall hint rating"),
+
+    DISTANCE_TREASURE_TO_CENTROID("distance Centroid-Treasure", true, true, "the distance of the remaining possible area's centroid and the treasure"),
+    DISTANCE_TREASURE_TO_CENTROID_RATING("rating: distance Centroid-Treasure", true, true, "the rating for distance of the remaining possible area's centroid and the treasure"),
+
+    DISTANCE_ANGLE_BISECTOR_TREASURE("distance from angle bisector to treasure", true, true, "distance from AngleHint bisector to treasure"),
+    DISTANCE_ANGLE_BISECTOR_RATING("rating : distance from Normal bisector to treasure ", true, true, "the rating for the distance from bisector to treasure"),
+
+    HINT_QUALITY_HIDER("hintquality strategyFromPaper", true, true, "the hintquality in terms of currentRectangle from StrategyFromPaper"),
+    HINT_QUALITY_HIDER_RATING("rating: hintquality strategyFromPaper", true, true, "the rating the hintquality adds"),
+
+    OVERALL_HINT_RATING("rating: of the current hint", true, true, "the rating the given hint has received"),
     CURRENT_TREASURE_POSITION("current treasure position", true, true, "the current x and y values of the treasure");
 
     @Getter

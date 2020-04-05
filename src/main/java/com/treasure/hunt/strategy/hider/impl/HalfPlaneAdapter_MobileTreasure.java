@@ -11,10 +11,10 @@ import org.locationtech.jts.geom.Point;
 @Preference(name = GameField.CircleExtension_Preference, value = 0)
 @Preference(name = StatisticalHider.getRelativeAreaCutoffWeight_Preference, value = 5)
 @Preference(name = StatisticalHider.DistanceFromNormalAngleLineToTreasureWeight_Preference, value = 2)
-@Preference(name = StatisticalHider.DistanceFromResultingCentroidToTreasureWeight_Preference, value = 3)
+@Preference(name = StatisticalHider.DistanceFromResultingCentroidToTreasureWeight_Preference, value = 0.2)
 @Preference(name = MobileTreasureHider.treasureBeforeHintFirst_Preference, value = 1)
-@Preference(name = MobileTreasureHider.walkedPathLengthForTreasureRelocation_Preference, value = 0)
-@Preference(name = MobileTreasureHider.mindTreasureRelocationDistance_Preference, value = 3)
+@Preference(name = MobileTreasureHider.walkedPathLengthForTreasureRelocation_Preference, value = 1)
+@Preference(name = MobileTreasureHider.mindTreasureRelocationDistance_Preference, value = 15)
 public class HalfPlaneAdapter_MobileTreasure implements HideAndSeekHider<HalfPlaneHint> {
     private MobileTreasureHider adaptee;
 

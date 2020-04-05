@@ -28,6 +28,9 @@ public class AngleHintStatistic {
     private double distanceFromResultingCentroidToTreasure;
     @Getter
     @Setter
+    private boolean isBadHint = false;
+    @Getter
+    @Setter
     private Pair<Coordinate, Double> worstConstantPoint = new Pair(new Coordinate(0,0),  0.0);
     @Getter
     @Setter
@@ -64,8 +67,8 @@ public class AngleHintStatistic {
                 ", relative Area Cutoff= " + relativeAreaCutoff +
                 ", Centroid distance to Treasure = " + distanceFromResultingCentroidToTreasure +
                 ", NormalLine distance to Treasure = " + distanceFromNormalAngleLineToTreasure +
-                ", WorstPoint is =" + worstConstantPoint.getKey() +
-                " with C= " + worstConstantPoint.getValue() +
+                ", WorstPoint is = " + worstConstantPoint.getKey() +
+                " with a constant = " + worstConstantPoint.getValue() +
                 '}';
     }
 

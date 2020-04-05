@@ -34,6 +34,7 @@ public abstract class StatisticalHider {
     public static final String getRelativeAreaCutoffWeight_Preference = "relative area cutoff weight";
     public static final String DistanceFromNormalAngleLineToTreasureWeight_Preference = "distance to angle bisector line weight";
     public static final String DistanceFromResultingCentroidToTreasureWeight_Preference = "distance to centroid weight";
+    public static final String badHintWeight_Preference = "bad Hint for StrategyFromPaper weight";
 
 
     protected GameField gameField;
@@ -117,7 +118,7 @@ public abstract class StatisticalHider {
             //calc some Statistics
             fillDistanceToNormalLine(hs);
             fillDistanceToCentroid(hs);
-            JTSUtils.isBadHint(currentRectangle, hint);
+            hs.setBadHint(JTSUtils.isBadHint(currentRectangle, hint));
 
             stats.add(hs);
             rateHint(hs);
@@ -145,6 +146,9 @@ public abstract class StatisticalHider {
 
         String bisectorDistPretty = new DecimalFormat("#.00").format(returnHint.getDistanceFromNormalAngleLineToTreasure());
         returnHint.getHint().getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.DISTANCE_ANGLE_BISECTOR_TREASURE, bisectorDistPretty));
+
+        String hintRatingPretty = new DecimalFormat("#.00").format(returnHint.getRating());
+        returnHint.getHint().getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.OVERALL_HINT_RATING, hintRatingPretty));
 
         return returnHint.getHint();
     }

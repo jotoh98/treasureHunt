@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
+import java.text.DecimalFormat;
 import java.util.Comparator;
 import java.util.List;
 
@@ -26,10 +27,10 @@ import java.util.List;
 @Preference(name = GameField.CircleExtension_Preference, value = 0)
 @Preference(name = StatisticalHider.getRelativeAreaCutoffWeight_Preference, value = 5)
 @Preference(name = StatisticalHider.DistanceFromNormalAngleLineToTreasureWeight_Preference, value = 2)
-@Preference(name = StatisticalHider.DistanceFromResultingCentroidToTreasureWeight_Preference, value = 3)
+@Preference(name = StatisticalHider.DistanceFromResultingCentroidToTreasureWeight_Preference, value = 0.2)
 @Preference(name = MobileTreasureHider.treasureBeforeHintFirst_Preference, value = 1)
-@Preference(name = MobileTreasureHider.walkedPathLengthForTreasureRelocation_Preference, value = 0)
-@Preference(name = MobileTreasureHider.mindTreasureRelocationDistance_Preference, value = 3)
+@Preference(name = MobileTreasureHider.walkedPathLengthForTreasureRelocation_Preference, value = 1)
+@Preference(name = MobileTreasureHider.mindTreasureRelocationDistance_Preference, value = 15)
 public class MobileTreasureHider extends StatisticalHider implements HideAndSeekHider<AngleHint> {
 
     public static final String treasureBeforeHintFirst_Preference = "pick treasure before hint? 1/0";
@@ -131,10 +132,37 @@ public class MobileTreasureHider extends StatisticalHider implements HideAndSeek
     @Override
     protected double rateHint(AngleHintStatistic ahs) {
         double rating = 0;
+        double ratingAddition;
 
-        rating += PreferenceService.getInstance().getPreference(StatisticalHider.getRelativeAreaCutoffWeight_Preference, 5).doubleValue() * (1 / ahs.getRelativeAreaCutoff());
-        rating += PreferenceService.getInstance().getPreference(StatisticalHider.DistanceFromNormalAngleLineToTreasureWeight_Preference, 2).doubleValue() * ahs.getDistanceFromNormalAngleLineToTreasure();
-        rating += PreferenceService.getInstance().getPreference(StatisticalHider.DistanceFromResultingCentroidToTreasureWeight_Preference, 3).doubleValue() * ahs.getDistanceFromResultingCentroidToTreasure();
+        double inverseRelativeAreaCutoff;
+        if( ahs.getRelativeAreaCutoff() == 0) {
+            inverseRelativeAreaCutoff = 5000;
+        }else{
+            inverseRelativeAreaCutoff = (1 / ahs.getRelativeAreaCutoff());
+        }
+
+        ratingAddition = PreferenceService.getInstance().getPreference(StatisticalHider.getRelativeAreaCutoffWeight_Preference, 5).doubleValue() * inverseRelativeAreaCutoff;
+        rating += ratingAddition;
+        String relativeArea_rating = new DecimalFormat("#.00").format(ratingAddition);
+        ahs.getHint().getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.RELATIVE_AREA_CUTOFF_RATING, relativeArea_rating));
+
+
+        ratingAddition = PreferenceService.getInstance().getPreference(StatisticalHider.DistanceFromNormalAngleLineToTreasureWeight_Preference, 2).doubleValue() * ahs.getDistanceFromNormalAngleLineToTreasure();
+        rating += ratingAddition;
+        String angleBisector_rating = new DecimalFormat("#.00").format(ratingAddition);
+        ahs.getHint().getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.DISTANCE_ANGLE_BISECTOR_RATING, angleBisector_rating));
+
+        ratingAddition += PreferenceService.getInstance().getPreference(StatisticalHider.DistanceFromResultingCentroidToTreasureWeight_Preference, 3).doubleValue() * ahs.getDistanceFromResultingCentroidToTreasure();
+        rating += ratingAddition;
+        String centroidDistance_rating = new DecimalFormat("#.00").format(ratingAddition);
+        ahs.getHint().getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.DISTANCE_TREASURE_TO_CENTROID_RATING, centroidDistance_rating));
+
+        if( ahs.isBadHint() ){
+            ratingAddition = PreferenceService.getInstance().getPreference(StatisticalHider.badHintWeight_Preference, 2).doubleValue() * 1;
+            rating += ratingAddition;
+            String hintQuality_rating = new DecimalFormat("#.00").format(ratingAddition);
+            ahs.getHint().getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.HINT_QUALITY_HIDER_RATING , hintQuality_rating));
+        }
 
         ahs.setRating(rating);
         return rating;
