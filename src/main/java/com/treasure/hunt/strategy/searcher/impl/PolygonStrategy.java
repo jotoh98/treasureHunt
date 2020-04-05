@@ -9,6 +9,7 @@ import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.*;
+import org.locationtech.jts.math.Vector2D;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,9 +32,11 @@ public class PolygonStrategy
     double currentSearchFieldDim = 4;
     Point currentPosition;
     List<GeometryAngle> hints = new ArrayList<>();
+    List<Point> path = new ArrayList<>();
 
     @Override
     public void init(Point searcherStartPosition) {
+        path.add((Point) searcherStartPosition.copy());
         currentPosition = searcherStartPosition;
         searchArea = createSquare(currentSearchFieldDim);
     }
@@ -49,10 +52,10 @@ public class PolygonStrategy
 
         Envelope envelope = searchArea.getEnvelopeInternal();
         Geometry polyHint = createPolygonHintFrom(hint.getGeometryAngle());
-        if ((searchArea.getArea() < Math.pow(2, 4) || envelope.getWidth() < 2 || envelope.getHeight() < 2)) {
+        if ((searchArea.getArea() < Math.pow(2, 4) || envelope.getWidth() < 2 || envelope.getHeight() < 2 || searchArea.getArea() / searchArea.getLength() < 2)) {
             extendSearchSquare();
             envelope = searchArea.getEnvelopeInternal();
-            if (envelope.getWidth() < 1.1 || envelope.getHeight() < 1.1) {
+            if (envelope.getWidth() < 0.5 || envelope.getHeight() < 0.5 || searchArea.getArea() / searchArea.getLength() < 0.3) {
                 extendSearchSquare();
 
                 return scanCompleteSearchArea();
@@ -74,7 +77,9 @@ public class PolygonStrategy
         SearchPath currentPath = new SearchPath(currentPosition);
         currentPath.addAdditionalItem(new GeometryItem(searchArea, GeometryType.CURRENT_POLYGON));
         for (Coordinate vertices : searchArea.getCoordinates()) {
-            currentPath.addPoint(JTSUtils.createPoint(vertices));
+            Point pathPoint = JTSUtils.createPoint(vertices);
+            currentPath.addPoint((Point) pathPoint.copy());
+            path.add((Point) pathPoint.copy());
         }
 
         currentPosition = currentPath.getLastPoint();
@@ -139,8 +144,32 @@ public class PolygonStrategy
      * @return the point the instance will next head to
      */
     public Point nextPosition() {
-        return JTSUtils.createPoint(JTSUtils.coordinateInDistance(currentPosition.getCoordinate(), searchArea.getInteriorPoint().getCoordinate(), 1));
+        Coordinate nextPosition = JTSUtils.coordinateInDistance(currentPosition.getCoordinate(), searchArea.getInteriorPoint().getCoordinate(), 1);
+        if (path.size() > 1 && nextPosition.equals2D(getPathReversed(1).getCoordinate(), 1e-8)) {
+            if (!isLastTenPositionsDistinct()) {
+                Vector2D randomDirection = Vector2D.create(1, 0).rotate(2 * Math.PI * Math.random());
+                nextPosition = randomDirection.translate(nextPosition);
+            } else {
+                nextPosition = JTSUtils.coordinateInDistance(currentPosition.getCoordinate(), searchArea.getInteriorPoint().getCoordinate(), 0.5);
+            }
+        } else {
+            nextPosition = JTSUtils.coordinateInDistance(currentPosition.getCoordinate(), searchArea.getInteriorPoint().getCoordinate(), 1);
+        }
+
+        Vector2D middle = Vector2D.create(JTSUtils.normalizedCoordinate(getLastHint().getCenter(), JTSUtils.middleOfGeometryAngle(getLastHint()))).normalize();
+        double weight = getLastHint().extend() / (6 * Math.PI);
+        middle.multiply(weight);
+        Point nextPositionPoint = JTSUtils.createPoint(JTSUtils.normalizedCoordinate(currentPosition.getCoordinate(), middle.translate(nextPosition)));
+
+        path.add(nextPositionPoint);
+        return nextPositionPoint;
     }
+
+    public Coordinate weightNextPosition(Coordinate interior) {
+        JTSUtils.coordinateInDistance(currentPosition.getCoordinate(), interior, 1);
+        return null;
+    }
+
 
     /**
      * extends the current search area by creating a square, doubled dimension of previous square, and intersecting with every previous hint
@@ -180,5 +209,20 @@ public class PolygonStrategy
             result = result.intersection(currentIntersect);
         }
         return result;
+    }
+
+    public GeometryAngle getLastHint() {
+        return hints.get(hints.size() - 1);
+    }
+
+    public Point getPathReversed(int i) {
+        return path.get(path.size() - i - 1);
+    }
+
+    public boolean isLastTenPositionsDistinct() {
+        if (path.size() < 11) {
+            return true;
+        }
+        return path.subList(path.size() - 11, path.size() - 1).stream().distinct().count() > 3;
     }
 }
