@@ -13,13 +13,15 @@ import com.treasure.hunt.utils.JTSUtils;
  */
 public class StatusMessages {
     static StatusMessageItem visualisationMessage = new StatusMessageItem(StatusMessageType.EXPLANATION_VISUALISATION_SEARCHER,
-            "The previous hint is visualized by a red area which covers the area the treasure is not in.\n" +
-                    "The hint before the previous hint is visualized by a lighter red area which covers the area the treasure is not in.\n" +
+            "The previous hint is visualized by a brown area which covers the area the treasure is not in.\n" +
+                    "The hint before the previous hint is visualized by a lighter brown area which covers the area the treasure is not in.\n" +
                     "\n" +
                     "The phase rectangle is visualized in a dark green color.\n" +
-                    "The current rectangle is visualized in a lighter green color.\n" +
+                    "The current rectangle is visualized in a lighter green color and is filled.\n" +
+                    "The previous rectangle is visualized in a lighter green color and is not filled.\n" +
                     "\n" +
-                    "When L1'' is needed (it will be explained when it is), this line is visualized in blue.");
+                    "When L1'' is needed (it will be explained when it is), this line is visualized in blue."
+    );
 
     static StatusMessageItem explainingStrategyMessage = new StatusMessageItem(StatusMessageType.EXPLANATION_STRATEGY,
             "This strategy implements the strategy from the paper \"Deterministic Treasure Hunt in the Plane with Angular Hints\"\n" +
@@ -139,6 +141,7 @@ public class StatusMessages {
             default:
                 throw new IllegalArgumentException("caseIndex must be in [1,...,6] but equals " + caseIndex);
         }
+
         StatusMessageItem explanation = new StatusMessageItem(StatusMessageType.EXPLANATION_MOVEMENT, statusMessage);
         move.getStatusMessageItemsToBeAdded().add(explanation);
         lastHintBadSubroutine.getStrategy().statusMessageItemsToBeRemovedNextMove.add(explanation);
