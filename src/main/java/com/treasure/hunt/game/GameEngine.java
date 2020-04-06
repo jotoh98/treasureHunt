@@ -66,7 +66,22 @@ public class GameEngine {
     }
 
     /**
-     * initialize searcher and treasure positions.
+     * @param searchPath a valid {@link SearchPath}, the {@link Searcher} moved.
+     * @return {@code true}, if the {@link Searcher} found the treasure. {@code false}, otherwise.
+     * The {@link Searcher} found the treasure, if had a distance of &le; {@link Searcher#SCANNING_DISTANCE} in this SearchPath.
+     */
+    public static boolean located(SearchPath searchPath, Point treasurePos) {
+        if (searchPath.getPoints().size() == 1) {
+            return searchPath.getPoints().get(0).distance(treasurePos) <= Searcher.SCANNING_DISTANCE;
+        }
+        return searchPath.getLines().stream()
+                .map(line -> line.distance(treasurePos))
+                .anyMatch(distance -> distance <= Searcher.SCANNING_DISTANCE);
+    }
+
+    /**
+     * Initializes {@link Searcher}, {@link Hider} and the treasure position
+     * and simulates an initial Step.
      *
      * @return a {@link Turn}, since the initialization must be displayed.
      */
@@ -80,15 +95,17 @@ public class GameEngine {
             throw new IllegalArgumentException("hider: " + hider + " gave a treasure position which is null.");
         }
 
-        // Check, whether treasure spawns in range of searcher
-        if (searcherPos.distance(treasurePos) <= Searcher.SCANNING_DISTANCE) {
-            finished = true;
-        }
-
-        return new Turn(
+        Turn initialTurn = new Turn(
                 null,
                 new SearchPath(searcherPos),
                 treasurePos);
+
+        verifySearchPath(initialTurn.getSearchPath());
+        if (located(initialTurn.getSearchPath(), treasurePos)) {
+            finished = true;
+        }
+
+        return initialTurn;
     }
 
     /**
@@ -104,11 +121,9 @@ public class GameEngine {
             throw new IllegalStateException("Game is already finished");
         }
 
-        final Point searchPathStart = lastSearchPath == null ? searcherPos : lastSearchPath.getLastPoint();
-
         searcherMove();
 
-        if (located(lastSearchPath)) {
+        if (located(lastSearchPath, treasurePos)) {
             finished = true;
             return new Turn(null, lastSearchPath, treasurePos);
         } else {
@@ -116,16 +131,6 @@ public class GameEngine {
         }
 
         return new Turn(lastHint, lastSearchPath, treasurePos);
-    }
-
-    /**
-     * Let the {@link GameEngine#hider} give its {@link Hint}.
-     */
-    protected void hiderMove() {
-        Hint newHint = hider.move(lastSearchPath);
-        assert (newHint != null);
-        verifyHint(newHint, treasurePos, lastSearchPath.getLastPoint());
-        lastHint = newHint;
     }
 
     /**
@@ -138,9 +143,8 @@ public class GameEngine {
         } else {
             lastSearchPath = searcher.move(lastHint);
         }
-        assert (lastSearchPath != null);
-
         lastSearchPath.addPointToFront(searcherPos);
+        verifySearchPath(lastSearchPath);
 
         assert (lastSearchPath.getPoints().size() != 0);
 
@@ -148,59 +152,97 @@ public class GameEngine {
     }
 
     /**
-     * TODO implement:
-     * AngleHints must be of angle [0, 180] !?
-     * Verifies whether the {@link Hint} {@code hint} given by the {@link Hider} followed the rules.
+     * Verifies whether the {@link SearchPath} {@code searchPath} given by the {@link Hider} followed the given rules.
      *
-     * @param hint             {@link Hint} to be verified
-     * @param treasurePosition treasure position
-     * @param searcherPosition searcher position
+     * @param searchPath {@link Hint} to be verified
+     * @throws IllegalArgumentException if the {@link SearchPath} {@code searchPath} did not followed the rules.
      */
-    protected void verifyHint(Hint hint, Point treasurePosition, Point searcherPosition) {
-        if (hint instanceof AngleHint) {
-            GeometryAngle geometryAngle = ((AngleHint) hint).getGeometryAngle();
-            if (!geometryAngle.inView(treasurePosition.getCoordinate())) {
-                throw new IllegalArgumentException("Treasure does not lie in given Angle.");
-            }
-            if (!JTSUtils.doubleEqual(geometryAngle.getCenter().distance(searcherPosition.getCoordinate()), 0)) {
-                throw new IllegalArgumentException("Treasure does not originate in the searcher's last position.");
-            }
+    protected void verifySearchPath(SearchPath searchPath) {
+        if (searchPath == null) {
+            throw new IllegalArgumentException("Searcher " + searcher + " gave a SearchPath, which was null!");
         }
-        if (hint instanceof CircleHint) {
-            Circle lastCircleHint = ((CircleHint) hint).getCircle();
-            Circle newCircleHint = ((CircleHint) hint).getCircle();
-            // check, whether the CircleHint contains the treasure.
-            if (!newCircleHint.inside(treasurePosition.getCoordinate())) {
-                throw new IllegalArgumentException("The CircleHint does not contain the treasure.\n" +
-                        "It says, " + newCircleHint.getRadius() + " around " + newCircleHint.getCenter() + ", " +
-                        "but was " + newCircleHint.getCenter().distance(treasurePosition.getCoordinate()));
-            }
-            // check, whether the current CircleHint lies completely in the previous.
-            if (lastHint != null) {
-                if (lastCircleHint.getRadius() > (lastCircleHint.distance(newCircleHint) + newCircleHint.getRadius())) {
-                    throw new IllegalArgumentException("New CircleHint does not completely lie in the last Circle Hint.");
-                }
-            }
+        if (searchPath.getPoints().size() < 1) {
+            throw new IllegalStateException("The SearchPath should never got zero points!");
         }
     }
 
     /**
-     * @param searchPath the {@link SearchPath}, the {@link Searcher} moved.
-     * @return {@code true}, if the {@link Searcher} found the treasure. {@code false}, otherwise.
-     * The {@link Searcher} found the treasure, if had a distance of &le; {@link Searcher#SCANNING_DISTANCE} in this SearchPath.
-     * @throws IllegalStateException if this SearchPath contains zero {@link Point}s.
+     * Verifies whether the {@link AngleHint} {@code angleHint} given by the {@link Hider} followed the given rules.
+     *
+     * @param previousAngleHint the previous {@link AngleHint}
+     * @param currentAngleHint  {@link AngleHint} to be verified
+     * @param treasurePosition  {@link Point} of the treasure position
+     * @param searcherPosition  {@link Point} of the searcher position
+     * @throws IllegalArgumentException if the {@link AngleHint} {@code angleHint} did not followed the rules.
      */
-    public boolean located(SearchPath searchPath) {
-        if (searchPath.getPoints().size() < 1) {
-            throw new IllegalStateException("The SearchPath should never got zero points!");
+    protected static void verifyHint(AngleHint previousAngleHint, AngleHint currentAngleHint, Point treasurePosition, Point searcherPosition) {
+        if (currentAngleHint == null) {
+            throw new IllegalArgumentException("Hider gave a Hint, which was null!");
         }
-
-        if (searchPath.getPoints().size() == 1) {
-            return searchPath.getPoints().get(0).distance(treasurePos) <= Searcher.SCANNING_DISTANCE;
+        if (!currentAngleHint.getGeometryAngle().getCenter().equals(searcherPosition.getCoordinate())) {
+            throw new IllegalArgumentException("AngleHint center do not lie on the player position.");
         }
+        GeometryAngle geometryAngle = (currentAngleHint).getGeometryAngle();
+        if (!geometryAngle.inView(treasurePosition.getCoordinate())) {
+            throw new IllegalArgumentException("Treasure does not lie in given Angle.");
+        }
+        if (!JTSUtils.doubleEqual(geometryAngle.getCenter().distance(searcherPosition.getCoordinate()), 0)) {
+            throw new IllegalArgumentException("Treasure does not originate in the searcher's last position.");
+        }
+    }
 
-        return searchPath.getLines().stream()
-                .map(line -> line.distance(treasurePos))
-                .anyMatch(distance -> distance <= Searcher.SCANNING_DISTANCE);
+    /**
+     * Verifies whether the {@link CircleHint} {@code circleHint} given by the {@link Hider} followed the given rules.
+     *
+     * @param previousCircleHint the previous {@link CircleHint}
+     * @param currentCircleHint  {@link CircleHint} to be verified
+     * @param treasurePosition   {@link Point} of the treasure position
+     * @param searcherPosition   {@link Point} of the {@link Searcher} position
+     * @throws IllegalArgumentException if the {@link CircleHint} {@code circleHint} did not followed the rules
+     */
+    protected static void verifyHint(CircleHint previousCircleHint, CircleHint currentCircleHint, Point treasurePosition, Point searcherPosition) {
+        if (currentCircleHint == null) {
+            throw new IllegalArgumentException("Hider gave a CircleHint, which was null!");
+        }
+        Circle currentCircle = currentCircleHint.getCircle();
+        if (!currentCircle.inside(treasurePosition.getCoordinate())) {
+            throw new IllegalArgumentException("The CircleHint does not contain the treasure.\n" +
+                    "It says, " + currentCircle.getRadius() + " around " + currentCircle.getCenter() + ", " +
+                    "but was " + currentCircle.getCenter().distance(treasurePosition.getCoordinate()));
+        }
+        if (previousCircleHint != null && !previousCircleHint.getCircle().contains(currentCircle)) {
+            throw new IllegalArgumentException("The previous CircleHint does not contain the current CircleHint!");
+        }
+    }
+
+    /**
+     * Verifies whether the {@link Hint} {@code hint} given by the {@link Hider} followed the given rules.
+     *
+     * @param previousHint     the previous {@link Hint}
+     * @param currentHint      {@link Hint} to be verified
+     * @param treasurePosition {@link Point} of the treasure position
+     * @param searcherPosition {@link Point} of the searcher position
+     * @throws IllegalArgumentException if the {@link Hint} {@code hint} did not followed the rules.
+     */
+    protected static void verifyHint(Hint previousHint, Hint currentHint, Point treasurePosition, Point searcherPosition) {
+        if (previousHint != null && !previousHint.getClass().equals(currentHint.getClass())) {
+            throw new IllegalArgumentException("previous and current Hint are of different types!");
+        }
+        if (currentHint instanceof AngleHint) {
+            verifyHint((AngleHint) previousHint, (AngleHint) currentHint, treasurePosition, searcherPosition);
+        } else if (currentHint instanceof CircleHint) {
+            verifyHint((CircleHint) previousHint, (CircleHint) currentHint, treasurePosition, searcherPosition);
+        } else {
+            throw new IllegalArgumentException("This type of hint is not known!");
+        }
+    }
+
+    /**
+     * Let the {@link GameEngine#hider} give its {@link Hint}.
+     */
+    protected void hiderMove() {
+        Hint newHint = hider.move(lastSearchPath);
+        verifyHint(lastHint, newHint, treasurePos, lastSearchPath.getLastPoint());
+        lastHint = newHint;
     }
 }
