@@ -3,11 +3,9 @@ package com.treasure.hunt.view.plot;
 import com.treasure.hunt.analysis.StatisticAggregation;
 import com.treasure.hunt.analysis.StatisticObject;
 import com.treasure.hunt.game.GameEngine;
-import com.treasure.hunt.service.preferences.Preference;
+import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -16,13 +14,14 @@ import javafx.util.StringConverter;
 import lombok.Value;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class PlotSettingsController {
     public CheckBox savePNGCheckBox;
-    public ComboBox<Preference> selectPreference;
+    public ComboBox<String> selectPreference;
     public ComboBox<StatisticObject.StatisticInfo> selectStatistic;
     public TextField lowerBound;
     public TextField upperBound;
@@ -34,6 +33,11 @@ public class PlotSettingsController {
     private Class<? extends GameEngine> selectedGameEngine;
     private Class<? extends Searcher> selectedSearcher;
     private Class<? extends Hider> selectedHider;
+    private Consumer<Settings> settingsConsumer;
+
+    public void init(Consumer<Settings> consumer) {
+        settingsConsumer = consumer;
+    }
 
     public void onSubmit() throws IOException {
         double lowerBoundValue;
@@ -91,30 +95,22 @@ public class PlotSettingsController {
             return;
         }
 
-        Preference preferenceValue = selectPreference.getValue();
-        if (preferenceValue == null) {
+        String preferenceValue = selectPreference.getValue();
+        if (preferenceValue == null || preferenceValue.isEmpty()) {
             error("Choose a Preference");
             return;
         }
 
         Integer maxSteps = null;
-        try{
+        try {
             maxSteps = Integer.parseInt(maxStepField.getText());
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
 
         }
 
         Settings settings = new Settings(aggregationTypeComboValue, statisticValue, preferenceValue, lowerBoundValue, upperBoundValue, stepSizeValue, seriesAccuracyValue, maxSteps,  savePNGCheckBox.isSelected());
-        openPlotController(settings);
+        settingsConsumer.accept(settings);
 
-    }
-
-    private void openPlotController(Settings settings) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/plot.fxml"));
-        Parent plot = fxmlLoader.load();
-        PlotController plotController = fxmlLoader.getController();
-        plotController.setData(settings, selectedGameEngine, selectedSearcher, selectedHider);
-        errorLabel.getScene().setRoot(plot);
     }
 
     public void onCancel() {
@@ -131,13 +127,9 @@ public class PlotSettingsController {
     }
 
     public void setData(Class<? extends GameEngine> selectedGameEngine, Class<? extends Searcher> selectedSearcher, Class<? extends Hider> selectedHider) {
-        initPreferenceComboBox(selectedSearcher, selectedHider);
+        initPreferenceComboBox();
         initSelectStatisticComboBox();
         initSelectAggregationComboBox();
-        lowerBound.setText("0");
-        upperBound.setText("100");
-        stepSize.setText("1");
-        seriesAccuracy.setText("100");
         this.selectedGameEngine = selectedGameEngine;
         this.selectedSearcher = selectedSearcher;
         this.selectedHider = selectedHider;
@@ -175,32 +167,29 @@ public class PlotSettingsController {
         });
     }
 
-    private void initPreferenceComboBox(Class<? extends Searcher> selectedSearcher, Class<? extends Hider> selectedHider) {
-        Preference[] annotationsByTypeSearcher = selectedSearcher.getAnnotationsByType(Preference.class);
-        Preference[] annotationsByTypeHider = selectedHider.getAnnotationsByType(Preference.class);
+    private void initPreferenceComboBox() {
+        final List<String> preferenceNames = Arrays.stream(PreferenceService.class.getDeclaredFields())
+                .filter(field -> field.getType().equals(String.class))
+                .filter(field -> !field.getName().equals("PREF_PREFIX"))
+                .peek(field -> field.setAccessible(true))
+                .map(field -> {
+                    try {
+                        return (String) field.get(null);
+                    } catch (Exception ignored) {
+                    }
+                    return "";
+                })
+                .filter(string -> !string.isEmpty())
+                .collect(Collectors.toList());
 
-        List<Preference> preferences = new ArrayList<>(Arrays.asList(annotationsByTypeHider));
-        preferences.addAll(Arrays.asList(annotationsByTypeSearcher));
-
-        selectPreference.getItems().setAll(preferences);
-        selectPreference.setConverter(new StringConverter<>() {
-            @Override
-            public String toString(Preference preference) {
-                return preference == null ? null : preference.name();
-            }
-
-            @Override
-            public Preference fromString(String s) {
-                throw new UnsupportedOperationException();
-            }
-        });
+        selectPreference.getItems().setAll(preferenceNames);
     }
 
     @Value
     public static class Settings {
         StatisticAggregation type;
         StatisticObject.StatisticInfo statisticInfo;
-        Preference preference;
+        String preferenceName;
         double lowerBoundValue;
         double upperBoundValue;
         double stepSizeValue;

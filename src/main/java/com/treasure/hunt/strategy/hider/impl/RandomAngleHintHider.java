@@ -26,7 +26,7 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
     private Point treasurePosition;
 
     /**
-     * @return {@link Point} containing treasure location of [0,100)x[0x100)
+     * @return A random treaasure location via {@link JTSUtils#shuffleTreasure()}.
      */
     @Override
     public Point getTreasureLocation() {
@@ -34,6 +34,9 @@ public class RandomAngleHintHider implements Hider<AngleHint> {
         return treasurePosition;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void init(Point searcherStartPosition) {
     }

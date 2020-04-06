@@ -11,20 +11,27 @@ import org.locationtech.jts.geom.Point;
  * @author dorianreineccius
  */
 public class StandingSearcher implements Searcher<Hint> {
-    private Point startPosition;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void init(Point searcherStartPosition) {
-        this.startPosition = startPosition;
     }
 
+    /**
+     * @return an empty {@link SearchPath}.
+     */
     @Override
     public SearchPath move() {
-        return new SearchPath(startPosition);
+        return new SearchPath();
     }
 
+    /**
+     * @return an empty {@link SearchPath}.
+     */
     @Override
     public SearchPath move(Hint hint) {
-        return new SearchPath(startPosition);
+        return move();
     }
 }

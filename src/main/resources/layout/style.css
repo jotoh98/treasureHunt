@@ -9,6 +9,7 @@
     DARKER_BACKGROUND: #1c1c1c;
     REQUIRED_RED: red;
     ACCENT: #04ff16;
+    -fx-text-fill: white;
 }
 
 #root,
@@ -20,7 +21,6 @@
     -fx-background-color: transparent;
     -fx-border-color: BORDER_COLOR;
     -fx-border-width: 0;
-    -fx-text-fill: white;
 }
 
 .pop-up-pane .list-view {
@@ -30,7 +30,6 @@
 
 .pop-up-pane .list-cell {
     -fx-background-color: LIGHTER_BACKGROUND;
-    -fx-text-fill: white;
 }
 
 .pop-up-pane .list-cell:focused {
@@ -47,9 +46,20 @@
     -fx-background-color: BACKGROUND_COLOR;
 }
 
+.combo-box .text-field {
+    -fx-border-width: 0;
+    -fx-padding: 0 5px;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+
 .toolbar {
-    -fx-padding: 0 7pt;
+    -fx-padding: 0;
     -fx-border-color: BORDER_COLOR;
+    -fx-spacing: 10;
 }
 
 .toolbar.top {
@@ -79,9 +89,14 @@
     -fx-padding: 0 0 0 10pt;
 }
 
-.toolbar *,
-.list-cell {
-    -fx-text-fill: lightgrey;
+#statisticsTable .toolbar {
+    -fx-padding: 0 5pt;
+    -fx-border-width: 0;
+    -fx-background-color: LIGHTER_BACKGROUND;
+}
+
+.list-cell * {
+    -fx-text-fill: SECONDARY_GREY;
 }
 
 .button,
@@ -89,7 +104,7 @@
     -fx-background-color: transparent;
     -fx-background-radius: 0;
     -fx-cursor: hand;
-    -fx-padding: 3pt 14pt;
+    -fx-padding: 3pt 10pt;
     -fx-font-size: .9em;
     -fx-border-width: .5pt;
     -fx-border-color: rgba(255, 255, 255, 0.27);
@@ -108,18 +123,6 @@
     -fx-table-cell-border-color: red;
 }
 
-.table-view .placeholder .label {
-    -fx-text-fill: white;
-}
-
-.table-view .table-cell {
-    -fx-text-fill: white;
-}
-
-.text-field, .combo-box{
-    -fx-text-fill: white;
-}
-
 .table-view:focused {
     -fx-background-color: transparent;
 }
@@ -133,10 +136,6 @@
     -fx-background-color: DARKER_BACKGROUND;
 }
 
-.table-view .column-header-background .label {
-    -fx-text-fill: white;
-}
-
 .table-view .column-header,
 .table-view .filler,
 .table-view .table-cell {
@@ -148,7 +147,6 @@
     -fx-padding: 0;
     -fx-table-cell-border-color: DARK_BACKGROUND;
     -fx-border-width: 0;
-    -fx-text-fill: white;
 }
 
 .table-row-cell:odd {
@@ -228,7 +226,7 @@
 }
 
 .arrow {
-    -fx-background-color: lightgrey;
+    -fx-background-color: SECONDARY_GREY;
 }
 
 .list-cell {
@@ -250,7 +248,6 @@
 
 .list-cell:selected {
     -fx-background-color: DARKER_BACKGROUND;
-    -fx-text-fill: white;
 }
 
 .combo-box .list-cell:selected {
@@ -295,11 +292,9 @@
 
 .scroll-bar:vertical .increment-button,
 .scroll-bar:vertical .decrement-button {
-
     -fx-background-color: transparent;
     -fx-background-radius: 0em;
     -fx-padding: 0 10 0 0;
-
 }
 
 .scroll-bar .increment-arrow,
@@ -313,16 +308,11 @@
     -fx-background-color: derive(black, 90%);
     -fx-background-insets: 2, 0, 0;
     -fx-background-radius: 2em;
-
 }
 
 .widget {
     -fx-padding: 5pt;
     -fx-background-color: rgba(255, 255, 255, 0.1);
-}
-
-.widget-pane * {
-    -fx-text-fill: white;
 }
 
 .text-field {
@@ -332,6 +322,10 @@
     -fx-border-color: BORDER_COLOR;
     -fx-background-color: BACKGROUND_COLOR;
     -fx-background-radius: 0;
+}
+
+.text-input {
+    -fx-fill: white;
 }
 
 .widget-pane {
@@ -362,12 +356,37 @@
 
 .tree-view * {
     -fx-background-color: BACKGROUND_COLOR;
-    -fx-fill: lightgrey;
+    -fx-fill: SECONDARY_GREY;
+}
+
+.spinner .text-field {
+    -fx-padding: 2pt 10pt;
 }
 
 .titled-pane .arrow-button .arrow,
-.tree-cell > .tree-disclosure-node > .arrow {
-    -fx-background-color: lightgrey;
+.tree-cell > .tree-disclosure-node > .arrow,
+.increment-arrow,
+.decrement-arrow {
+    -fx-background-color: SECONDARY_GREY;
+}
+
+.decrement-arrow-button,
+.increment-arrow-button {
+    -fx-background-color: BORDER_COLOR;
+    -fx-border-width: 0;
+}
+
+.decrement-arrow-button:hover,
+.increment-arrow-button:hover {
+    -fx-background-color: DARKER_BACKGROUND;
+}
+
+.titled-pane .title {
+    -fx-background-color: LIGHTER_BACKGROUND;
+}
+
+.titled-pane .content {
+    -fx-background-color: transparent;
 }
 
 .tree-cell > .tree-disclosure-node > .arrow {
@@ -388,12 +407,8 @@
     -fx-background-color: BACKGROUND_COLOR;
 }
 
-.settings > .viewport {
+.settings > .viewport, .settings {
     -fx-background-color: BACKGROUND_COLOR;
-}
-
-.settings * {
-    -fx-text-fill: white;
 }
 
 .settings .description {
@@ -409,4 +424,17 @@
     -fx-border-width: 1pt 0 0 0;
     -fx-border-color: LIGHTER_BACKGROUND;
     -fx-padding: 10pt;
+}
+
+.dark-bg {
+    -fx-background-color: BACKGROUND_COLOR;
+    -fx-text-fill: white;
+}
+
+.dark-bg * {
+    -fx-text-fill: inherit;
+}
+
+.text-red {
+    -fx-text-fill: red;
 }

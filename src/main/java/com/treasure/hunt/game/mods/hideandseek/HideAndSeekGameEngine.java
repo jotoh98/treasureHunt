@@ -2,10 +2,11 @@ package com.treasure.hunt.game.mods.hideandseek;
 
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.strategy.hider.Hider;
+import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.Requires;
-import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Point;
 
 /**
  * In this modification, the hider may reset the
@@ -20,27 +21,19 @@ public class HideAndSeekGameEngine extends GameEngine {
         super(searcher, hider);
     }
 
-    public HideAndSeekGameEngine(Searcher searcher, Hider hider, Coordinate coordinate) {
-        super(searcher, hider, coordinate);
+    public HideAndSeekGameEngine(Searcher searcher, Hider hider, Point point) {
+        super(searcher, hider, point);
     }
 
     /**
      * Let the {@link GameEngine#hider} reset the treasure position and give his {@link com.treasure.hunt.strategy.hint.Hint}.
      */
-    protected void moveHider() {
-        treasurePos = hider.getTreasureLocation(); // Difference between GameEngine and HideAndSeekGameEngine.
-        lastHint = hider.move(lastSearchPath);
-        assert (lastHint != null);
-        verifyHint(lastHint, treasurePos);
-    }
-
-    /**
-     * Let the {@link GameEngine#hider} reset the treasure position and give his {@link com.treasure.hunt.strategy.hint.Hint}.
-     */
+    @Override
     protected void hiderMove() {
-        lastHint = hider.move(lastSearchPath);
+        Hint newHint = hider.move(lastSearchPath);
         treasurePos = hider.getTreasureLocation(); // Difference between GameEngine and HideAndSeekGameEngine.
-        assert (lastHint != null);
-        verifyHint(lastHint, treasurePos);
+        verifyHint(lastHint, newHint, treasurePos, lastSearchPath.getLastPoint());
+        lastHint = newHint;
     }
+
 }

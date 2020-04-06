@@ -1,16 +1,20 @@
 package com.treasure.hunt.utils;
 
 import com.treasure.hunt.jts.awt.CanvasBoundary;
+import com.treasure.hunt.jts.geom.Circle;
 import com.treasure.hunt.jts.geom.GeometryAngle;
 import com.treasure.hunt.service.preferences.PreferenceService;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
+import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
+import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils;
+import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StrategyFromPaper;
+import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.algorithm.ConvexHull;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.math.Vector2D;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -18,12 +22,14 @@ import java.util.stream.Collectors;
  *
  * @author Rank, dorianreineccius, jotoh, axel12
  */
+@Slf4j
 public final class JTSUtils {
     /**
      * A static final shared {@link GeometryFactory} we use, such that every usage
      * uses the same settings of the geometry factory.
      */
-    public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(1000000000));
+    public static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(1000000));
+    public static final PrecisionModel APPROXIMATELY_PRECISION = new PrecisionModel(10000);
 
     private JTSUtils() {
     }
@@ -37,8 +43,12 @@ public final class JTSUtils {
         return GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
     }
 
-    public static Point createPoint(Coordinate p) {
-        return createPoint(p.x, p.x);
+    /**
+     * @param coordinate The {@link Coordinate}, which should be converted to a {@link Point}.
+     * @return {@link Point} lying on {@code coordinate.}.
+     */
+    public static Point createPoint(Coordinate coordinate) {
+        return createPoint(coordinate.x, coordinate.y);
     }
 
     /**
@@ -60,20 +70,53 @@ public final class JTSUtils {
      * @return an intersection {@link Point} of the {@link LineSegment} objects {@code line} and {@code lineSegment}
      */
     public static Coordinate lineWayIntersection(LineSegment line, LineSegment segment) {
+        if (doubleEqualApproximately(line.distancePerpendicular(segment.p0), 0)) {
+            return segment.p0;
+        }
+        if (doubleEqualApproximately(line.distancePerpendicular(segment.p1), 0)) {
+            return segment.p1;
+        }
+
         Coordinate intersection = line.lineIntersection(segment);
         if (intersection == null) {
             return null;
         }
-        double distance = GEOMETRY_FACTORY.getPrecisionModel().makePrecise(segment.distance(intersection));
-        if (distance != 0) {
+        if (!doubleEqual(segment.distance(intersection), 0)) {
             return null;
         }
         return intersection;
     }
 
+    /**
+     * Tests whether the convex polygon polygon intersects with the line line and returns the intersecting coordinates
+     * if it does.
+     *
+     * @param polygon a {@link Polygon}
+     * @param line    a {@link LineSegment}
+     * @return an ArrayList of the intersecting coordinates if they exist, a empty ArrayList otherwise
+     */
+    public static ArrayList<Coordinate> convexPolygonLineIntersection(Polygon polygon, LineSegment line) {
+        ArrayList<Coordinate> result = new ArrayList<>();
+        Coordinate[] coordinatesPolygon = polygon.getCoordinates();
+        for (int i = 0; i < coordinatesPolygon.length - 1 && result.size() < 3; i++) {
+            Coordinate intersection = lineWayIntersection(line, new LineSegment(coordinatesPolygon[i], coordinatesPolygon[i + 1]));
+            if (intersection != null) {
+                result.add(intersection);
+            }
+        }
+        return result;
+    }
+
     public static boolean doubleEqual(double a, double b) {
         return (0 == GEOMETRY_FACTORY.getPrecisionModel().makePrecise(a - b));
+    }
 
+    public static boolean coordinateEqual(Coordinate a, Coordinate b) {
+        return doubleEqual(a.x, b.x) && doubleEqual(a.y, b.y);
+    }
+
+    public static boolean doubleEqualApproximately(double a, double b) {
+        return (0 == APPROXIMATELY_PRECISION.makePrecise(a - b));
     }
 
     /**
@@ -85,7 +128,7 @@ public final class JTSUtils {
         return middleOfGeometryAngle(angle);
     }
 
-    public static Coordinate middleOfGeometryAngle(GeometryAngle angle){
+    public static Coordinate middleOfGeometryAngle(GeometryAngle angle) {
         return angle
                 .rightVector()
                 .rotate(angle.extend() / 2)
@@ -201,8 +244,8 @@ public final class JTSUtils {
     }
 
     /**
-     * @param searcher  the position of the {@link com.treasure.hunt.strategy.searcher.Searcher}.
-     * @param treasure  the position of the treasure.
+     * @param searcher  the {@link Coordinate} of the {@link com.treasure.hunt.strategy.searcher.Searcher}.
+     * @param treasure  the {@link Coordinate} of the treasure.
      * @param maxExtend number of {@code [0, 2 * Math.PI)} defining, how wide the angle is opened.
      * @return a valid {@link GeometryAngle}, randomly generated.
      */
@@ -210,6 +253,13 @@ public final class JTSUtils {
         return validRandomAngle(searcher, treasure, maxExtend, 0);
     }
 
+    /**
+     * @param searcher  the {@link Coordinate} of the {@link com.treasure.hunt.strategy.searcher.Searcher}.
+     * @param treasure  the {@link Coordinate} of the treasure.
+     * @param maxExtend number of {@code [0, 2 * Math.PI)} defining, how wide the angle is opened.
+     * @param minExtend number of {@code [0, maxExtend)}
+     * @return a valid {@link GeometryAngle}, randomly generated.
+     */
     public static GeometryAngle validRandomAngle(Coordinate searcher, Coordinate treasure, double maxExtend, double minExtend) {
 
         if (maxExtend <= 0 || minExtend < 0 || minExtend >= maxExtend) {
@@ -222,12 +272,20 @@ public final class JTSUtils {
         return new GeometryAngle(GEOMETRY_FACTORY, searcher, start, extend);
     }
 
+    /**
+     * @param geometries A list, containing {@link Geometry}'s, which should be converted to a list of {@link Coordinate}'s.
+     * @return A list of {@link Coordinate}'s, which {@code geometries} is converted to.
+     */
     public static List<Coordinate> getCoordinateList(List<? extends Geometry> geometries) {
         return geometries.stream()
                 .map(Geometry::getCoordinate)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @param envelope An {@link Envelope}, which will be converted to an {@link Polygon}.
+     * @return A {@link Polygon}, a {@code envelope} is converted to.
+     */
     public static Polygon toPolygon(Envelope envelope) {
         return GEOMETRY_FACTORY.createPolygon(new Coordinate[]{
                 new Coordinate(envelope.getMinX(), envelope.getMinY()),
@@ -257,6 +315,37 @@ public final class JTSUtils {
     }
 
     /**
+     * Shuffles a new circle covered by the boundary circle, containing the pivot coordinate and obtaining the given radius;
+     *
+     * @param boundary circle to cover the generated circle
+     * @param pivot    coordinate, that must lay inside of the generated circle
+     * @param radius   radius of the generated circle
+     * @return a valid generated circle
+     */
+    public static Circle randomContainedCircle(Circle boundary, Coordinate pivot, double radius) {
+        assert boundary.inside(pivot);
+        assert boundary.getRadius() >= radius;
+        final Circle pivotBoundary = new Circle(pivot, radius);
+        final Circle innerBoundary = new Circle(boundary.getCenter(), boundary.getRadius() - radius);
+
+        Coordinate center;
+        if (innerBoundary.covers(pivotBoundary)) {
+            center = randomInCircle(pivotBoundary);
+        } else {
+            Circle generator = innerBoundary;
+            Circle tester = pivotBoundary;
+            if (2 * radius < boundary.getRadius()) {
+                generator = pivotBoundary;
+                tester = innerBoundary;
+            }
+            do {
+                center = randomInCircle(generator);
+            } while (!tester.inside(center));
+        }
+        return new Circle(center, radius);
+    }
+
+    /**
      * Get the {@link ConvexHull} for a list of {@link Coordinate}s.
      *
      * @param coordinates the list of coordinates
@@ -269,11 +358,170 @@ public final class JTSUtils {
         );
     }
 
+    /**
+     * @return A {@link Point}, where the treasure is located,msatisfying {@link PreferenceService#MIN_TREASURE_DISTANCE}, {@link PreferenceService#MAX_TREASURE_DISTANCE} and {@link PreferenceService#TREASURE_DISTANCE}.
+     */
     public static Point shuffleTreasure() {
-        double distance = PreferenceService.getInstance()
+        Optional<Number> fixedDistance = PreferenceService.getInstance()
+                .getPreference(PreferenceService.TREASURE_DISTANCE);
+
+        if (fixedDistance.isPresent()) {
+            Coordinate treasure = Vector2D.create(fixedDistance.get().doubleValue(), 0).rotate(2 * Math.PI * Math.random()).translate(new Coordinate());
+            return JTSUtils.GEOMETRY_FACTORY.createPoint(treasure);
+        }
+
+        double maxDistance = PreferenceService.getInstance()
                 .getPreference(PreferenceService.MAX_TREASURE_DISTANCE, 100)
                 .doubleValue();
-        Coordinate treasure = Vector2D.create(Math.random() * distance, 0).rotate(2 * Math.PI * Math.random()).translate(new Coordinate());
+        double minDistance = PreferenceService.getInstance()
+                .getPreference(PreferenceService.MIN_TREASURE_DISTANCE, 0)
+                .doubleValue();
+
+        Coordinate treasure = Vector2D.create(Math.random() * (maxDistance - minDistance) + minDistance, 0).rotate(2 * Math.PI * Math.random()).translate(new Coordinate());
         return JTSUtils.GEOMETRY_FACTORY.createPoint(treasure);
+    }
+
+    public static boolean isApproximatelyOnLine(Coordinate point, LineSegment line) {
+        return APPROXIMATELY_PRECISION.makePrecise((point.x - line.p0.x) / (line.p1.x - line.p0.x) - (point.y - line.p0.y) / (line.p1.y - line.p0.y)) == 0;
+    }
+
+    /**
+     * Generate a random coordinate in the given circle.
+     *
+     * @param circle circle to cover the generated coordinate
+     * @return random coordinate in given circle
+     */
+    public static Coordinate randomInCircle(Circle circle) {
+        return Vector2D.create(circle.getRadius(), 0)
+                .rotate(Math.random() * 2 * Math.PI)
+                .multiply(Math.random())
+                .translate(circle.getCenter());
+    }
+
+    /**
+     * this function can be called to determine if the specified hint is a bad Hint
+     * defined be the paper in the context of the specified rectangle
+     *
+     * @param rectangle the rectangle as {@link Polygon}
+     * @param angleHint the {@link AngleHint}
+     * @return {@code true} if the given {@code angleHint} is a bad hint, related on the {@link StrategyFromPaper}.
+     * {@code false} otherwise.
+     */
+    public static boolean isBadHint(Polygon rectangle, AngleHint angleHint) {
+        if (!(angleHint instanceof HalfPlaneHint)) {
+            log.debug("can't be a bad hint,, only HalfPlaneHints can be bad hints");
+            EventBusUtils.LOG_LABEL_EVENT.trigger("Supplied hint is not a halfplane: Are you playing with a HalfPlaneHint hider?");
+            return false;
+        }
+
+        if (rectangle == null || !rectangle.isRectangle()) {
+            EventBusUtils.LOG_LABEL_EVENT.trigger("Supplied polyon is not a rectangle: Are you playing against StrategyFromPaper?");
+            log.debug("can't be a bad hint, specified polygon is not a rectangle");
+            return false;
+        }
+
+        Coordinate[] rectangleCoordinates = rectangle.getCoordinates();
+        for (Coordinate c : rectangleCoordinates) {
+            log.trace("coord" + c);
+        }
+        Coordinate centroid = GeometricUtils.centerOfRectangle(rectangleCoordinates);
+        log.trace("centroid" + centroid);
+        log.trace("player" + angleHint.getGeometryAngle().getCenter());
+        if (!centroid.equals2D(angleHint.getGeometryAngle().getCenter())) {
+            log.debug("can't be a bad hint, player is not in center of current rectangle");
+            return false;
+        }
+
+        Coordinate topLeft = rectangleCoordinates[0];
+        Coordinate bottomLeft = rectangleCoordinates[3];
+        Coordinate topRight = rectangleCoordinates[1];
+
+        // since a halfPlane - rectangle cut through the centroid is point symmetrical, only 2 adjacent edges need to be checked
+        // one of them has the intersection, sometimes both if the Line goes on the diagonal of the rectangle
+        LineSegment top = new LineSegment(topLeft, topRight);
+        LineSegment left = new LineSegment(bottomLeft, topLeft);
+        LineSegment hintLineSegment = new LineSegment(angleHint.getGeometryAngle().getCenter(), angleHint.getGeometryAngle().getRight());
+
+        double length_y = 1; // distance y from paper paper (page 5)
+
+        Coordinate topIntersect = top.lineIntersection(hintLineSegment);
+        log.trace("intersect with top " + topIntersect);
+
+        if (topIntersect != null) { // in case of parallel
+
+            // topleft
+            if (topIntersect.x >= topLeft.x && topIntersect.x <= topLeft.x + length_y) {
+                log.debug("bad hint: top edge, left side");
+                return true;
+            }
+            // top right
+            if (topIntersect.x <= topRight.x && topIntersect.x >= topRight.x - length_y) {
+                log.debug("bad hint: top edge, right side");
+                return true;
+            }
+        }
+
+        Coordinate leftIntersect = left.lineIntersection(hintLineSegment);
+        log.trace("intersect with left " + leftIntersect);
+
+        if (leftIntersect != null) {// in case of parallel
+
+            // left top
+            if (leftIntersect.y >= topLeft.y - length_y && leftIntersect.y <= topLeft.y) {
+                log.debug("bad hint:  left edge, top side");
+                return true;
+            }
+
+            // left bottom
+            if (leftIntersect.y >= bottomLeft.y && leftIntersect.y <= bottomLeft.y + length_y) {
+                log.debug("bad hint:  left edge, bottom side");
+                return true;
+            }
+        }
+        log.debug("good hint");
+        return false;
+    }
+
+    /**
+     * Calculates the intersection {@link Point}s, from a line and a circle.
+     * The line is described as going from {@code pointA} to {@code pointB} and
+     * the circle ist described by having his center on {@code center} and a radius of {@code radius}.
+     * <p>
+     * This code is copied from "https://stackoverflow.com/questions/13053061/circle-line-intersection-points".
+     *
+     * @param pointA the first {@link Point} of the line
+     * @param pointB the second {@link Point} of the line
+     * @param center the center {@link Point} of the circle
+     * @param radius the radius of the circle
+     * @return a list, containing 0, 1 or 2 {@link Point}s, representing the intersections of the line and the circle.
+     */
+    public static List<Point> circleLineIntersectionPoints(Point pointA, Point pointB, Point center, double radius) {
+        double baX = pointB.getX() - pointA.getX();
+        double baY = pointB.getY() - pointA.getY();
+        double caX = center.getX() - pointA.getX();
+        double caY = center.getY() - pointA.getY();
+
+        double a = Math.pow(baX, 2) + Math.pow(baY, 2);
+
+        double pBy2 = (baX * caX + baY * caY) / a;
+        double q = (Math.pow(caX, 2) + Math.pow(caY, 2) - Math.pow(radius, 2)) / a;
+
+        double disc = Math.pow(pBy2, 2) - q;
+        if (disc < 0) {
+            return Collections.emptyList();
+        }
+        // if disc == 0 ... dealt with later
+        double tmpSqrt = Math.sqrt(disc);
+        double abScalingFactor1 = -pBy2 + tmpSqrt;
+        double abScalingFactor2 = -pBy2 - tmpSqrt;
+
+        Point p1 = createPoint(pointA.getX() - baX * abScalingFactor1,
+                pointA.getY() - baY * abScalingFactor1);
+        if (disc == 0) { // abScalingFactor1 == abScalingFactor2
+            return Collections.singletonList(p1);
+        }
+        Point p2 = createPoint(pointA.getX() - baX * abScalingFactor2,
+                pointA.getY() - baY * abScalingFactor2);
+        return Arrays.asList(p1, p2);
     }
 }

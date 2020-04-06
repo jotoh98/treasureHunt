@@ -7,7 +7,6 @@ import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import javafx.scene.Node;
 import javafx.util.Pair;
-import org.locationtech.jts.geom.Geometry;
 
 /**
  * This class provides the event buses.
@@ -18,7 +17,7 @@ public class EventBusUtils {
     public static final Event<GameManager> GAME_MANAGER_LOADED_EVENT = new SimpleEvent<>();
     public static final Event<String> LOG_LABEL_EVENT = new SimpleEvent<>();
     public static final Event<StatisticsWithIdsAndPath> STATISTICS_LOADED_EVENT = new SimpleEvent<>();
-    public static final Event<GeometryItem<? extends Geometry>> GEOMETRY_ITEM_SELECTED = new SimpleEvent<>();
+    public static final Event<GeometryItem<?>> GEOMETRY_ITEM_SELECTED = new SimpleEvent<>();
     public static final Event<Pair<Node, Pair<Double, Double>>> INNER_POP_UP_EVENT = new SimpleEvent<>();
     public static final Event<Void> INNER_POP_UP_EVENT_CLOSE = new SimpleEvent<>();
 }

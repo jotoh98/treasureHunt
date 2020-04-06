@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Service that holds all the preferences, you can pass those to the searcher and hider. Either preferences are set via the UI or via env variables that start with PREF_ followed by the preference name.
@@ -16,12 +18,19 @@ import java.util.Locale;
 @Slf4j
 public class PreferenceService {
     public static final String MAX_TREASURE_DISTANCE = "MAX_TREASURE_DISTANCE";
+    public static final String MIN_TREASURE_DISTANCE = "MIN_TREASURE_DISTANCE";
+    public static final String TREASURE_DISTANCE = "TREASURE_DISTANCE";
     public static final String ANGLE_UPPER_BOUND = "ANGLE_UPPER_BOUND";
     public static final String ANGLE_LOWER_BOUND = "ANGLE_LOWER_BOUND";
+    public static final String GLOBAL_GREEDY = "GLOBAL_GREEDY";
+    public static final String EARLY_EXIT_AMOUNT = "EARLY_EXIT_AMOUNT";
+    public static final String EARLY_EXIT_RADIUS = "EARLY_EXIT_RADIUS";
 
     public static final String HintSize_Preference = "preferred hint size";
     public static final String TreasureLocationX_Preference = "preferred x-Value treasure";
     public static final String TreasureLocationY_Preference = "preferred y-Value treasure";
+
+    public static final String CIRCLE_INIT_RADIUS = "CIRCLE_INIT_RADIUS";
 
 
     public static final String PREF_PREFIX = "PREF_";
@@ -52,12 +61,20 @@ public class PreferenceService {
         preferences.put(name, value);
     }
 
-    public void deletePreferences(String name) {
+    public void deletePreference(String name) {
         preferences.remove(name);
     }
 
     public Number getPreference(String name, Number defaultNumber) {
         return preferences.getOrDefault(name, defaultNumber);
+    }
+
+    public Optional<Number> getPreference(String name) {
+        return Optional.ofNullable(preferences.get(name));
+    }
+
+    public Set<Preference> getAnnotated(Class<?> annotated) {
+        return Set.of(annotated.getAnnotationsByType(Preference.class));
     }
 
 }

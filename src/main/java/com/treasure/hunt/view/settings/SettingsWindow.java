@@ -1,11 +1,11 @@
 package com.treasure.hunt.view.settings;
 
+import com.treasure.hunt.JavaFxApplication;
 import com.treasure.hunt.Main;
-import com.treasure.hunt.view.widget.Widget;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import lombok.extern.slf4j.Slf4j;
@@ -15,16 +15,14 @@ import java.util.Optional;
 @Slf4j
 public class SettingsWindow {
 
-    public static void show() {
-        Stage stage = new Stage();
-        final Widget<SettingsController, Region> settings = new Widget<>("/layout/settings/settings.fxml");
-        Scene scene = new Scene(settings.getComponent());
-        scene.getStylesheets().add(Main.class.getResource("/layout/style.css").toExternalForm());
-        stage.setScene(scene);
-        stage.setTitle("Settings");
+    public static void show() throws Exception {
+        final FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/layout/settings/settings.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        SettingsController controller = fxmlLoader.getController();
+        Stage stage = JavaFxApplication.createPopUpStage("Settings", scene);
         stage.setMaxHeight(500);
         stage.setResizable(false);
-        stage.setOnCloseRequest(event -> exitClicked(event, settings.getController()));
+        stage.setOnCloseRequest(event -> exitClicked(event, controller));
         stage.show();
     }
 

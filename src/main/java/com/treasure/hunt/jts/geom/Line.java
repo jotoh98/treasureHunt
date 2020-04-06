@@ -29,10 +29,6 @@ public class Line extends Ray {
         super(p0, p1);
     }
 
-    public Line() {
-        super();
-    }
-
     /**
      * Line constructor with a base {@link Coordinate} and a directional {@link Vector2D}.
      *
@@ -95,7 +91,7 @@ public class Line extends Ray {
      * Convert the infinite line to a line shape, if it lays inside of the visual boundary.
      *
      * @param shapeWriter writer for shapes, holds the visual boundary
-     * @return line shape, or if not visible, null
+     * @return {@link Shape} of {@code this} line. {@code null}, if not visible.
      * @see JTSUtils#getBoundaryIntersections(CanvasBoundary, LineSegment)
      */
     @Override

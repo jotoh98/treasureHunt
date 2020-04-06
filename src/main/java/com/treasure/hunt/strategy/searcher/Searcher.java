@@ -13,8 +13,6 @@ import org.locationtech.jts.geom.Point;
  */
 public interface Searcher<T extends Hint> {
 
-    double SCANNING_DISTANCE = 1.0;
-
     /**
      * @param searcherStartPosition the {@link com.treasure.hunt.strategy.searcher.Searcher} starting position,
      *                              he will initialized on.

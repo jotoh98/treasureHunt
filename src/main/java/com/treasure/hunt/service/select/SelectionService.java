@@ -2,6 +2,7 @@ package com.treasure.hunt.service.select;
 
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.jts.awt.PointTransformation;
+import com.treasure.hunt.jts.geom.Circle;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.utils.EventBusUtils;
@@ -15,6 +16,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,8 +25,7 @@ public class SelectionService {
     private static final double MOUSE_RECOGNIZE_DISTANCE = 4;
 
     private GameManager currentGameManager;
-    private Geometry geometrySelected;
-    private GeometryItem<? extends Geometry> geometryItemSelected;
+    private GeometryItem<?> geometryItemSelected;
     private InvalidationListener stepChangeListener = observable -> stepChanged();
 
     private SelectionService() {
@@ -39,13 +40,11 @@ public class SelectionService {
         if (currentGameManager.getVisibleGeometries()
                 .noneMatch(geometryItem -> geometryItem.equals(geometryItemSelected))) {
             if (geometryItemSelected != null) {
-                currentGameManager.getAdditional()
-                        .remove("Highlighter");
+                currentGameManager.removeAdditional("Highlighter");
             }
             EventBusUtils.GEOMETRY_ITEM_SELECTED.trigger(null);
 
             geometryItemSelected = null;
-            geometrySelected = null;
         }
     }
 
@@ -69,65 +68,90 @@ public class SelectionService {
 
         List<GeometryItem<?>> foundItems = gameManager
                 .getVisibleGeometries()
-                .filter(geometryItem -> geometryItem.getObject() instanceof Geometry && geometryItem.getGeometryType() != GeometryType.HIGHLIGHTER)
-                .filter(geometryItem -> ((Geometry) geometryItem.getObject()).distance(JTSUtils.createPoint(coordinate.getX(), coordinate.getY())) <= distance)
+                .filter(geometryItem -> geometryItem.getGeometryType().isSelectable())
+                .filter(geometryItem -> {
+                    final Object object = geometryItem.getObject();
+                    double foundDistance = Double.POSITIVE_INFINITY;
+                    if (object instanceof Geometry) {
+                        foundDistance = ((Geometry) object).distance(JTSUtils.createPoint(coordinate.getX(), coordinate.getY()));
+                    } else if (object instanceof Circle) {
+                        return ((Circle) object).inside(coordinate);
+                    }
+                    return foundDistance <= distance;
+                })
                 .collect(Collectors.toList());
 
         if (mouseEvent.isShiftDown()) {
             if (foundItems.contains(geometryItemSelected)) {
                 if (geometryItemSelected != null) {
-                    gameManager.getAdditional()
-                            .remove("Highlighter");
+                    gameManager.removeAdditional("Highlighter");
                 }
                 EventBusUtils.GEOMETRY_ITEM_SELECTED.trigger(null);
                 geometryItemSelected = null;
-                geometrySelected = null;
             }
             return;
         }
 
         if (foundItems.isEmpty()) {
             if (geometryItemSelected != null) {
-                gameManager.getAdditional()
-                        .remove("Highlighter");
+                gameManager.removeAdditional("Highlighter");
             }
             EventBusUtils.GEOMETRY_ITEM_SELECTED.trigger(null);
 
             geometryItemSelected = null;
-            geometrySelected = null;
-            return;
-        }
-
-        if (foundItems.size() == 1) {
-            GeometryItem<? extends Geometry> geometryItem = (GeometryItem<? extends Geometry>) foundItems.get(0);
-            selectItem(gameManager, geometryItem);
             return;
         }
 
         foundItems.remove(geometryItemSelected);
 
+        if (foundItems.size() == 1) {
+            GeometryItem<?> geometryItem = foundItems.get(0);
+            selectItem(gameManager, geometryItem);
+            return;
+        }
+
+        sortCirclesByRadius(foundItems);
+
         SelectClickedPopUp selectClickedPopUp = new SelectClickedPopUp();
         EventBusUtils.INNER_POP_UP_EVENT.trigger(new Pair<>(selectClickedPopUp.getPopUp(), new Pair<>(mouseEvent.getScreenX(), mouseEvent.getScreenY())));
 
-        selectClickedPopUp.getCorrectItem(foundItems).thenAccept(geometryItem -> selectItem(gameManager, (GeometryItem<? extends Geometry>) geometryItem));
+        selectClickedPopUp.getCorrectItem(foundItems).thenAccept(geometryItem -> selectItem(gameManager, geometryItem));
     }
 
-    private void selectItem(GameManager gameManager, GeometryItem<? extends Geometry> geometryItem) {
+    private void sortCirclesByRadius(final List<GeometryItem<?>> foundItems) {
+        foundItems.sort(Comparator.comparing(geometryItem -> {
+            if (!(geometryItem.getObject() instanceof Circle)) {
+                return Integer.MAX_VALUE;
+            }
+            final Circle circle = (Circle) geometryItem.getObject();
+            return (int) circle.getRadius();
+        }));
+    }
+
+    private void selectItem(GameManager gameManager, GeometryItem<?> geometryItem) {
         geometryItemSelected = geometryItem;
-        geometrySelected = geometryItemSelected.getObject();
         EventBusUtils.GEOMETRY_ITEM_SELECTED.trigger(geometryItemSelected);
-        gameManager.getAdditional()
-                .put("Highlighter", createEnvelope(geometrySelected));
+        gameManager.addAdditional("Highlighter", createEnvelope(geometryItemSelected.getObject()));
     }
 
-    private GeometryItem<?> createEnvelope(Geometry item) {
+    private GeometryItem<?> createEnvelope(Object item) {
         if (item instanceof Point) {
             return new GeometryItem<>(
                     JTSUtils.createPoint(((Point) item).getX(), ((Point) item).getY()),
                     GeometryType.HIGHLIGHTER);
         }
-        return new GeometryItem<>(
-                JTSUtils.toPolygon(item.getEnvelopeInternal()),
-                GeometryType.HIGHLIGHTER);
+        if (item instanceof Circle) {
+            return new GeometryItem<>(
+                    JTSUtils.toPolygon(((Circle) item).getEnvelope()),
+                    GeometryType.HIGHLIGHTER);
+        }
+        if (item instanceof Geometry) {
+            return new GeometryItem<>(
+                    JTSUtils.toPolygon(((Geometry) item).getEnvelopeInternal()),
+                    GeometryType.HIGHLIGHTER);
+        }
+
+        return null;
+
     }
 }

@@ -2,6 +2,7 @@ package com.treasure.hunt.view.widget;
 
 import com.treasure.hunt.analysis.StatisticObject;
 import com.treasure.hunt.game.GameManager;
+import com.treasure.hunt.service.settings.SettingsService;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -50,23 +51,25 @@ public class StatisticsWidgetController {
 
     private void initializeColumnValueFactory() {
         nameColumn.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue()));
-        valueColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getValue().toString()));
-        nameColumn.setCellFactory
-                (
-                        column ->
-                                new TableCell<>() {
-                                    @Override
-                                    protected void updateItem(StatisticObject item, boolean empty) {
-                                        super.updateItem(item, empty);
-                                        if (empty || item == null) {
-                                            setText(null);
-                                            setTooltip(null);
-                                            return;
-                                        }
-                                        setText(item.getStatisticInfo().getName());
-                                        setTooltip(new Tooltip(item.getStatisticInfo().getDescription()));
-                                    }
-                                });
+
+        valueColumn.setCellValueFactory(param -> new SimpleStringProperty(
+                SettingsService.getInstance().getSettings().round(param.getValue().getValue().doubleValue())
+        ));
+
+        nameColumn.setCellFactory(column ->
+                new TableCell<>() {
+                    @Override
+                    protected void updateItem(StatisticObject item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                            setTooltip(null);
+                            return;
+                        }
+                        setText(item.getStatisticInfo().getName());
+                        setTooltip(new Tooltip(item.getStatisticInfo().getDescription()));
+                    }
+                });
     }
 }
 

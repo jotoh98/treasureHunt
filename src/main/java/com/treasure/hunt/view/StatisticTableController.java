@@ -8,27 +8,28 @@ import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.service.io.FileService;
 import com.treasure.hunt.service.io.SeriesService;
+import com.treasure.hunt.service.settings.SettingsService;
 import com.treasure.hunt.strategy.hider.Hider;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.EventBusUtils;
 import com.treasure.hunt.utils.ListUtils;
+import com.treasure.hunt.view.plot.PlotController;
 import com.treasure.hunt.view.plot.PlotSettingsController;
+import com.treasure.hunt.view.widget.Widget;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,7 +44,9 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 @Slf4j
 public class StatisticTableController {
@@ -56,9 +59,12 @@ public class StatisticTableController {
     public ComboBox<Class<? extends Hider>> hiderList;
     public ComboBox<Class<? extends GameEngine>> gameEngineList;
     public Spinner<Integer> maxStepsSpinner;
+    public Button superPlot;
     HashMap<StatisticObject.StatisticInfo, List<StatisticObject>> statisticsMeasureHashMap = new HashMap<>();
     private Path path;
     private ObjectProperty<GameManager> gameManager;
+
+    private static final Function<Double, String> rounder = SettingsService.getInstance().getSettings()::round;
 
     public void initialize() {
         statisticsMeasuresTableInit();
@@ -91,40 +97,28 @@ public class StatisticTableController {
     }
 
     private void statisticsMeasuresTableInit() {
-        TableColumn<HashMap.Entry<StatisticObject.StatisticInfo, List<StatisticObject>>, String> nameColumn = new TableColumn<>();
-        nameColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getKey().getName()));
-        statisticsMeasuresTable.getColumns().add(nameColumn);
-        nameColumn.setText("name");
+        adMeasureColumn("Name", null);
+        adMeasureColumn("Min", DoubleStream::min);
+        adMeasureColumn("Max", DoubleStream::max);
+        adMeasureColumn("Average", DoubleStream::average);
+    }
 
-        TableColumn<HashMap.Entry<StatisticObject.StatisticInfo, List<StatisticObject>>, Double> averageColumn = new TableColumn<>();
-        averageColumn.setCellValueFactory(param -> {
-            List<StatisticObject> value = param.getValue().getValue();
-            return new SimpleObjectProperty<>(value.stream().map(StatisticObject::getValue)
-                    .mapToDouble(Number::doubleValue)
-                    .average().getAsDouble());
-        });
-        averageColumn.setText("average");
-        statisticsMeasuresTable.getColumns().add(averageColumn);
+    private void adMeasureColumn(String text, Function<DoubleStream, OptionalDouble> aggregate) {
+        TableColumn<HashMap.Entry<StatisticObject.StatisticInfo, List<StatisticObject>>, String> newColumn = new TableColumn<>();
 
-        TableColumn<HashMap.Entry<StatisticObject.StatisticInfo, List<StatisticObject>>, Double> minColumn = new TableColumn<>();
-        minColumn.setCellValueFactory(param -> {
-            List<StatisticObject> value = param.getValue().getValue();
-            return new SimpleObjectProperty<>(value.stream().map(StatisticObject::getValue)
-                    .mapToDouble(Number::doubleValue)
-                    .min().getAsDouble());
-        });
-        minColumn.setText("min");
-        statisticsMeasuresTable.getColumns().add(minColumn);
+        if (aggregate != null) {
+            newColumn.setCellValueFactory(param -> {
+                final DoubleStream entries = param.getValue().getValue().stream().map(StatisticObject::getValue)
+                        .mapToDouble(Number::doubleValue);
+                final double aggregated = aggregate.apply(entries).orElse(0);
+                return new SimpleStringProperty(rounder.apply(aggregated));
+            });
+        } else {
+            newColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getKey().getName()));
+        }
 
-        TableColumn<HashMap.Entry<StatisticObject.StatisticInfo, List<StatisticObject>>, Double> maxColumn = new TableColumn<>();
-        maxColumn.setCellValueFactory(param -> {
-            List<StatisticObject> value = param.getValue().getValue();
-            return new SimpleObjectProperty<>(value.stream().map(StatisticObject::getValue)
-                    .mapToDouble(Number::doubleValue)
-                    .max().getAsDouble());
-        });
-        maxColumn.setText("max");
-        statisticsMeasuresTable.getColumns().add(maxColumn);
+        newColumn.setText(text);
+        statisticsMeasuresTable.getColumns().add(newColumn);
     }
 
     private void instanceTableInit() {
@@ -152,11 +146,11 @@ public class StatisticTableController {
         TableColumn<StatisticsWithId, Integer> idColumn = new TableColumn<>();
         idColumn.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getId()));
         instanceStatisticsTableView.getColumns().add(idColumn);
-        idColumn.setText("id");
+        idColumn.setText("ID");
 
         statisticsMeasureHashMap.keySet()
                 .forEach(statisticInfo -> {
-                    TableColumn<StatisticsWithId, Double> statisticColumn = new TableColumn<>();
+                    TableColumn<StatisticsWithId, String> statisticColumn = new TableColumn<>();
                     statisticColumn.setCellValueFactory(param -> {
                         StatisticsWithId value = param.getValue();
                         List<StatisticObject> statisticObjects = value.getStatisticObjects();
@@ -164,7 +158,7 @@ public class StatisticTableController {
                                 .filter(statisticObject -> statisticObject.getStatisticInfo().equals(statisticInfo))
                                 .findFirst();
                         StatisticObject statisticObject = first.orElseThrow();
-                        return new SimpleObjectProperty<>(statisticObject.getValue().doubleValue());
+                        return new SimpleStringProperty(rounder.apply(statisticObject.getValue().doubleValue()));
                     });
 
                     instanceStatisticsTableView.getColumns().add(statisticColumn);
@@ -196,31 +190,29 @@ public class StatisticTableController {
         instanceStatisticsTableView.getColumns().clear();
     }
 
-    public void init(ObjectProperty<GameManager> gameManager, ComboBox<Class<? extends Searcher>> searcherList, ComboBox<Class<? extends Hider>> hiderList, ComboBox<Class<? extends GameEngine>> gameEngineList) {
+    public void init(ObjectProperty<GameManager> gameManager, ComboBox<Class<? extends
+            Searcher>> searcherList, ComboBox<Class<? extends Hider>> hiderList, ComboBox<Class<? extends
+            GameEngine>> gameEngineList) {
         this.gameManager = gameManager;
         this.searcherList = searcherList;
         this.hiderList = hiderList;
         this.gameEngineList = gameEngineList;
-        runMultipleButton.disableProperty().bind(searcherList.getSelectionModel().selectedItemProperty().isNull()
+        final BooleanBinding somethingNotSelectedBinding = searcherList.getSelectionModel().selectedItemProperty().isNull()
                 .or(hiderList.getSelectionModel().selectedItemProperty().isNull())
-                .or(gameEngineList.getSelectionModel().selectedItemProperty().isNull())
-        );
+                .or(gameEngineList.getSelectionModel().selectedItemProperty().isNull());
 
+        runMultipleButton.disableProperty().bind(somethingNotSelectedBinding);
+
+        final String initialText = runMultipleButton.getText();
         runMultipleButton.textProperty().bind(
-                Bindings.when(
-                        searcherList.getSelectionModel().selectedItemProperty().isNull()
-                                .or(hiderList.getSelectionModel().selectedItemProperty().isNull())
-                                .or(gameEngineList.getSelectionModel().selectedItemProperty().isNull())
-                )
+                Bindings.when(somethingNotSelectedBinding)
                         .then("Select a game")
-                        .otherwise("Run multiple games")
+                        .otherwise(initialText)
         );
 
-        roundSpinner.disableProperty().bind(searcherList.getSelectionModel().selectedItemProperty().isNull()
-                .or(hiderList.getSelectionModel().selectedItemProperty().isNull())
-                .or(gameEngineList.getSelectionModel().selectedItemProperty().isNull())
-        );
+        superPlot.disableProperty().bind(somethingNotSelectedBinding);
 
+        roundSpinner.disableProperty().bind(somethingNotSelectedBinding);
     }
 
     public void onSeriesRun(ActionEvent actionEvent) {
@@ -234,7 +226,7 @@ public class StatisticTableController {
                     SeriesService.getInstance().runSeries(roundSpinner.getValue(), newGameManager, aDouble ->
                             Platform.runLater(() ->
                                     progressIndicator.setProgress(aDouble)
-                            ), maxStepsSpinner.getValue()==0? null : maxStepsSpinner.getValue()
+                            ), maxStepsSpinner.getValue() == 0 ? null : maxStepsSpinner.getValue()
                     )
             )
                     .exceptionally(throwable -> {
@@ -254,7 +246,6 @@ public class StatisticTableController {
     public void onSeriesLoad() {
         SeriesService.getInstance().readStatistics();
     }
-
 
     public void copyClipboard() {
         StringSelection stringSelection = new StringSelection(generateCopyString());
@@ -321,24 +312,34 @@ public class StatisticTableController {
     }
 
     public void onPlot() throws IOException {
-
-        Stage stage = new Stage(StageStyle.DECORATED);
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle("Statistic Plot");
-
         Class<? extends GameEngine> selectedGameEngine = gameEngineList.getSelectionModel().getSelectedItem();
         Class<? extends Searcher> selectedSearcher = searcherList.getSelectionModel().getSelectedItem();
         Class<? extends Hider> selectedHider = hiderList.getSelectionModel().getSelectedItem();
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout/plotSettings.fxml"));
-        GridPane root = fxmlLoader.load();
-        PlotSettingsController plotSettingsController = fxmlLoader.getController();
+        if (selectedSearcher == null || selectedHider == null || selectedGameEngine == null) {
+            throw new IllegalStateException("No searcher, hider or game engine selected.");
+        }
+
+        final Widget<PlotSettingsController, Region> plotSettingsWidget = new Widget<>("/layout/plotSettings.fxml");
+        final Widget<PlotController, Region> plotWidget = new Widget<>("/layout/plot.fxml");
+
+        final PlotSettingsController plotSettingsController = plotSettingsWidget.getController();
+
+        final Stage stage = new Stage();
+
+        plotSettingsController.init(settings -> {
+            plotSettingsController.errorLabel.getScene().setRoot(plotWidget.getComponent());
+            plotWidget.getController().setData(settings, selectedGameEngine, selectedSearcher, selectedHider);
+            stage.setMaximized(true);
+        });
+
         plotSettingsController.setData(selectedGameEngine, selectedSearcher, selectedHider);
 
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(plotSettingsWidget.getComponent());
         stage.setScene(scene);
         scene.getStylesheets().add(getClass().getResource("/layout/style.css").toExternalForm());
 
         stage.show();
+
     }
 }
