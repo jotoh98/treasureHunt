@@ -124,7 +124,7 @@ public class PointTransformation implements org.locationtech.jts.awt.PointTransf
         double newScale = scaleProperty.get() * gamma;
         if (newScale < MIN_SCALE || newScale > MAX_SCALE) {
             newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, newScale));
-            gamma = scaleProperty.get() / newScale;
+            gamma = newScale / scaleProperty.get();
             scaleOffset(gamma, point);
             setScale(newScale);
         }
