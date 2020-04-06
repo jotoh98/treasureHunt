@@ -1,6 +1,5 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
-import com.treasure.hunt.game.mods.hideandseek.HideAndSeekSearcher;
 import com.treasure.hunt.jts.geom.GeometryAngle;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
@@ -18,7 +17,7 @@ import org.locationtech.jts.geom.util.AffineTransformation;
  * @author Ruben Kemna
  */
 @Slf4j
-public class SteadyDirectionSearcher implements Searcher<AngleHint>, HideAndSeekSearcher<AngleHint> {
+public class SteadyDirectionSearcher implements Searcher<AngleHint> {
     private double currentOrientationByAngle = 0.0;
     private double influenceConstant = 0.2;
 

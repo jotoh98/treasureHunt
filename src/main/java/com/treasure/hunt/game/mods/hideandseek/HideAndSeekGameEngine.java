@@ -15,7 +15,7 @@ import org.locationtech.jts.geom.Point;
  *
  * @author dorianreineccius
  */
-@Requires(hider = HideAndSeekHider.class, searcher = HideAndSeekSearcher.class)
+@Requires(hider = HideAndSeekHider.class, searcher = Searcher.class)
 public class HideAndSeekGameEngine extends GameEngine {
     public HideAndSeekGameEngine(Searcher searcher, Hider hider) {
         super(searcher, hider);

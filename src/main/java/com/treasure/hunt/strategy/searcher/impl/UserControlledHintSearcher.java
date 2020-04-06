@@ -1,18 +1,18 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
-import com.treasure.hunt.game.mods.hideandseek.HideAndSeekSearcher;
 import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.SwingUtils;
 import org.locationtech.jts.geom.Point;
 
 /**
- * This is a type of {@link HideAndSeekSearcher},
+ * This is a type of {@link Searcher},
  * which is controlled by the user.
  *
  * @author axel12
  */
-public class UserControlledHintSearcher implements HideAndSeekSearcher<Hint> {
+public class UserControlledHintSearcher implements Searcher<Hint> {
     private Point currentPosition;
 
     /**
