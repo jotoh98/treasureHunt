@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -285,13 +285,20 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 </td>
 </tr>
 <tr id="i15" class="rowColor">
+<td class="colFirst"><code>protected boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#slowApproachExit()">slowApproachExit</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Tests, if the last few steps of the searcher approach the treasure fast enough.</div>
+</td>
+</tr>
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stopBeat()">stopBeat</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Stops the beating thread from executing <a href="#next()"><code>next()</code></a>.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#write(com.esotericsoftware.kryo.Kryo,com.esotericsoftware.kryo.io.Output)">write</a></span>&#8203;(com.esotericsoftware.kryo.Kryo&nbsp;kryo,
      com.esotericsoftware.kryo.io.Output&nbsp;output)</code></th>
@@ -578,7 +585,7 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <a id="earlyExit()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>earlyExit</h4>
 <pre class="methodSignature">protected&nbsp;boolean&nbsp;earlyExit()</pre>
@@ -586,6 +593,21 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>whether the game exits early or not</dd>
+</dl>
+</li>
+</ul>
+<a id="slowApproachExit()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>slowApproachExit</h4>
+<pre class="methodSignature">protected&nbsp;boolean&nbsp;slowApproachExit()</pre>
+<div class="block">Tests, if the last few steps of the searcher approach the treasure fast enough.
+ The approach is measured as the euclidean distance between the treasure and the respective search paths last point.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>whether the game exits early because of the searcher not progressing fast enough</dd>
 </dl>
 </li>
 </ul>
