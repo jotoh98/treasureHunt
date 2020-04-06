@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.treasure.hunt.analysis.StatisticsWithId;
 import com.treasure.hunt.analysis.StatisticsWithIdsAndPath;
 import com.treasure.hunt.game.GameManager;
+import com.treasure.hunt.service.settings.SettingsService;
 import com.treasure.hunt.utils.AsyncUtils;
 import com.treasure.hunt.utils.EventBusUtils;
 import javafx.application.Platform;
@@ -35,7 +36,6 @@ import java.util.zip.ZipOutputStream;
 public class SeriesService {
     public static final String STATS_FILE_NAME = "stats.huntstats";
     public static final String HUNT_FILE_EXTENSION = ".hunt";
-    private static final int SMALL_ROUND_SIZE = 500;
     private static SeriesService instance;
     private final FileChooser fileChooser;
 
@@ -100,7 +100,11 @@ public class SeriesService {
             zipOutputStream = new ZipOutputStream(new FileOutputStream(selectedFile));
         }
         ExecutorService executorService = AsyncUtils.newExhaustingThreadPoolExecutor();
-        List<CompletableFuture<Void>> runFutures = new ArrayList<>(SMALL_ROUND_SIZE);
+        int smallRoundSize = SettingsService.getInstance().getSettings().getSmallRoundSize();
+        if (smallRoundSize <= 0) {
+            smallRoundSize = 500;
+        }
+        List<CompletableFuture<Void>> runFutures = new ArrayList<>(smallRoundSize);
         List<StatisticsWithId> statisticsWithIds = new ArrayList<>(rounds);
         for (int id = 0; id < rounds; id++) {
             CompletableFuture<Void> future = CompletableFuture.supplyAsync(duplicateGameManager(gameManager, progressConsumer, alreadyInitialed, totalWorkLoad, workLoadDone), executorService)
@@ -111,7 +115,7 @@ public class SeriesService {
                         return null;
                     });
             runFutures.add(future);
-            if (id % SMALL_ROUND_SIZE == 0 && id != 0) {
+            if (id % smallRoundSize == 0 && id != 0) {
                 CompletableFuture<Void> allRunsFinished = CompletableFuture.allOf(runFutures.toArray(new CompletableFuture[runFutures.size()]));
                 allRunsFinished.join();
                 runFutures.clear();
