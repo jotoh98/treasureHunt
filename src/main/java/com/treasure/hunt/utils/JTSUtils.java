@@ -11,7 +11,6 @@ import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StrategyFromPa
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.algorithm.ConvexHull;
-import org.locationtech.jts.algorithm.RobustLineIntersector;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.math.Vector2D;
 
@@ -46,8 +45,12 @@ public final class JTSUtils {
         return GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
     }
 
-    public static Point createPoint(Coordinate p) {
-        return createPoint(p.x, p.y);
+    /**
+     * @param coordinate The {@link Coordinate}, which should be converted to a {@link Point}.
+     * @return {@link Point} lying on {@code coordinate.}.
+     */
+    public static Point createPoint(Coordinate coordinate) {
+        return createPoint(coordinate.x, coordinate.y);
     }
 
     /**
@@ -243,8 +246,8 @@ public final class JTSUtils {
     }
 
     /**
-     * @param searcher  the position of the {@link com.treasure.hunt.strategy.searcher.Searcher}.
-     * @param treasure  the position of the treasure.
+     * @param searcher  the {@link Coordinate} of the {@link com.treasure.hunt.strategy.searcher.Searcher}.
+     * @param treasure  the {@link Coordinate} of the treasure.
      * @param maxExtend number of {@code [0, 2 * Math.PI)} defining, how wide the angle is opened.
      * @return a valid {@link GeometryAngle}, randomly generated.
      */
@@ -252,6 +255,13 @@ public final class JTSUtils {
         return validRandomAngle(searcher, treasure, maxExtend, 0);
     }
 
+    /**
+     * @param searcher  the {@link Coordinate} of the {@link com.treasure.hunt.strategy.searcher.Searcher}.
+     * @param treasure  the {@link Coordinate} of the treasure.
+     * @param maxExtend number of {@code [0, 2 * Math.PI)} defining, how wide the angle is opened.
+     * @param minExtend number of {@code [0, maxExtend)}
+     * @return a valid {@link GeometryAngle}, randomly generated.
+     */
     public static GeometryAngle validRandomAngle(Coordinate searcher, Coordinate treasure, double maxExtend, double minExtend) {
 
         if (maxExtend <= 0 || minExtend < 0 || minExtend >= maxExtend) {
@@ -264,12 +274,20 @@ public final class JTSUtils {
         return new GeometryAngle(GEOMETRY_FACTORY, searcher, start, extend);
     }
 
+    /**
+     * @param geometries A list, containing {@link Geometry}'s, which should be converted to a list of {@link Coordinate}'s.
+     * @return A list of {@link Coordinate}'s, which {@code geometries} is converted to.
+     */
     public static List<Coordinate> getCoordinateList(List<? extends Geometry> geometries) {
         return geometries.stream()
                 .map(Geometry::getCoordinate)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @param envelope An {@link Envelope}, which will be converted to an {@link Polygon}.
+     * @return A {@link Polygon}, a {@code envelope} is converted to.
+     */
     public static Polygon toPolygon(Envelope envelope) {
         return GEOMETRY_FACTORY.createPolygon(new Coordinate[]{
                 new Coordinate(envelope.getMinX(), envelope.getMinY()),
@@ -343,9 +361,7 @@ public final class JTSUtils {
     }
 
     /**
-     * Generates a treasure location according to set preferences.
-     *
-     * @return treasure point
+     * @return A {@link Point}, where the treasure is located,msatisfying {@link PreferenceService#MIN_TREASURE_DISTANCE}, {@link PreferenceService#MAX_TREASURE_DISTANCE} and {@link PreferenceService#TREASURE_DISTANCE}.
      */
     public static Point shuffleTreasure() {
         Optional<Number> fixedDistance = PreferenceService.getInstance()
@@ -388,12 +404,13 @@ public final class JTSUtils {
      * this function can be called to determine if the specified hint is a bad Hint
      * defined be the paper in the context of the specified rectangle
      *
-     * @param rectangle the rectangle as polygon
-     * @param hint      the hint
-     * @return
+     * @param rectangle the rectangle as {@link Polygon}
+     * @param angleHint the {@link AngleHint}
+     * @return {@code true} if the given {@code angleHint} is a bad hint, related on the {@link StrategyFromPaper}.
+     * {@code false} otherwise.
      */
-    public static boolean isBadHint(Polygon rectangle, AngleHint hint) {
-        if (!(hint instanceof HalfPlaneHint)) {
+    public static boolean isBadHint(Polygon rectangle, AngleHint angleHint) {
+        if (!(angleHint instanceof HalfPlaneHint)) {
             log.debug("can't be a bad hint,, only HalfPlaneHints can be bad hints");
             EventBusUtils.LOG_LABEL_EVENT.trigger("Supplied hint is not a halfplane: Are you playing with a HalfPlaneHint hider?");
             return false;
@@ -411,8 +428,8 @@ public final class JTSUtils {
         }
         Coordinate centroid = GeometricUtils.centerOfRectangle(rectangleCoordinates);
         log.trace("centroid" + centroid);
-        log.trace("player" + hint.getGeometryAngle().getCenter());
-        if (!centroid.equals2D(hint.getGeometryAngle().getCenter())) {
+        log.trace("player" + angleHint.getGeometryAngle().getCenter());
+        if (!centroid.equals2D(angleHint.getGeometryAngle().getCenter())) {
             log.debug("can't be a bad hint, player is not in center of current rectangle");
             return false;
         }
@@ -425,7 +442,7 @@ public final class JTSUtils {
         // one of them has the intersection, sometimes both if the Line goes on the diagonal of the rectangle
         LineSegment top = new LineSegment(topLeft, topRight);
         LineSegment left = new LineSegment(bottomLeft, topLeft);
-        LineSegment hintLineSegment = new LineSegment(hint.getGeometryAngle().getCenter(), hint.getGeometryAngle().getRight());
+        LineSegment hintLineSegment = new LineSegment(angleHint.getGeometryAngle().getCenter(), angleHint.getGeometryAngle().getRight());
 
         double length_y = 1; // distance y from paper paper (page 5)
 

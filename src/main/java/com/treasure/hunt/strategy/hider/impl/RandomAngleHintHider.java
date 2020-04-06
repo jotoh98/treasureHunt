@@ -25,12 +25,18 @@ import static org.locationtech.jts.algorithm.Angle.interiorAngle;
 public class RandomAngleHintHider implements Hider<AngleHint> {
     private Point treasurePosition;
 
+    /**
+     * @return A random treaasure location via {@link JTSUtils#shuffleTreasure()}.
+     */
     @Override
     public Point getTreasureLocation() {
         treasurePosition = JTSUtils.shuffleTreasure();
         return treasurePosition;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void init(Point searcherStartPosition) {
     }

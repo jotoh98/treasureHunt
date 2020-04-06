@@ -460,4 +460,3 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         searchAreaCornerD = JTSUtils.GEOMETRY_FACTORY.createPoint(coordinatesABCD[0]);
     }
 }
-

@@ -19,6 +19,7 @@ public class ListUtils {
      * Apply some stream filters to a stream.
      *
      * @param input   stream to be filtered
+     * @param <T>
      * @param filters multiple filters to be applied
      * @return filtered input
      */

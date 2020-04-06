@@ -61,7 +61,8 @@ public class ScaleController {
     /**
      * Bind the transformation properties to the slider and text field.
      *
-     * @param canvasController controller holding the {@link PointTransformation}
+     * @param gameManagerProperty the {@link ObjectProperty}, holding the {@link GameManager}
+     * @param canvasController    {@link java.lang.ModuleLayer.Controller} holding the {@link PointTransformation}
      */
     public void init(ObjectProperty<GameManager> gameManagerProperty, CanvasController canvasController) {
         this.canvasController = canvasController;

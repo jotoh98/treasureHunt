@@ -1,11 +1,11 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
-import com.treasure.hunt.game.mods.hideandseek.HideAndSeekSearcher;
 import com.treasure.hunt.jts.geom.GeometryAngle;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.*;
@@ -24,8 +24,7 @@ import java.util.stream.Collectors;
  */
 
 @Slf4j
-public class PolygonStrategy
-        implements HideAndSeekSearcher<AngleHint> {
+public class PolygonStrategy implements Searcher<AngleHint> {
 
     Geometry searchArea;
     double currentSearchFieldDim = 4;

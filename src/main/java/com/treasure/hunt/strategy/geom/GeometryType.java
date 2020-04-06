@@ -70,6 +70,10 @@ public enum GeometryType {
     private final String displayName;
     @Getter
     private boolean enabled;
+    /**
+     * If a {@link GeometryItem} has override set, only the last {@link GeometryItem} of this GeometryType
+     * will be displayed and all previous ones will be invisible.
+     */
     @Getter
     private boolean override;
     @Getter

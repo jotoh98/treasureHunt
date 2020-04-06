@@ -35,6 +35,8 @@ import org.locationtech.jts.geom.LineSegment;
  *      return root;
  * }
  * }</pre>
+ *
+ * @author hassel
  */
 public class TreeConstructor {
 

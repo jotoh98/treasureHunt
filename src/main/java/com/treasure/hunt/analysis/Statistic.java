@@ -11,11 +11,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * A class to calculate various statistics.
+ *
  * @author Trostorff, Daniel
  */
 public class Statistic {
     private List<Turn> turns;
 
+    /**
+     * @return The length of the trace, the {@link com.treasure.hunt.strategy.searcher.Searcher} ran yet.
+     */
     public double getTraceLength() {
         double length = ListUtils
                 .consecutive(turns, (turn, turn2) -> turn2.getSearchPath().getLength())
@@ -40,14 +45,23 @@ public class Statistic {
         return getTraceLength() + remainder;
     }
 
+    /**
+     * @return The {@link Point}, the {@link com.treasure.hunt.strategy.searcher.Searcher} stood initially.
+     */
     public Point getStartPoint() {
         return turns.get(0).getSearchPath().getFirstPoint();
     }
 
+    /**
+     * @return the {@link Point}, where the treasure is located.
+     */
     public Point getTreasureLocation() {
         return turns.get(0).getTreasureLocation();
     }
 
+    /**
+     * @return the distance of the beeline between the {@link com.treasure.hunt.strategy.searcher.Searcher}'s initial position and the treasure location.
+     */
     public double getOptimumSolution() {
         return getStartPoint().distance(getTreasureLocation());
     }
@@ -62,6 +76,9 @@ public class Statistic {
         return getLocalOptimumSolution() / getOptimumSolution();
     }
 
+    /**
+     * @return The number of {@link com.treasure.hunt.strategy.hint.Hint}'s, the {@link com.treasure.hunt.strategy.searcher.Searcher} got yet.
+     */
     public int getHintRequests() {
         if (turns.size() > 1 && turns.get(turns.size() - 1).getHint() == null) {
             return turns.size() - 2;
@@ -69,6 +86,10 @@ public class Statistic {
         return turns.size() - 1;
     }
 
+    /**
+     * @return {@link Statistic#getHintRequests()}/{@link Statistic#getTraceLength()}, when {@link Statistic#getTraceLength()} != 0.
+     * Otherwise {@code 1}.
+     */
     public double getHintTraceLengthRatio() {
         final double traceLength = getTraceLength();
         if (traceLength == 0) {
@@ -91,6 +112,11 @@ public class Statistic {
 
     }
 
+    /**
+     * @param turns    a list, containing {@link Turn} objects.
+     * @param finished telling, whether the game is finished yet.
+     * @return A list, containing {@link StatisticObject}'s.
+     */
     public List<StatisticObject> calculate(List<Turn> turns, boolean finished) {
         this.turns = new ArrayList<>(turns);
         ArrayList<StatisticObject> statisticObjects = new ArrayList<>(Arrays.asList(
@@ -100,15 +126,11 @@ public class Statistic {
                 new StatisticObject(StatisticObject.StatisticInfo.HINT_REQUEST, getHintRequests()),
                 new StatisticObject(StatisticObject.StatisticInfo.HINT_TRACE_LENGTH_RATION, getHintTraceLengthRatio()),
                 new StatisticObject(StatisticObject.StatisticInfo.OPTIMAL_SOLUTION, getOptimumSolution()),
-                new StatisticObject(StatisticObject.StatisticInfo.FINISHED_AND_FOUND, finished? 1:0)
+                new StatisticObject(StatisticObject.StatisticInfo.FINISHED_AND_FOUND, finished ? 1 : 0)
         ));
         PreferenceService.getInstance()
                 .getPreferences()
                 .forEach((key, value) -> statisticObjects.add(new StatisticObject(new StatisticObject.StatisticInfo(key, "Imported from preferences", Number.class), value)));
         return statisticObjects;
     }
-
-
 }
-
-

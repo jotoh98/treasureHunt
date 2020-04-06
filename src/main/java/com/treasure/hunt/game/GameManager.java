@@ -64,7 +64,10 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     @VisibleForTesting
     @Getter
     ObservableList<Turn> turns = FXCollections.observableArrayList();
-
+    /**
+     * Contains additional {@link GeometryItem}'s which does not belong to the strategies,
+     * like the {@link com.treasure.hunt.jts.geom.Grid} or {@link com.treasure.hunt.strategy.geom.GeometryType#HIGHLIGHTER};
+     */
     @Getter
     private ObservableMap<String, GeometryItem<?>> additional = FXCollections.observableHashMap();
 
@@ -118,8 +121,10 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         setBindings();
     }
 
+    /**
+     * Initializes the internal {@link GameEngine}
+     */
     public void init() {
-        // Do initial move
         if (turns.size() == 0) {
             turns.add(gameEngine.init());
         }
@@ -129,7 +134,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
-     * Works only for stepSim &le; stepView 
+     * (Simulates) and shows the next {@link Turn}, if the game is not finished.
      */
     public void next() {
         if (viewIndex.get() < turns.size()) {
@@ -147,7 +152,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
-     * Works only for stepView &gt; 0
+     * Shows the simulation-state, before the last {@link Turn}.
+     * Works only for stepView &gt; 0.
      */
     public void previous() {
         if (viewIndex.get() > 0) {
@@ -156,7 +162,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
-     * Stops the Thread from beating.
+     * Stops the beating thread from executing {@link GameManager#next()}.
      */
     public void stopBeat() {
         log.debug("Stopping beating thread");
@@ -164,8 +170,10 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     }
 
     /**
-     * {@code executeNextOnJavaFxThread} defaults to {@code true}.
+     * This starts a thread, executing {@link GameManager#next()} in each timeinterval of {@code delay}.
      *
+     * @param delay the time interval, the thread executes {@link GameManager#next()}
+     * @return a thread {@link CompletableFuture}, executing {@link GameManager#next()} in each timeinterval of {@code delay}.
      * @see GameManager#beat(ReadOnlyObjectProperty, Boolean, Integer)
      */
     public CompletableFuture<Void> beat(ReadOnlyObjectProperty<Double> delay) {
@@ -174,6 +182,9 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
 
     /**
      * This simulates the whole game, until its finished.
+     *
+     * @param maxSteps the maximum number of steps, which will be simulated.
+     * @return the {@link CompletableFuture} executing, running {@code maxSteps} times {@link GameManager#next()}.
      */
     public CompletableFuture<Void> beat(Integer maxSteps) {
         return beat(new SimpleObjectProperty<>(0d), false, maxSteps);
@@ -185,6 +196,9 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
      * @param delay                     time between each move
      * @param executeNextOnJavaFxThread if set to true the next call is made on javafx thread that is important when UI is attached to the GameManager,
      *                                  if it false the delay parameter is ignored
+     * @param maxSteps                  the number of time, the beating thread should execute {@link GameManager#next()}. Could be {@code null}.
+     * @return the {@link CompletableFuture} thread, executing {@link GameManager#next()} {@code maxSteps} times, if its not {@code null},
+     * each timeinterval of {@code delay}, if {@code executeNextOnJavaFxThread} is {@code true}.
      */
     public CompletableFuture<Void> beat(ReadOnlyObjectProperty<Double> delay, Boolean executeNextOnJavaFxThread, Integer maxSteps) {
         CompletableFuture<Void> completableFuture = new CompletableFuture<>();
