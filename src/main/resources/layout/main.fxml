@@ -24,7 +24,7 @@
                                 </Label>
                             </children>
                         </HBox>
-                        <fx:include fx:id="stepViewNavigator" source="navigator.fxml"/>
+                        <fx:include fx:id="stepViewNavigator" source="stepNavigator.fxml"/>
                     </children>
                     <styleClass>
                         <String fx:value="toolbar"/>

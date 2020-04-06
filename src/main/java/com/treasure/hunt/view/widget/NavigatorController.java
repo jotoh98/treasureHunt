@@ -3,6 +3,7 @@ package com.treasure.hunt.view.widget;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.game.Turn;
 import com.treasure.hunt.jts.awt.PointTransformation;
+import com.treasure.hunt.service.settings.SettingsService;
 import com.treasure.hunt.view.CanvasController;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
@@ -22,9 +23,11 @@ import org.locationtech.jts.math.Vector2D;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
-public class ScaleController {
+public class NavigatorController {
     final DecimalFormat percentageFormatter = new DecimalFormat("##.##%");
     public Slider slider;
     public TextField textField;
@@ -36,6 +39,8 @@ public class ScaleController {
     private Rectangle symbol = new Rectangle(0, 0, 0, 0);
 
     private Point treasurePoint = null;
+
+    private Point searcherPoint = null;
 
     /**
      * Behaviour of user entering a scale.
@@ -109,6 +114,7 @@ public class ScaleController {
             }
 
             treasurePoint = visibleTurns.get(newViewIndex.intValue()).getTreasureLocation();
+            searcherPoint = visibleTurns.get(newViewIndex.intValue()).getSearchPath().getLastPoint();
             drawNavigatorCanvas();
         };
         gameManager.getViewIndex().addListener(viewListener);
@@ -153,11 +159,52 @@ public class ScaleController {
         canvas.widthProperty().addListener(observable -> drawNavigatorCanvas());
         transformation.getScaleProperty().addListener(observable -> drawNavigatorCanvas());
         wrapper.widthProperty().addListener(observable -> drawNavigatorCanvas());
-        navigatorCanvas.setOnMouseClicked(event -> setOffset(event.getX(), event.getY()));
-        navigatorCanvas.setOnMouseDragged(event -> setOffset(event.getX(), event.getY()));
+
+        final AtomicReference<Vector2D> offset = new AtomicReference<>(null);
+        final AtomicReference<Vector2D> dragStart = new AtomicReference<>(null);
+        AtomicBoolean isOffsetAtomic = new AtomicBoolean(!SettingsService.getInstance().getSettings().isMiniMapDragged());
+
+        navigatorCanvas.setOnMousePressed(event -> {
+            isOffsetAtomic.set(!SettingsService.getInstance().getSettings().isMiniMapDragged());
+            if (isOffsetAtomic.get()) {
+                setOffset(event.getX(), event.getY());
+                return;
+            }
+            offset.set(transformation.getOffset());
+            dragStart.set(Vector2D.create(event.getX(), event.getY()));
+        });
+
+        navigatorCanvas.setOnMouseDragged(event -> {
+            if (isOffsetAtomic.get()) {
+                setOffset(event.getX(), event.getY());
+                return;
+            }
+            if (offset.get() == null) {
+                offset.set(transformation.getOffset());
+            }
+            if (dragStart.get() == null) {
+                dragStart.set(Vector2D.create(event.getX(), event.getY()));
+            }
+            Vector2D dragOffset = Vector2D.create(event.getX(), event.getY()).subtract(dragStart.get());
+            double scale = transformation.getScale();
+            transformation.setOffset(offset.get().subtract(dragOffset.divide(SCALE_FACTOR).multiply(scale)));
+        });
+
         navigatorCanvas.setOnScroll(event -> {
             final double scaleFactor = Math.exp(event.getDeltaY() * 1e-2);
-            transformation.scaleRelative(scaleFactor, Vector2D.create(canvas.getWidth(), canvas.getHeight()).divide(2));
+
+            Vector2D vector2D;
+
+            if (SettingsService.getInstance().getSettings().isMiniMapScrollCenter()) {
+                vector2D = Vector2D.create(canvas.getWidth(), canvas.getHeight()).divide(2);
+            } else {
+                vector2D = Vector2D.create(event.getX(), event.getY())
+                        .subtract(Vector2D.create(symbol.getX(), symbol.getY()))
+                        .divide(SCALE_FACTOR)
+                        .multiply(transformation.getScale());
+            }
+
+            transformation.scaleRelative(scaleFactor, vector2D);
         });
         drawNavigatorCanvas();
     }
@@ -195,6 +242,11 @@ public class ScaleController {
         if (treasurePoint != null) {
             final Point2D treasure = transform(treasurePoint);
             context.setFill(Color.RED);
+            context.fillOval(treasure.getX() - 1, treasure.getY() - 1, 3, 3);
+        }
+        if (searcherPoint != null) {
+            final Point2D treasure = transform(searcherPoint);
+            context.setFill(Color.GREEN);
             context.fillOval(treasure.getX() - 1, treasure.getY() - 1, 3, 3);
         }
 

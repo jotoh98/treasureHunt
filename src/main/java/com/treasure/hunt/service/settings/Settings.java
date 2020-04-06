@@ -21,6 +21,13 @@ public class Settings {
     @UserSetting(name = "Locale", desc = "Localization of number format")
     private Locale locale = Locale.US;
 
+    @UserSetting(name = "Mini map scroll", desc = "Let the mini map scroll to the center of screen (checked) or to the cursors position (unchecked).")
+    private boolean miniMapScrollCenter = true;
+
+
+    @UserSetting(name = "Mini map dragged/pointed", desc = "Make the mini map draggable or let the screen directly point to the clicked position.")
+    private boolean miniMapDragged = true;
+
     public String round(double value) {
         if (decimalPlaces < 0) {
             return Double.toString(value);

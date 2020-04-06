@@ -71,7 +71,7 @@ public class MainController {
     public Group popupGroup;
     public StackPane mainRoot;
     @FXML
-    private NavigationController stepViewNavigatorController;
+    private StepNavigationController stepViewNavigatorController;
     @FXML
     private Label versionLabel;
     @FXML
@@ -287,7 +287,7 @@ public class MainController {
         statusWidget.getController().init(gameManager);
         insertWidget(SplitPaneLocation.RIGHT_UPPER, "Status", statusWidget.getComponent());
 
-        Widget<ScaleController, ?> scaleWidget = new Widget<>("/layout/scaling.fxml");
+        Widget<NavigatorController, ?> scaleWidget = new Widget<>("/layout/navigator.fxml");
         scaleWidget.getController().init(gameManager, canvasController);
         insertWidget(SplitPaneLocation.RIGHT_LOWER, "Navigator", scaleWidget.getComponent());
 
