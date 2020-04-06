@@ -55,6 +55,8 @@ import java.util.stream.Stream;
  */
 @Preference(name = PreferenceService.EARLY_EXIT_AMOUNT, value = 0)
 @Preference(name = PreferenceService.EARLY_EXIT_RADIUS, value = 1.0)
+@Preference(name = PreferenceService.TREASURE_APPROACH_SINCE, value = 0)
+@Preference(name = PreferenceService.TREASURE_APPROACH_DISTANCE, value = 1.0)
 @Slf4j
 public class GameManager implements KryoSerializable, KryoCopyable<GameManager> {
 
@@ -141,7 +143,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
         if (gameEngine.isFinished()) {
             finishedProperty.set(true);
         }
-        if (earlyExit()) {
+        if (earlyExit() || slowApproachExit()) {
             finishedProperty.setValue(true);
         }
     }
@@ -370,6 +372,35 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
             turns.get(turns.size() - 1).getSearchPath().addAdditionalItem(new GeometryItem<>(JTSUtils.createPoint(origin), GeometryType.NO_TREASURE, new GeometryStyle(true, Color.CYAN, Color.red)));
         }
         return isEarlyExit;
+    }
+
+    /**
+     * Tests, if the last few steps of the searcher approach the treasure fast enough.
+     * The approach is measured as the euclidean distance between the treasure and the respective search paths last point.
+     *
+     * @return whether the game exits early because of the searcher not progressing fast enough
+     */
+    protected boolean slowApproachExit() {
+        final double minDistance = PreferenceService.getInstance()
+                .getPreference(PreferenceService.TREASURE_APPROACH_DISTANCE, 1.0)
+                .doubleValue();
+        final int since = PreferenceService.getInstance()
+                .getPreference(PreferenceService.TREASURE_APPROACH_SINCE, 0)
+                .intValue();
+
+        if (since < 1 || turns.size() - 1 < since) {
+            return false;
+        }
+
+        final Turn sinceTurn = turns.get(turns.size() - 1 - since);
+        final Turn currentTurn = turns.get(turns.size() - 1);
+
+        final Coordinate sinceCoordinate = sinceTurn.getSearchPath().getLastPoint().getCoordinate();
+        final Coordinate currentCoordinate = currentTurn.getSearchPath().getLastPoint().getCoordinate();
+
+        final Coordinate treasureCoordinate = currentTurn.getTreasureLocation().getCoordinate();
+
+        return sinceCoordinate.distance(treasureCoordinate) - minDistance < currentCoordinate.distance(treasureCoordinate);
     }
 
     private void setProperties() {
