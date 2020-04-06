@@ -157,12 +157,13 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
  Every step the intersection I of all halfplanes of all hints and the current phase rectangle is
  created.
  The difference D of I and all already seen areas is created.
- Then the current rectangle gets reduced to the minimum rectangle where D is inside and
+ The strategy applies S on each step but decreases the current rectangle of the strategy
+ (if the previous hint was not bad) to the minimum rectangle where D is inside and
  which has sides parallel to the phase rectangle.
  <p>
- Also when applying RectangleScan, this strategy does reduce the rectangle to be  scanned,
+ Also when applying RectangleScan, this strategy does reduce the rectangle to be scanned,
  by ignoring some areas it has already seen and areas which can be ignored due to hints and
- uses a better RectangleScan Routine.
+ uses a more efficient RectangleScan Routine.
  <p>
  An annotation to the implementation:
  The implementation works on two different coordinate systems:
@@ -211,7 +212,7 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 <!--   -->
 </a>
 <h3>Fields inherited from class&nbsp;com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.<a href="../strategyFromPaper/StrategyFromPaper.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">StrategyFromPaper</a></h3>
-<code><a href="../strategyFromPaper/StrategyFromPaper.html#currentHint">currentHint</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#phase">phase</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#previousHint">previousHint</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#previousHintQuality">previousHintQuality</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#searchAreaCornerA">searchAreaCornerA</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#searchAreaCornerB">searchAreaCornerB</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#searchAreaCornerC">searchAreaCornerC</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#searchAreaCornerD">searchAreaCornerD</a></code></li>
+<code><a href="../strategyFromPaper/StrategyFromPaper.html#currentHint">currentHint</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#phase">phase</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#phaseGotIncrementedThisMove">phaseGotIncrementedThisMove</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#previousHint">previousHint</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#previousHintQuality">previousHintQuality</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#searchAreaCornerA">searchAreaCornerA</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#searchAreaCornerB">searchAreaCornerB</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#searchAreaCornerC">searchAreaCornerC</a>, <a href="../strategyFromPaper/StrategyFromPaper.html#searchAreaCornerD">searchAreaCornerD</a></code></li>
 </ul>
 </li>
 </ul>
