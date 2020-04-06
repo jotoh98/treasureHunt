@@ -23,6 +23,7 @@
     src/main/java/com/treasure/hunt/strategy/hider/impl/
     2. Implement the interface Hider<T>, where T is the Type of Hint
     the Hider returns.
+    3. Adapt the method GameEngine#VerifyHint, such that it allows your new type of Hint.
     
 # Implementing a GameEngine
     1. Create a class "yourgameengine" in

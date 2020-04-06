@@ -442,7 +442,7 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
     }
 
     private boolean currentMultiPolygonIsEmpty() {
-        return currentMultiPolygon == null || currentMultiPolygon.getArea() == 0;
+        return currentMultiPolygon == null || JTSUtils.doubleEqual(currentMultiPolygon.getArea(), 0);
     }
 
     private void setABCDinStrategy() {

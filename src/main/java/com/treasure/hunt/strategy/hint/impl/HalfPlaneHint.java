@@ -137,12 +137,13 @@ public class HalfPlaneHint extends AngleHint {
                 throw new IllegalArgumentException("getCenter() must not equal getRight() in the " +
                         "calculation of the direction");
             }
-        }
-        if (getCenter().getY() < getRight().getY()) {
-            direction = Direction.left;
-        }
-        if (getCenter().getY() > getRight().getY()) {
-            direction = Direction.right;
+        } else {
+            if (getCenter().getY() < getRight().getY()) {
+                direction = Direction.left;
+            }
+            if (getCenter().getY() > getRight().getY()) {
+                direction = Direction.right;
+            }
         }
         return direction;
     }
