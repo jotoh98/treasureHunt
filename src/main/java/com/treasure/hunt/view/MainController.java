@@ -288,7 +288,7 @@ public class MainController {
         insertWidget(SplitPaneLocation.RIGHT_UPPER, "Status", statusWidget.getComponent());
 
         Widget<ScaleController, ?> scaleWidget = new Widget<>("/layout/scaling.fxml");
-        scaleWidget.getController().init(canvasController);
+        scaleWidget.getController().init(gameManager, canvasController);
         insertWidget(SplitPaneLocation.RIGHT_LOWER, "Navigator", scaleWidget.getComponent());
 
         Widget<HistoryController, ?> historyWidget = new Widget<>("/layout/history.fxml");

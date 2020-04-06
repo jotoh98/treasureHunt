@@ -18,7 +18,6 @@ import org.locationtech.jts.geom.Point;
 @Preference(name = StatisticalHider.DistanceFromResultingCentroidToTreasureWeight_Preference, value = 3)
 @Preference(name = PreferenceService.MAX_TREASURE_DISTANCE, value = 100)
 public class FixedTreasureHider extends StatisticalHider implements Hider<AngleHint> {
-
     @Override
     protected double rateHint(AngleHintStatistic ahs) {
         double rating = 0;

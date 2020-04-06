@@ -19,6 +19,5 @@ public enum StatisticAggregation {
 
     StatisticAggregation(Function<List<Number>, Number> aggregation) {
         this.aggregation = aggregation;
-
     }
 }

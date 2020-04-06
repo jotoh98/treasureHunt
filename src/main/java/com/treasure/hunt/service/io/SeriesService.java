@@ -81,6 +81,9 @@ public class SeriesService {
      * @param gameManager      gameManager to be copied (preserves state for multiple starts with same states)
      * @param progressConsumer consumer for working progress, We have 4 workload points per run 1 for copying GameManager, 6 for the actual run and 2 for writing the file
      * @param selectedFile     the file the runs are written to
+     * @param alreadyInitialed
+     * @param writeGameManger
+     * @param maxSteps
      * @return
      */
     @SneakyThrows
