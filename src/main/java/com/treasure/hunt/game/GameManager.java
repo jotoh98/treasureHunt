@@ -181,6 +181,14 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
 
     /**
      * This simulates the whole game, until its finished.
+     */
+    public void beatSync(Integer maxSteps) {
+        beatThreadRunning.set(true);
+        runBeatSync(new SimpleObjectProperty<>(0d), false, maxSteps, new CompletableFuture<>());
+    }
+
+    /**
+     * This simulates the whole game, until its finished.
      *
      * @param delay                     time between each move
      * @param executeNextOnJavaFxThread if set to true the next call is made on javafx thread that is important when UI is attached to the GameManager,
@@ -196,41 +204,47 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
 
         beatThreadRunning.set(true);
         AsyncUtils.EXECUTOR_SERVICE.submit(() -> {
-            log.trace("Start beating thread");
-            int steps = 1;
-            while (!stepForwardImpossibleBinding.get() && beatThreadRunning.get() && (maxSteps == null || steps <= maxSteps)) {
+            try {
+                runBeatSync(delay, executeNextOnJavaFxThread, maxSteps, completableFuture);
+            } catch (Exception e) {
+                log.error("Beat Thread had an Exception", e);
+                completableFuture.completeExceptionally(e);
+            } finally {
                 if (executeNextOnJavaFxThread) {
-                    CountDownLatch latch = new CountDownLatch(1);
-                    Platform.runLater(() -> {
-                        next();
-                        latch.countDown();
-                    });
-                    try {
-                        latch.await();
-                        Thread.sleep((long) (delay.get() * 1000));
-                    } catch (InterruptedException e) {
-                        completableFuture.completeExceptionally(e);
-                        throw new RuntimeException(e);
-                    }
+                    Platform.runLater(() -> beatThreadRunning.set(false));
                 } else {
-                    try {
-                        next();
-                    } catch (Exception e) {
-                        completableFuture.completeExceptionally(e);
-                    }
+                    beatThreadRunning.set(false);
                 }
-                steps++;
             }
-            log.trace("Terminating beating thread");
-            if (executeNextOnJavaFxThread) {
-                Platform.runLater(() -> beatThreadRunning.set(false));
-            } else {
-                beatThreadRunning.set(false);
-            }
-            completableFuture.complete(null);
         });
 
         return completableFuture;
+    }
+
+    private void runBeatSync(final ReadOnlyObjectProperty<Double> delay, final Boolean executeNextOnJavaFxThread, final Integer maxSteps, final CompletableFuture<Void> completableFuture) {
+        log.trace("Start beating thread");
+        int steps = 1;
+        while (!stepForwardImpossibleBinding.get() && beatThreadRunning.get() && (maxSteps == null || steps <= maxSteps)) {
+            if (executeNextOnJavaFxThread) {
+                CountDownLatch latch = new CountDownLatch(1);
+                Platform.runLater(() -> {
+                    next();
+                    latch.countDown();
+                });
+                try {
+                    latch.await();
+                    Thread.sleep((long) (delay.get() * 1000));
+                } catch (InterruptedException e) {
+                    completableFuture.completeExceptionally(e);
+                    throw new RuntimeException(e);
+                }
+            } else {
+                next();
+            }
+            steps++;
+        }
+        log.trace("Terminating beating thread");
+        completableFuture.complete(null);
     }
 
     /**
