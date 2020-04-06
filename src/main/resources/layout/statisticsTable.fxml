@@ -4,12 +4,13 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import java.lang.String?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" id="statisticsTable" maxHeight="-Infinity" maxWidth="Infinity"
       minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1"
       fx:controller="com.treasure.hunt.view.StatisticTableController">
     <children>
         <HBox alignment="CENTER" fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0"
-              prefWidth="600.0" styleClass="toolbar" VBox.vgrow="ALWAYS">
+              prefWidth="600.0" styleClass="toolbar" VBox.vgrow="ALWAYS" spacing="10">
             <children>
                 <Label minWidth="-Infinity" text="Rounds:"/>
                 <Spinner fx:id="roundSpinner"/>
@@ -33,6 +34,10 @@
                     </children>
                 </HBox>
             </children>
+            <styleClass>
+                <String fx:value="toolbar"/>
+                <String fx:value="top"/>
+            </styleClass>
             <opaqueInsets>
                 <Insets/>
             </opaqueInsets>

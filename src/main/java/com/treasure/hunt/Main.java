@@ -1,6 +1,5 @@
 package com.treasure.hunt;
 
-import com.sun.javafx.application.LauncherImpl;
 import com.treasure.hunt.view.SplashScreenLoader;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,10 +11,14 @@ import java.awt.*;
 @Slf4j
 public class Main {
 
+    static {
+        System.setProperty("javafx.preloader", SplashScreenLoader.class.getName());
+    }
+
     public static void main(String[] args) {
         log.info("Starting Javafx UI application");
         setTaskBarIcon();
-        LauncherImpl.launchApplication(JavaFxApplication.class, SplashScreenLoader.class, args);
+        JavaFxApplication.launch(JavaFxApplication.class, args);
     }
 
     private static void setTaskBarIcon() {

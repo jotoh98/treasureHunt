@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.scene.layout.*?>
-<HBox
-        xmlns:fx="http://javafx.com/fxml/1"
-        xmlns="http://javafx.com/javafx/11"
-        fx:controller="com.treasure.hunt.view.ToolbarController"
-        styleClass="toolbar"
->
+<?import java.lang.String?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1"
+      fx:controller="com.treasure.hunt.view.ToolbarController">
     <children>
         <HBox fx:id="first">
         </HBox>
@@ -15,4 +11,8 @@
         <HBox fx:id="second">
         </HBox>
     </children>
+    <styleClass>
+        <String fx:value="toolbar"/>
+        <String fx:value="bottom"/>
+    </styleClass>
 </HBox>

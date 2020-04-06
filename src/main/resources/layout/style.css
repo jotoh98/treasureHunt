@@ -1,27 +1,77 @@
+/*= = TABLE OF CONTENTS = =
+     1. Vars and global settings
+     2. Text color
+     3. Background color
+     4. Opaque background removal
+     5. Popups
+     6. Toolbars
+     7. Table Views
+     8. List Views
+     9. Tree Views
+    10. Buttons
+    11. Split Panes
+    12. Scroll bars
+    13. Progress Bars
+    14. Global Utilities
+    15. Settings window
+*/
+
 * {
-    BACKGROUND_COLOR: #383838;
-    BORDER_COLOR: #2a2a2a;
-    SECONDARY_GREY: #8e9194;
+    TEXT_PRIMARY: #c0c0c0;
+    TEXT_SECONDARY: #9b9b9b;
+    SECONDARY_GREY: #7d8083;
     LIGHTEST_BACKGROUND: #616365;
-    FOCUSED_BACKGROUND: #005797;
     LIGHTER_BACKGROUND: #3e4042;
+    BACKGROUND_COLOR: #383838;
     DARK_BACKGROUND: #2f2f2f;
+    BORDER_COLOR: #2a2a2a;
     DARKER_BACKGROUND: #1c1c1c;
+    FOCUSED_BACKGROUND: #005797;
     REQUIRED_RED: red;
     ACCENT: #04ff16;
-    -fx-text-fill: white;
+    -fx-text-fill: TEXT_PRIMARY;
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-border-color: BORDER_COLOR;
 }
 
-#root,
-.split-pane {
+
+/*----- Text ----- */
+
+#logLabel {
+    -fx-text-fill: TEXT_SECONDARY;
+}
+
+.settings .description {
+    -fx-padding: 5pt 0 0 0;
+    -fx-text-fill: SECONDARY_GREY;
+}
+
+/*----- Background -----*/
+
+.list-cell:hover,
+.combo-box .list-cell:hover,
+.table-row-cell:selected {
+    -fx-background-color: FOCUSED_BACKGROUND;
+}
+
+.combo-box,
+.list-cell {
     -fx-background-color: BACKGROUND_COLOR;
 }
 
+/*----- Delete opaque background -----*/
+
+.titled-pane .title,
+.titled-pane .content,
+.scroll-pane,
+.scroll-pane > .viewport,
 .pop-up-pane {
     -fx-background-color: transparent;
-    -fx-border-color: BORDER_COLOR;
     -fx-border-width: 0;
 }
+
+/*----- Popup ------*/
 
 .pop-up-pane .list-view {
     -fx-border-width: 0;
@@ -36,15 +86,7 @@
     -fx-background-color: FOCUSED_BACKGROUND;
 }
 
-#logLabel {
-    -fx-text-fill: darkgrey;
-}
-
-.toolbar,
-.combo-box,
-.list-cell {
-    -fx-background-color: BACKGROUND_COLOR;
-}
+/*----- Toolbar -----*/
 
 .combo-box .text-field {
     -fx-border-width: 0;
@@ -57,70 +99,32 @@
 }
 
 .toolbar {
-    -fx-padding: 0;
     -fx-border-color: BORDER_COLOR;
-    -fx-spacing: 10;
 }
 
-.toolbar.top {
-    -fx-border-width: 0 0 1pt 0;
-    -fx-padding: 0 0 0 10pt;
-}
-
-.toolbar.right,
-.toolbar.left {
-    -fx-padding: 0;
-}
-
-.toolbar.top {
-    -fx-padding: 2pt 10pt;
+.toolbar.bottom {
+    -fx-border-width: 1pt 0 0 0;
 }
 
 .toolbar.left {
     -fx-border-width: 0 1pt 0 0;
 }
 
+.toolbar.top {
+    -fx-border-width: 0 0 1pt 0;
+    -fx-padding: 2pt 7pt;
+}
+
 .toolbar.right {
     -fx-border-width: 0 0 0 1pt;
 }
 
-.toolbar.bottom {
-    -fx-border-width: 1pt 0 0 0;
-    -fx-padding: 0 0 0 10pt;
-}
-
-#statisticsTable .toolbar {
-    -fx-padding: 0 5pt;
-    -fx-border-width: 0;
-    -fx-background-color: LIGHTER_BACKGROUND;
-}
-
-.list-cell * {
-    -fx-text-fill: SECONDARY_GREY;
-}
-
-.button,
-.toggle-button {
-    -fx-background-color: transparent;
-    -fx-background-radius: 0;
-    -fx-cursor: hand;
-    -fx-padding: 3pt 10pt;
-    -fx-font-size: .9em;
-    -fx-border-width: .5pt;
-    -fx-border-color: rgba(255, 255, 255, 0.27);
-}
-
-.scroll-pane > .viewport {
-    -fx-background-color: transparent;
-}
-
-.scroll-pane {
-    -fx-background-color: transparent;
-}
+/*----- Table -----*/
 
 .table-view {
     -fx-background-color: transparent;
-    -fx-table-cell-border-color: red;
+    -fx-border-insets: 0;
+    -fx-background-insets: 0;
 }
 
 .table-view:focused {
@@ -142,11 +146,13 @@
     -fx-background-color: transparent;
 }
 
+
 .table-row-cell {
     -fx-background-color: LIGHTER_BACKGROUND;
     -fx-padding: 0;
     -fx-table-cell-border-color: DARK_BACKGROUND;
     -fx-border-width: 0;
+
 }
 
 .table-row-cell:odd {
@@ -154,9 +160,7 @@
 }
 
 .table-row-cell:selected {
-    -fx-background-color: #005797;
     -fx-background-insets: 0;
-    -fx-background-radius: 1;
 }
 
 .table-view > .virtual-flow > .scroll-bar:vertical,
@@ -168,10 +172,84 @@
     -fx-background-color: transparent;
 }
 
-
 .table-view > .virtual-flow > .scroll-bar > .increment-button,
 .table-view > .virtual-flow > .scroll-bar > .decrement-button {
     -fx-opacity: 0;
+}
+
+/*----- List View -----*/
+
+.list-view {
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-background-color: DARK_BACKGROUND;
+    -fx-border-width: 0;
+}
+
+.list-cell {
+    -fx-padding: 0pt 4pt;
+    -fx-background-color: transparent;
+}
+
+.list-cell:selected {
+    -fx-background-color: DARKER_BACKGROUND;
+}
+
+.list-view .list-cell {
+    -fx-padding: 3pt 5pt;
+    -fx-cursor: hand;
+}
+
+.combo-box .list-cell:selected {
+    -fx-background-color: transparent;
+}
+
+.list-cell:empty {
+    visibility: hidden;
+}
+
+/*----- Tree View -----*/
+
+.tree-view {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.tree-view .content,
+.tree-view .title {
+    -fx-background-color: BACKGROUND_COLOR;
+}
+
+.titled-pane .arrow-button .arrow,
+.tree-cell > .tree-disclosure-node > .arrow {
+    -fx-background-color: TEXT_SECONDARY;
+}
+
+.tree-cell > .tree-disclosure-node > .arrow {
+    -fx-cursor: hand;
+}
+
+.tree-cell > .tree-disclosure-node > .arrow,
+.tree-table-row-cell > .tree-disclosure-node > .arrow {
+    -fx-rotate: 0;
+}
+
+.tree-cell:expanded > .tree-disclosure-node > .arrow,
+.tree-table-row-cell:expanded > .tree-disclosure-node > .arrow {
+    -fx-rotate: 90;
+}
+
+/*----- Button -----*/
+
+.button,
+.toggle-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+    -fx-padding: 3pt 14pt;
+    -fx-font-size: .9em;
+    -fx-border-width: .5pt;
+    -fx-border-color: rgba(255, 255, 255, 0.27);
 }
 
 .toolbar .button,
@@ -182,10 +260,6 @@
 .toolbar.top .button {
     -fx-background-radius: 2pt;
     -fx-padding: 1pt 10pt;
-}
-
-.toolbar.top .button:hover {
-    -fx-background-color: derive(black, 50%);
 }
 
 .toolbar.right .button,
@@ -205,63 +279,47 @@
     -fx-rotate: 90deg;
 }
 
+.toolbar.top .button:hover,
+.toolbar.top .button:pressed {
+    -fx-background-color: LIGHTER_BACKGROUND;
+}
 
 .button:hover,
 .toggle-button:hover {
     -fx-background-color: DARK_BACKGROUND;
 }
 
-
-.toolbar .button:pressed,
-.toolbar .toggle-button:selected {
+.button:pressed,
+.toggle-button:selected {
     -fx-background-color: DARKER_BACKGROUND;
 }
 
-.combo-box {
+.combo-box,
+.spinner {
     -fx-border-width: .5pt;
-    -fx-border-color: rgba(255, 255, 255, 0.27);
+    -fx-border-color: SECONDARY_GREY;
     -fx-padding: 1.5pt 0pt;
     -fx-border-radius: 2pt;
     -fx-cursor: hand;
 }
 
-.arrow {
-    -fx-background-color: SECONDARY_GREY;
+.spinner {
+    -fx-padding: .5pt 0;
 }
 
-.list-cell {
-    -fx-padding: 0pt 4pt;
-    -fx-background-color: transparent;
-}
-
-.list-view {
-    -fx-border-color: transparent;
-    -fx-padding: 0;
-    -fx-background-color: DARK_BACKGROUND;
+.spinner .text-field {
+    -fx-cursor: text;
     -fx-border-width: 0;
+    -fx-padding: 1pt 0pt 1pt 5pt;
 }
 
-.list-view .list-cell {
-    -fx-padding: 3pt 5pt;
-    -fx-cursor: hand;
+.arrow,
+.increment-arrow,
+.decrement-arrow {
+    -fx-background-color: TEXT_SECONDARY;
 }
 
-.list-cell:selected {
-    -fx-background-color: DARKER_BACKGROUND;
-}
-
-.combo-box .list-cell:selected {
-    -fx-background-color: transparent;
-}
-
-.list-cell:hover,
-.combo-box .list-cell:hover {
-    -fx-background-color: #2946b4;
-}
-
-.list-cell:empty {
-    visibility: hidden;
-}
+/*----- Split pane -----*/
 
 .split-pane {
     -fx-box-border: transparent;
@@ -270,9 +328,11 @@
 
 .split-pane > .split-pane-divider {
     -fx-padding: 0;
-    -fx-background-color: transparent;
-    -fx-pref-width: 2pt;
+    -fx-background-color: BORDER_COLOR;
+    -fx-pref-width: 1pt;
 }
+
+/*----- Scroll bar -----*/
 
 .scroll-bar:horizontal .track,
 .scroll-bar:vertical .track {
@@ -287,7 +347,6 @@
     -fx-background-color: transparent;
     -fx-background-radius: 0em;
     -fx-padding: 0 0 10 0;
-
 }
 
 .scroll-bar:vertical .increment-button,
@@ -308,24 +367,35 @@
     -fx-background-color: derive(black, 90%);
     -fx-background-insets: 2, 0, 0;
     -fx-background-radius: 2em;
+
 }
 
-.widget {
-    -fx-padding: 5pt;
-    -fx-background-color: rgba(255, 255, 255, 0.1);
+/*----- Progress bar -----*/
+
+.progress-indicator {
+    -fx-progress-color: ACCENT;
 }
+
+.progress-indicator .percentage {
+    -fx-fill: ACCENT;
+}
+
+/*----- Utilities -----*/
 
 .text-field {
     -fx-border-radius: .5pt;
     -fx-min-width: 50pt;
     -fx-max-width: 200pt;
     -fx-border-color: BORDER_COLOR;
-    -fx-background-color: BACKGROUND_COLOR;
     -fx-background-radius: 0;
+    -fx-border-width: 1;
 }
 
-.text-input {
-    -fx-fill: white;
+.increment-arrow-button,
+.decrement-arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-cursor: hand;
 }
 
 .widget-pane {
@@ -333,88 +403,47 @@
     -fx-border-color: transparent;
 }
 
-.progress-indicator .percentage {
-    -fx-fill: ACCENT;
+.slider .track {
+    -fx-background-color: BORDER_COLOR;
 }
 
-.progress-indicator {
-    -fx-progress-color: ACCENT;
-}
-
-.inner_popup {
-    -fx-background-color: BACKGROUND_COLOR;
-}
-
-.error_label {
-    -fx-background-color: REQUIRED_RED;
-}
-
-.tree-view {
-    -fx-background-color: transparent;
-    -fx-padding: 0;
-}
-
-.tree-view * {
-    -fx-background-color: BACKGROUND_COLOR;
-    -fx-fill: SECONDARY_GREY;
-}
-
-.spinner .text-field {
-    -fx-padding: 2pt 10pt;
-}
-
-.titled-pane .arrow-button .arrow,
-.tree-cell > .tree-disclosure-node > .arrow,
-.increment-arrow,
-.decrement-arrow {
+.slider .thumb {
     -fx-background-color: SECONDARY_GREY;
 }
 
-.decrement-arrow-button,
-.increment-arrow-button {
-    -fx-background-color: BORDER_COLOR;
-    -fx-border-width: 0;
-}
-
-.decrement-arrow-button:hover,
-.increment-arrow-button:hover {
-    -fx-background-color: DARKER_BACKGROUND;
-}
-
-.titled-pane .title {
-    -fx-background-color: LIGHTER_BACKGROUND;
-}
-
-.titled-pane .content {
-    -fx-background-color: transparent;
-}
-
-.tree-cell > .tree-disclosure-node > .arrow {
+#gameCanvas,
+#navigatorCanvas {
     -fx-cursor: hand;
 }
 
-.tree-cell > .tree-disclosure-node > .arrow,
-.tree-table-row-cell > .tree-disclosure-node > .arrow {
-    -fx-rotate: 0;
-}
-
-.tree-cell:expanded > .tree-disclosure-node > .arrow,
-.tree-table-row-cell:expanded > .tree-disclosure-node > .arrow {
-    -fx-rotate: 90;
-}
-
-.widget-bar .split-pane-divider {
+.dark-bg {
     -fx-background-color: BACKGROUND_COLOR;
 }
 
-.settings > .viewport, .settings {
-    -fx-background-color: BACKGROUND_COLOR;
+.dark-bg * {
+    -fx-text-fill: inherit;
 }
 
-.settings .description {
-    -fx-padding: 5pt 0 0 0;
-    -fx-text-fill: SECONDARY_GREY;
+.bg-red {
+    -fx-background-color: REQUIRED_RED;
 }
+
+.text-red {
+    -fx-text-fill: REQUIRED_RED;
+}
+
+.check-box .box {
+    -fx-border-color: TEXT_SECONDARY;
+    -fx-border-width: 1pt;
+    -fx-border-radius: 2pt;
+    -fx-background-insets: 1pt;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: TEXT_PRIMARY;
+}
+
+/*---- Settings customization -----*/
 
 .settings-list > * {
     -fx-padding: 10pt;
@@ -424,17 +453,4 @@
     -fx-border-width: 1pt 0 0 0;
     -fx-border-color: LIGHTER_BACKGROUND;
     -fx-padding: 10pt;
-}
-
-.dark-bg {
-    -fx-background-color: BACKGROUND_COLOR;
-    -fx-text-fill: white;
-}
-
-.dark-bg * {
-    -fx-text-fill: inherit;
-}
-
-.text-red {
-    -fx-text-fill: red;
 }
