@@ -152,6 +152,6 @@ public class Circle extends Coordinate implements Shapeable {
      * @return {@code true} if this contains {@code circle}. {@code false}, otherwise
      */
     public boolean contains(Circle circle) {
-        return (this.getRadius() >= (this.distance(circle) + circle.getRadius()));
+        return this.getRadius() >= (this.distance(circle) + circle.getRadius());
     }
 }

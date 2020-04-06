@@ -88,8 +88,9 @@ public abstract class StatisticalHider {
      * Evaluates the Hints by generating some statistics on them,
      * rating the Hints, and returning the best.
      *
-     * @param hints the AngleHints to evaluate
-     * @return the chosen AngleHint
+     * @param hints      the list of {@link AngleHint}s to evaluate
+     * @param searchPath the {@link SearchPath}
+     * @return the chosen {@link AngleHint} with the best rating
      */
     public AngleHint eval(List<AngleHint> hints, SearchPath searchPath) {
 
@@ -196,25 +197,26 @@ public abstract class StatisticalHider {
     }
 
     /**
-     * Filters the given Hints on the Predicate of being abel to see
+     * Filters the given {@link AngleHint}s on the predicate of being able to see
      *
-     * @param stats the List of AngleHintStats to filter
-     * @return
+     * @param angleHintStatistics the list of {@link AngleHintStatistic}s to filter
+     * @return a list of valid {@link AngleHintStatistic}s
      */
-    protected List<AngleHintStatistic> filterForValidHints(List<AngleHintStatistic> stats) {
+    protected List<AngleHintStatistic> filterForValidHints(List<AngleHintStatistic> angleHintStatistics) {
 
-        stats = stats.stream().filter(hint -> hint.getHint().getGeometryAngle().inView(treasure.getCoordinate())).collect(Collectors.toList());
-        log.debug("remaining possible Hints" + stats.size()); // hint: its always half the amount
-        return stats;
+        angleHintStatistics = angleHintStatistics.stream().filter(hint -> hint.getHint().getGeometryAngle().inView(treasure.getCoordinate())).collect(Collectors.toList());
+        log.debug("remaining possible Hints" + angleHintStatistics.size()); // hint: its always half the amount
+        return angleHintStatistics;
     }
 
     /**
      * Todo: if hint is 180degree make it an explicit HalfPlaneHint/ hack it such that StrategyFromPaper receives a halfplaneHint
-     * Generates {@code samples } evenly spaced {@link com.treasure.hunt.strategy.hint.impl} .
+     * Generates {@code samples} evenly spaced {@link AngleHint}s.
      * Generated hints are not always exactly the preferred hint Size, the diverge about 3 * e-13
      *
-     * @param samples determines how many Hints are returned
-     * @return a List of {@code samples} {@link com.treasure.hunt.strategy.hint.impl.AngleHint}
+     * @param samples    determines how many Hints are returned
+     * @param hintCenter the center {@link Point}, the {@link AngleHint}s should lie on.
+     * @return a list of {@code samples} many {@link com.treasure.hunt.strategy.hint.impl.AngleHint}s
      */
     protected List<AngleHint> generateHints(int samples, Point hintCenter) {
         final double twoPi = Math.PI * 2;
@@ -269,5 +271,4 @@ public abstract class StatisticalHider {
     public Point getTreasureLocation() {
         return this.treasure;
     }
-
 }

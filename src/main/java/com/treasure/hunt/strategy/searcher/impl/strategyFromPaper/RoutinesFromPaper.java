@@ -50,15 +50,27 @@ public class RoutinesFromPaper {
      * It adds the Points to searchPath so that the player sees all points in the rectangle ABCD.
      * Unlike the paper it does not add the point where the procedure started to the search-path.
      *
+     * @param A
+     * @param B
+     * @param C
+     * @param D
      * @param searchPath   the searchPath the rectangle scan path gets added to
      * @param lastPosition when the searchPath is empty, it is assumed that this was the point where the procedure
      *                     rectangleScan got started and the searcher returns there afterwards
+     * @return
      */
     public static SearchPath rectangleScan(Point A, Point B, Point C, Point D, SearchPath searchPath, Point lastPosition) {
         return rectangleScan(A.getCoordinate(), B.getCoordinate(), C.getCoordinate(), D.getCoordinate(), searchPath, lastPosition);
     }
 
     /**
+     * @param A
+     * @param B
+     * @param C
+     * @param D
+     * @param searchPath
+     * @param lastPosition
+     * @return
      * @see RoutinesFromPaper#rectangleScan(Point, Point, Point, Point, SearchPath, Point)
      */
     public static SearchPath rectangleScan(Coordinate A, Coordinate B, Coordinate C, Coordinate D, SearchPath searchPath, Point lastPosition) {

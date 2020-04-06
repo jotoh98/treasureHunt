@@ -134,6 +134,10 @@ public class LastHintBadSubroutine {
      * The function equals the "else"-part of the first if-condition in Algorithm 3 (Function ReduceRectangle(R))
      * in the paper.
      *
+     * @param currentHint
+     * @param lastBadHint
+     * @param move
+     * @param changeABCD
      * @return The move to scan various areas so that A,B,C and D can be updated to a smaller rectangle (or the treasure
      * is found)
      */
