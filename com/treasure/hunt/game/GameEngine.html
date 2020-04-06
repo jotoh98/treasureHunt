@@ -27,8 +27,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":10,"i1":10,"i2":9,"i3":10,"i4":10,"i5":9,"i6":9,"i7":9,"i8":10};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -251,7 +251,7 @@ extends java.lang.Object</pre>
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -268,12 +268,14 @@ extends java.lang.Object</pre>
 <td class="colFirst"><code><a href="Turn.html" title="class in com.treasure.hunt.game">Turn</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#init()">init</a></span>()</code></th>
 <td class="colLast">
-<div class="block">initialize searcher and treasure positions.</div>
+<div class="block">Initializes <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a>, <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> and the treasure position
+ and simulates an initial Step.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#located(com.treasure.hunt.strategy.searcher.SearchPath)">located</a></span>&#8203;(<a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath)</code></th>
+<td class="colFirst"><code>static boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#located(com.treasure.hunt.strategy.searcher.SearchPath,org.locationtech.jts.geom.Point)">located</a></span>&#8203;(<a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath,
+       org.locationtech.jts.geom.Point&nbsp;treasurePos)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
@@ -291,14 +293,40 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code>protected void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#verifyHint(com.treasure.hunt.strategy.hint.Hint,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">verifyHint</a></span>&#8203;(<a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;hint,
+<td class="colFirst"><code>protected static void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#verifyHint(com.treasure.hunt.strategy.hint.Hint,com.treasure.hunt.strategy.hint.Hint,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">verifyHint</a></span>&#8203;(<a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;previousHint,
+          <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;currentHint,
           org.locationtech.jts.geom.Point&nbsp;treasurePosition,
           org.locationtech.jts.geom.Point&nbsp;searcherPosition)</code></th>
 <td class="colLast">
-<div class="block">TODO implement:
- AngleHints must be of angle [0, 180] !?
- Verifies whether the <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a> <code>hint</code> given by the <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> followed the rules.</div>
+<div class="block">Verifies whether the <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a> <code>hint</code> given by the <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> followed the given rules.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>protected static void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#verifyHint(com.treasure.hunt.strategy.hint.impl.AngleHint,com.treasure.hunt.strategy.hint.impl.AngleHint,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">verifyHint</a></span>&#8203;(<a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&nbsp;previousAngleHint,
+          <a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&nbsp;currentAngleHint,
+          org.locationtech.jts.geom.Point&nbsp;treasurePosition,
+          org.locationtech.jts.geom.Point&nbsp;searcherPosition)</code></th>
+<td class="colLast">
+<div class="block">Verifies whether the <a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a> <code>angleHint</code> given by the <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> followed the given rules.</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>protected static void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#verifyHint(com.treasure.hunt.strategy.hint.impl.CircleHint,com.treasure.hunt.strategy.hint.impl.CircleHint,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">verifyHint</a></span>&#8203;(<a href="../strategy/hint/impl/CircleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">CircleHint</a>&nbsp;previousCircleHint,
+          <a href="../strategy/hint/impl/CircleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">CircleHint</a>&nbsp;currentCircleHint,
+          org.locationtech.jts.geom.Point&nbsp;treasurePosition,
+          org.locationtech.jts.geom.Point&nbsp;searcherPosition)</code></th>
+<td class="colLast">
+<div class="block">Verifies whether the <a href="../strategy/hint/impl/CircleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>CircleHint</code></a> <code>circleHint</code> given by the <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> followed the given rules.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>protected void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#verifySearchPath(com.treasure.hunt.strategy.searcher.SearchPath)">verifySearchPath</a></span>&#8203;(<a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath)</code></th>
+<td class="colLast">
+<div class="block">Verifies whether the <a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a> <code>searchPath</code> given by the <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> followed the given rules.</div>
 </td>
 </tr>
 </table>
@@ -462,6 +490,23 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a id="located(com.treasure.hunt.strategy.searcher.SearchPath,org.locationtech.jts.geom.Point)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>located</h4>
+<pre class="methodSignature">public static&nbsp;boolean&nbsp;located&#8203;(<a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath,
+                              org.locationtech.jts.geom.Point&nbsp;treasurePos)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>searchPath</code> - a valid <a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a>, the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> moved.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code>, if the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> found the treasure. <code>false</code>, otherwise.
+ The <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> found the treasure, if had a distance of &le; <a href="../strategy/searcher/Searcher.html#SCANNING_DISTANCE"><code>Searcher.SCANNING_DISTANCE</code></a> in this SearchPath.</dd>
+</dl>
+</li>
+</ul>
 <a id="init()">
 <!--   -->
 </a>
@@ -469,7 +514,8 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>init</h4>
 <pre class="methodSignature">public&nbsp;<a href="Turn.html" title="class in com.treasure.hunt.game">Turn</a>&nbsp;init()</pre>
-<div class="block">initialize searcher and treasure positions.</div>
+<div class="block">Initializes <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a>, <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> and the treasure position
+ and simulates an initial Step.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a <a href="Turn.html" title="class in com.treasure.hunt.game"><code>Turn</code></a>, since the initialization must be displayed.</dd>
@@ -493,16 +539,6 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="hiderMove()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>hiderMove</h4>
-<pre class="methodSignature">protected&nbsp;void&nbsp;hiderMove()</pre>
-<div class="block">Let the <a href="#hider"><code>hider</code></a> give its <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a>.</div>
-</li>
-</ul>
 <a id="searcherMove()">
 <!--   -->
 </a>
@@ -513,42 +549,96 @@ extends java.lang.Object</pre>
 <div class="block">Let the <a href="#searcher"><code>searcher</code></a> make <a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a>.</div>
 </li>
 </ul>
-<a id="verifyHint(com.treasure.hunt.strategy.hint.Hint,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">
+<a id="verifySearchPath(com.treasure.hunt.strategy.searcher.SearchPath)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>verifySearchPath</h4>
+<pre class="methodSignature">protected&nbsp;void&nbsp;verifySearchPath&#8203;(<a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath)</pre>
+<div class="block">Verifies whether the <a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a> <code>searchPath</code> given by the <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> followed the given rules.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>searchPath</code> - <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a> to be verified</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.lang.IllegalArgumentException</code> - if the <a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a> <code>searchPath</code> did not followed the rules.</dd>
+</dl>
+</li>
+</ul>
+<a id="verifyHint(com.treasure.hunt.strategy.hint.impl.AngleHint,com.treasure.hunt.strategy.hint.impl.AngleHint,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>verifyHint</h4>
-<pre class="methodSignature">protected&nbsp;void&nbsp;verifyHint&#8203;(<a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;hint,
-                          org.locationtech.jts.geom.Point&nbsp;treasurePosition,
-                          org.locationtech.jts.geom.Point&nbsp;searcherPosition)</pre>
-<div class="block">TODO implement:
- AngleHints must be of angle [0, 180] !?
- Verifies whether the <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a> <code>hint</code> given by the <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> followed the rules.</div>
+<pre class="methodSignature">protected static&nbsp;void&nbsp;verifyHint&#8203;(<a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&nbsp;previousAngleHint,
+                                 <a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&nbsp;currentAngleHint,
+                                 org.locationtech.jts.geom.Point&nbsp;treasurePosition,
+                                 org.locationtech.jts.geom.Point&nbsp;searcherPosition)</pre>
+<div class="block">Verifies whether the <a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a> <code>angleHint</code> given by the <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> followed the given rules.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>hint</code> - <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a> to be verified</dd>
-<dd><code>treasurePosition</code> - treasure position</dd>
-<dd><code>searcherPosition</code> - searcher position</dd>
+<dd><code>previousAngleHint</code> - the previous <a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a></dd>
+<dd><code>currentAngleHint</code> - <a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a> to be verified</dd>
+<dd><code>treasurePosition</code> - <code>Point</code> of the treasure position</dd>
+<dd><code>searcherPosition</code> - <code>Point</code> of the searcher position</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.lang.IllegalArgumentException</code> - if the <a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a> <code>angleHint</code> did not followed the rules.</dd>
 </dl>
 </li>
 </ul>
-<a id="located(com.treasure.hunt.strategy.searcher.SearchPath)">
+<a id="verifyHint(com.treasure.hunt.strategy.hint.impl.CircleHint,com.treasure.hunt.strategy.hint.impl.CircleHint,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>verifyHint</h4>
+<pre class="methodSignature">protected static&nbsp;void&nbsp;verifyHint&#8203;(<a href="../strategy/hint/impl/CircleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">CircleHint</a>&nbsp;previousCircleHint,
+                                 <a href="../strategy/hint/impl/CircleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">CircleHint</a>&nbsp;currentCircleHint,
+                                 org.locationtech.jts.geom.Point&nbsp;treasurePosition,
+                                 org.locationtech.jts.geom.Point&nbsp;searcherPosition)</pre>
+<div class="block">Verifies whether the <a href="../strategy/hint/impl/CircleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>CircleHint</code></a> <code>circleHint</code> given by the <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> followed the given rules.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>previousCircleHint</code> - the previous <a href="../strategy/hint/impl/CircleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>CircleHint</code></a></dd>
+<dd><code>currentCircleHint</code> - <a href="../strategy/hint/impl/CircleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>CircleHint</code></a> to be verified</dd>
+<dd><code>treasurePosition</code> - <code>Point</code> of the treasure position</dd>
+<dd><code>searcherPosition</code> - <code>Point</code> of the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> position</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.lang.IllegalArgumentException</code> - if the <a href="../strategy/hint/impl/CircleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>CircleHint</code></a> <code>circleHint</code> did not followed the rules</dd>
+</dl>
+</li>
+</ul>
+<a id="verifyHint(com.treasure.hunt.strategy.hint.Hint,com.treasure.hunt.strategy.hint.Hint,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>verifyHint</h4>
+<pre class="methodSignature">protected static&nbsp;void&nbsp;verifyHint&#8203;(<a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;previousHint,
+                                 <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;currentHint,
+                                 org.locationtech.jts.geom.Point&nbsp;treasurePosition,
+                                 org.locationtech.jts.geom.Point&nbsp;searcherPosition)</pre>
+<div class="block">Verifies whether the <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a> <code>hint</code> given by the <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> followed the given rules.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>previousHint</code> - the previous <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a></dd>
+<dd><code>currentHint</code> - <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a> to be verified</dd>
+<dd><code>treasurePosition</code> - <code>Point</code> of the treasure position</dd>
+<dd><code>searcherPosition</code> - <code>Point</code> of the searcher position</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.lang.IllegalArgumentException</code> - if the <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a> <code>hint</code> did not followed the rules.</dd>
+</dl>
+</li>
+</ul>
+<a id="hiderMove()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>located</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;located&#8203;(<a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath)</pre>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>searchPath</code> - the <a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a>, the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> moved.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd><code>true</code>, if the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> found the treasure. <code>false</code>, otherwise.
- The <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> found the treasure, if had a distance of &le; <a href="../strategy/searcher/Searcher.html#SCANNING_DISTANCE"><code>Searcher.SCANNING_DISTANCE</code></a> in this SearchPath.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.IllegalStateException</code> - if this SearchPath contains zero <code>Point</code>s.</dd>
-</dl>
+<h4>hiderMove</h4>
+<pre class="methodSignature">protected&nbsp;void&nbsp;hiderMove()</pre>
+<div class="block">Let the <a href="#hider"><code>hider</code></a> give its <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a>.</div>
 </li>
 </ul>
 </li>

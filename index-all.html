@@ -444,6 +444,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/ListUtils.html#consecutive(java.util.List,java.util.function.BiFunction)">consecutive(List&lt;T&gt;, BiFunction&lt;T, T, R&gt;)</a></span> - Static method in class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/ListUtils.html" title="class in com.treasure.hunt.utils">ListUtils</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/jts/geom/Circle.html#contains(com.treasure.hunt.jts.geom.Circle)">contains(Circle)</a></span> - Method in class com.treasure.hunt.jts.geom.<a href="com/treasure/hunt/jts/geom/Circle.html" title="class in com.treasure.hunt.jts.geom">Circle</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/JTSUtils.html#convexPolygonLineIntersection(org.locationtech.jts.geom.Polygon,org.locationtech.jts.geom.LineSegment)">convexPolygonLineIntersection(Polygon, LineSegment)</a></span> - Static method in class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/JTSUtils.html" title="class in com.treasure.hunt.utils">JTSUtils</a></dt>
 <dd>
 <div class="block">Tests whether the convex polygon polygon intersects with the line line and returns the intersecting coordinates
@@ -1266,7 +1268,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameEngine.html#init()">init()</a></span> - Method in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameEngine.html" title="class in com.treasure.hunt.game">GameEngine</a></dt>
 <dd>
-<div class="block">initialize searcher and treasure positions.</div>
+<div class="block">Initializes <a href="com/treasure/hunt/strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a>, <a href="com/treasure/hunt/strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> and the treasure position
+ and simulates an initial Step.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameManager.html#init()">init()</a></span> - Method in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a></dt>
 <dd>&nbsp;</dd>
@@ -1563,7 +1566,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/analysis/StatisticObject.StatisticInfo.html#LOCAL_OPTIMUM">LOCAL_OPTIMUM</a></span> - Static variable in class com.treasure.hunt.analysis.<a href="com/treasure/hunt/analysis/StatisticObject.StatisticInfo.html" title="class in com.treasure.hunt.analysis">StatisticObject.StatisticInfo</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameEngine.html#located(com.treasure.hunt.strategy.searcher.SearchPath)">located(SearchPath)</a></span> - Method in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameEngine.html" title="class in com.treasure.hunt.game">GameEngine</a></dt>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameEngine.html#located(com.treasure.hunt.strategy.searcher.SearchPath,org.locationtech.jts.geom.Point)">located(SearchPath, Point)</a></span> - Static method in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameEngine.html" title="class in com.treasure.hunt.game">GameEngine</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/utils/EventBusUtils.html#LOG_LABEL_EVENT">LOG_LABEL_EVENT</a></span> - Static variable in class com.treasure.hunt.utils.<a href="com/treasure/hunt/utils/EventBusUtils.html" title="class in com.treasure.hunt.utils">EventBusUtils</a></dt>
 <dd>&nbsp;</dd>
@@ -1744,10 +1747,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/Searcher.html#move(T)">move(T)</a></span> - Method in interface com.treasure.hunt.strategy.searcher.<a href="com/treasure/hunt/strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher">Searcher</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/treasure/hunt/game/mods/hideandseek/HideAndSeekGameEngine.html#moveHider()">moveHider()</a></span> - Method in class com.treasure.hunt.game.mods.hideandseek.<a href="com/treasure/hunt/game/mods/hideandseek/HideAndSeekGameEngine.html" title="class in com.treasure.hunt.game.mods.hideandseek">HideAndSeekGameEngine</a></dt>
-<dd>
-<div class="block">Let the <a href="com/treasure/hunt/game/GameEngine.html#hider"><code>GameEngine.hider</code></a> reset the treasure position and give his <a href="com/treasure/hunt/strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a>.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/GeometricUtils.html#moveToCenterOfRectangle(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.searcher.SearchPath)">moveToCenterOfRectangle(Point, Point, Point, Point, SearchPath)</a></span> - Static method in class com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.<a href="com/treasure/hunt/strategy/searcher/impl/strategyFromPaper/GeometricUtils.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">GeometricUtils</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/strategy/hider/impl/GameField.html#moveTreasure(org.locationtech.jts.geom.Point)">moveTreasure(Point)</a></span> - Method in class com.treasure.hunt.strategy.hider.impl.<a href="com/treasure/hunt/strategy/hider/impl/GameField.html" title="class in com.treasure.hunt.strategy.hider.impl">GameField</a></dt>
@@ -2718,11 +2717,21 @@ the order they are declared.</div>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/view/widget/StatusMessageWidgetController.html#vbox">vbox</a></span> - Variable in class com.treasure.hunt.view.widget.<a href="com/treasure/hunt/view/widget/StatusMessageWidgetController.html" title="class in com.treasure.hunt.view.widget">StatusMessageWidgetController</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameEngine.html#verifyHint(com.treasure.hunt.strategy.hint.Hint,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">verifyHint(Hint, Point, Point)</a></span> - Method in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameEngine.html" title="class in com.treasure.hunt.game">GameEngine</a></dt>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameEngine.html#verifyHint(com.treasure.hunt.strategy.hint.Hint,com.treasure.hunt.strategy.hint.Hint,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">verifyHint(Hint, Hint, Point, Point)</a></span> - Static method in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameEngine.html" title="class in com.treasure.hunt.game">GameEngine</a></dt>
 <dd>
-<div class="block">TODO implement:
- AngleHints must be of angle [0, 180] !?
- Verifies whether the <a href="com/treasure/hunt/strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a> <code>hint</code> given by the <a href="com/treasure/hunt/strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> followed the rules.</div>
+<div class="block">Verifies whether the <a href="com/treasure/hunt/strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a> <code>hint</code> given by the <a href="com/treasure/hunt/strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> followed the given rules.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameEngine.html#verifyHint(com.treasure.hunt.strategy.hint.impl.AngleHint,com.treasure.hunt.strategy.hint.impl.AngleHint,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">verifyHint(AngleHint, AngleHint, Point, Point)</a></span> - Static method in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameEngine.html" title="class in com.treasure.hunt.game">GameEngine</a></dt>
+<dd>
+<div class="block">Verifies whether the <a href="com/treasure/hunt/strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a> <code>angleHint</code> given by the <a href="com/treasure/hunt/strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> followed the given rules.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameEngine.html#verifyHint(com.treasure.hunt.strategy.hint.impl.CircleHint,com.treasure.hunt.strategy.hint.impl.CircleHint,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">verifyHint(CircleHint, CircleHint, Point, Point)</a></span> - Static method in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameEngine.html" title="class in com.treasure.hunt.game">GameEngine</a></dt>
+<dd>
+<div class="block">Verifies whether the <a href="com/treasure/hunt/strategy/hint/impl/CircleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>CircleHint</code></a> <code>circleHint</code> given by the <a href="com/treasure/hunt/strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> followed the given rules.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/treasure/hunt/game/GameEngine.html#verifySearchPath(com.treasure.hunt.strategy.searcher.SearchPath)">verifySearchPath(SearchPath)</a></span> - Method in class com.treasure.hunt.game.<a href="com/treasure/hunt/game/GameEngine.html" title="class in com.treasure.hunt.game">GameEngine</a></dt>
+<dd>
+<div class="block">Verifies whether the <a href="com/treasure/hunt/strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a> <code>searchPath</code> given by the <a href="com/treasure/hunt/strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> followed the given rules.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/treasure/hunt/view/ToolbarController.html#visibleBinding()">visibleBinding()</a></span> - Method in class com.treasure.hunt.view.<a href="com/treasure/hunt/view/ToolbarController.html" title="class in com.treasure.hunt.view">ToolbarController</a></dt>
 <dd>&nbsp;</dd>

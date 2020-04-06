@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -236,60 +236,65 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#contains(com.treasure.hunt.jts.geom.Circle)">contains</a></span>&#8203;(<a href="Circle.html" title="class in com.treasure.hunt.jts.geom">Circle</a>&nbsp;circle)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="Circle.html" title="class in com.treasure.hunt.jts.geom">Circle</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#copy()">copy</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Override the coordinate copy.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#covers(com.treasure.hunt.jts.geom.Circle)">covers</a></span>&#8203;(<a href="Circle.html" title="class in com.treasure.hunt.jts.geom">Circle</a>&nbsp;circle)</code></th>
 <td class="colLast">
 <div class="block">Test, whether the circle covers another circle.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCenter()">getCenter</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get central coordinate of circle.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Envelope</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getEnvelope()">getEnvelope</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#inside(org.locationtech.jts.geom.Coordinate)">inside</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;c)</code></th>
 <td class="colLast">
 <div class="block">Tests whether a coordinate lays inside the circle or not.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#project(org.locationtech.jts.geom.Coordinate)">project</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;c)</code></th>
 <td class="colLast">
 <div class="block">Project a coordinate on the edge of the circle.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Polygon</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toPolygon()">toPolygon</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Generate a polygon from the circle.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>java.awt.Shape</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toShape(com.treasure.hunt.jts.awt.AdvancedShapeWriter)">toShape</a></span>&#8203;(<a href="../awt/AdvancedShapeWriter.html" title="class in com.treasure.hunt.jts.awt">AdvancedShapeWriter</a>&nbsp;advancedShapeWriter)</code></th>
 <td class="colLast">
 <div class="block">Shape the circle as an awt ellipse.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toString()">toString</a></span>()</code></th>
 <td class="colLast">
@@ -500,10 +505,25 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <a id="getEnvelope()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getEnvelope</h4>
 <pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Envelope&nbsp;getEnvelope()</pre>
+</li>
+</ul>
+<a id="contains(com.treasure.hunt.jts.geom.Circle)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>contains</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;contains&#8203;(<a href="Circle.html" title="class in com.treasure.hunt.jts.geom">Circle</a>&nbsp;circle)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>circle</code> - the <a href="Circle.html" title="class in com.treasure.hunt.jts.geom"><code>Circle</code></a> we want know test, whether it lies completely in this <a href="Circle.html" title="class in com.treasure.hunt.jts.geom"><code>Circle</code></a></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code> if this contains <code>circle</code>. <code>false</code>, otherwise</dd>
+</dl>
 </li>
 </ul>
 </li>
