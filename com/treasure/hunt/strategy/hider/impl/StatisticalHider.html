@@ -295,9 +295,9 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>protected java.util.List&lt;<a href="AngleHintStatistic.html" title="class in com.treasure.hunt.strategy.hider.impl">AngleHintStatistic</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#filterForValidHints(java.util.List)">filterForValidHints</a></span>&#8203;(java.util.List&lt;<a href="AngleHintStatistic.html" title="class in com.treasure.hunt.strategy.hider.impl">AngleHintStatistic</a>&gt;&nbsp;stats)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#filterForValidHints(java.util.List)">filterForValidHints</a></span>&#8203;(java.util.List&lt;<a href="AngleHintStatistic.html" title="class in com.treasure.hunt.strategy.hider.impl">AngleHintStatistic</a>&gt;&nbsp;angleHintStatistics)</code></th>
 <td class="colLast">
-<div class="block">Filters the given Hints on the Predicate of being abel to see</div>
+<div class="block">Filters the given <a href="../../hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a>s on the predicate of being able to see</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
@@ -306,7 +306,7 @@ extends java.lang.Object</pre>
              org.locationtech.jts.geom.Point&nbsp;hintCenter)</code></th>
 <td class="colLast">
 <div class="block">Todo: if hint is 180degree make it an explicit HalfPlaneHint/ hack it such that StrategyFromPaper receives a halfplaneHint
- Generates <code>samples </code> evenly spaced <a href="../../hint/impl/package-summary.html"><code>com.treasure.hunt.strategy.hint.impl</code></a> .</div>
+ Generates <code>samples</code> evenly spaced <a href="../../hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a>s.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
@@ -552,9 +552,10 @@ extends java.lang.Object</pre>
  rating the Hints, and returning the best.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>hints</code> - the AngleHints to evaluate</dd>
+<dd><code>hints</code> - the list of <a href="../../hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a>s to evaluate</dd>
+<dd><code>searchPath</code> - the <a href="../../searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the chosen AngleHint</dd>
+<dd>the chosen <a href="../../hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a> with the best rating</dd>
 </dl>
 </li>
 </ul>
@@ -614,12 +615,13 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>filterForValidHints</h4>
-<pre class="methodSignature">protected&nbsp;java.util.List&lt;<a href="AngleHintStatistic.html" title="class in com.treasure.hunt.strategy.hider.impl">AngleHintStatistic</a>&gt;&nbsp;filterForValidHints&#8203;(java.util.List&lt;<a href="AngleHintStatistic.html" title="class in com.treasure.hunt.strategy.hider.impl">AngleHintStatistic</a>&gt;&nbsp;stats)</pre>
-<div class="block">Filters the given Hints on the Predicate of being abel to see</div>
+<pre class="methodSignature">protected&nbsp;java.util.List&lt;<a href="AngleHintStatistic.html" title="class in com.treasure.hunt.strategy.hider.impl">AngleHintStatistic</a>&gt;&nbsp;filterForValidHints&#8203;(java.util.List&lt;<a href="AngleHintStatistic.html" title="class in com.treasure.hunt.strategy.hider.impl">AngleHintStatistic</a>&gt;&nbsp;angleHintStatistics)</pre>
+<div class="block">Filters the given <a href="../../hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a>s on the predicate of being able to see</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>stats</code> - the List of AngleHintStats to filter</dd>
+<dd><code>angleHintStatistics</code> - the list of <a href="AngleHintStatistic.html" title="class in com.treasure.hunt.strategy.hider.impl"><code>AngleHintStatistic</code></a>s to filter</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
+<dd>a list of valid <a href="AngleHintStatistic.html" title="class in com.treasure.hunt.strategy.hider.impl"><code>AngleHintStatistic</code></a>s</dd>
 </dl>
 </li>
 </ul>
@@ -632,13 +634,14 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">protected&nbsp;java.util.List&lt;<a href="../../hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&gt;&nbsp;generateHints&#8203;(int&nbsp;samples,
                                                   org.locationtech.jts.geom.Point&nbsp;hintCenter)</pre>
 <div class="block">Todo: if hint is 180degree make it an explicit HalfPlaneHint/ hack it such that StrategyFromPaper receives a halfplaneHint
- Generates <code>samples </code> evenly spaced <a href="../../hint/impl/package-summary.html"><code>com.treasure.hunt.strategy.hint.impl</code></a> .
+ Generates <code>samples</code> evenly spaced <a href="../../hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a>s.
  Generated hints are not always exactly the preferred hint Size, the diverge about 3 * e-13</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>samples</code> - determines how many Hints are returned</dd>
+<dd><code>hintCenter</code> - the center <code>Point</code>, the <a href="../../hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a>s should lie on.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a List of <code>samples</code> <a href="../../hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a></dd>
+<dd>a list of <code>samples</code> many <a href="../../hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a>s</dd>
 </dl>
 </li>
 </ul>

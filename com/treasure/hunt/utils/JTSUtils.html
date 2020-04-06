@@ -230,7 +230,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>static org.locationtech.jts.geom.Point</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createPoint(org.locationtech.jts.geom.Coordinate)">createPoint</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;p)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createPoint(org.locationtech.jts.geom.Coordinate)">createPoint</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i7" class="rowColor">
@@ -267,7 +267,7 @@ extends java.lang.Object</pre>
 <tr id="i12" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isBadHint(org.locationtech.jts.geom.Polygon,com.treasure.hunt.strategy.hint.impl.AngleHint)">isBadHint</a></span>&#8203;(org.locationtech.jts.geom.Polygon&nbsp;rectangle,
-         <a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&nbsp;hint)</code></th>
+         <a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&nbsp;angleHint)</code></th>
 <td class="colLast">
 <div class="block">this function can be called to determine if the specified hint is a bad Hint
  defined be the paper in the context of the specified rectangle</div>
@@ -359,9 +359,7 @@ extends java.lang.Object</pre>
 <tr id="i25" class="rowColor">
 <td class="colFirst"><code>static org.locationtech.jts.geom.Point</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#shuffleTreasure()">shuffleTreasure</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Generates a treasure location according to set preferences.</div>
-</td>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i26" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
@@ -466,7 +464,13 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>createPoint</h4>
-<pre class="methodSignature">public static&nbsp;org.locationtech.jts.geom.Point&nbsp;createPoint&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;p)</pre>
+<pre class="methodSignature">public static&nbsp;org.locationtech.jts.geom.Point&nbsp;createPoint&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;coordinate)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>coordinate</code> - The <code>Coordinate</code>, which should be converted to a <code>Point</code>.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>Point</code> lying on <code>coordinate.</code>.</dd>
+</dl>
 </li>
 </ul>
 <a id="createLineString(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point)">
@@ -751,8 +755,8 @@ extends java.lang.Object</pre>
                                              double&nbsp;maxExtend)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>searcher</code> - the position of the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a>.</dd>
-<dd><code>treasure</code> - the position of the treasure.</dd>
+<dd><code>searcher</code> - the <code>Coordinate</code> of the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a>.</dd>
+<dd><code>treasure</code> - the <code>Coordinate</code> of the treasure.</dd>
 <dd><code>maxExtend</code> - number of <code>[0, 2 * Math.PI)</code> defining, how wide the angle is opened.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a valid <a href="../jts/geom/GeometryAngle.html" title="class in com.treasure.hunt.jts.geom"><code>GeometryAngle</code></a>, randomly generated.</dd>
@@ -769,6 +773,15 @@ extends java.lang.Object</pre>
                                              org.locationtech.jts.geom.Coordinate&nbsp;treasure,
                                              double&nbsp;maxExtend,
                                              double&nbsp;minExtend)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>searcher</code> - the <code>Coordinate</code> of the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a>.</dd>
+<dd><code>treasure</code> - the <code>Coordinate</code> of the treasure.</dd>
+<dd><code>maxExtend</code> - number of <code>[0, 2 * Math.PI)</code> defining, how wide the angle is opened.</dd>
+<dd><code>minExtend</code> - number of <code>[0, maxExtend)</code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a valid <a href="../jts/geom/GeometryAngle.html" title="class in com.treasure.hunt.jts.geom"><code>GeometryAngle</code></a>, randomly generated.</dd>
+</dl>
 </li>
 </ul>
 <a id="getCoordinateList(java.util.List)">
@@ -778,6 +791,12 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getCoordinateList</h4>
 <pre class="methodSignature">public static&nbsp;java.util.List&lt;org.locationtech.jts.geom.Coordinate&gt;&nbsp;getCoordinateList&#8203;(java.util.List&lt;? extends org.locationtech.jts.geom.Geometry&gt;&nbsp;geometries)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>geometries</code> - A list, containing <code>Geometry</code>'s, which should be converted to a list of <code>Coordinate</code>'s.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A list of <code>Coordinate</code>'s, which <code>geometries</code> is converted to.</dd>
+</dl>
 </li>
 </ul>
 <a id="toPolygon(org.locationtech.jts.geom.Envelope)">
@@ -787,6 +806,12 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>toPolygon</h4>
 <pre class="methodSignature">public static&nbsp;org.locationtech.jts.geom.Polygon&nbsp;toPolygon&#8203;(org.locationtech.jts.geom.Envelope&nbsp;envelope)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>envelope</code> - An <code>Envelope</code>, which will be converted to an <code>Polygon</code>.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A <code>Polygon</code>, a <code>envelope</code> is converted to.</dd>
+</dl>
 </li>
 </ul>
 <a id="getBoundaryIntersections(com.treasure.hunt.jts.awt.CanvasBoundary,org.locationtech.jts.geom.LineSegment)">
@@ -850,10 +875,9 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>shuffleTreasure</h4>
 <pre class="methodSignature">public static&nbsp;org.locationtech.jts.geom.Point&nbsp;shuffleTreasure()</pre>
-<div class="block">Generates a treasure location according to set preferences.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>treasure point</dd>
+<dd>A <code>Point</code>, where the treasure is located,msatisfying <a href="../service/preferences/PreferenceService.html#MIN_TREASURE_DISTANCE"><code>PreferenceService.MIN_TREASURE_DISTANCE</code></a>, <a href="../service/preferences/PreferenceService.html#MAX_TREASURE_DISTANCE"><code>PreferenceService.MAX_TREASURE_DISTANCE</code></a> and <a href="../service/preferences/PreferenceService.html#TREASURE_DISTANCE"><code>PreferenceService.TREASURE_DISTANCE</code></a>.</dd>
 </dl>
 </li>
 </ul>
@@ -890,14 +914,16 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>isBadHint</h4>
 <pre class="methodSignature">public static&nbsp;boolean&nbsp;isBadHint&#8203;(org.locationtech.jts.geom.Polygon&nbsp;rectangle,
-                                <a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&nbsp;hint)</pre>
+                                <a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&nbsp;angleHint)</pre>
 <div class="block">this function can be called to determine if the specified hint is a bad Hint
  defined be the paper in the context of the specified rectangle</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>rectangle</code> - the rectangle as polygon</dd>
-<dd><code>hint</code> - the hint</dd>
+<dd><code>rectangle</code> - the rectangle as <code>Polygon</code></dd>
+<dd><code>angleHint</code> - the <a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code> if the given <code>angleHint</code> is a bad hint, related on the <a href="../strategy/searcher/impl/strategyFromPaper/StrategyFromPaper.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper"><code>StrategyFromPaper</code></a>.
+ <code>false</code> otherwise.</dd>
 </dl>
 </li>
 </ul>

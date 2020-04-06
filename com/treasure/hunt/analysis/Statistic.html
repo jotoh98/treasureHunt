@@ -133,6 +133,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">Statistic</span>
 extends java.lang.Object</pre>
+<div class="block">A class to calculate various statistics.</div>
 </li>
 </ul>
 </div>
@@ -280,6 +281,10 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getTraceLength</h4>
 <pre class="methodSignature">public&nbsp;double&nbsp;getTraceLength()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The length of the trace, the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> ran yet.</dd>
+</dl>
 </li>
 </ul>
 <a id="getLocalOptimumSolution()">
@@ -305,6 +310,10 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getStartPoint</h4>
 <pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Point&nbsp;getStartPoint()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The <code>Point</code>, the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> stood initially.</dd>
+</dl>
 </li>
 </ul>
 <a id="getTreasureLocation()">
@@ -314,6 +323,10 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getTreasureLocation</h4>
 <pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Point&nbsp;getTreasureLocation()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the <code>Point</code>, where the treasure is located.</dd>
+</dl>
 </li>
 </ul>
 <a id="getOptimumSolution()">
@@ -323,6 +336,10 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getOptimumSolution</h4>
 <pre class="methodSignature">public&nbsp;double&nbsp;getOptimumSolution()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the distance of the beeline between the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a>'s initial position and the treasure location.</dd>
+</dl>
 </li>
 </ul>
 <a id="getSolutionQuotient()">
@@ -347,6 +364,10 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getHintRequests</h4>
 <pre class="methodSignature">public&nbsp;int&nbsp;getHintRequests()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The number of <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a>'s, the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> got yet.</dd>
+</dl>
 </li>
 </ul>
 <a id="getHintTraceLengthRatio()">
@@ -356,6 +377,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getHintTraceLengthRatio</h4>
 <pre class="methodSignature">public&nbsp;double&nbsp;getHintTraceLengthRatio()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><a href="#getHintRequests()"><code>getHintRequests()</code></a>/<a href="#getTraceLength()"><code>getTraceLength()</code></a>, when <a href="#getTraceLength()"><code>getTraceLength()</code></a> != 0.
+ Otherwise <code>1</code>.</dd>
+</dl>
 </li>
 </ul>
 <a id="filterBy(java.util.List,com.treasure.hunt.analysis.StatisticObject.StatisticInfo)">
@@ -376,6 +402,13 @@ extends java.lang.Object</pre>
 <h4>calculate</h4>
 <pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="StatisticObject.html" title="class in com.treasure.hunt.analysis">StatisticObject</a>&gt;&nbsp;calculate&#8203;(java.util.List&lt;<a href="../game/Turn.html" title="class in com.treasure.hunt.game">Turn</a>&gt;&nbsp;turns,
                                                  boolean&nbsp;finished)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>turns</code> - a list, containing <a href="../game/Turn.html" title="class in com.treasure.hunt.game"><code>Turn</code></a> objects.</dd>
+<dd><code>finished</code> - telling, whether the game is finished yet.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A list, containing <a href="StatisticObject.html" title="class in com.treasure.hunt.analysis"><code>StatisticObject</code></a>'s.</dd>
+</dl>
 </li>
 </ul>
 </li>

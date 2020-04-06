@@ -201,13 +201,13 @@ implements <a href="../Searcher.html" title="interface in com.treasure.hunt.stra
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#init(org.locationtech.jts.geom.Point)">init</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;startPosition)</code></th>
-<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#move()">move</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Use this to perform a initial move, without a hint given.</div>
+<div class="block">A square-shaped circles around its
+ initial position, increased by one relative to the previous "circle".</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
@@ -281,9 +281,8 @@ implements <a href="../Searcher.html" title="interface in com.treasure.hunt.stra
 <li class="blockList">
 <h4>move</h4>
 <pre class="methodSignature">public&nbsp;<a href="../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move()</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../Searcher.html#move()">Searcher</a></code></span></div>
-<div class="block">Use this to perform a initial move, without a hint given.
- This is for the case, the searcher starts. (as he does normally)</div>
+<div class="block">A square-shaped circles around its
+ initial position, increased by one relative to the previous "circle".</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../Searcher.html#move()">move</a></code>&nbsp;in interface&nbsp;<code><a href="../Searcher.html" title="interface in com.treasure.hunt.strategy.searcher">Searcher</a>&lt;<a href="../../hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&gt;</code></dd>
@@ -305,7 +304,7 @@ implements <a href="../Searcher.html" title="interface in com.treasure.hunt.stra
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>hint</code> - the hint, the <a href="../../hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> gave last.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd><a href="../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a> the <a href="../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a>, this searcher chose.</dd>
+<dd><a href="#move(com.treasure.hunt.strategy.hint.Hint)"><code>move(Hint)</code></a>.</dd>
 </dl>
 </li>
 </ul>

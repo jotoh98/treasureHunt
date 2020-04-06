@@ -221,9 +221,7 @@ extends java.lang.Object</pre>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Geometry</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPossibleArea()">getPossibleArea</a></span>()</code></th>
-<td class="colLast">
-<div class="block">returns the possible area in which the treasure could be</div>
-</td>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;javafx.util.Pair&lt;org.locationtech.jts.geom.Coordinate,&#8203;java.lang.Double&gt;&gt;</code></td>
@@ -242,11 +240,8 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isWithinGameField(org.locationtech.jts.geom.Point)">isWithinGameField</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;p)</code></th>
-<td class="colLast">
-<div class="block">Returns whether the specified point lies within the possible Area,
- treasure could live in</div>
-</td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isWithinGameField(org.locationtech.jts.geom.Point)">isWithinGameField</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;point)</code></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -257,7 +252,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Geometry</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#testHint(com.treasure.hunt.strategy.hint.impl.AngleHint)">testHint</a></span>&#8203;(<a href="../../hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&nbsp;hint)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#testHint(com.treasure.hunt.strategy.hint.impl.AngleHint)">testHint</a></span>&#8203;(<a href="../../hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&nbsp;angleHint)</code></th>
 <td class="colLast">
 <div class="block">Integrates the 2 intersections between the bounding circle and the current hint,
  then merges the resulting polygon and the remaining possible area
@@ -370,9 +365,9 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getPossibleArea</h4>
 <pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Geometry&nbsp;getPossibleArea()</pre>
-<div class="block">returns the possible area in which the treasure could be</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
+<dd>a <code>Polygon</code> containing the possible area, in which the treasure could be</dd>
 </dl>
 </li>
 </ul>
@@ -400,7 +395,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>testHint</h4>
-<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Geometry&nbsp;testHint&#8203;(<a href="../../hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&nbsp;hint)</pre>
+<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Geometry&nbsp;testHint&#8203;(<a href="../../hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&nbsp;angleHint)</pre>
 <div class="block">Integrates the 2 intersections between the bounding circle and the current hint,
  then merges the resulting polygon and the remaining possible area
  to the new possible area.
@@ -408,7 +403,7 @@ extends java.lang.Object</pre>
  The resulting area is NOT committed, therefore this method can be used to test a possibleHint for its result</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>hint</code> - The hint to integrate</dd>
+<dd><code>angleHint</code> - The hint to integrate</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the resulting Geometry</dd>
 </dl>
@@ -436,13 +431,13 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>isWithinGameField</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;isWithinGameField&#8203;(org.locationtech.jts.geom.Point&nbsp;p)</pre>
-<div class="block">Returns whether the specified point lies within the possible Area,
- treasure could live in</div>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isWithinGameField&#8203;(org.locationtech.jts.geom.Point&nbsp;point)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>p</code> - </dd>
+<dd><code>point</code> - the <code>Point</code> we want to know, whether it lies in this area</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code> if the specified <code>Point</code> <code>point</code> lies within the this area,
+ <code>false</code> otherwise</dd>
 </dl>
 </li>
 </ul>
@@ -455,8 +450,10 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public&nbsp;java.util.List&lt;javafx.util.Pair&lt;org.locationtech.jts.geom.Coordinate,&#8203;java.lang.Double&gt;&gt;&nbsp;getWorstPointsOnAllEdges&#8203;(double&nbsp;minDistance)</pre>
 <div class="block">Checks all edges of the possibleArea for the Coordinate which maximizes the value of {dist(C - Player) / dist( C -Origin) }</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>minDistance</code> - </dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a List of <code>Coordinate</code> with their corresponding Constant of (Coordinates C ; their associated Value of {dist(C-Player)/dist(C-Origin)} )</dd>
+<dd>a list of pairs, containing <code>Coordinate</code>s with their corresponding constant of (<code>Coordinate</code> C ; their associated Value of {dist(C-Player)/dist(C-Origin)} )</dd>
 </dl>
 </li>
 </ul>

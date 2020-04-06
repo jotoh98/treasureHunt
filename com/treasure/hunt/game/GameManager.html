@@ -203,7 +203,7 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <td class="colFirst"><code>java.util.concurrent.CompletableFuture&lt;java.lang.Void&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beat(javafx.beans.property.ReadOnlyObjectProperty)">beat</a></span>&#8203;(javafx.beans.property.ReadOnlyObjectProperty&lt;java.lang.Double&gt;&nbsp;delay)</code></th>
 <td class="colLast">
-<div class="block"><code>executeNextOnJavaFxThread</code> defaults to <code>true</code>.</div>
+<div class="block">This starts a thread, executing <a href="#next()"><code>next()</code></a> in each timeinterval of <code>delay</code>.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
@@ -242,7 +242,9 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#init()">init</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Initializes the internal <a href="GameEngine.html" title="class in com.treasure.hunt.game"><code>GameEngine</code></a></div>
+</td>
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
@@ -253,14 +255,14 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#next()">next</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Works only for stepSim &le; stepView </div>
+<div class="block">(Simulates) and shows the next <a href="Turn.html" title="class in com.treasure.hunt.game"><code>Turn</code></a>, if the game is not finished.</div>
 </td>
 </tr>
 <tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#previous()">previous</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Works only for stepView &gt; 0</div>
+<div class="block">Shows the simulation-state, before the last <a href="Turn.html" title="class in com.treasure.hunt.game"><code>Turn</code></a>.</div>
 </td>
 </tr>
 <tr id="i12" class="altColor">
@@ -279,7 +281,7 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stopBeat()">stopBeat</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Stops the Thread from beating.</div>
+<div class="block">Stops the beating thread from executing <a href="#next()"><code>next()</code></a>.</div>
 </td>
 </tr>
 <tr id="i15" class="rowColor">
@@ -354,6 +356,7 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <li class="blockList">
 <h4>init</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;init()</pre>
+<div class="block">Initializes the internal <a href="GameEngine.html" title="class in com.treasure.hunt.game"><code>GameEngine</code></a></div>
 </li>
 </ul>
 <a id="next()">
@@ -363,7 +366,7 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <li class="blockList">
 <h4>next</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;next()</pre>
-<div class="block">Works only for stepSim &le; stepView </div>
+<div class="block">(Simulates) and shows the next <a href="Turn.html" title="class in com.treasure.hunt.game"><code>Turn</code></a>, if the game is not finished.</div>
 </li>
 </ul>
 <a id="previous()">
@@ -373,7 +376,8 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <li class="blockList">
 <h4>previous</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;previous()</pre>
-<div class="block">Works only for stepView &gt; 0</div>
+<div class="block">Shows the simulation-state, before the last <a href="Turn.html" title="class in com.treasure.hunt.game"><code>Turn</code></a>.
+ Works only for stepView &gt; 0.</div>
 </li>
 </ul>
 <a id="stopBeat()">
@@ -383,7 +387,7 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <li class="blockList">
 <h4>stopBeat</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;stopBeat()</pre>
-<div class="block">Stops the Thread from beating.</div>
+<div class="block">Stops the beating thread from executing <a href="#next()"><code>next()</code></a>.</div>
 </li>
 </ul>
 <a id="beat(javafx.beans.property.ReadOnlyObjectProperty)">
@@ -393,8 +397,12 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <li class="blockList">
 <h4>beat</h4>
 <pre class="methodSignature">public&nbsp;java.util.concurrent.CompletableFuture&lt;java.lang.Void&gt;&nbsp;beat&#8203;(javafx.beans.property.ReadOnlyObjectProperty&lt;java.lang.Double&gt;&nbsp;delay)</pre>
-<div class="block"><code>executeNextOnJavaFxThread</code> defaults to <code>true</code>.</div>
+<div class="block">This starts a thread, executing <a href="#next()"><code>next()</code></a> in each timeinterval of <code>delay</code>.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>delay</code> - the time interval, the thread executes <a href="#next()"><code>next()</code></a></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a thread <code>CompletableFuture</code>, executing <a href="#next()"><code>next()</code></a> in each timeinterval of <code>delay</code>.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="#beat(javafx.beans.property.ReadOnlyObjectProperty,java.lang.Boolean,java.lang.Integer)"><code>beat(ReadOnlyObjectProperty, Boolean, Integer)</code></a></dd>
 </dl>
@@ -408,6 +416,12 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <h4>beat</h4>
 <pre class="methodSignature">public&nbsp;java.util.concurrent.CompletableFuture&lt;java.lang.Void&gt;&nbsp;beat&#8203;(java.lang.Integer&nbsp;maxSteps)</pre>
 <div class="block">This simulates the whole game, until its finished.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>maxSteps</code> - the maximum number of steps, which will be simulated.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the <code>CompletableFuture</code> executing, running <code>maxSteps</code> times <a href="#next()"><code>next()</code></a>.</dd>
+</dl>
 </li>
 </ul>
 <a id="beat(javafx.beans.property.ReadOnlyObjectProperty,java.lang.Boolean,java.lang.Integer)">
@@ -425,6 +439,10 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <dd><code>delay</code> - time between each move</dd>
 <dd><code>executeNextOnJavaFxThread</code> - if set to true the next call is made on javafx thread that is important when UI is attached to the GameManager,
                                   if it false the delay parameter is ignored</dd>
+<dd><code>maxSteps</code> - the number of time, the beating thread should execute <a href="#next()"><code>next()</code></a>. Could be <code>null</code>.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the <code>CompletableFuture</code> thread, executing <a href="#next()"><code>next()</code></a> <code>maxSteps</code> times, if its not <code>null</code>,
+ each timeinterval of <code>delay</code>, if <code>executeNextOnJavaFxThread</code> is <code>true</code>.</dd>
 </dl>
 </li>
 </ul>
