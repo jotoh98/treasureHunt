@@ -14,9 +14,7 @@ import org.locationtech.jts.algorithm.ConvexHull;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.math.Vector2D;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -482,5 +480,48 @@ public final class JTSUtils {
         }
         log.debug("good hint");
         return false;
+    }
+
+    /**
+     * Calculates the intersection {@link Point}s, from a line and a circle.
+     * The line is described as going from {@code pointA} to {@code pointB} and
+     * the circle ist described by having his center on {@code center} and a radius of {@code radius}.
+     * <p>
+     * This code is copied from "https://stackoverflow.com/questions/13053061/circle-line-intersection-points".
+     *
+     * @param pointA the first {@link Point} of the line
+     * @param pointB the second {@link Point} of the line
+     * @param center the center {@link Point} of the circle
+     * @param radius the radius of the circle
+     * @return a list, containing 0, 1 or 2 {@link Point}s, representing the intersections of the line and the circle.
+     */
+    public static List<Point> circleLineIntersectionPoints(Point pointA, Point pointB, Point center, double radius) {
+        double baX = pointB.getX() - pointA.getX();
+        double baY = pointB.getY() - pointA.getY();
+        double caX = center.getX() - pointA.getX();
+        double caY = center.getY() - pointA.getY();
+
+        double a = Math.pow(baX, 2) + Math.pow(baY, 2);
+
+        double pBy2 = (baX * caX + baY * caY) / a;
+        double q = (Math.pow(caX, 2) + Math.pow(caY, 2) - Math.pow(radius, 2)) / a;
+
+        double disc = Math.pow(pBy2, 2) - q;
+        if (disc < 0) {
+            return Collections.emptyList();
+        }
+        // if disc == 0 ... dealt with later
+        double tmpSqrt = Math.sqrt(disc);
+        double abScalingFactor1 = -pBy2 + tmpSqrt;
+        double abScalingFactor2 = -pBy2 - tmpSqrt;
+
+        Point p1 = createPoint(pointA.getX() - baX * abScalingFactor1,
+                pointA.getY() - baY * abScalingFactor1);
+        if (disc == 0) { // abScalingFactor1 == abScalingFactor2
+            return Collections.singletonList(p1);
+        }
+        Point p2 = createPoint(pointA.getX() - baX * abScalingFactor2,
+                pointA.getY() - baY * abScalingFactor2);
+        return Arrays.asList(p1, p2);
     }
 }
