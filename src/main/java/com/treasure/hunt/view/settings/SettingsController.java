@@ -86,6 +86,8 @@ public class SettingsController {
 
         if (!description.isEmpty()) {
             Label descriptionLabel = new Label(description);
+            descriptionLabel.setMinHeight(Double.NEGATIVE_INFINITY);
+            descriptionLabel.setWrapText(true);
             descriptionLabel.getStyleClass().add("description");
             vBox.getChildren().add(descriptionLabel);
         }
