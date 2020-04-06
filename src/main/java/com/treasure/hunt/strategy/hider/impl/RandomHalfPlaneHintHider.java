@@ -20,10 +20,9 @@ import org.locationtech.jts.geom.Point;
  * @author Rank
  */
 @Preference(name = PreferenceService.MAX_TREASURE_DISTANCE, value = 100)
+@Preference(name = PreferenceService.TREASURE_DISTANCE, value = 100)
+@Preference(name = PreferenceService.MIN_TREASURE_DISTANCE, value = 100)
 public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
-    public static final String TREASURE_DISTANCE = "treasure distance";
-    double xmax = 1000;
-    double ymax = 1000;
     HalfPlaneHint lastHint = null;
     StatusMessageItem visualisationMessage;
     private Point treasurePos = null;
@@ -78,7 +77,6 @@ public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
     @Override
     public Point getTreasureLocation() {
         treasurePos = JTSUtils.shuffleTreasure();
-        //treasurePos = JTSUtils.createPoint(-34.534488969938,-88.74125888904);//todo rm
         return treasurePos;
     }
 }

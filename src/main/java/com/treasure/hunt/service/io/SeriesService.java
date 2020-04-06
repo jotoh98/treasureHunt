@@ -126,6 +126,7 @@ public class SeriesService {
             writeStatisticsFile(statisticsWithIds, zipOutputStream);
             zipOutputStream.close();
         }
+        executorService.shutdown();
         return new StatisticsWithIdsAndPath(selectedFile == null ? null : selectedFile.toPath(), statisticsWithIds);
     }
 
@@ -152,13 +153,12 @@ public class SeriesService {
     @NotNull
     private Function<GameManager, GameManager> runGame(Consumer<Double> progressConsumer, double totalWorkLoad, AtomicInteger workLoadDone, Integer maxSteps) {
         return gameManagerCopy -> {
-            CompletableFuture<Void> beat = gameManagerCopy.beat(maxSteps).thenRun(() -> {
-                synchronized (workLoadDone) {
-                    workLoadDone.addAndGet(5);
-                    progressConsumer.accept(workLoadDone.get() / totalWorkLoad);
-                }
-            });
-            beat.join();
+            gameManagerCopy.beatSync(maxSteps);
+
+            synchronized (workLoadDone) {
+                workLoadDone.addAndGet(5);
+                progressConsumer.accept(workLoadDone.get() / totalWorkLoad);
+            }
             return gameManagerCopy;
         };
     }
