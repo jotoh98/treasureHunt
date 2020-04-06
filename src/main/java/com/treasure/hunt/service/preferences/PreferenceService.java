@@ -26,8 +26,8 @@ public class PreferenceService {
     public static final String EARLY_EXIT_AMOUNT = "EARLY_EXIT_AMOUNT";
     public static final String EARLY_EXIT_RADIUS = "EARLY_EXIT_RADIUS";
 
-    public static final String TREASURE_APPROACH_SINCE = "EARLY_EXIT_AMOUNT";
-    public static final String TREASURE_APPROACH_DISTANCE = "EARLY_EXIT_RADIUS";
+    public static final String TREASURE_APPROACH_SINCE = "TREASURE_APPROACH_SINCE";
+    public static final String TREASURE_APPROACH_DISTANCE = "TREASURE_APPROACH_DISTANCE";
 
     public static final String HintSize_Preference = "preferred hint size";
     public static final String TreasureLocationX_Preference = "preferred x-Value treasure";
