@@ -14,7 +14,6 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.treasure.hunt.strategy.geom.GeometryType.*;
@@ -23,7 +22,8 @@ import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.Geometr
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.rectangleScan;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StatusMessages.explainingStrategyMessage;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StatusMessages.visualisationMessage;
-import static com.treasure.hunt.utils.JTSUtils.*;
+import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
+import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
 
 /**
  * This strategy implements the strategy from the paper "Deterministic Treasure Hunt in the Plane with Angular Hints"
@@ -368,6 +368,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * @param C
      * @param D
      * @param hint
+     * @param hintLine
      * @return
      */
     protected Point[] splitRectangleVertically(Point A, Point B, Point C, Point D, HalfPlaneHint hint,

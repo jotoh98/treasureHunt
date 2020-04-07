@@ -103,7 +103,7 @@ public class JTSUtilsCircleLineIntersectionPointsTest {
     }
 
     /**
-     * Reduced version of {@link JTSUtilsCircleLineIntersectionPointsTest#generalBuggyScenario()} ()}
+     * Reduced version of {@link JTSUtilsCircleLineIntersectionPointsTest#generalBuggyScenario()}
      */
     @Test
     public void reducedBuggyScenario() {
@@ -111,6 +111,10 @@ public class JTSUtilsCircleLineIntersectionPointsTest {
         assertContains(intersections, pointm1u0);
     }
 
+    /**
+     * Tests {@link JTSUtils#circleLineIntersectionPoints(Point, Point, Point, double)}
+     * with horizontal lines.
+     */
     @Test
     public void TwoIntersectionPointTest1() {
         List<Point> intersections = JTSUtils.circleLineIntersectionPoints(pointm1u0, point1u0, point0u0, 1);
@@ -118,6 +122,10 @@ public class JTSUtilsCircleLineIntersectionPointsTest {
         assertContains(intersections, point1u0);
     }
 
+    /**
+     * Tests {@link JTSUtils#circleLineIntersectionPoints(Point, Point, Point, double)}
+     * with vertical lines.
+     */
     @Test
     public void TwoIntersectionPointTest2() {
         List<Point> intersections = JTSUtils.circleLineIntersectionPoints(point0um1, point0u1, point0u0, 1);
@@ -126,7 +134,7 @@ public class JTSUtilsCircleLineIntersectionPointsTest {
     }
 
     /**
-     * This test shows that the line  we gave is not handled like a {@link org.locationtech.jts.geom.LineSegment},
+     * This test shows that the line we gave is not handled like a {@link org.locationtech.jts.geom.LineSegment},
      * but handled like a infinite line.
      */
     @Test
@@ -136,6 +144,10 @@ public class JTSUtilsCircleLineIntersectionPointsTest {
         assertContains(intersections, point1u0);
     }
 
+    /**
+     * Tests {@link JTSUtils#circleLineIntersectionPoints(Point, Point, Point, double)}
+     * with diagonal lines.
+     */
     @Test
     public void TwoIntersectionPointTest4() {
         List<Point> intersections = JTSUtils.circleLineIntersectionPoints(pointm1um1, point1u1, point0u0, 1);
@@ -176,17 +188,6 @@ public class JTSUtilsCircleLineIntersectionPointsTest {
         assertEqualsLinearEquation(JTSUtils.getOrthogonal(2, point0u0), -0.5, 0, 0);
         assertEqualsLinearEquation(JTSUtils.getOrthogonal(1, point0u1), -1, 1, 0);
         assertEqualsLinearEquation(JTSUtils.getOrthogonal(-1, point0u1), 1, -1, 0);
-    }
-
-    /**
-     * @param double1   the double, we want to compare with {@code double2}
-     * @param double2   the double, we want to compare with {@code double1}
-     * @param tolerance the error, we allow between {@code double1} and {@code double2}, to be equal
-     * @return {@code true} if {@code double1} and {@code double2} equal with a maximum error of {@code tolerance}.
-     * {@code false} otherwise.
-     */
-    private boolean equals(double double1, double double2, double tolerance) {
-        return Math.abs(double1 - double2) <= tolerance;
     }
 
     /**
