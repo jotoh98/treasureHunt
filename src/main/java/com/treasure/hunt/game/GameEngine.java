@@ -15,6 +15,7 @@ import lombok.Getter;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.Point;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -101,7 +102,7 @@ public class GameEngine {
                  * This command takes the points 0,..,i since i + 1 is exclusive.
                  * The point i + 1 will added after.
                  */
-                cutSearchPath.setPoints(searchPath.getPoints().subList(0, i + 1));
+                cutSearchPath.setPoints(new ArrayList<>(searchPath.getPoints().subList(0, i + 1)));
                 List<Point> treasureIntersections = JTSUtils.circleLineIntersectionPoints(
                         searchPath.getPoints().get(i), searchPath.getPoints().get(i + 1), treasurePos, SCANNING_DISTANCE);
                 // pick the point, closer to the i't points of the SearchPath
