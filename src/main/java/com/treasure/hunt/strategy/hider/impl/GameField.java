@@ -208,7 +208,7 @@ public class GameField {
             checkedPoly = (Polygon) startingPoint.buffer(searcherScoutRadius).copy();
         }
 
-        log.debug("possible area has " + possibleArea.getObject().getNumGeometries() +"geoms");
+        log.trace("possible area has " + possibleArea.getObject().getNumGeometries() +"geoms");
         Collection<Geometry> geomCollection = new ArrayList<>();
 
         // difference operation separately

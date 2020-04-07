@@ -394,14 +394,14 @@ public final class JTSUtils {
      */
     public static boolean isBadHint(Polygon rectangle, AngleHint hint) {
         if (!(hint instanceof HalfPlaneHint)) {
-            log.debug("can't be a bad hint,, only HalfPlaneHints can be bad hints");
+            log.trace("can't be a bad hint,, only HalfPlaneHints can be bad hints");
             EventBusUtils.LOG_LABEL_EVENT.trigger("Supplied hint is not a halfplane: Are you playing with a HalfPlaneHint hider?");
             return false;
         }
 
         if (rectangle == null || !rectangle.isRectangle()) {
             EventBusUtils.LOG_LABEL_EVENT.trigger("Supplied polyon is not a rectangle: Are you playing against StrategyFromPaper?");
-            log.debug("can't be a bad hint, specified polygon is not a rectangle");
+            log.trace("can't be a bad hint, specified polygon is not a rectangle");
             return false;
         }
 
@@ -413,7 +413,7 @@ public final class JTSUtils {
         log.trace("centroid" + centroid);
         log.trace("player" + hint.getGeometryAngle().getCenter());
         if (!centroid.equals2D(hint.getGeometryAngle().getCenter())) {
-            log.debug("can't be a bad hint, player is not in center of current rectangle");
+            log.trace("can't be a bad hint, player is not in center of current rectangle");
             return false;
         }
 
@@ -436,12 +436,12 @@ public final class JTSUtils {
 
             // topleft
             if (topIntersect.x >= topLeft.x && topIntersect.x <= topLeft.x + length_y) {
-                log.debug("bad hint: top edge, left side");
+                log.trace("bad hint: top edge, left side");
                 return true;
             }
             // top right
             if (topIntersect.x <= topRight.x && topIntersect.x >= topRight.x - length_y) {
-                log.debug("bad hint: top edge, right side");
+                log.trace("bad hint: top edge, right side");
                 return true;
             }
         }
@@ -453,17 +453,17 @@ public final class JTSUtils {
 
             // left top
             if (leftIntersect.y >= topLeft.y - length_y && leftIntersect.y <= topLeft.y) {
-                log.debug("bad hint:  left edge, top side");
+                log.trace("bad hint:  left edge, top side");
                 return true;
             }
 
             // left bottom
             if (leftIntersect.y >= bottomLeft.y && leftIntersect.y <= bottomLeft.y + length_y) {
-                log.debug("bad hint:  left edge, bottom side");
+                log.trace("bad hint:  left edge, bottom side");
                 return true;
             }
         }
-        log.debug("good hint");
+        log.trace("good hint");
         return false;
     }
 }

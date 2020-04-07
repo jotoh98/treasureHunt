@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public abstract class StatisticalHider {
 
-    public static final String getRelativeAreaCutoffWeight_Preference = "relative area cutoff weight";
+    public static final String relativeAreaCutoffWeight_Preference = "relative area cutoff weight";
     public static final String DistanceFromNormalAngleLineToTreasureWeight_Preference = "distance to angle bisector line weight";
     public static final String DistanceFromResultingCentroidToTreasureWeight_Preference = "distance to centroid weight";
     public static final String badHintWeight_Preference = "bad Hint for StrategyFromPaper weight";
@@ -75,11 +75,14 @@ public abstract class StatisticalHider {
         // generate Hints
         List<AngleHint> possibleHints = generateHints(360, searchPath.getLastPoint());
 
-        // evaluateHints --> use the GameField
+        // evaluateHints
         AngleHint hint = eval(possibleHints, searchPath);
+
 
         // commitHint
         gameField.commitHint(hint);
+
+
         this.currentPossibleArea = gameField.getPossibleArea();
         // return Hint
         return hint;
@@ -198,16 +201,6 @@ public abstract class StatisticalHider {
         return dist;
     }
 
-    /**
-     * Todo
-     *
-     * @param statistic
-     * @param searchPath
-     * @return
-     */
-    protected double fillStrategyFromPaper_RectangleCutQuality(AngleHintStatistic statistic, SearchPath searchPath) {
-        return 0.0;
-    }
 
     /**
      * Filters the given Hints on the Predicate of being abel to see

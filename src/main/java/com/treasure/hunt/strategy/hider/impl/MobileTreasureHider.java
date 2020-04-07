@@ -11,7 +11,6 @@ import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
-
 import java.text.DecimalFormat;
 import java.util.Comparator;
 import java.util.List;
@@ -24,13 +23,15 @@ import java.util.List;
  */
 @Slf4j
 @Preference(name = PreferenceService.HintSize_Preference, value = 180)
+@Preference(name = PreferenceService.TREASURE_DISTANCE, value = 100)
 @Preference(name = GameField.CircleExtension_Preference, value = 0)
-@Preference(name = StatisticalHider.getRelativeAreaCutoffWeight_Preference, value = 5)
+@Preference(name = StatisticalHider.relativeAreaCutoffWeight_Preference, value = 5)
 @Preference(name = StatisticalHider.DistanceFromNormalAngleLineToTreasureWeight_Preference, value = 2)
 @Preference(name = StatisticalHider.DistanceFromResultingCentroidToTreasureWeight_Preference, value = 0.2)
 @Preference(name = MobileTreasureHider.treasureBeforeHintFirst_Preference, value = 1)
 @Preference(name = MobileTreasureHider.walkedPathLengthForTreasureRelocation_Preference, value = 1)
 @Preference(name = MobileTreasureHider.mindTreasureRelocationDistance_Preference, value = 15)
+@Preference(name = MobileTreasureHider.badHintWeight_Preference, value = 15)
 public class MobileTreasureHider extends StatisticalHider implements HideAndSeekHider<AngleHint> {
 
     public static final String treasureBeforeHintFirst_Preference = "pick treasure before hint? 1/0";
@@ -141,7 +142,7 @@ public class MobileTreasureHider extends StatisticalHider implements HideAndSeek
             inverseRelativeAreaCutoff = (1 / ahs.getRelativeAreaCutoff());
         }
 
-        ratingAddition = PreferenceService.getInstance().getPreference(StatisticalHider.getRelativeAreaCutoffWeight_Preference, 5).doubleValue() * inverseRelativeAreaCutoff;
+        ratingAddition = PreferenceService.getInstance().getPreference(StatisticalHider.relativeAreaCutoffWeight_Preference, 5).doubleValue() * inverseRelativeAreaCutoff;
         rating += ratingAddition;
         String relativeArea_rating = new DecimalFormat("#.00").format(ratingAddition);
         ahs.getHint().getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.RELATIVE_AREA_CUTOFF_RATING, relativeArea_rating));
@@ -162,6 +163,8 @@ public class MobileTreasureHider extends StatisticalHider implements HideAndSeek
             rating += ratingAddition;
             String hintQuality_rating = new DecimalFormat("#.00").format(ratingAddition);
             ahs.getHint().getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.HINT_QUALITY_HIDER_RATING , hintQuality_rating));
+        } else{
+            ahs.getHint().getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.HINT_QUALITY_HIDER_RATING , " 0 "));
         }
 
         ahs.setRating(rating);
