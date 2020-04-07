@@ -71,8 +71,9 @@ public class GameEngine {
     }
 
     /**
-     * @param searchPath a valid {@link SearchPath}, the {@link Searcher} moved.
-     * @return {@code true}, if the {@link Searcher} found the treasure. {@code false}, otherwise.
+     * @param searchPath  a valid {@link SearchPath}, the {@link Searcher} moved
+     * @param treasurePos the {@link Point}, describing the location of the treasure
+     * @return {@code true} if the {@link Searcher} found the treasure. {@code false} otherwise.
      * The {@link Searcher} found the treasure, if had a distance of &le; {@link GameEngine#SCANNING_DISTANCE} in this SearchPath.
      */
     public static boolean located(SearchPath searchPath, Point treasurePos) {
@@ -101,7 +102,7 @@ public class GameEngine {
                  * The point i + 1 will added after.
                  */
                 cutSearchPath.setPoints(searchPath.getPoints().subList(0, i + 1));
-                List<Point> treasureIntersections = JTSUtils.circleLineIntersectionPoints(
+                List<Point> treasureIntersections = JTSUtils.circleLineIntersectionPoints0(
                         searchPath.getPoints().get(i), searchPath.getPoints().get(i + 1), treasurePos, SCANNING_DISTANCE);
                 // pick the point, closer to the i't points of the SearchPath
                 if (treasureIntersections.size() == 2) {

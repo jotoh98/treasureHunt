@@ -8,6 +8,7 @@ import com.treasure.hunt.strategy.hint.impl.AngleHint;
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils;
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StrategyFromPaper;
+import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.algorithm.ConvexHull;
@@ -486,42 +487,134 @@ public final class JTSUtils {
      * Calculates the intersection {@link Point}s, from a line and a circle.
      * The line is described as going from {@code pointA} to {@code pointB} and
      * the circle ist described by having his center on {@code center} and a radius of {@code radius}.
-     * <p>
-     * This code is copied from "https://stackoverflow.com/questions/13053061/circle-line-intersection-points".
      *
      * @param pointA the first {@link Point} of the line
      * @param pointB the second {@link Point} of the line
      * @param center the center {@link Point} of the circle
      * @param radius the radius of the circle
      * @return a list, containing 0, 1 or 2 {@link Point}s, representing the intersections of the line and the circle.
+     * @author dorianreineccius
      */
-    public static List<Point> circleLineIntersectionPoints(Point pointA, Point pointB, Point center, double radius) {
-        double baX = pointB.getX() - pointA.getX();
-        double baY = pointB.getY() - pointA.getY();
-        double caX = center.getX() - pointA.getX();
-        double caY = center.getY() - pointA.getY();
-
-        double a = Math.pow(baX, 2) + Math.pow(baY, 2);
-
-        double pBy2 = (baX * caX + baY * caY) / a;
-        double q = (Math.pow(caX, 2) + Math.pow(caY, 2) - Math.pow(radius, 2)) / a;
-
-        double disc = Math.pow(pBy2, 2) - q;
-        if (disc < 0) {
-            return Collections.emptyList();
+    public static List<Point> circleLineIntersectionPoints0(Point pointA, Point pointB, Point center, double radius) {
+        if (pointA.equalsExact(pointB, 0)) {
+            throw new IllegalArgumentException("The points " + pointA + " and " + pointB + " define no line.");
         }
-        // if disc == 0 ... dealt with later
-        double tmpSqrt = Math.sqrt(disc);
-        double abScalingFactor1 = -pBy2 + tmpSqrt;
-        double abScalingFactor2 = -pBy2 - tmpSqrt;
-
-        Point p1 = createPoint(pointA.getX() - baX * abScalingFactor1,
-                pointA.getY() - baY * abScalingFactor1);
-        if (disc == 0) { // abScalingFactor1 == abScalingFactor2
-            return Collections.singletonList(p1);
+        double a;
+        double b;
+        if (pointA.getX() == pointB.getX()) {
+            a = Math.abs(pointA.getX() - center.getX());
+            if (a > radius) {
+                return Collections.emptyList();
+            } else if (a == radius) {
+                return Collections.singletonList(JTSUtils.createPoint(pointA.getX(), center.getY()));
+            } else {
+                b = Math.sqrt(-Math.pow(a, 2) + Math.pow(radius, 2));
+                return Arrays.asList(JTSUtils.createPoint(pointA.getX(), center.getY() + b),
+                        JTSUtils.createPoint(pointA.getX(), center.getY() - b));
+            }
+        } else {
+            Pair<Double, Double> linearEquation = getLinearEquation(pointA, pointB);
+            if (linearEquation.getKey() == 0) {
+                a = Math.abs(pointA.getY() - center.getY());
+                if (a > radius) {
+                    return Collections.emptyList();
+                } else if (a == radius) {
+                    return Collections.singletonList(JTSUtils.createPoint(center.getX(), pointA.getY()));
+                } else {
+                    b = Math.sqrt(-Math.pow(a, 2) + Math.pow(radius, 2));
+                    return Arrays.asList(JTSUtils.createPoint(center.getX() + b, pointA.getY()),
+                            JTSUtils.createPoint(center.getX() - b, pointA.getY()));
+                }
+            } else {
+                Pair<Double, Double> orthogonal = getOrthogonal(linearEquation.getKey(), center);
+                Point intersection = getLineIntersection(linearEquation, orthogonal);
+                a = center.distance(intersection);
+                if (a > radius) {
+                    return Collections.emptyList();
+                } else if (a == radius) {
+                    return Collections.singletonList(intersection);
+                } else {
+                    b = Math.sqrt(-Math.pow(a, 2) + Math.pow(radius, 2));
+                    double x1 = 0;
+                    double y1 = linearEquation.getKey() * x1 + linearEquation.getValue();
+                    double x2 = 1;
+                    double y2 = linearEquation.getKey() * x2 + linearEquation.getValue();
+                    Vector2D vector = new Vector2D(x2 - x1, y2 - y1);
+                    double vectorLength = Math.sqrt(Math.pow(vector.getX(), 2) + Math.pow(vector.getY(), 2));
+                    Pair<Double, Double> vectorOfLengthB = new Pair<>(b * vector.getX() / vectorLength, b * vector.getY() / vectorLength);
+                    return Arrays.asList(JTSUtils.createPoint(intersection.getX() + vectorOfLengthB.getKey(),
+                            intersection.getY() + vectorOfLengthB.getValue()),
+                            JTSUtils.createPoint(intersection.getX() - vectorOfLengthB.getKey(),
+                                    intersection.getY() - vectorOfLengthB.getValue()));
+                }
+            }
         }
-        Point p2 = createPoint(pointA.getX() - baX * abScalingFactor2,
-                pointA.getY() - baY * abScalingFactor2);
-        return Arrays.asList(p1, p2);
+    }
+
+    /**
+     * Works only for 2-dimensional {@link Point}s.
+     *
+     * @param pointA the first {@link Point}, forming a line
+     * @param pointB the second {@link Point}, forming a line
+     * @return the linear equation {@code y = xm + b} of the line, {@code pointA} and {@code pointB} form.
+     * The linear equation is returned by a Pair containing the gradient {@code m} and the y-value {@code b}, where the
+     * line cuts the y-axis.
+     * @throws IllegalArgumentException if {@code pointA} and {@code pointB} does not form a function.
+     * @author dorianreineccius
+     */
+    public static Pair<Double, Double> getLinearEquation(Point pointA, Point pointB) {
+        double x1 = pointA.getX();
+        double x2 = pointB.getX();
+        double y1 = pointA.getY();
+        double y2 = pointB.getY();
+
+        if (x1 == x2) {
+            throw new IllegalArgumentException("x1 and x2 are equal. The Points does not form a function.");
+        }
+
+        double m = (y2 - y1) / (x2 - x1);
+        double b = pointA.getY() - pointA.getX() * m;
+        return new Pair<>(m, b);
+    }
+
+    /**
+     * @param gradient the gradient to the line, we will calculate the orthogonal form.
+     * @param point    the {@link Point}, the orthogonal will run though.
+     * @return the linear equation {@code y = xm + b} of the orthogonal line to a line with gradient {@code gradient},
+     * running through point {@code point}.
+     * The linear equation is returned by a Pair containing the gradient {@code m} and the y-value {@code b}, where the
+     * line cuts the y-axis.
+     * @throws IllegalArgumentException if the {@code gradient} is 0, where there is no orthogonal.
+     * @author dorianreineccius
+     */
+    public static Pair<Double, Double> getOrthogonal(double gradient, Point point) {
+        if (gradient == 0) {
+            throw new IllegalArgumentException("A line with gradient 0 cannot have a orthogonal");
+        }
+        double m = -(1 / gradient);
+        double b = point.getY() - point.getX() * m;
+        return new Pair<>(m, b);
+    }
+
+    /**
+     * @param function1 {@code y = m1*x + b1}, given as a pair containing the gradient {@code m} and the y-coordinate {@code b}, intersecting the y-axes.
+     * @param function2 {@code y = m2*x + b2}, given as a pair containing the gradient {@code m} and the y-coordinate {@code b}, intersecting the y-axes.
+     * @return the intersection {@link Point}, of {@code function1} and {@code function2}.
+     * Thus, we return {@code }
+     * @throws IllegalArgumentException if both functions have no intersection or are equal.
+     * @author dorianreineccius
+     */
+    public static Point getLineIntersection(Pair<Double, Double> function1, Pair<Double, Double> function2) {
+        if (function1.getKey() == function2.getKey()) {
+            throw new IllegalArgumentException("function1 and function2 cannot have the same gradient.");
+        }
+        double b1 = function1.getValue();
+        double b2 = function2.getValue();
+        double m1 = function1.getKey();
+        double m2 = function2.getKey();
+        double x = (-b1 + b2) / (m1 - m2);
+        double y = m1 * x + b1;
+
+        return JTSUtils.createPoint(x, y);
     }
 }
