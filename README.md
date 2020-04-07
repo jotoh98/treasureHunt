@@ -5,11 +5,11 @@
 
 # How to run
     1. Install IntelliJ
-    2. Install the lombok plugin https://projectlombok.org/setup/intellij
-    3. Enable 'annotation processing' in settings
-    4. Clone the project by clicking new->Project from Version Source Control
-    5. Import maven project by right clicking on the pom.xml and telling IntelliJ to import maven project
-    6. In the maven tab at the right click the refresh symbol
+    2. Clone the project fom Github using git
+    3. Install the lombok plugin https://projectlombok.org/setup/intellij
+    4. Enable 'annotation processing' in settings
+    5. Import gradle project by right clicking on the build.gradle and telling IntelliJ to import gradle project
+    6. In the gradle tab at the right click the refresh symbol
     7. Click on play
 
 # Implementing a Searcher
