@@ -188,38 +188,38 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGlobalOptimalSolution()">getGlobalOptimalSolution</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>org.locationtech.jts.geom.Point</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGlobalStartPoint()">getGlobalStartPoint</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHintRequests()">getHintRequests</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHintTraceLengthRatio()">getHintTraceLengthRatio</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>double</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLocalOptimumSolution()">getLocalOptimumSolution</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLocalOptimalSolution()">getLocalOptimalSolution</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get the locally optimal trace length for the searcher.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>double</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getOptimumSolution()">getOptimumSolution</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSolutionQuotient()">getSolutionQuotient</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Calculate the solution quotient.</div>
 </td>
-</tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>org.locationtech.jts.geom.Point</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStartPoint()">getStartPoint</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>double</code></td>
@@ -287,13 +287,13 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="getLocalOptimumSolution()">
+<a id="getLocalOptimalSolution()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getLocalOptimumSolution</h4>
-<pre class="methodSignature">public&nbsp;double&nbsp;getLocalOptimumSolution()</pre>
+<h4>getLocalOptimalSolution</h4>
+<pre class="methodSignature">public&nbsp;double&nbsp;getLocalOptimalSolution()</pre>
 <div class="block">Get the locally optimal trace length for the searcher.
  That's the trace length of the path visited plus the optimal distance between the last searcher position and the
  treasure.</div>
@@ -303,16 +303,16 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="getStartPoint()">
+<a id="getGlobalStartPoint()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getStartPoint</h4>
-<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Point&nbsp;getStartPoint()</pre>
+<h4>getGlobalStartPoint</h4>
+<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Point&nbsp;getGlobalStartPoint()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>The <code>Point</code>, the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> stood initially.</dd>
+<dd>The <code>Point</code> where the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> stood initially.</dd>
 </dl>
 </li>
 </ul>
@@ -329,13 +329,13 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="getOptimumSolution()">
+<a id="getGlobalOptimalSolution()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getOptimumSolution</h4>
-<pre class="methodSignature">public&nbsp;double&nbsp;getOptimumSolution()</pre>
+<h4>getGlobalOptimalSolution</h4>
+<pre class="methodSignature">public&nbsp;double&nbsp;getGlobalOptimalSolution()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the distance of the beeline between the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a>'s initial position and the treasure location.</dd>
