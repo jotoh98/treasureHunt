@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Tests for {@link JTSUtils#circleLineIntersectionPoints0(Point, Point, Point, double)}.
+ * Tests for {@link JTSUtils#circleLineIntersectionPoints(Point, Point, Point, double)}.
  *
  * @author dorianreineccius
  */
@@ -43,23 +43,23 @@ public class JTSUtilsCircleLineIntersectionPointsTest {
 
     @Test
     public void NoIntersectionPointTest() {
-        assertTrue(JTSUtils.circleLineIntersectionPoints0(pointm1u2, point1u2, point0u0, 1).size() == 0);
-        assertTrue(JTSUtils.circleLineIntersectionPoints0(pointm1um2, point1um2, point0u0, 1).size() == 0);
-        assertTrue(JTSUtils.circleLineIntersectionPoints0(pointm2u1, pointm2um1, point0u0, 1).size() == 0);
-        assertTrue(JTSUtils.circleLineIntersectionPoints0(point2u1, point2um1, point0u0, 1).size() == 0);
+        assertTrue(JTSUtils.circleLineIntersectionPoints(pointm1u2, point1u2, point0u0, 1).size() == 0);
+        assertTrue(JTSUtils.circleLineIntersectionPoints(pointm1um2, point1um2, point0u0, 1).size() == 0);
+        assertTrue(JTSUtils.circleLineIntersectionPoints(pointm2u1, pointm2um1, point0u0, 1).size() == 0);
+        assertTrue(JTSUtils.circleLineIntersectionPoints(point2u1, point2um1, point0u0, 1).size() == 0);
 
-        assertTrue(JTSUtils.circleLineIntersectionPoints0(pointm2u0, point0um2, point0u0, 1).size() == 0);
-        assertTrue(JTSUtils.circleLineIntersectionPoints0(point0um2, point2u0, point0u0, 1).size() == 0);
-        assertTrue(JTSUtils.circleLineIntersectionPoints0(point2u0, point0um2, point0u0, 1).size() == 0);
-        assertTrue(JTSUtils.circleLineIntersectionPoints0(point0um2, pointm2u0, point0u0, 1).size() == 0);
+        assertTrue(JTSUtils.circleLineIntersectionPoints(pointm2u0, point0um2, point0u0, 1).size() == 0);
+        assertTrue(JTSUtils.circleLineIntersectionPoints(point0um2, point2u0, point0u0, 1).size() == 0);
+        assertTrue(JTSUtils.circleLineIntersectionPoints(point2u0, point0um2, point0u0, 1).size() == 0);
+        assertTrue(JTSUtils.circleLineIntersectionPoints(point0um2, pointm2u0, point0u0, 1).size() == 0);
     }
 
     @Test
     public void OneIntersectionPointTest1() {
-        assertContains(JTSUtils.circleLineIntersectionPoints0(pointm1u1, point1u1, point0u0, 1), point0u1);
-        assertContains(JTSUtils.circleLineIntersectionPoints0(pointm1um1, pointm1u1, point0u0, 1), pointm1u0);
-        assertContains(JTSUtils.circleLineIntersectionPoints0(pointm1um1, point1um1, point0u0, 1), point0um1);
-        assertContains(JTSUtils.circleLineIntersectionPoints0(point1um1, point1u1, point0u0, 1), point1u0);
+        assertContains(JTSUtils.circleLineIntersectionPoints(pointm1u1, point1u1, point0u0, 1), point0u1);
+        assertContains(JTSUtils.circleLineIntersectionPoints(pointm1um1, pointm1u1, point0u0, 1), pointm1u0);
+        assertContains(JTSUtils.circleLineIntersectionPoints(pointm1um1, point1um1, point0u0, 1), point0um1);
+        assertContains(JTSUtils.circleLineIntersectionPoints(point1um1, point1u1, point0u0, 1), point1u0);
         double magic = Math.sqrt(2);
         Point a = JTSUtils.createPoint(-magic, 0);
         Point b = JTSUtils.createPoint(0, magic);
@@ -69,10 +69,10 @@ public class JTSUtilsCircleLineIntersectionPointsTest {
         Point bc = JTSUtils.createPoint(magic / 2, magic / 2);
         Point cd = JTSUtils.createPoint(magic / 2, -magic / 2);
         Point da = JTSUtils.createPoint(-magic / 2, -magic / 2);
-        assertContains(JTSUtils.circleLineIntersectionPoints0(a, b, point0u0, 1), ab);
-        assertContains(JTSUtils.circleLineIntersectionPoints0(b, c, point0u0, 1), bc);
-        assertContains(JTSUtils.circleLineIntersectionPoints0(c, d, point0u0, 1), cd);
-        assertContains(JTSUtils.circleLineIntersectionPoints0(d, a, point0u0, 1), da);
+        assertContains(JTSUtils.circleLineIntersectionPoints(a, b, point0u0, 1), ab);
+        assertContains(JTSUtils.circleLineIntersectionPoints(b, c, point0u0, 1), bc);
+        assertContains(JTSUtils.circleLineIntersectionPoints(c, d, point0u0, 1), cd);
+        assertContains(JTSUtils.circleLineIntersectionPoints(d, a, point0u0, 1), da);
     }
 
     /**
@@ -86,7 +86,7 @@ public class JTSUtilsCircleLineIntersectionPointsTest {
             Point p1 = JTSUtils.createPoint(-i, i + 1);
             Point p2 = JTSUtils.createPoint(-i, -i);
             Point treasure = JTSUtils.createPoint(-i - 1, 0);
-            List<Point> intersections = JTSUtils.circleLineIntersectionPoints0(
+            List<Point> intersections = JTSUtils.circleLineIntersectionPoints(
                     p1,
                     p2,
                     treasure, 1);
@@ -107,20 +107,20 @@ public class JTSUtilsCircleLineIntersectionPointsTest {
      */
     @Test
     public void reducedBuggyScenario() {
-        List<Point> intersections = JTSUtils.circleLineIntersectionPoints0(pointm1um1, pointm1u2, pointm2u0, 1);
+        List<Point> intersections = JTSUtils.circleLineIntersectionPoints(pointm1um1, pointm1u2, pointm2u0, 1);
         assertContains(intersections, pointm1u0);
     }
 
     @Test
     public void TwoIntersectionPointTest1() {
-        List<Point> intersections = JTSUtils.circleLineIntersectionPoints0(pointm1u0, point1u0, point0u0, 1);
+        List<Point> intersections = JTSUtils.circleLineIntersectionPoints(pointm1u0, point1u0, point0u0, 1);
         assertContains(intersections, pointm1u0);
         assertContains(intersections, point1u0);
     }
 
     @Test
     public void TwoIntersectionPointTest2() {
-        List<Point> intersections = JTSUtils.circleLineIntersectionPoints0(point0um1, point0u1, point0u0, 1);
+        List<Point> intersections = JTSUtils.circleLineIntersectionPoints(point0um1, point0u1, point0u0, 1);
         assertContains(intersections, point0um1);
         assertContains(intersections, point0u1);
     }
@@ -131,20 +131,20 @@ public class JTSUtilsCircleLineIntersectionPointsTest {
      */
     @Test
     public void TwoIntersectionPointTest3() {
-        List<Point> intersections = JTSUtils.circleLineIntersectionPoints0(point0u0, point2u0, point0u0, 1);
+        List<Point> intersections = JTSUtils.circleLineIntersectionPoints(point0u0, point2u0, point0u0, 1);
         assertContains(intersections, pointm1u0);
         assertContains(intersections, point1u0);
     }
 
     @Test
     public void TwoIntersectionPointTest4() {
-        List<Point> intersections = JTSUtils.circleLineIntersectionPoints0(pointm1um1, point1u1, point0u0, 1);
+        List<Point> intersections = JTSUtils.circleLineIntersectionPoints(pointm1um1, point1u1, point0u0, 1);
         double magic = 1 / Math.sqrt(2);
         Point firstIntersection = JTSUtils.createPoint(-magic, -magic);
         Point secondIntersection = JTSUtils.createPoint(magic, magic);
         assertContains(intersections, firstIntersection);
         assertContains(intersections, secondIntersection);
-        intersections = JTSUtils.circleLineIntersectionPoints0(pointm1u1, point1um1, point0u0, 1);
+        intersections = JTSUtils.circleLineIntersectionPoints(pointm1u1, point1um1, point0u0, 1);
         firstIntersection = JTSUtils.createPoint(-magic, magic);
         secondIntersection = JTSUtils.createPoint(magic, -magic);
         assertContains(intersections, firstIntersection);

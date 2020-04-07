@@ -495,7 +495,7 @@ public final class JTSUtils {
      * @return a list, containing 0, 1 or 2 {@link Point}s, representing the intersections of the line and the circle.
      * @author dorianreineccius
      */
-    public static List<Point> circleLineIntersectionPoints0(Point pointA, Point pointB, Point center, double radius) {
+    public static List<Point> circleLineIntersectionPoints(Point pointA, Point pointB, Point center, double radius) {
         if (pointA.equalsExact(pointB, 0)) {
             throw new IllegalArgumentException("The points " + pointA + " and " + pointB + " define no line.");
         }
