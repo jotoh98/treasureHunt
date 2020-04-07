@@ -71,8 +71,9 @@ public class GameEngine {
     }
 
     /**
-     * @param searchPath a valid {@link SearchPath}, the {@link Searcher} moved.
-     * @return {@code true}, if the {@link Searcher} found the treasure. {@code false}, otherwise.
+     * @param searchPath  a valid {@link SearchPath}, the {@link Searcher} moved
+     * @param treasurePos the {@link Point}, describing the location of the treasure
+     * @return {@code true} if the {@link Searcher} found the treasure. {@code false} otherwise.
      * The {@link Searcher} found the treasure, if had a distance of &le; {@link GameEngine#SCANNING_DISTANCE} in this SearchPath.
      */
     public static boolean located(SearchPath searchPath, Point treasurePos) {
