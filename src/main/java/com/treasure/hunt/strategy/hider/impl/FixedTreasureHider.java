@@ -24,7 +24,6 @@ import java.text.DecimalFormat;
 @Preference(name = PreferenceService.MAX_TREASURE_DISTANCE, value = 100)
 @Preference(name = MobileTreasureHider.badHintWeight_Preference, value = 15)
 public class FixedTreasureHider extends StatisticalHider implements Hider<AngleHint> {
-
     @Override
     protected double rateHint(AngleHintStatistic ahs) {
         double rating = 0;

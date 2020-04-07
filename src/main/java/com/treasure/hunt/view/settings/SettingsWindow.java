@@ -21,6 +21,7 @@ public class SettingsWindow {
         SettingsController controller = fxmlLoader.getController();
         Stage stage = JavaFxApplication.createPopUpStage("Settings", scene);
         stage.setMaxHeight(500);
+        stage.setResizable(false);
         stage.setOnCloseRequest(event -> exitClicked(event, controller));
         stage.show();
     }

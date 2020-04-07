@@ -16,6 +16,9 @@ import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.down;
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.up;
 
 /**
+ * A special ase of {@link AngleHint} with 180 degrees or {@link Math#PI} radians,
+ * defining a {@link HalfPlane} in which the treasure lies
+ *
  * @author bsen
  */
 
@@ -134,12 +137,13 @@ public class HalfPlaneHint extends AngleHint {
                 throw new IllegalArgumentException("getCenter() must not equal getRight() in the " +
                         "calculation of the direction");
             }
-        }
-        if (getCenter().getY() < getRight().getY()) {
-            direction = Direction.left;
-        }
-        if (getCenter().getY() > getRight().getY()) {
-            direction = Direction.right;
+        } else {
+            if (getCenter().getY() < getRight().getY()) {
+                direction = Direction.left;
+            }
+            if (getCenter().getY() > getRight().getY()) {
+                direction = Direction.right;
+            }
         }
         return direction;
     }

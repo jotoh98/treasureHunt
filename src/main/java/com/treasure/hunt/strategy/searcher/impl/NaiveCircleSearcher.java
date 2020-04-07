@@ -1,6 +1,5 @@
 package com.treasure.hunt.strategy.searcher.impl;
 
-import com.treasure.hunt.game.mods.hideandseek.HideAndSeekSearcher;
 import com.treasure.hunt.strategy.hint.impl.CircleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
@@ -12,7 +11,7 @@ import org.locationtech.jts.geom.Point;
  *
  * @author dorianreineccius
  */
-public class NaiveCircleSearcher implements HideAndSeekSearcher<CircleHint> {
+public class NaiveCircleSearcher implements Searcher<CircleHint> {
     private Point position;
 
     /**

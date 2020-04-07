@@ -1,6 +1,5 @@
 package com.treasure.hunt.strategy.searcher.impl.strategyFromPaper;
 
-import com.treasure.hunt.game.mods.hideandseek.HideAndSeekSearcher;
 import com.treasure.hunt.strategy.geom.GeometryItem;
 import com.treasure.hunt.strategy.geom.GeometryType;
 import com.treasure.hunt.strategy.geom.StatusMessageItem;
@@ -18,8 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.treasure.hunt.strategy.geom.GeometryType.CURRENT_PHASE;
-import static com.treasure.hunt.strategy.geom.GeometryType.CURRENT_RECTANGLE;
+import static com.treasure.hunt.strategy.geom.GeometryType.*;
 import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.*;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.GeometricUtils.*;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.rectangleScan;
@@ -48,7 +46,7 @@ import static com.treasure.hunt.utils.JTSUtils.*;
  *
  * @author Rank
  */
-public class StrategyFromPaper implements Searcher<HalfPlaneHint>, HideAndSeekSearcher<HalfPlaneHint> {
+public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     /**
      * phase equals i in Algorithm2 (TreasureHunt1) in the paper.
      * In phase k, the algorithm checks, if the treasure is located in a rectangle
@@ -67,10 +65,12 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint>, HideAndSeekSe
     protected HalfPlaneHint currentHint;
     protected HintQuality previousHintQuality = HintQuality.none;
     protected LastHintBadSubroutine lastHintBadSubroutine = new LastHintBadSubroutine(this);
+    protected boolean phaseGotIncrementedThisMove = false;
     Point start; // the initial position of the player
     List<StatusMessageItem> statusMessageItemsToBeRemovedNextMove = new ArrayList<>();
     List<GeometryItem> geometryItemsToBeAddedNextMove = new ArrayList<>();
     Point lastPosition;
+    GeometryItem<Polygon> lastMovesRectangle = null;
 
     /**
      * {@inheritDoc}
@@ -99,6 +99,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint>, HideAndSeekSe
     public SearchPath move(HalfPlaneHint hint) {
         previousHint = currentHint;
         currentHint = hint;
+        phaseGotIncrementedThisMove = false;
 
         SearchPath move = new SearchPath();
 
@@ -192,21 +193,32 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint>, HideAndSeekSe
      * Adds their values to move
      *
      * @param move
+     * @param currentRectanglePoints
+     * @param phaseRectanglePoints
      * @return the input with the visualisations of the current phase and the search rectangle added
      */
     protected SearchPath addState(SearchPath move, Coordinate[] currentRectanglePoints, Coordinate[] phaseRectanglePoints) {
+        // add previous rectangle
+        if (!phaseGotIncrementedThisMove && lastMovesRectangle != null) {
+            move.addAdditionalItem(lastMovesRectangle);
+        } else {
+            move.addAdditionalItem(new GeometryItem<>(GEOMETRY_FACTORY.createPolygon(), PREVIOUS_RECTANGLE));
+        }
+
         // add current rectangle which the strategy is working on
         if (currentRectanglePoints != null) {
-            Coordinate[] curCoords = new Coordinate[5];
+            Coordinate[] currentRectangleCoordinates = new Coordinate[5];
             for (int i = 0; i < 4; i++) {
-                curCoords[i] = currentRectanglePoints[i];
+                currentRectangleCoordinates[i] = currentRectanglePoints[i];
             }
-            curCoords[4] = currentRectanglePoints[0];
-            GeometryItem<Polygon> curPoly = new GeometryItem<>(GEOMETRY_FACTORY.createPolygon(curCoords), CURRENT_RECTANGLE);
+            currentRectangleCoordinates[4] = currentRectanglePoints[0];
+            GeometryItem<Polygon> curPoly = new GeometryItem<>(GEOMETRY_FACTORY.createPolygon(currentRectangleCoordinates), CURRENT_RECTANGLE);
             move.addAdditionalItem(curPoly);
+            lastMovesRectangle = new GeometryItem<>(GEOMETRY_FACTORY.createPolygon(currentRectangleCoordinates), PREVIOUS_RECTANGLE);
         } else {
             GeometryItem<Polygon> curPoly = new GeometryItem<>(GEOMETRY_FACTORY.createPolygon(), CURRENT_RECTANGLE);
             move.addAdditionalItem(curPoly);
+            lastMovesRectangle = new GeometryItem<>(GEOMETRY_FACTORY.createPolygon(), PREVIOUS_RECTANGLE);
         }
 
         // add the rectangle of the current phase
@@ -283,11 +295,11 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint>, HideAndSeekSe
         //add hints
         if (currentHint != null) {
             move.addAdditionalItem(new GeometryItem<>(currentHint.getHalfPlaneTheTreasureIsNotIn(),
-                    GeometryType.HALF_PLANE_PREVIOUS_LIGHT_RED));
+                    GeometryType.HALF_PLANE_PREVIOUS_BROWN));
         }
         if (previousHint != null) {
             move.addAdditionalItem(new GeometryItem<>(previousHint.getHalfPlaneTheTreasureIsNotIn(),
-                    GeometryType.HALF_PLANE_BEFORE_PREVIOUS_ORANGE));
+                    GeometryType.HALF_PLANE_BEFORE_PREVIOUS_LIGHT_BROWN));
         }
         lastPosition = move.getLastPoint();
         return addState(move, curCoords, currentPhaseRectangle());
@@ -305,6 +317,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint>, HideAndSeekSe
      * @param C
      * @param D
      * @param hint
+     * @param hintLine
      * @return
      */
     protected Point[] splitRectangleHorizontally(Point A, Point B, Point C, Point D, HalfPlaneHint hint,
@@ -471,6 +484,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint>, HideAndSeekSe
         setRectToPhase();
         specificRectangleScan(oldA, oldB, oldC, oldD, move);
         move.addPoint(centerOfRectangle(searchAreaCornerA, searchAreaCornerB, searchAreaCornerC, searchAreaCornerD));
+        phaseGotIncrementedThisMove = true;
         return move;
     }
 

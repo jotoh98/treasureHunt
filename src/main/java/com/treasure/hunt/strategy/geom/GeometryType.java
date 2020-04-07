@@ -20,8 +20,8 @@ public enum GeometryType {
      */
     HALF_PLANE(true, "the treasure is not here", true),
     HALF_PLANE_CURRENT_RED(false, "current half plane hint", true),
-    HALF_PLANE_PREVIOUS_LIGHT_RED(true, "previous half plane hint", true),
-    HALF_PLANE_BEFORE_PREVIOUS_ORANGE(true, "the half plane hint received before the previous half plane hint", true),
+    HALF_PLANE_PREVIOUS_BROWN(true, "previous half plane hint", true),
+    HALF_PLANE_BEFORE_PREVIOUS_LIGHT_BROWN(true, "the half plane hint received before the previous half plane hint", true),
 
     /**
      * treasure/no-treasure (areas) relevant
@@ -52,6 +52,7 @@ public enum GeometryType {
      */
     CURRENT_PHASE(false, "current phase", true),
     CURRENT_RECTANGLE(true, "current rectangle", true),
+    PREVIOUS_RECTANGLE(true, "previous rectangle", true),
     CURRENT_POLYGON(true, "current polygon", true),
     L1_DOUBLE_APOS(true, "L1''", true),
 
@@ -70,6 +71,10 @@ public enum GeometryType {
     private final String displayName;
     @Getter
     private boolean enabled;
+    /**
+     * If a {@link GeometryItem} has override set, only the last {@link GeometryItem} of this GeometryType
+     * will be displayed and all previous ones will be invisible.
+     */
     @Getter
     private boolean override;
     @Getter

@@ -11,13 +11,10 @@ import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StrategyFromPa
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.algorithm.ConvexHull;
-import org.locationtech.jts.algorithm.RobustLineIntersector;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.math.Vector2D;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -46,8 +43,12 @@ public final class JTSUtils {
         return GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
     }
 
-    public static Point createPoint(Coordinate p) {
-        return createPoint(p.x, p.y);
+    /**
+     * @param coordinate The {@link Coordinate}, which should be converted to a {@link Point}.
+     * @return {@link Point} lying on {@code coordinate.}.
+     */
+    public static Point createPoint(Coordinate coordinate) {
+        return createPoint(coordinate.x, coordinate.y);
     }
 
     /**
@@ -243,8 +244,8 @@ public final class JTSUtils {
     }
 
     /**
-     * @param searcher  the position of the {@link com.treasure.hunt.strategy.searcher.Searcher}.
-     * @param treasure  the position of the treasure.
+     * @param searcher  the {@link Coordinate} of the {@link com.treasure.hunt.strategy.searcher.Searcher}.
+     * @param treasure  the {@link Coordinate} of the treasure.
      * @param maxExtend number of {@code [0, 2 * Math.PI)} defining, how wide the angle is opened.
      * @return a valid {@link GeometryAngle}, randomly generated.
      */
@@ -252,6 +253,13 @@ public final class JTSUtils {
         return validRandomAngle(searcher, treasure, maxExtend, 0);
     }
 
+    /**
+     * @param searcher  the {@link Coordinate} of the {@link com.treasure.hunt.strategy.searcher.Searcher}.
+     * @param treasure  the {@link Coordinate} of the treasure.
+     * @param maxExtend number of {@code [0, 2 * Math.PI)} defining, how wide the angle is opened.
+     * @param minExtend number of {@code [0, maxExtend)}
+     * @return a valid {@link GeometryAngle}, randomly generated.
+     */
     public static GeometryAngle validRandomAngle(Coordinate searcher, Coordinate treasure, double maxExtend, double minExtend) {
 
         if (maxExtend <= 0 || minExtend < 0 || minExtend >= maxExtend) {
@@ -264,12 +272,20 @@ public final class JTSUtils {
         return new GeometryAngle(GEOMETRY_FACTORY, searcher, start, extend);
     }
 
+    /**
+     * @param geometries A list, containing {@link Geometry}'s, which should be converted to a list of {@link Coordinate}'s.
+     * @return A list of {@link Coordinate}'s, which {@code geometries} is converted to.
+     */
     public static List<Coordinate> getCoordinateList(List<? extends Geometry> geometries) {
         return geometries.stream()
                 .map(Geometry::getCoordinate)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @param envelope An {@link Envelope}, which will be converted to an {@link Polygon}.
+     * @return A {@link Polygon}, a {@code envelope} is converted to.
+     */
     public static Polygon toPolygon(Envelope envelope) {
         return GEOMETRY_FACTORY.createPolygon(new Coordinate[]{
                 new Coordinate(envelope.getMinX(), envelope.getMinY()),
@@ -343,9 +359,7 @@ public final class JTSUtils {
     }
 
     /**
-     * Generates a treasure location according to set preferences.
-     *
-     * @return treasure point
+     * @return A {@link Point}, where the treasure is located,msatisfying {@link PreferenceService#MIN_TREASURE_DISTANCE}, {@link PreferenceService#MAX_TREASURE_DISTANCE} and {@link PreferenceService#TREASURE_DISTANCE}.
      */
     public static Point shuffleTreasure() {
         Optional<Number> fixedDistance = PreferenceService.getInstance()
@@ -388,9 +402,10 @@ public final class JTSUtils {
      * this function can be called to determine if the specified hint is a bad Hint
      * defined be the paper in the context of the specified rectangle
      *
-     * @param rectangle the rectangle as polygon
-     * @param hint      the hint
-     * @return
+     * @param rectangle the rectangle as {@link Polygon}
+     * @param angleHint the {@link AngleHint}
+     * @return {@code true} if the given {@code angleHint} is a bad hint, related on the {@link StrategyFromPaper}.
+     * {@code false} otherwise.
      */
     public static boolean isBadHint(Polygon rectangle, AngleHint hint) {
         if (!(hint instanceof HalfPlaneHint)) {
@@ -465,5 +480,48 @@ public final class JTSUtils {
         }
         log.trace("good hint");
         return false;
+    }
+
+    /**
+     * Calculates the intersection {@link Point}s, from a line and a circle.
+     * The line is described as going from {@code pointA} to {@code pointB} and
+     * the circle ist described by having his center on {@code center} and a radius of {@code radius}.
+     * <p>
+     * This code is copied from "https://stackoverflow.com/questions/13053061/circle-line-intersection-points".
+     *
+     * @param pointA the first {@link Point} of the line
+     * @param pointB the second {@link Point} of the line
+     * @param center the center {@link Point} of the circle
+     * @param radius the radius of the circle
+     * @return a list, containing 0, 1 or 2 {@link Point}s, representing the intersections of the line and the circle.
+     */
+    public static List<Point> circleLineIntersectionPoints(Point pointA, Point pointB, Point center, double radius) {
+        double baX = pointB.getX() - pointA.getX();
+        double baY = pointB.getY() - pointA.getY();
+        double caX = center.getX() - pointA.getX();
+        double caY = center.getY() - pointA.getY();
+
+        double a = Math.pow(baX, 2) + Math.pow(baY, 2);
+
+        double pBy2 = (baX * caX + baY * caY) / a;
+        double q = (Math.pow(caX, 2) + Math.pow(caY, 2) - Math.pow(radius, 2)) / a;
+
+        double disc = Math.pow(pBy2, 2) - q;
+        if (disc < 0) {
+            return Collections.emptyList();
+        }
+        // if disc == 0 ... dealt with later
+        double tmpSqrt = Math.sqrt(disc);
+        double abScalingFactor1 = -pBy2 + tmpSqrt;
+        double abScalingFactor2 = -pBy2 - tmpSqrt;
+
+        Point p1 = createPoint(pointA.getX() - baX * abScalingFactor1,
+                pointA.getY() - baY * abScalingFactor1);
+        if (disc == 0) { // abScalingFactor1 == abScalingFactor2
+            return Collections.singletonList(p1);
+        }
+        Point p2 = createPoint(pointA.getX() - baX * abScalingFactor2,
+                pointA.getY() - baY * abScalingFactor2);
+        return Arrays.asList(p1, p2);
     }
 }

@@ -6,7 +6,7 @@ import com.treasure.hunt.strategy.hint.Hint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.Searcher;
 import com.treasure.hunt.utils.Requires;
-import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Point;
 
 /**
  * In this modification, the hider may reset the
@@ -15,34 +15,24 @@ import org.locationtech.jts.geom.Coordinate;
  *
  * @author dorianreineccius
  */
-@Requires(hider = HideAndSeekHider.class, searcher = HideAndSeekSearcher.class)
+@Requires(hider = HideAndSeekHider.class, searcher = Searcher.class)
 public class HideAndSeekGameEngine extends GameEngine {
     public HideAndSeekGameEngine(Searcher searcher, Hider hider) {
         super(searcher, hider);
     }
 
-    public HideAndSeekGameEngine(Searcher searcher, Hider hider, Coordinate coordinate) {
-        super(searcher, hider, coordinate);
+    public HideAndSeekGameEngine(Searcher searcher, Hider hider, Point point) {
+        super(searcher, hider, point);
     }
 
     /**
      * Let the {@link GameEngine#hider} reset the treasure position and give his {@link com.treasure.hunt.strategy.hint.Hint}.
      */
-    protected void moveHider() {
-        treasurePos = hider.getTreasureLocation(); // Difference between GameEngine and HideAndSeekGameEngine.
-        Hint newHint = hider.move(lastSearchPath);
-        assert (newHint != null);
-        verifyHint(newHint, treasurePos, lastSearchPath.getLastPoint());
-        lastHint = newHint;
-    }
-
-    /**
-     * Let the {@link GameEngine#hider} reset the treasure position and give his {@link com.treasure.hunt.strategy.hint.Hint}.
-     */
+    @Override
     protected void hiderMove() {
-        lastHint = hider.move(lastSearchPath);
+        Hint newHint = hider.move(lastSearchPath);
         treasurePos = hider.getTreasureLocation(); // Difference between GameEngine and HideAndSeekGameEngine.
-        assert (lastHint != null);
-        verifyHint(lastHint, treasurePos, lastSearchPath.getLastPoint());
+        verifyHint(lastHint, newHint, treasurePos, lastSearchPath.getLastPoint());
+        lastHint = newHint;
     }
 }

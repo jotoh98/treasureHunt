@@ -24,11 +24,12 @@ public class GeometryStyle {
     public static final GeometryStyle GRID = new GeometryStyle(true, false, new Color(0x555555), null, -1);
     public static final GeometryStyle CURRENT_WAY_POINT = new GeometryStyle(true, new Color(0x007A1D), 2);
     public static final GeometryStyle CURRENT_PHASE = new GeometryStyle(true, new Color(0x008504));
-    public static final GeometryStyle CURRENT_RECTANGLE = new GeometryStyle(true, new Color(0x00e007));
-    public static final GeometryStyle HALF_PLANE_CURRENT_RED = new GeometryStyle(true, new Color(0x33ff0000, true), new Color(0x33ff0000, true));
-    public static final GeometryStyle HALF_PLANE_PREVIOUS_LIGHT_RED = new GeometryStyle(true, new Color(0x18ff0000, true), new Color(0x18ff0000, true));
-    public static final GeometryStyle CURRENT_POLYGON = new GeometryStyle(true, new Color(0x40E0D0));
-    public static final GeometryStyle HALF_PLANE_BEFORE_PREVIOUS_ORANGE = new GeometryStyle(true, new Color(0x11ff9933, true), new Color(0x11ff9933, true));
+    public static final GeometryStyle CURRENT_RECTANGLE = new GeometryStyle(true, new Color(0x00e007), new Color(0x0800e007, true));
+    public static final GeometryStyle PREVIOUS_RECTANGLE = new GeometryStyle(true, new Color(0xBB67aa57, true));
+    public static final GeometryStyle CURRENT_POLYGON = new GeometryStyle(true, new Color(0x40E0D0), new Color(0x0840E0D0, true));
+    public static final GeometryStyle HALF_PLANE_CURRENT_RED = new GeometryStyle(true, new Color(0x99ff0000, true), new Color(0x11ff0000, true));
+    public static final GeometryStyle HALF_PLANE_PREVIOUS_BROWN = new GeometryStyle(true, new Color(0x99fc532d, true), new Color(0x05fc532d, true));
+    public static final GeometryStyle HALF_PLANE_BEFORE_PREVIOUS_LIGHT_BROWN = new GeometryStyle(true, new Color(0x99ff9933, true), new Color(0x05ff9933, true));
     public static final GeometryStyle L1_DOUBLE_APOS = new GeometryStyle(true, Color.BLUE);
     public static final GeometryStyle HALF_PLANE = new GeometryStyle(true, new Color(0x777777), new Color(0x22777777, true));
     public static final GeometryStyle WAY_POINT_LINE = new GeometryStyle(true, new Color(0xFFFFFF));

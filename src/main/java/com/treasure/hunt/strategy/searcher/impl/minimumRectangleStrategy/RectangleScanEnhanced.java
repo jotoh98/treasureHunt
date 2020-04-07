@@ -19,6 +19,13 @@ public class RectangleScanEnhanced {
 
     /**
      * Meanders through the rectangle to scan it like the RectangleScan Routine from the paper but uses fewer distance
+     *
+     * @param a
+     * @param b
+     * @param c
+     * @param d
+     * @param searchPath
+     * @return
      */
     public static SearchPath rectangleScanEnhanced(Coordinate a, Coordinate b, Coordinate c, Coordinate d,
                                                    SearchPath searchPath) {
