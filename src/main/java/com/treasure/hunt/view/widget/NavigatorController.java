@@ -1,12 +1,12 @@
 package com.treasure.hunt.view.widget;
 
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.game.Turn;
 import com.treasure.hunt.jts.awt.PointTransformation;
 import com.treasure.hunt.service.settings.SettingsService;
 import com.treasure.hunt.view.CanvasController;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -22,7 +22,6 @@ import org.locationtech.jts.math.Vector2D;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -38,9 +37,8 @@ public class NavigatorController {
     private CanvasController canvasController;
     private Rectangle symbol = new Rectangle(0, 0, 0, 0);
 
-    private Point treasurePoint = null;
-
-    private Point searcherPoint = null;
+    private SimpleObjectProperty<Point> searcherProperty = new SimpleObjectProperty<>();
+    private SimpleObjectProperty<Point> treasureProperty = new SimpleObjectProperty<>();
 
     /**
      * Behaviour of user entering a scale.
@@ -72,13 +70,9 @@ public class NavigatorController {
     public void init(ObjectProperty<GameManager> gameManagerProperty, CanvasController canvasController) {
         this.canvasController = canvasController;
 
-        final ChangeListener<GameManager> gameManagerChangeListener = (observable, oldValue, newValue) -> bindGameManager(newValue);
-        gameManagerProperty.addListener(gameManagerChangeListener);
-        gameManagerChangeListener.changed(null, null, gameManagerProperty.get());
-
-        if (gameManagerProperty.isNotNull().get()) {
-            bindGameManager(gameManagerProperty.get());
-        }
+        final ChangeListener<GameManager> managerInvalidator = (a, b, c) -> bindGameManager(gameManagerProperty.get());
+        gameManagerProperty.addListener(managerInvalidator);
+        managerInvalidator.changed(null, null, null);
 
         navigatorCanvasBindings();
 
@@ -107,18 +101,14 @@ public class NavigatorController {
     }
 
     private void bindGameManager(final GameManager gameManager) {
-        final ChangeListener<Number> viewListener = (observable, oldIndex, newViewIndex) -> {
-            final List<Turn> visibleTurns = gameManager.getVisibleTurns();
-            if (visibleTurns.size() < 1) {
-                treasurePoint = null;
-            }
-
-            treasurePoint = visibleTurns.get(newViewIndex.intValue()).getTreasureLocation();
-            searcherPoint = visibleTurns.get(newViewIndex.intValue()).getSearchPath().getLastPoint();
-            drawNavigatorCanvas();
-        };
-        gameManager.getViewIndex().addListener(viewListener);
-        viewListener.changed(null, null, 0);
+        searcherProperty.bind(Bindings.createObjectBinding(
+                () -> gameManager.getVisibleTurns().get(gameManager.getViewIndex().intValue()).getSearchPath().getLastPoint(),
+                gameManager.getViewIndex()
+        ));
+        treasureProperty.bind(Bindings.createObjectBinding(
+                () -> gameManager.getVisibleTurns().get(gameManager.getViewIndex().intValue()).getTreasureLocation(),
+                gameManager.getViewIndex()
+        ));
     }
 
     private void navigatorCanvasBindings() {
@@ -151,18 +141,29 @@ public class NavigatorController {
                 transformation.getOffsetProperty()
                 )
                         .divide(transformation.getScaleProperty())
-                        .divide(PointTransformation.INITIAL_SCALE)
-                        .multiply(SCALE_FACTOR)
-                        .add(navigatorCanvas.heightProperty().divide(2))
+                .divide(PointTransformation.INITIAL_SCALE)
+                .multiply(SCALE_FACTOR)
+                .add(navigatorCanvas.heightProperty().divide(2))
         );
+
         transformation.getOffsetProperty().addListener(observable -> drawNavigatorCanvas());
         canvas.widthProperty().addListener(observable -> drawNavigatorCanvas());
         transformation.getScaleProperty().addListener(observable -> drawNavigatorCanvas());
         wrapper.widthProperty().addListener(observable -> drawNavigatorCanvas());
+        treasureProperty.addListener(observable -> drawNavigatorCanvas());
+        searcherProperty.addListener(observable -> drawNavigatorCanvas());
 
         final AtomicReference<Vector2D> offset = new AtomicReference<>(null);
         final AtomicReference<Vector2D> dragStart = new AtomicReference<>(null);
         AtomicBoolean isOffsetAtomic = new AtomicBoolean(!SettingsService.getInstance().getSettings().isMiniMapDragged());
+
+        navigatorCanvas.setOnMouseReleased(event -> {
+            final Vector2D release = Vector2D.create(event.getX(), event.getY());
+            boolean clicked = release.distance(dragStart.get()) < 1e-10;
+            if (clicked) {
+                setOffset(event.getX(), event.getY());
+            }
+        });
 
         navigatorCanvas.setOnMousePressed(event -> {
             isOffsetAtomic.set(!SettingsService.getInstance().getSettings().isMiniMapDragged());
@@ -239,13 +240,13 @@ public class NavigatorController {
         context.strokeLine(0, height / 2, width, height / 2);
         context.strokeLine(width / 2, 0, width / 2, height);
 
-        if (treasurePoint != null) {
-            final Point2D treasure = transform(treasurePoint);
+        if (treasureProperty.isNotNull().get()) {
+            final Point2D treasure = transform(treasureProperty.get());
             context.setFill(Color.RED);
             context.fillOval(treasure.getX() - 1, treasure.getY() - 1, 3, 3);
         }
-        if (searcherPoint != null) {
-            final Point2D treasure = transform(searcherPoint);
+        if (searcherProperty.isNotNull().get()) {
+            final Point2D treasure = transform(searcherProperty.get());
             context.setFill(Color.GREEN);
             context.fillOval(treasure.getX() - 1, treasure.getY() - 1, 3, 3);
         }
