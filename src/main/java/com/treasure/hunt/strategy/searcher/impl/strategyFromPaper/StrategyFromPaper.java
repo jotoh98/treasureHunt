@@ -243,39 +243,39 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         // assert if the current rectangle ABCD lies in the rectangle of the current phase
         Coordinate[] rect = currentPhaseRectangle();
         if (
-                !doubleEqual(searchAreaCornerA.getX(), rect[0].getX()) && searchAreaCornerA.getX() < rect[0].getX() ||
-                        !doubleEqual(searchAreaCornerA.getX(), rect[1].getX())
+                !doubleEqualApproximately(searchAreaCornerA.getX(), rect[0].getX()) && searchAreaCornerA.getX() < rect[0].getX() ||
+                        !doubleEqualApproximately(searchAreaCornerA.getX(), rect[1].getX())
                                 && searchAreaCornerA.getX() > rect[1].getX() ||
-                        !doubleEqual(searchAreaCornerA.getY(), rect[0].getY())
+                        !doubleEqualApproximately(searchAreaCornerA.getY(), rect[0].getY())
                                 && searchAreaCornerA.getY() > rect[0].getY() ||
-                        !doubleEqual(searchAreaCornerA.getY(), rect[2].getY())
+                        !doubleEqualApproximately(searchAreaCornerA.getY(), rect[2].getY())
                                 && searchAreaCornerA.getY() < rect[2].getY() ||
 
-                        !doubleEqual(searchAreaCornerB.getX(), rect[0].getX())
+                        !doubleEqualApproximately(searchAreaCornerB.getX(), rect[0].getX())
                                 && searchAreaCornerB.getX() < rect[0].getX() ||
-                        !doubleEqual(searchAreaCornerB.getX(), rect[1].getX())
+                        !doubleEqualApproximately(searchAreaCornerB.getX(), rect[1].getX())
                                 && searchAreaCornerB.getX() > rect[1].getX() ||
-                        !doubleEqual(searchAreaCornerB.getY(), rect[0].getY())
+                        !doubleEqualApproximately(searchAreaCornerB.getY(), rect[0].getY())
                                 && searchAreaCornerB.getY() > rect[0].getY() ||
-                        !doubleEqual(searchAreaCornerB.getY(), rect[2].getY())
+                        !doubleEqualApproximately(searchAreaCornerB.getY(), rect[2].getY())
                                 && searchAreaCornerB.getY() < rect[2].getY() ||
 
-                        !doubleEqual(searchAreaCornerC.getX(), rect[0].getX())
+                        !doubleEqualApproximately(searchAreaCornerC.getX(), rect[0].getX())
                                 && searchAreaCornerC.getX() < rect[0].getX() ||
-                        !doubleEqual(searchAreaCornerC.getX(), rect[1].getX())
+                        !doubleEqualApproximately(searchAreaCornerC.getX(), rect[1].getX())
                                 && searchAreaCornerC.getX() > rect[1].getX() ||
-                        !doubleEqual(searchAreaCornerC.getY(), rect[0].getY())
+                        !doubleEqualApproximately(searchAreaCornerC.getY(), rect[0].getY())
                                 && searchAreaCornerC.getY() > rect[0].getY() ||
-                        !doubleEqual(searchAreaCornerC.getY(), rect[2].getY())
+                        !doubleEqualApproximately(searchAreaCornerC.getY(), rect[2].getY())
                                 && searchAreaCornerC.getY() < rect[2].getY() ||
 
-                        !doubleEqual(searchAreaCornerD.getX(), rect[0].getX())
+                        !doubleEqualApproximately(searchAreaCornerD.getX(), rect[0].getX())
                                 && searchAreaCornerD.getX() < rect[0].getX() ||
-                        !doubleEqual(searchAreaCornerD.getX(), rect[1].getX())
+                        !doubleEqualApproximately(searchAreaCornerD.getX(), rect[1].getX())
                                 && searchAreaCornerD.getX() > rect[1].getX() ||
-                        !doubleEqual(searchAreaCornerD.getY(), rect[0].getY())
+                        !doubleEqualApproximately(searchAreaCornerD.getY(), rect[0].getY())
                                 && searchAreaCornerD.getY() > rect[0].getY() ||
-                        !doubleEqual(searchAreaCornerD.getY(), rect[2].getY())
+                        !doubleEqualApproximately(searchAreaCornerD.getY(), rect[2].getY())
                                 && searchAreaCornerD.getY() < rect[2].getY()
         ) {
             throw new AssertionError(
