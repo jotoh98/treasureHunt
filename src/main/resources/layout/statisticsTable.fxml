@@ -3,6 +3,8 @@
 <?import com.treasure.hunt.view.custom.CoinProgress?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.String?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" id="statisticsTable" maxHeight="-Infinity" maxWidth="Infinity"
@@ -17,8 +19,16 @@
                 <Label minWidth="-Infinity" text="Max. steps:"/>
                 <Spinner fx:id="maxStepsSpinner"/>
                 <Button fx:id="runMultipleButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSeriesRun"
-                        text="Run"/>
-
+                        styleClass="iconButton">
+                    <graphic>
+                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                   preserveRatio="true">
+                            <image>
+                                <Image url="/images/icon/play.png" backgroundLoading="true"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
                 <CoinProgress fx:id="progressIndicator" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
                               minWidth="-Infinity" prefHeight="30" prefWidth="30.0" progress="0.0" visible="false">
                     <HBox.margin>

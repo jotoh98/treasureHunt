@@ -294,6 +294,17 @@
     -fx-background-color: DARKER_BACKGROUND;
 }
 
+.iconButton {
+    -fx-padding: 3pt 5pt !important;
+    -fx-content-display: graphic-only;
+    -fx-graphic-text-gap: 0;
+}
+
+.iconButton:hover,
+.iconButton:pressed {
+    -fx-background-color: LIGHTER_BACKGROUND;
+}
+
 .combo-box,
 .spinner {
     -fx-border-width: .5pt;
