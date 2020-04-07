@@ -234,64 +234,12 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     }
 
     protected SearchPath returnHandling(SearchPath move) {
-        Coordinate[] curCoords = new Coordinate[4];
-        curCoords[0] = searchAreaCornerA.getCoordinate();
-        curCoords[1] = searchAreaCornerB.getCoordinate();
-        curCoords[2] = searchAreaCornerC.getCoordinate();
-        curCoords[3] = searchAreaCornerD.getCoordinate();
+        Coordinate[] currentCoordinates = new Coordinate[4];
+        currentCoordinates[0] = searchAreaCornerA.getCoordinate();
+        currentCoordinates[1] = searchAreaCornerB.getCoordinate();
+        currentCoordinates[2] = searchAreaCornerC.getCoordinate();
+        currentCoordinates[3] = searchAreaCornerD.getCoordinate();
 
-        // assert if the current rectangle ABCD lies in the rectangle of the current phase
-        Coordinate[] rect = currentPhaseRectangle();
-        if (
-                !doubleEqualApproximately(searchAreaCornerA.getX(), rect[0].getX()) && searchAreaCornerA.getX() < rect[0].getX() ||
-                        !doubleEqualApproximately(searchAreaCornerA.getX(), rect[1].getX())
-                                && searchAreaCornerA.getX() > rect[1].getX() ||
-                        !doubleEqualApproximately(searchAreaCornerA.getY(), rect[0].getY())
-                                && searchAreaCornerA.getY() > rect[0].getY() ||
-                        !doubleEqualApproximately(searchAreaCornerA.getY(), rect[2].getY())
-                                && searchAreaCornerA.getY() < rect[2].getY() ||
-
-                        !doubleEqualApproximately(searchAreaCornerB.getX(), rect[0].getX())
-                                && searchAreaCornerB.getX() < rect[0].getX() ||
-                        !doubleEqualApproximately(searchAreaCornerB.getX(), rect[1].getX())
-                                && searchAreaCornerB.getX() > rect[1].getX() ||
-                        !doubleEqualApproximately(searchAreaCornerB.getY(), rect[0].getY())
-                                && searchAreaCornerB.getY() > rect[0].getY() ||
-                        !doubleEqualApproximately(searchAreaCornerB.getY(), rect[2].getY())
-                                && searchAreaCornerB.getY() < rect[2].getY() ||
-
-                        !doubleEqualApproximately(searchAreaCornerC.getX(), rect[0].getX())
-                                && searchAreaCornerC.getX() < rect[0].getX() ||
-                        !doubleEqualApproximately(searchAreaCornerC.getX(), rect[1].getX())
-                                && searchAreaCornerC.getX() > rect[1].getX() ||
-                        !doubleEqualApproximately(searchAreaCornerC.getY(), rect[0].getY())
-                                && searchAreaCornerC.getY() > rect[0].getY() ||
-                        !doubleEqualApproximately(searchAreaCornerC.getY(), rect[2].getY())
-                                && searchAreaCornerC.getY() < rect[2].getY() ||
-
-                        !doubleEqualApproximately(searchAreaCornerD.getX(), rect[0].getX())
-                                && searchAreaCornerD.getX() < rect[0].getX() ||
-                        !doubleEqualApproximately(searchAreaCornerD.getX(), rect[1].getX())
-                                && searchAreaCornerD.getX() > rect[1].getX() ||
-                        !doubleEqualApproximately(searchAreaCornerD.getY(), rect[0].getY())
-                                && searchAreaCornerD.getY() > rect[0].getY() ||
-                        !doubleEqualApproximately(searchAreaCornerD.getY(), rect[2].getY())
-                                && searchAreaCornerD.getY() < rect[2].getY()
-        ) {
-            throw new AssertionError(
-                    "The current rectangle is not inside the current phases rectangle.\n" +
-                            "phaseRect:\n" +
-                            rect[0].toString() + "\n" +
-                            rect[1].toString() + "\n" +
-                            rect[2].toString() + "\n" +
-                            rect[3].toString() + "\n" +
-                            "ABCD:\n"
-                            + Arrays.toString(searchAreaCornerA.getCoordinates()) + "\n"
-                            + Arrays.toString(searchAreaCornerB.getCoordinates()) + "\n"
-                            + Arrays.toString(searchAreaCornerC.getCoordinates()) + "\n"
-                            + Arrays.toString(searchAreaCornerD.getCoordinates())
-            );
-        }
         //add hints
         if (currentHint != null) {
             move.addAdditionalItem(new GeometryItem<>(currentHint.getHalfPlaneTheTreasureIsNotIn(),
@@ -302,7 +250,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                     GeometryType.HALF_PLANE_BEFORE_PREVIOUS_LIGHT_BROWN));
         }
         lastPosition = move.getLastPoint();
-        return addState(move, curCoords, currentPhaseRectangle());
+        return addState(move, currentCoordinates, currentPhaseRectangle());
     }
 
     /**
