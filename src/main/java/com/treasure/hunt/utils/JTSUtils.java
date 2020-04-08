@@ -404,7 +404,7 @@ public final class JTSUtils {
      * defined be the paper in the context of the specified rectangle
      *
      * @param rectangle the rectangle as {@link Polygon}
-     * @param angleHint the {@link AngleHint}
+     * @param hint the {@link AngleHint}
      * @return {@code true} if the given {@code angleHint} is a bad hint, related on the {@link StrategyFromPaper}.
      * {@code false} otherwise.
      */
