@@ -208,11 +208,12 @@ public class GameField {
 
         log.trace("possible area has " + possibleArea.getObject().getNumGeometries() +"geoms");
         Collection<Geometry> geomCollection = new ArrayList<>();
-
+        geomCollection.add(possibleArea.getObject().getGeometryN(0).difference(checkedPoly));
         // difference operation separately
-        for(int geom = 0; geom < possibleArea.getObject().getNumGeometries(); geom++){
+        for(int geom = 1; geom < possibleArea.getObject().getNumGeometries(); geom++){
             geomCollection.add(possibleArea.getObject().getGeometryN(geom).difference(checkedPoly));
         }
+
         //union as one
         Geometry possible = UnaryUnionOp.union(geomCollection, JTSUtils.GEOMETRY_FACTORY);
 

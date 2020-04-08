@@ -135,8 +135,8 @@ public abstract class StatisticalHider {
 
         AngleHintStatistic returnHint = stats.get(0);
 
-        log.info("angleHint with the best rating");
-        log.info(returnHint.toString());
+        log.trace("angleHint with the best rating");
+        log.trace(returnHint.toString());
 
         //add some status information
         String possibleAreaPretty = new DecimalFormat("#.00").format(returnHint.getAreaAfterHint().getArea());
@@ -206,7 +206,7 @@ public abstract class StatisticalHider {
     /**
      * Filters the given {@link AngleHint}s on the predicate of being able to see
      *
-     * @param angleHintStatistics the list of {@link AngleHintStatistic}s to filter
+     * @param stats the list of {@link AngleHintStatistic}s to filter
      * @return a list of valid {@link AngleHintStatistic}s
      */
     protected List<AngleHintStatistic> filterForValidHints(List<AngleHintStatistic> stats) {
@@ -249,7 +249,7 @@ public abstract class StatisticalHider {
 
 
         } else {
-            log.info("generating " + samples + " hints of size " + PreferenceService.getInstance().getPreference(PreferenceService.HintSize_Preference, 180).doubleValue());
+            log.trace("generating " + samples + " hints of size " + PreferenceService.getInstance().getPreference(PreferenceService.HintSize_Preference, 180).doubleValue());
 
             for (int i = 0; i < samples; i++) {
                 double rightAngle = twoPi * (((double) i) / samples);
