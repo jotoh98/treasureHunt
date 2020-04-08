@@ -7,7 +7,6 @@ import org.locationtech.jts.geom.Point;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,12 +16,13 @@ import java.util.stream.Collectors;
  * @author Trostorff, Daniel
  */
 public class Statistic {
-    private List<Turn> turns;
+    private List<Turn> lastTurn;
+    private Double lastMaxSolutionQuotient;
 
     /**
      * @return The length of the trace, the {@link com.treasure.hunt.strategy.searcher.Searcher} ran yet.
      */
-    public double getTraceLength() {
+    public double getTraceLength(final List<Turn> turns) {
         return turns.stream()
                 .map(Turn::getSearchPath)
                 .mapToDouble(SearchPath::getLength)
@@ -37,37 +37,37 @@ public class Statistic {
      *
      * @return locally optimal trace length
      */
-    public double getLocalOptimalSolution() {
-        double remainder = getLastTurn()
+    public double getLocalOptimalSolution(final List<Turn> turns) {
+        double remainder = getLastTurn(turns)
                 .getSearchPath()
                 .getLastPoint()
-                .distance(getLastTurn().getTreasureLocation());
-        return getTraceLength() + remainder;
+                .distance(getLastTurn(turns).getTreasureLocation());
+        return getTraceLength(turns) + remainder;
     }
 
-    private Turn getLastTurn() {
+    private Turn getLastTurn(final List<Turn> turns) {
         return turns.get(turns.size() - 1);
     }
 
     /**
      * @return The {@link Point} where the {@link com.treasure.hunt.strategy.searcher.Searcher} stood initially.
      */
-    public Point getGlobalStartPoint() {
+    public Point getGlobalStartPoint(final List<Turn> turns) {
         return turns.get(0).getSearchPath().getFirstPoint();
     }
 
     /**
      * @return the {@link Point}, where the treasure is located.
      */
-    public Point getTreasureLocation() {
-        return getLastTurn().getTreasureLocation();
+    public Point getTreasureLocation(final List<Turn> turns) {
+        return getLastTurn(turns).getTreasureLocation();
     }
 
     /**
      * @return the distance of the beeline between the {@link com.treasure.hunt.strategy.searcher.Searcher}'s initial position and the treasure location.
      */
-    public double getGlobalOptimalSolution() {
-        return getGlobalStartPoint().distance(getTreasureLocation());
+    public double getGlobalOptimalSolution(final List<Turn> turns) {
+        return getGlobalStartPoint(turns).distance(getTreasureLocation(turns));
     }
 
     /**
@@ -76,30 +76,50 @@ public class Statistic {
      *
      * @return solution quotient
      */
-    public double getSolutionQuotient() {
-        return getLocalOptimalSolution() / getGlobalOptimalSolution();
+    public double getSolutionQuotient(final List<Turn> turns) {
+        return getLocalOptimalSolution(turns) / getGlobalOptimalSolution(turns);
+    }
+
+    /**
+     * Calculate the solution quotient.
+     * This is the quotient between the local and the global trace length optimum.
+     *
+     * @return solution quotient
+     */
+    public double getMaxSolutionQuotientOverTime(final List<Turn> turns) {
+        double maxSolutionQuotient = 0;
+        if (lastTurn != null && lastTurn.size() == turns.size() - 1) {
+            maxSolutionQuotient = Math.max(lastMaxSolutionQuotient, getSolutionQuotient(turns));
+
+        } else {
+            for (int i = 0; i < turns.size(); i++) {
+                maxSolutionQuotient = Math.max(maxSolutionQuotient, getSolutionQuotient(turns.subList(0, i + 1)));
+            }
+        }
+        lastMaxSolutionQuotient = maxSolutionQuotient;
+        return maxSolutionQuotient;
     }
 
     /**
      * @return The number of {@link com.treasure.hunt.strategy.hint.Hint}'s, the {@link com.treasure.hunt.strategy.searcher.Searcher} got yet.
      */
-    public int getHintRequests() {
-        if (turns.size() > 1 && getLastTurn().getHint() == null) {
+    public int getHintRequests(final List<Turn> turns) {
+        if (turns.size() > 1 && getLastTurn(turns).getHint() == null) {
             return turns.size() - 2;
         }
         return turns.size() - 1;
     }
 
     /**
-     * @return {@link Statistic#getHintRequests()}/{@link Statistic#getTraceLength()}, when {@link Statistic#getTraceLength()} != 0.
+     * @return {@link Statistic#getHintRequests(List)}/{@link Statistic#getTraceLength(List)}, when {@link Statistic#getTraceLength(List)} != 0.
      * Otherwise {@code 1}.
      */
-    public double getHintTraceLengthRatio() {
-        final double traceLength = getTraceLength();
+    public double getHintTraceLengthRatio(final List<Turn> turns) {
+        final double traceLength = getTraceLength(turns);
         if (traceLength == 0) {
             return 1;
         }
-        return getHintRequests() / traceLength;
+        return getHintRequests(turns) / traceLength;
     }
 
     public static List<Number> filterBy(List<StatisticsWithId> list, StatisticObject.StatisticInfo info) {
@@ -122,19 +142,17 @@ public class Statistic {
      * @return A list, containing {@link StatisticObject}'s.
      */
     public List<StatisticObject> calculate(List<Turn> turns, boolean finished) {
-        this.turns = new ArrayList<>(turns);
-        if (this.turns.size() < 1) {
-            return Collections.emptyList();
-        }
         ArrayList<StatisticObject> statisticObjects = new ArrayList<>(Arrays.asList(
-                new StatisticObject(StatisticObject.StatisticInfo.TRACE_LENGTH, getTraceLength()),
-                new StatisticObject(StatisticObject.StatisticInfo.LOCAL_OPTIMUM, getLocalOptimalSolution()),
-                new StatisticObject(StatisticObject.StatisticInfo.SOLUTION_QUOTIENT, getSolutionQuotient()),
-                new StatisticObject(StatisticObject.StatisticInfo.HINT_REQUEST, getHintRequests()),
-                new StatisticObject(StatisticObject.StatisticInfo.HINT_TRACE_LENGTH_RATION, getHintTraceLengthRatio()),
-                new StatisticObject(StatisticObject.StatisticInfo.OPTIMAL_SOLUTION, getGlobalOptimalSolution()),
+                new StatisticObject(StatisticObject.StatisticInfo.TRACE_LENGTH, getTraceLength(turns)),
+                new StatisticObject(StatisticObject.StatisticInfo.LOCAL_OPTIMUM, getLocalOptimalSolution(turns)),
+                new StatisticObject(StatisticObject.StatisticInfo.SOLUTION_QUOTIENT, getSolutionQuotient(turns)),
+                new StatisticObject(StatisticObject.StatisticInfo.HINT_REQUEST, getHintRequests(turns)),
+                new StatisticObject(StatisticObject.StatisticInfo.HINT_TRACE_LENGTH_RATION, getHintTraceLengthRatio(turns)),
+                new StatisticObject(StatisticObject.StatisticInfo.OPTIMAL_SOLUTION, getGlobalOptimalSolution(turns)),
+                new StatisticObject(StatisticObject.StatisticInfo.MAX_SOLUTION_QUOTIENT_OVER_TIME, getMaxSolutionQuotientOverTime(turns)),
                 new StatisticObject(StatisticObject.StatisticInfo.FINISHED_AND_FOUND, finished ? 1 : 0)
         ));
+        this.lastTurn = new ArrayList<>(turns);
         PreferenceService.getInstance()
                 .getPreferences()
                 .forEach((key, value) -> statisticObjects.add(new StatisticObject(new StatisticObject.StatisticInfo(key, "Imported from preferences", Number.class), value)));

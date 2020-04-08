@@ -37,6 +37,9 @@ public class StatisticObject {
         public static final StatisticInfo OPTIMAL_SOLUTION = new StatisticInfo("Optimal solution",
                 "The euclidean distance between treasure and searchers start position.",
                 Double.class);
+        public static final StatisticInfo MAX_SOLUTION_QUOTIENT_OVER_TIME = new StatisticInfo("Max solution quotient over time",
+                "The euclidean distance between treasure and searchers start position.",
+                Double.class);
         public static final StatisticInfo FINISHED_AND_FOUND = new StatisticInfo("Treasure found",
                 "Is one if the searcher found the treasure and 0 if not.",
                 Double.class);
