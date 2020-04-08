@@ -20,6 +20,8 @@ import static org.locationtech.jts.algorithm.Angle.interiorAngle;
  * @author dorianreineccius
  */
 @Preference(name = PreferenceService.MAX_TREASURE_DISTANCE, value = 100)
+@Preference(name = PreferenceService.MIN_TREASURE_DISTANCE, value = 100)
+@Preference(name = PreferenceService.TREASURE_DISTANCE, value = 100)
 @Preference(name = PreferenceService.ANGLE_UPPER_BOUND, value = 2 * Math.PI)
 @Preference(name = PreferenceService.ANGLE_LOWER_BOUND, value = Math.PI)
 public class RandomAngleHintHider implements Hider<AngleHint> {
