@@ -31,9 +31,10 @@ import java.util.stream.Collectors;
 @Slf4j
 public abstract class StatisticalHider {
 
-    public static final String getRelativeAreaCutoffWeight_Preference = "relative area cutoff weight";
+    public static final String relativeAreaCutoffWeight_Preference = "relative area cutoff weight";
     public static final String DistanceFromNormalAngleLineToTreasureWeight_Preference = "distance to angle bisector line weight";
     public static final String DistanceFromResultingCentroidToTreasureWeight_Preference = "distance to centroid weight";
+    public static final String badHintWeight_Preference = "bad Hint for StrategyFromPaper weight";
 
 
     protected GameField gameField;
@@ -74,11 +75,14 @@ public abstract class StatisticalHider {
         // generate Hints
         List<AngleHint> possibleHints = generateHints(360, searchPath.getLastPoint());
 
-        // evaluateHints --> use the GameField
+        // evaluateHints
         AngleHint hint = eval(possibleHints, searchPath);
+
 
         // commitHint
         gameField.commitHint(hint);
+
+
         this.currentPossibleArea = gameField.getPossibleArea();
         // return Hint
         return hint;
@@ -96,14 +100,13 @@ public abstract class StatisticalHider {
 
         List<AngleHintStatistic> stats = new ArrayList<>();
         Geometry before = this.currentPossibleArea;
-        log.info("current possibleArea size " + before.getArea());
+        log.trace("current possibleArea size " + before.getArea());
 
         // if playing against StrategyFromPaper try giving bad hints
         List<GeometryItem<?>> geometryItems = searchPath.getAdditional();
         Polygon currentRectangle = null;
 
         try {
-
             GeometryItem<Polygon> currentRectangleGeometryItem = (GeometryItem<Polygon>) geometryItems.stream().filter(item -> item.getGeometryType().getDisplayName().equals("current rectangle")).findFirst().get();
             currentRectangle = currentRectangleGeometryItem.getObject();
         } catch (Exception e) {
@@ -119,7 +122,7 @@ public abstract class StatisticalHider {
             //calc some Statistics
             fillDistanceToNormalLine(hs);
             fillDistanceToCentroid(hs);
-            JTSUtils.isBadHint(currentRectangle, hint);
+            hs.setBadHint(JTSUtils.isBadHint(currentRectangle, hint));
 
             stats.add(hs);
             rateHint(hs);
@@ -132,8 +135,8 @@ public abstract class StatisticalHider {
 
         AngleHintStatistic returnHint = stats.get(0);
 
-        log.info("angleHint with the best rating");
-        log.info(returnHint.toString());
+        log.trace("angleHint with the best rating");
+        log.trace(returnHint.toString());
 
         //add some status information
         String possibleAreaPretty = new DecimalFormat("#.00").format(returnHint.getAreaAfterHint().getArea());
@@ -147,6 +150,9 @@ public abstract class StatisticalHider {
 
         String bisectorDistPretty = new DecimalFormat("#.00").format(returnHint.getDistanceFromNormalAngleLineToTreasure());
         returnHint.getHint().getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.DISTANCE_ANGLE_BISECTOR_TREASURE, bisectorDistPretty));
+
+        String hintRatingPretty = new DecimalFormat("#.00").format(returnHint.getRating());
+        returnHint.getHint().getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.OVERALL_HINT_RATING, hintRatingPretty));
 
         return returnHint.getHint();
     }
@@ -196,17 +202,18 @@ public abstract class StatisticalHider {
         return dist;
     }
 
+
     /**
      * Filters the given {@link AngleHint}s on the predicate of being able to see
      *
-     * @param angleHintStatistics the list of {@link AngleHintStatistic}s to filter
+     * @param stats the list of {@link AngleHintStatistic}s to filter
      * @return a list of valid {@link AngleHintStatistic}s
      */
-    protected List<AngleHintStatistic> filterForValidHints(List<AngleHintStatistic> angleHintStatistics) {
+    protected List<AngleHintStatistic> filterForValidHints(List<AngleHintStatistic> stats) {
 
-        angleHintStatistics = angleHintStatistics.stream().filter(hint -> hint.getHint().getGeometryAngle().inView(treasure.getCoordinate())).collect(Collectors.toList());
-        log.debug("remaining possible Hints" + angleHintStatistics.size()); // hint: its always half the amount
-        return angleHintStatistics;
+        stats = stats.stream().filter(hint -> hint.getHint().getGeometryAngle().inView(treasure.getCoordinate())).collect(Collectors.toList());
+        log.trace("remaining possible Hints" + stats.size()); // hint: its always half the amount
+        return stats;
     }
 
     /**
@@ -242,7 +249,7 @@ public abstract class StatisticalHider {
 
 
         } else {
-            log.info("generating " + samples + " hints of size " + PreferenceService.getInstance().getPreference(PreferenceService.HintSize_Preference, 180).doubleValue());
+            log.trace("generating " + samples + " hints of size " + PreferenceService.getInstance().getPreference(PreferenceService.HintSize_Preference, 180).doubleValue());
 
             for (int i = 0; i < samples; i++) {
                 double rightAngle = twoPi * (((double) i) / samples);

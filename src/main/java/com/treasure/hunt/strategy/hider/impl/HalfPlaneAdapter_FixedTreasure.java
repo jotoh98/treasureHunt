@@ -14,10 +14,12 @@ import org.locationtech.jts.geom.Point;
  */
 @Preference(name = PreferenceService.HintSize_Preference, value = 180)
 @Preference(name = GameField.CircleExtension_Preference, value = 0)
-@Preference(name = StatisticalHider.getRelativeAreaCutoffWeight_Preference, value = 10)
+@Preference(name = PreferenceService.TREASURE_DISTANCE, value = 100)
+@Preference(name = StatisticalHider.relativeAreaCutoffWeight_Preference, value = 10)
 @Preference(name = StatisticalHider.DistanceFromNormalAngleLineToTreasureWeight_Preference, value = 1)
 @Preference(name = StatisticalHider.DistanceFromResultingCentroidToTreasureWeight_Preference, value = 3)
-@Preference(name = PreferenceService.MAX_TREASURE_DISTANCE, value = 100)
+@Preference(name = PreferenceService.MAX_TREASURE_DISTANCE, value = 300)
+@Preference(name = MobileTreasureHider.badHintWeight_Preference, value = 15)
 public class HalfPlaneAdapter_FixedTreasure implements Hider<HalfPlaneHint> {
 
     private FixedTreasureHider adaptee;

@@ -404,20 +404,20 @@ public final class JTSUtils {
      * defined be the paper in the context of the specified rectangle
      *
      * @param rectangle the rectangle as {@link Polygon}
-     * @param angleHint the {@link AngleHint}
+     * @param hint the {@link AngleHint}
      * @return {@code true} if the given {@code angleHint} is a bad hint, related on the {@link StrategyFromPaper}.
      * {@code false} otherwise.
      */
-    public static boolean isBadHint(Polygon rectangle, AngleHint angleHint) {
-        if (!(angleHint instanceof HalfPlaneHint)) {
-            log.debug("can't be a bad hint,, only HalfPlaneHints can be bad hints");
+    public static boolean isBadHint(Polygon rectangle, AngleHint hint) {
+        if (!(hint instanceof HalfPlaneHint)) {
+            log.trace("can't be a bad hint,, only HalfPlaneHints can be bad hints");
             EventBusUtils.LOG_LABEL_EVENT.trigger("Supplied hint is not a halfplane: Are you playing with a HalfPlaneHint hider?");
             return false;
         }
 
         if (rectangle == null || !rectangle.isRectangle()) {
             EventBusUtils.LOG_LABEL_EVENT.trigger("Supplied polyon is not a rectangle: Are you playing against StrategyFromPaper?");
-            log.debug("can't be a bad hint, specified polygon is not a rectangle");
+            log.trace("can't be a bad hint, specified polygon is not a rectangle");
             return false;
         }
 
@@ -427,9 +427,9 @@ public final class JTSUtils {
         }
         Coordinate centroid = GeometricUtils.centerOfRectangle(rectangleCoordinates);
         log.trace("centroid" + centroid);
-        log.trace("player" + angleHint.getGeometryAngle().getCenter());
-        if (!centroid.equals2D(angleHint.getGeometryAngle().getCenter())) {
-            log.debug("can't be a bad hint, player is not in center of current rectangle");
+        log.trace("player" + hint.getGeometryAngle().getCenter());
+        if (!centroid.equals2D(hint.getGeometryAngle().getCenter())) {
+            log.trace("can't be a bad hint, player is not in center of current rectangle");
             return false;
         }
 
@@ -441,7 +441,7 @@ public final class JTSUtils {
         // one of them has the intersection, sometimes both if the Line goes on the diagonal of the rectangle
         LineSegment top = new LineSegment(topLeft, topRight);
         LineSegment left = new LineSegment(bottomLeft, topLeft);
-        LineSegment hintLineSegment = new LineSegment(angleHint.getGeometryAngle().getCenter(), angleHint.getGeometryAngle().getRight());
+        LineSegment hintLineSegment = new LineSegment(hint.getGeometryAngle().getCenter(), hint.getGeometryAngle().getRight());
 
         double length_y = 1; // distance y from paper paper (page 5)
 
@@ -452,12 +452,12 @@ public final class JTSUtils {
 
             // topleft
             if (topIntersect.x >= topLeft.x && topIntersect.x <= topLeft.x + length_y) {
-                log.debug("bad hint: top edge, left side");
+                log.trace("bad hint: top edge, left side");
                 return true;
             }
             // top right
             if (topIntersect.x <= topRight.x && topIntersect.x >= topRight.x - length_y) {
-                log.debug("bad hint: top edge, right side");
+                log.trace("bad hint: top edge, right side");
                 return true;
             }
         }
@@ -469,17 +469,17 @@ public final class JTSUtils {
 
             // left top
             if (leftIntersect.y >= topLeft.y - length_y && leftIntersect.y <= topLeft.y) {
-                log.debug("bad hint:  left edge, top side");
+                log.trace("bad hint:  left edge, top side");
                 return true;
             }
 
             // left bottom
             if (leftIntersect.y >= bottomLeft.y && leftIntersect.y <= bottomLeft.y + length_y) {
-                log.debug("bad hint:  left edge, bottom side");
+                log.trace("bad hint:  left edge, bottom side");
                 return true;
             }
         }
-        log.debug("good hint");
+        log.trace("good hint");
         return false;
     }
 
