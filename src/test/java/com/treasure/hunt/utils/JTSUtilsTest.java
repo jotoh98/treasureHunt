@@ -12,6 +12,11 @@ import org.locationtech.jts.math.Vector2D;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Various tests for {@link JTSUtils}.
+ *
+ * @author dorianreineccius
+ */
 class JTSUtilsTest {
 
     private Coordinate C = new Coordinate(0, 0),

@@ -6,6 +6,11 @@ import org.locationtech.jts.geom.Coordinate;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Tests for the class {@link Circle}
+ *
+ * @author dorianreineccius
+ */
 public class CircleTest {
 
     /**
