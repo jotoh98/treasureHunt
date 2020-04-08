@@ -14,7 +14,6 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.treasure.hunt.strategy.geom.GeometryType.*;
@@ -23,7 +22,8 @@ import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.Geometr
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.rectangleScan;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StatusMessages.explainingStrategyMessage;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StatusMessages.visualisationMessage;
-import static com.treasure.hunt.utils.JTSUtils.*;
+import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
+import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
 
 /**
  * This strategy implements the strategy from the paper "Deterministic Treasure Hunt in the Plane with Angular Hints"
@@ -234,64 +234,12 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     }
 
     protected SearchPath returnHandling(SearchPath move) {
-        Coordinate[] curCoords = new Coordinate[4];
-        curCoords[0] = searchAreaCornerA.getCoordinate();
-        curCoords[1] = searchAreaCornerB.getCoordinate();
-        curCoords[2] = searchAreaCornerC.getCoordinate();
-        curCoords[3] = searchAreaCornerD.getCoordinate();
+        Coordinate[] currentCoordinates = new Coordinate[4];
+        currentCoordinates[0] = searchAreaCornerA.getCoordinate();
+        currentCoordinates[1] = searchAreaCornerB.getCoordinate();
+        currentCoordinates[2] = searchAreaCornerC.getCoordinate();
+        currentCoordinates[3] = searchAreaCornerD.getCoordinate();
 
-        // assert if the current rectangle ABCD lies in the rectangle of the current phase
-        Coordinate[] rect = currentPhaseRectangle();
-        if (
-                !doubleEqual(searchAreaCornerA.getX(), rect[0].getX()) && searchAreaCornerA.getX() < rect[0].getX() ||
-                        !doubleEqual(searchAreaCornerA.getX(), rect[1].getX())
-                                && searchAreaCornerA.getX() > rect[1].getX() ||
-                        !doubleEqual(searchAreaCornerA.getY(), rect[0].getY())
-                                && searchAreaCornerA.getY() > rect[0].getY() ||
-                        !doubleEqual(searchAreaCornerA.getY(), rect[2].getY())
-                                && searchAreaCornerA.getY() < rect[2].getY() ||
-
-                        !doubleEqual(searchAreaCornerB.getX(), rect[0].getX())
-                                && searchAreaCornerB.getX() < rect[0].getX() ||
-                        !doubleEqual(searchAreaCornerB.getX(), rect[1].getX())
-                                && searchAreaCornerB.getX() > rect[1].getX() ||
-                        !doubleEqual(searchAreaCornerB.getY(), rect[0].getY())
-                                && searchAreaCornerB.getY() > rect[0].getY() ||
-                        !doubleEqual(searchAreaCornerB.getY(), rect[2].getY())
-                                && searchAreaCornerB.getY() < rect[2].getY() ||
-
-                        !doubleEqual(searchAreaCornerC.getX(), rect[0].getX())
-                                && searchAreaCornerC.getX() < rect[0].getX() ||
-                        !doubleEqual(searchAreaCornerC.getX(), rect[1].getX())
-                                && searchAreaCornerC.getX() > rect[1].getX() ||
-                        !doubleEqual(searchAreaCornerC.getY(), rect[0].getY())
-                                && searchAreaCornerC.getY() > rect[0].getY() ||
-                        !doubleEqual(searchAreaCornerC.getY(), rect[2].getY())
-                                && searchAreaCornerC.getY() < rect[2].getY() ||
-
-                        !doubleEqual(searchAreaCornerD.getX(), rect[0].getX())
-                                && searchAreaCornerD.getX() < rect[0].getX() ||
-                        !doubleEqual(searchAreaCornerD.getX(), rect[1].getX())
-                                && searchAreaCornerD.getX() > rect[1].getX() ||
-                        !doubleEqual(searchAreaCornerD.getY(), rect[0].getY())
-                                && searchAreaCornerD.getY() > rect[0].getY() ||
-                        !doubleEqual(searchAreaCornerD.getY(), rect[2].getY())
-                                && searchAreaCornerD.getY() < rect[2].getY()
-        ) {
-            throw new AssertionError(
-                    "The current rectangle is not inside the current phases rectangle.\n" +
-                            "phaseRect:\n" +
-                            rect[0].toString() + "\n" +
-                            rect[1].toString() + "\n" +
-                            rect[2].toString() + "\n" +
-                            rect[3].toString() + "\n" +
-                            "ABCD:\n"
-                            + Arrays.toString(searchAreaCornerA.getCoordinates()) + "\n"
-                            + Arrays.toString(searchAreaCornerB.getCoordinates()) + "\n"
-                            + Arrays.toString(searchAreaCornerC.getCoordinates()) + "\n"
-                            + Arrays.toString(searchAreaCornerD.getCoordinates())
-            );
-        }
         //add hints
         if (currentHint != null) {
             move.addAdditionalItem(new GeometryItem<>(currentHint.getHalfPlaneTheTreasureIsNotIn(),
@@ -302,7 +250,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
                     GeometryType.HALF_PLANE_BEFORE_PREVIOUS_LIGHT_BROWN));
         }
         lastPosition = move.getLastPoint();
-        return addState(move, curCoords, currentPhaseRectangle());
+        return addState(move, currentCoordinates, currentPhaseRectangle());
     }
 
     /**
@@ -420,6 +368,7 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * @param C
      * @param D
      * @param hint
+     * @param hintLine
      * @return
      */
     protected Point[] splitRectangleVertically(Point A, Point B, Point C, Point D, HalfPlaneHint hint,

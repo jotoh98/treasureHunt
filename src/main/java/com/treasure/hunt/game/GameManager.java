@@ -185,7 +185,7 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
     /**
      * This simulates the whole game, until its finished.
      *
-     * @param maxSteps the maximum number of steps, which will be simulated.
+     * @param maxSteps the maximum number of steps, which will be simulated
      * @return the {@link CompletableFuture} executing, running {@code maxSteps} times {@link GameManager#next()}.
      */
     public CompletableFuture<Void> beat(Integer maxSteps) {
@@ -194,6 +194,8 @@ public class GameManager implements KryoSerializable, KryoCopyable<GameManager> 
 
     /**
      * This simulates the whole game, until its finished.
+     *
+     * @param maxSteps the maximum number of steps, which will be simulated
      */
     public void beatSync(Integer maxSteps) {
         beatThreadRunning.set(true);
