@@ -297,7 +297,7 @@ extends java.lang.Object</pre>
 <tr id="i16" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isBadHint(org.locationtech.jts.geom.Polygon,com.treasure.hunt.strategy.hint.impl.AngleHint)">isBadHint</a></span>&#8203;(org.locationtech.jts.geom.Polygon&nbsp;rectangle,
-         <a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&nbsp;angleHint)</code></th>
+         <a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&nbsp;hint)</code></th>
 <td class="colLast">
 <div class="block">this function can be called to determine if the specified hint is a bad Hint
  defined be the paper in the context of the specified rectangle</div>
@@ -944,13 +944,13 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>isBadHint</h4>
 <pre class="methodSignature">public static&nbsp;boolean&nbsp;isBadHint&#8203;(org.locationtech.jts.geom.Polygon&nbsp;rectangle,
-                                <a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&nbsp;angleHint)</pre>
+                                <a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&nbsp;hint)</pre>
 <div class="block">this function can be called to determine if the specified hint is a bad Hint
  defined be the paper in the context of the specified rectangle</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>rectangle</code> - the rectangle as <code>Polygon</code></dd>
-<dd><code>angleHint</code> - the <a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a></dd>
+<dd><code>hint</code> - the <a href="../strategy/hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl"><code>AngleHint</code></a></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd><code>true</code> if the given <code>angleHint</code> is a bad hint, related on the <a href="../strategy/searcher/impl/strategyFromPaper/StrategyFromPaper.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper"><code>StrategyFromPaper</code></a>.
  <code>false</code> otherwise.</dd>
