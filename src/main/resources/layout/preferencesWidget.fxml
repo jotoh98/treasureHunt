@@ -2,18 +2,34 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
       xmlns="http://javafx.com/javafx/11.0.1" fx:controller="com.treasure.hunt.view.widget.PreferencesWidgetController">
     <children>
         <HBox alignment="CENTER" minWidth="200.0" spacing="10.0">
-            <Label text="Items:" textOverrun="CLIP"/>
-            <Button onAction="#addItem" text="➕" textOverrun="CLIP">
-                <HBox.margin>
-                    <Insets/>
-                </HBox.margin>
+            <Button onAction="#addItem" textOverrun="CLIP" styleClass="iconButton">
+                <graphic>
+                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                               preserveRatio="true">
+                        <image>
+                            <Image url="/images/icon/plus.png" backgroundLoading="true"/>
+                        </image>
+                    </ImageView>
+                </graphic>
             </Button>
-            <Button alignment="CENTER" mnemonicParsing="false" onAction="#deleteItem" text="🗑" textOverrun="CLIP"/>
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#deleteItem" textOverrun="CLIP"
+                    styleClass="iconButton">
+                <graphic>
+                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                               preserveRatio="true">
+                        <image>
+                            <Image url="/images/icon/trash.png" backgroundLoading="true"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
             <VBox.margin>
                 <Insets/>
             </VBox.margin>
