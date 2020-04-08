@@ -168,6 +168,8 @@ public class StatisticTableController {
 
     public void init(StatisticsWithIdsAndPath statisticsWithIdsAndPath) {
         clearTables();
+        statisticsMeasureHashMap.clear();
+
         path = statisticsWithIdsAndPath.getFile();
         instanceStatisticsTableView.setItems(FXCollections.observableArrayList(statisticsWithIdsAndPath.getStatisticsWithIds()));
 
