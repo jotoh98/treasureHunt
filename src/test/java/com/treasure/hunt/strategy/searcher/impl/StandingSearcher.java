@@ -8,7 +8,7 @@ import org.locationtech.jts.geom.Point;
 /**
  * This test {@link Searcher} just keeps standing on his starting position.
  *
- * @author dorianreineccius
+ * @author Dorian Reineccius
  */
 public class StandingSearcher implements Searcher<Hint> {
 
@@ -20,7 +20,7 @@ public class StandingSearcher implements Searcher<Hint> {
     }
 
     /**
-     * @return an empty {@link SearchPath}.
+     * @return an empty {@link SearchPath}
      */
     @Override
     public SearchPath move() {
@@ -28,7 +28,7 @@ public class StandingSearcher implements Searcher<Hint> {
     }
 
     /**
-     * @return an empty {@link SearchPath}.
+     * @return an empty {@link SearchPath}
      */
     @Override
     public SearchPath move(Hint hint) {

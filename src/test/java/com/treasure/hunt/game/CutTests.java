@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Tests of {@link GameEngine#cutSearchPath(SearchPath, Point)}
  *
- * @author dorianreineccius
+ * @author Dorian Reineccius
  */
 public class CutTests {
     @Test
@@ -51,7 +51,6 @@ public class CutTests {
             gameEngine.move();
         }
         SearchPath lastSearchPath = gameEngine.move().getSearchPath();
-        //System.out.println(lastSearchPath.getPoints());
         assertTrue(gameEngine.finished);
         assertTrue(lastSearchPath.getPoints().get(0).equalsExact(JTSUtils.createPoint(-9, -9), 0));
         assertTrue("lastSearchPath.getPoints().get(1) expected to be (-9, 0), but was " + lastSearchPath.getPoints().get(1), lastSearchPath.getPoints().get(1).equalsExact(JTSUtils.createPoint(-9, 0), 0));

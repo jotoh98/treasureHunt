@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * Tests for {@link JTSUtils#circleLineIntersectionPoints(Point, Point, Point, double)}.
  *
- * @author dorianreineccius
+ * @author Dorian Reineccius
  */
 public class JTSUtilsCircleLineIntersectionPointsTest {
     private Point pointm2um1 = JTSUtils.createPoint(-2, -1);
@@ -41,6 +41,10 @@ public class JTSUtilsCircleLineIntersectionPointsTest {
     private Point pointm9u10 = JTSUtils.createPoint(-9, 10);
     private Point pointm10u0 = JTSUtils.createPoint(-10, 0);
 
+    /**
+     * Tests {@link JTSUtils#circleLineIntersectionPoints(Point, Point, Point, double)}
+     * with no intersections expected.
+     */
     @Test
     public void NoIntersectionPointTest() {
         assertTrue(JTSUtils.circleLineIntersectionPoints(pointm1u2, point1u2, point0u0, 1).size() == 0);
@@ -54,6 +58,10 @@ public class JTSUtilsCircleLineIntersectionPointsTest {
         assertTrue(JTSUtils.circleLineIntersectionPoints(point0um2, pointm2u0, point0u0, 1).size() == 0);
     }
 
+    /**
+     * Tests {@link JTSUtils#circleLineIntersectionPoints(Point, Point, Point, double)}
+     * with one intersections expected.
+     */
     @Test
     public void OneIntersectionPointTest1() {
         assertContains(JTSUtils.circleLineIntersectionPoints(pointm1u1, point1u1, point0u0, 1), point0u1);
@@ -73,42 +81,6 @@ public class JTSUtilsCircleLineIntersectionPointsTest {
         assertContains(JTSUtils.circleLineIntersectionPoints(b, c, point0u0, 1), bc);
         assertContains(JTSUtils.circleLineIntersectionPoints(c, d, point0u0, 1), cd);
         assertContains(JTSUtils.circleLineIntersectionPoints(d, a, point0u0, 1), da);
-    }
-
-    /**
-     * This is generalized version of a scenario, I found while testing the GameEngine.
-     * Solution: Instead of [POINT (-4 0)], we got [POINT (-4 0.0000001), POINT (-4 -0.0000001)] as a consequence of an rounding error.
-     * Instead of [POINT (-5 0)], we got [] as a consequence of an rounding error.
-     */
-    @Test
-    public void generalBuggyScenario() {
-        for (int i = 1; i < 10; i++) {
-            Point p1 = JTSUtils.createPoint(-i, i + 1);
-            Point p2 = JTSUtils.createPoint(-i, -i);
-            Point treasure = JTSUtils.createPoint(-i - 1, 0);
-            List<Point> intersections = JTSUtils.circleLineIntersectionPoints(
-                    p1,
-                    p2,
-                    treasure, 1);
-            System.out.println(intersections);
-            if (intersections.size() > 0) {
-                assertTrue("Failed with i=" + i + ", intersections: " + intersections + " does not contain (" + (-i) + ", " + (0) + ").",
-                        intersections.get(0).equalsExact(JTSUtils.createPoint(-i, 0), 0.0000001) ||
-                                intersections.get(1).equalsExact(JTSUtils.createPoint(-i, 0), 0.0000001));
-            } else {
-                LineSegment lineSegment = new LineSegment(p1.getCoordinate(), p2.getCoordinate());
-                assertTrue(JTSUtils.createPoint(lineSegment.closestPoint(treasure.getCoordinate())).equalsExact(JTSUtils.createPoint(-i, 0), 0.0000001));
-            }
-        }
-    }
-
-    /**
-     * Reduced version of {@link JTSUtilsCircleLineIntersectionPointsTest#generalBuggyScenario()}
-     */
-    @Test
-    public void reducedBuggyScenario() {
-        List<Point> intersections = JTSUtils.circleLineIntersectionPoints(pointm1um1, pointm1u2, pointm2u0, 1);
-        assertContains(intersections, pointm1u0);
     }
 
     /**
@@ -161,6 +133,51 @@ public class JTSUtilsCircleLineIntersectionPointsTest {
         secondIntersection = JTSUtils.createPoint(magic, -magic);
         assertContains(intersections, firstIntersection);
         assertContains(intersections, secondIntersection);
+    }
+
+    /**
+     * This is a buggy scenario, I found while testing the {@link com.treasure.hunt.game.GameEngine}.
+     */
+    @Test
+    public void buggyScenario() {
+        List<Point> intersections = JTSUtils.circleLineIntersectionPoints(pointm9um9, pointm9u10, pointm10u0, 1);
+        assertContains(intersections, pointm9u0);
+    }
+
+    /**
+     * Reduced version of {@link JTSUtilsCircleLineIntersectionPointsTest#generalBuggyScenario()}
+     */
+    @Test
+    public void reducedBuggyScenario() {
+        List<Point> intersections = JTSUtils.circleLineIntersectionPoints(pointm1um1, pointm1u2, pointm2u0, 1);
+        assertContains(intersections, pointm1u0);
+    }
+
+    /**
+     * This is generalized version of a scenario, I found while testing the GameEngine.
+     * Solution: Instead of [POINT (-4 0)], we got [POINT (-4 0.0000001), POINT (-4 -0.0000001)] as a consequence of an rounding error.
+     * Instead of [POINT (-5 0)], we got [] as a consequence of an rounding error.
+     */
+    @Test
+    public void generalBuggyScenario() {
+        for (int i = 1; i < 10; i++) {
+            Point p1 = JTSUtils.createPoint(-i, i + 1);
+            Point p2 = JTSUtils.createPoint(-i, -i);
+            Point treasure = JTSUtils.createPoint(-i - 1, 0);
+            List<Point> intersections = JTSUtils.circleLineIntersectionPoints(
+                    p1,
+                    p2,
+                    treasure, 1);
+            System.out.println(intersections);
+            if (intersections.size() > 0) {
+                assertTrue("Failed with i=" + i + ", intersections: " + intersections + " does not contain (" + (-i) + ", " + (0) + ").",
+                        intersections.get(0).equalsExact(JTSUtils.createPoint(-i, 0), 0.0000001) ||
+                                intersections.get(1).equalsExact(JTSUtils.createPoint(-i, 0), 0.0000001));
+            } else {
+                LineSegment lineSegment = new LineSegment(p1.getCoordinate(), p2.getCoordinate());
+                assertTrue(JTSUtils.createPoint(lineSegment.closestPoint(treasure.getCoordinate())).equalsExact(JTSUtils.createPoint(-i, 0), 0.0000001));
+            }
+        }
     }
 
     /**

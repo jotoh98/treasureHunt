@@ -2,17 +2,14 @@ package com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy;
 
 import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.utils.JTSUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Polygon;
 
+/**
+ * @author Ben Rank
+ */
 public class ExcludedAreaUtilsTest {
-    @BeforeEach
-    void setUp() {
-
-    }
-
     @Test
     public void reduceConvexPolygonTest0() {
         Polygon convexPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon(

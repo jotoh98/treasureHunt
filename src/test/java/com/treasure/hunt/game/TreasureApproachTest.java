@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test of the {@link GameManager#slowApproachExit()} method.
+ *
+ * @author Jonathan Hassel
  */
 class TreasureApproachTest {
 
@@ -70,5 +72,4 @@ class TreasureApproachTest {
 
         Assertions.assertFalse(gameManager.slowApproachExit());
     }
-
 }
