@@ -15,6 +15,9 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * @author Ben Rank
+ */
 public class SearchPathTest {
     @ParameterizedTest
     @ArgumentsSource(RandomNumberArgumentProvider.class)

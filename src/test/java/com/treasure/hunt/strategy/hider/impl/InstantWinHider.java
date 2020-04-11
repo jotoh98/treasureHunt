@@ -10,7 +10,7 @@ import org.locationtech.jts.geom.Point;
  * A test-{@link Hider}, placing the treasure on the {@link com.treasure.hunt.strategy.searcher.Searcher}'s
  * spawn position (0,0).
  *
- * @author dorianreineccius
+ * @author Dorian Reineccius
  */
 public class InstantWinHider implements Hider<Hint> {
 

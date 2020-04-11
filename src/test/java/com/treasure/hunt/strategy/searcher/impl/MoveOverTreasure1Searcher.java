@@ -10,21 +10,29 @@ import org.locationtech.jts.geom.Point;
  * This test {@link Searcher} walks on the treasure and leaves it,
  * in the same {@link SearchPath}.
  *
- * @author dorianreineccius
+ * @author Dorian Reineccius
  */
 public class MoveOverTreasure1Searcher implements Searcher<CircleHint> {
-    private Point startPosition;
-
+    /**
+     * This does nothing.
+     */
     @Override
     public void init(Point startPosition) {
-        this.startPosition = startPosition;
     }
 
+    /**
+     * @return An empty {@link SearchPath}
+     */
     @Override
     public SearchPath move() {
-        return new SearchPath(startPosition);
+        return new SearchPath();
     }
 
+    /**
+     * @param hint the hint, the {@link com.treasure.hunt.strategy.hider.Hider} gave last
+     * @return A {@link SearchPath}, walking over the center of the last {@code hint}.
+     * Especially, walking the double distance between this {@link Searcher} and the treasure.
+     */
     @Override
     public SearchPath move(CircleHint hint) {
         SearchPath searchPath = new SearchPath(JTSUtils.createPoint(hint.getCircle().getCenter()));

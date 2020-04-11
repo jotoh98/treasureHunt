@@ -21,6 +21,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+/**
+ * @author Alex Von Trostorff
+ */
 public class SeriesServiceTest extends AbstractPlainJavaFxTest {
     @Rule
     public TemporaryFolder testFolder = new TemporaryFolder();
@@ -45,5 +48,4 @@ public class SeriesServiceTest extends AbstractPlainJavaFxTest {
         assertEquals(statisticsWithIdsAndPath.get().getFile(), file.toPath());
         assertEquals(statisticsWithIdsAndPath.get().getStatisticsWithIds().size(), 100);
     }
-
 }

@@ -9,11 +9,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Testbench, testing {@link JTSUtils#pointInAngle(Coordinate, Coordinate, Coordinate, Coordinate)}.
  *
- * @author dorianreineccius
+ * @author Dorian Reineccius
  */
 class JTSUtilsPointInAngleTest {
+
+    /**
+     * Tests for {@link JTSUtils#pointInAngle(Coordinate, Coordinate, Coordinate, Coordinate)},
+     * testing, whether given points lie in the upper right quadrant.
+     */
     @Test
-    void pointInAngle1() {
+    public void pointInAngle1() {
         assertTrue(inUpperRightQuadrant(new Coordinate(0, 0)));
         assertTrue(inUpperRightQuadrant(new Coordinate(0, 1)));
         assertTrue(inUpperRightQuadrant(new Coordinate(1, 0)));
@@ -26,8 +31,12 @@ class JTSUtilsPointInAngleTest {
         assertFalse(inUpperRightQuadrant(new Coordinate(-54, -23)));
     }
 
+    /**
+     * Tests for {@link JTSUtils#pointInAngle(Coordinate, Coordinate, Coordinate, Coordinate)},
+     * testing, whether given points lie in the upper half plane.
+     */
     @Test
-    void pointInAngle2() {
+    public void pointInAngle2() {
         assertTrue(inUpperHalfPlane(new Coordinate(0, 0)));
         assertTrue(inUpperHalfPlane(new Coordinate(0, 1)));
         assertTrue(inUpperHalfPlane(new Coordinate(1, 0)));
@@ -42,8 +51,12 @@ class JTSUtilsPointInAngleTest {
         assertFalse(inUpperHalfPlane(new Coordinate(12, -34)));
     }
 
+    /**
+     * Tests for {@link JTSUtils#pointInAngle(Coordinate, Coordinate, Coordinate, Coordinate)},
+     * testing, whether given points lie in the lower half plane.
+     */
     @Test
-    void pointInAngle3() {
+    public void pointInAngle3() {
         assertTrue(inLowerHalfPlane(new Coordinate(0, 0)));
         assertTrue(inLowerHalfPlane(new Coordinate(0, -1)));
         assertTrue(inLowerHalfPlane(new Coordinate(1, 0)));
@@ -58,6 +71,11 @@ class JTSUtilsPointInAngleTest {
         assertFalse(inLowerHalfPlane(new Coordinate(12, 34)));
     }
 
+    /**
+     * @param coordinate we want to test, whether it lies in the upper right quadrant
+     * @return {@code true} if {@code coordinate} lies in the upper right quadrant.
+     * {@code false} otherwise.
+     */
     private boolean inUpperRightQuadrant(Coordinate coordinate) {
         return JTSUtils.pointInAngle(
                 new Coordinate(1, 0),
@@ -67,6 +85,11 @@ class JTSUtilsPointInAngleTest {
         );
     }
 
+    /**
+     * @param coordinate we want to test, whether it lies in the upper half plane
+     * @return {@code true} if {@code coordinate} lies in the upper half plane.
+     * {@code false} otherwise.
+     */
     private boolean inUpperHalfPlane(Coordinate coordinate) {
         return JTSUtils.pointInAngle(
                 new Coordinate(1, 0),
@@ -76,6 +99,11 @@ class JTSUtilsPointInAngleTest {
         );
     }
 
+    /**
+     * @param coordinate we want to test, whether it lies in the lower half plane
+     * @return {@code true} if {@code coordinate} lies in the lower half plane.
+     * {@code false} otherwise.
+     */
     private boolean inLowerHalfPlane(Coordinate coordinate) {
         return JTSUtils.pointInAngle(
                 new Coordinate(-1, 0),

@@ -18,7 +18,7 @@ import org.locationtech.jts.math.Vector2D;
 /**
  * This test evaluates the functionality of the early exit feature.
  *
- * @author jotoh
+ * @author Jonathan Hassel
  */
 @Slf4j
 class EarlyExitTest {
