@@ -49,7 +49,7 @@ public class PlotController {
             List<Number> statisticValues = Statistic.filterBy(currentStatistics.getStatisticsWithIds(), settings.getStatisticInfo());
             computedValues.add(new Pair<>(currentStatisticValue, settings.getType().getAggregation().apply(statisticValues).doubleValue()));
             int finalStep = step;
-            Platform.runLater(() -> coinProgress.setProgress(finalStep / settings.getUpperBoundValue() - settings.getLowerBoundValue()));
+            Platform.runLater(() -> coinProgress.setProgress(finalStep / (settings.getUpperBoundValue() - settings.getLowerBoundValue())));
         }
         Platform.runLater(() -> coinProgress.setVisible(false));
 
