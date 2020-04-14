@@ -11,7 +11,7 @@ import static com.treasure.hunt.utils.JTSUtilsTestsUtils.neq;
 /**
  * Testbench, testing {@link JTSUtils#middleOfAngleHint(Coordinate, Coordinate, Coordinate)}.
  *
- * @author dorianreineccius
+ * @author Dorian Reineccius
  */
 class JTSUtilsMiddleOfAngleHintTest {
     private Coordinate C = new Coordinate(0, 0),
@@ -65,42 +65,42 @@ class JTSUtilsMiddleOfAngleHintTest {
      * passing the middle of the AngleHint with a distance of 1.
      */
     @Test
-    void test90Degrees1() {
+    public void test90Degrees1() {
         eq(normNE, JTSUtils.middleOfAngleHint(E, C, N));
     }
 
     @Test
-    void test90Degrees2() {
+    public void test90Degrees2() {
         eq(E, JTSUtils.middleOfAngleHint(SE, C, NE));
     }
 
     @Test
-    void test90Degrees3() {
+    public void test90Degrees3() {
         eq(normSE, JTSUtils.middleOfAngleHint(S, C, E));
     }
 
     @Test
-    void test90Degrees4() {
+    public void test90Degrees4() {
         eq(S, JTSUtils.middleOfAngleHint(SW, C, SE));
     }
 
     @Test
-    void test90Degrees5() {
+    public void test90Degrees5() {
         eq(normSW, JTSUtils.middleOfAngleHint(W, C, S));
     }
 
     @Test
-    void test90Degrees6() {
+    public void test90Degrees6() {
         eq(W, JTSUtils.middleOfAngleHint(NW, C, SW));
     }
 
     @Test
-    void test90Degrees7() {
+    public void test90Degrees7() {
         eq(normNW, JTSUtils.middleOfAngleHint(N, C, W));
     }
 
     @Test
-    void test90Degrees8() {
+    public void test90Degrees8() {
         eq(N, JTSUtils.middleOfAngleHint(NE, C, NW));
     }
 
@@ -110,49 +110,49 @@ class JTSUtilsMiddleOfAngleHintTest {
      * passing the middle of the AngleHint with a distance of 1.
      */
     @Test
-    void test180Degrees1() {
+    public void test180Degrees1() {
         eq(N, JTSUtils.middleOfAngleHint(E, C, W));
         neq(S, JTSUtils.middleOfAngleHint(E, C, W));
     }
 
     @Test
-    void test180Degrees2() {
+    public void test180Degrees2() {
         eq(normNE, JTSUtils.middleOfAngleHint(SE, C, NW));
         neq(normSW, JTSUtils.middleOfAngleHint(SE, C, NW));
     }
 
     @Test
-    void test180Degrees3() {
+    public void test180Degrees3() {
         eq(E, JTSUtils.middleOfAngleHint(S, C, N));
         neq(W, JTSUtils.middleOfAngleHint(S, C, N));
     }
 
     @Test
-    void test180Degrees4() {
+    public void test180Degrees4() {
         eq(normSE, JTSUtils.middleOfAngleHint(SW, C, NE));
         neq(normNW, JTSUtils.middleOfAngleHint(SW, C, NE));
     }
 
     @Test
-    void test180Degrees5() {
+    public void test180Degrees5() {
         eq(S, JTSUtils.middleOfAngleHint(W, C, E));
         neq(N, JTSUtils.middleOfAngleHint(W, C, E));
     }
 
     @Test
-    void test180Degrees6() {
+    public void test180Degrees6() {
         eq(normSW, JTSUtils.middleOfAngleHint(NW, C, SE));
         neq(normNE, JTSUtils.middleOfAngleHint(NW, C, SE));
     }
 
     @Test
-    void test180Degrees7() {
+    public void test180Degrees7() {
         eq(W, JTSUtils.middleOfAngleHint(N, C, S));
         neq(E, JTSUtils.middleOfAngleHint(N, C, S));
     }
 
     @Test
-    void test180Degrees8() {
+    public void test180Degrees8() {
         eq(normNW, JTSUtils.middleOfAngleHint(NE, C, SW));
         neq(normSE, JTSUtils.middleOfAngleHint(NE, C, SW));
     }
@@ -163,12 +163,12 @@ class JTSUtilsMiddleOfAngleHintTest {
      * passing the middle of the AngleHint with a distance of 1.
      */
     @Test
-    void test270Degrees1() {
+    public void test270Degrees1() {
         eq(normSW, JTSUtils.middleOfAngleHint(N, C, E));
     }
 
     @Test
-    void test270Degrees2() {
+    public void test270Degrees2() {
         eq(W, JTSUtils.middleOfAngleHint(NE, C, SE));
     }
 
@@ -178,27 +178,27 @@ class JTSUtilsMiddleOfAngleHintTest {
     }
 
     @Test
-    void test270Degrees4() {
+    public void test270Degrees4() {
         eq(N, JTSUtils.middleOfAngleHint(SE, C, SW));
     }
 
     @Test
-    void test270Degrees5() {
+    public void test270Degrees5() {
         eq(normNE, JTSUtils.middleOfAngleHint(S, C, W));
     }
 
     @Test
-    void test270Degrees6() {
+    public void test270Degrees6() {
         eq(E, JTSUtils.middleOfAngleHint(SW, C, NW));
     }
 
     @Test
-    void test270Degrees7() {
+    public void test270Degrees7() {
         eq(normSE, JTSUtils.middleOfAngleHint(W, C, N));
     }
 
     @Test
-    void test270Degrees8() {
+    public void test270Degrees8() {
         eq(S, JTSUtils.middleOfAngleHint(NW, C, NE));
     }
 }

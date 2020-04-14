@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.stream.Stream;
 
+/**
+ * @author Ben Rank
+ */
 public class RandomNumberArgumentProvider implements ArgumentsProvider {
     private static final int NUMBER = 300;
     private final Random random = new Random(213645677823434L);

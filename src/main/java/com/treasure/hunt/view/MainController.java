@@ -3,7 +3,6 @@ package com.treasure.hunt.view;
 import com.google.common.util.concurrent.AtomicDouble;
 import com.treasure.hunt.game.GameEngine;
 import com.treasure.hunt.game.GameManager;
-import com.treasure.hunt.service.io.FileService;
 import com.treasure.hunt.service.settings.Session;
 import com.treasure.hunt.service.settings.SettingsService;
 import com.treasure.hunt.strategy.hider.Hider;
@@ -20,7 +19,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Orientation;
@@ -71,7 +69,7 @@ public class MainController {
     public Group popupGroup;
     public StackPane mainRoot;
     @FXML
-    private NavigationController stepViewNavigatorController;
+    private StepNavigationController stepViewNavigatorController;
     @FXML
     private Label versionLabel;
     @FXML
@@ -287,9 +285,9 @@ public class MainController {
         statusWidget.getController().init(gameManager);
         insertWidget(SplitPaneLocation.RIGHT_UPPER, "Status", statusWidget.getComponent());
 
-        Widget<ScaleController, ?> scaleWidget = new Widget<>("/layout/scaling.fxml");
+        Widget<NavigatorController, ?> scaleWidget = new Widget<>("/layout/navigator.fxml");
         scaleWidget.getController().init(gameManager, canvasController);
-        insertWidget(SplitPaneLocation.RIGHT_LOWER, "Navigator", scaleWidget.getComponent());
+        insertWidget(SplitPaneLocation.RIGHT_LOWER, "Navigator", scaleWidget.getComponent(), true);
 
         Widget<HistoryController, ?> historyWidget = new Widget<>("/layout/history.fxml");
         historyWidget.getController().init(gameManager);
@@ -476,11 +474,7 @@ public class MainController {
         addWidgets();
     }
 
-    public void onLoadGame(ActionEvent actionEvent) {
-        FileService.getInstance().loadGameManager();
-    }
-
-    public void openPreferences() {
+    public void openSettingsWindow() {
         try {
             SettingsWindow.show();
         } catch (Exception e) {

@@ -10,7 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import lombok.Getter;
 
-public class NavigationController {
+public class StepNavigationController {
     @Getter
     private ObjectProperty<GameManager> gameManager = new SimpleObjectProperty<>();
 

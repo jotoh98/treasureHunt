@@ -67,7 +67,7 @@ public class Turn {
     private List<GeometryItem<?>> getTreasureGeometries() {
         return Arrays.asList(
                 new GeometryItem<>(treasureLocation, GeometryType.TREASURE),
-                new GeometryItem<>(new ImageItem(treasureLocation.getCoordinate(), 20, 20, "/images/target.png", ImageItem.Alignment.CENTER_CENTER), GeometryType.TREASURE_FLAG)
+                new GeometryItem<>(new ImageItem(treasureLocation.getCoordinate(), 20, 20, "/images/icon/target.png", ImageItem.Alignment.CENTER_CENTER), GeometryType.TREASURE_FLAG)
         );
     }
 
@@ -76,7 +76,7 @@ public class Turn {
         items.addAll(searchPath.getLineGeometryItems());
         items.addAll(searchPath.getAdditional());
 
-        items.add(new GeometryItem<>(new ImageItem(searchPath.getLastPoint().getCoordinate(), 20, 20, "/images/pin.png", ImageItem.Alignment.BOTTOM_CENTER), GeometryType.CURRENT_WAY_POINT));
+        items.add(new GeometryItem<>(new ImageItem(searchPath.getLastPoint().getCoordinate(), 20, 20, "/images/icon/pin.png", ImageItem.Alignment.BOTTOM_CENTER), GeometryType.CURRENT_WAY_POINT));
 
         return items;
 

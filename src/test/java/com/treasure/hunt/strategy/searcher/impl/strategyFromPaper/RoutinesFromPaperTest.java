@@ -4,7 +4,6 @@ import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.RectangleScanEnhanced;
 import com.treasure.hunt.utils.JTSUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
@@ -17,15 +16,9 @@ import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.Routine
 import static com.treasure.hunt.utils.JTSUtils.doubleEqual;
 
 /**
- * @author Rank
+ * @author Ben Rank
  */
-
 public class RoutinesFromPaperTest {
-
-    @BeforeEach
-    void setUp() {
-
-    }
 
     private void testRectHint(Coordinate[] rect, HalfPlaneHint hint, int basicTrans) {
         int testBasicTrans = getBasicTransformation(rect, hint);
@@ -233,10 +226,5 @@ public class RoutinesFromPaperTest {
         List<Point> actualResult = RectangleScanEnhanced.rectangleScanEnhanced(a.getCoordinate(), b.getCoordinate(),
                 c.getCoordinate(), d.getCoordinate(), new SearchPath()).getPoints();
         assertArrayEqualsList(actualResult, correctResult);
-    }
-
-    @Test
-    public void rectangleScanEnhancedTestTwo() {
-        //todo
     }
 }

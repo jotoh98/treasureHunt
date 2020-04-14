@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * @author Rank
+ * @author Ben Rank
  */
 
 public class StrategyFromPaperTest {

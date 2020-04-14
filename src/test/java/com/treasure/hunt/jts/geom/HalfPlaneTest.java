@@ -6,8 +6,10 @@ import org.locationtech.jts.geom.Coordinate;
 
 import java.util.stream.IntStream;
 
+/**
+ * @author Jonathan Hassel
+ */
 class HalfPlaneTest {
-
     @Test
     void test() {
         HalfPlane halfPlane = new HalfPlane(new Coordinate(0, 0), new Coordinate(1, 0));
@@ -23,5 +25,4 @@ class HalfPlaneTest {
                 );
         Assertions.assertTrue(halfPlane.inside(new Coordinate(-10 + Math.random() * 20, 0)));
     }
-
 }

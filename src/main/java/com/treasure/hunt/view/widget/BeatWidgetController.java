@@ -2,12 +2,13 @@ package com.treasure.hunt.view.widget;
 
 import com.treasure.hunt.game.GameManager;
 import javafx.beans.InvalidationListener;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -33,19 +34,10 @@ public class BeatWidgetController {
                 return;
             }
 
-            playToggle.textProperty().bind(Bindings.createStringBinding(
-                    () -> {
-                        boolean impossible = gameManager.get().getStepForwardImpossibleBinding().get();
-                        if (impossible) {
-                            return "Game finished";
-                        }
-                        boolean running = gameManager.get().getBeatThreadRunning().get();
-
-                        return running ? "Stop" : "Start";
-                    },
-                    gameManager.get().getBeatThreadRunning(),
-                    gameManager.get().getStepForwardImpossibleBinding()
-            ));
+            gameManager.get().getBeatThreadRunning().addListener((observable, oldValue, newValue) -> {
+                ImageView imageView = (ImageView) playToggle.getGraphic();
+                imageView.setImage(new Image("images/icon/" + (newValue ? "pause" : "play") + ".png"));
+            });
 
             playToggle.disableProperty().bind(gameManager.get().getStepForwardImpossibleBinding());
         };

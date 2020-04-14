@@ -3,23 +3,25 @@ package com.treasure.hunt.strategy.hider.impl;
 import com.treasure.hunt.game.mods.hideandseek.HideAndSeekHider;
 import com.treasure.hunt.strategy.hint.impl.CircleHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
+import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
 /**
  * This {@link com.treasure.hunt.strategy.hider.Hider} always tells the treasurePosition
  * based on an {@link CircleHint} with radius 0.0.
  *
- * @author dorianreineccius
+ * @author Dorian Reineccius
  */
-public class RevealingHider implements HideAndSeekHider<CircleHint> {
-    private GeometryFactory geometryFactory = new GeometryFactory();
-    private Point treasurePos = geometryFactory.createPoint(new Coordinate(45, 45));
+public class RevealingCircleHintHider implements HideAndSeekHider<CircleHint> {
+    private Point treasurePos;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void init(Point searcherStartPosition) {
-
+        treasurePos = JTSUtils.createPoint(new Coordinate(45, 45));
     }
 
     /**
