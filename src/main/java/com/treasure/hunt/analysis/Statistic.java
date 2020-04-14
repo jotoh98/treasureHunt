@@ -77,7 +77,11 @@ public class Statistic {
      * @return solution quotient
      */
     public double getSolutionQuotient() {
-        return getLocalOptimalSolution() / getGlobalOptimalSolution();
+        double value = getLocalOptimalSolution() / getGlobalOptimalSolution();
+        if (Double.isNaN(value)) {
+            return 0;
+        }
+        return value;
     }
 
     /**
