@@ -3,6 +3,7 @@ package com.treasure.hunt.view.widget;
 import com.treasure.hunt.game.GameManager;
 import com.treasure.hunt.strategy.geom.StatusMessageItem;
 import javafx.application.Platform;
+import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +20,8 @@ import java.util.List;
 @Slf4j
 public class StatusMessageWidgetController {
     public VBox vbox;
+    private final ChangeListener<List<StatusMessageItem>> statusChangeListener = (observable1, oldValue1, newStatus) -> renderNewStatus(newStatus);
+    private ObjectBinding<List<StatusMessageItem>> oldStatusBinding;
 
     public void initialize() {
 
@@ -27,9 +30,13 @@ public class StatusMessageWidgetController {
     public void init(ObjectProperty<GameManager> gameManager) {
         ChangeListener<GameManager> gameManagerChangeListener = (observable, oldValue, newValue) -> {
             if (newValue != null) {
-                gameManager.get()
-                        .getStatusMessageItemsBinding()
-                        .addListener((observable1, oldValue1, newStatus) -> renderNewStatus(newStatus));
+                if (oldStatusBinding != null) {
+                    oldStatusBinding.removeListener(statusChangeListener);
+                }
+                oldStatusBinding = gameManager.get()
+                        .getStatusMessageItemsBinding();
+                oldStatusBinding
+                        .addListener(statusChangeListener);
                 renderNewStatus(gameManager.get().getStatusMessageItemsBinding().get());
             }
         };
