@@ -4,6 +4,7 @@ import com.treasure.hunt.strategy.hint.impl.HalfPlaneHint;
 import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
 import org.locationtech.jts.geom.*;
+import org.locationtech.jts.operation.buffer.BufferParameters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,8 +92,7 @@ public class ExcludedAreasUtils {
         newPolygonCorners.add(newPolygonCorners.get(0));
         Geometry newPolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon(
                 newPolygonCorners.toArray(new Coordinate[]{}));
-        newPolygon = newPolygon.convexHull(); //todo maybe that step could be implemented by normalizing the polygon
-
+        newPolygon = newPolygon.convexHull();
         if (newPolygon.getArea() == 0) {
             return null;
         }
@@ -150,17 +150,7 @@ public class ExcludedAreasUtils {
         return (Polygon) newPolygon;
     }
 
-    static Polygon reduceConvexPolygon(Polygon convexPolygon, List<HalfPlaneHint> halfPlaneHints) {//todo do better
-        for (HalfPlaneHint halfPlaneHint : halfPlaneHints) {
-            convexPolygon = reduceConvexPolygon(convexPolygon, halfPlaneHint);
-            if (convexPolygon == null) {
-                return JTSUtils.GEOMETRY_FACTORY.createPolygon();
-            }
-        }
-        return convexPolygon;
-    }
-
-    static Geometry visitedPolygon(Point lastLocation, SearchPath move) {
+    static Geometry visitedPolygon(Point lastLocation, SearchPath move, int endCapStyle) {
         if (lastLocation == null || move == null) {
             throw new IllegalArgumentException("lastLocation or move is null");
         }
@@ -173,6 +163,10 @@ public class ExcludedAreasUtils {
             return JTSUtils.GEOMETRY_FACTORY.createPoint(movesCoordinates[0]).buffer(1);
         }
         LineString path = JTSUtils.GEOMETRY_FACTORY.createLineString(movesCoordinates);
-        return path.buffer(1);
+        return path.buffer(1, 8, endCapStyle);
+    }
+
+    static Geometry visitedPolygon(Point lastLocation, SearchPath move) {
+        return visitedPolygon(lastLocation, move, BufferParameters.CAP_ROUND);
     }
 }

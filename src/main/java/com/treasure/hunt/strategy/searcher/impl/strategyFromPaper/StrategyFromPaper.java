@@ -84,6 +84,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         lastPosition = start;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SearchPath move() {
         SearchPath move = new SearchPath();
@@ -95,6 +98,9 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         return (returnHandling(incrementPhase(move)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SearchPath move(HalfPlaneHint hint) {
         previousHint = currentHint;
@@ -138,7 +144,8 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
         if (rectangleNotLargeEnough()) {
             previousHintQuality = HintQuality.none;
             move.getStatusMessageItemsToBeAdded().add(new StatusMessageItem(StatusMessageType.PREVIOUS_HINT_QUALITY,
-                    "none, because the previous rectangle was small enough to be scanned directly."));
+                    "none, because the previous rectangle was small enough to be scanned directly.\n " +
+                            "The phase got incremented."));
             return returnHandling(incrementPhase(move));
         }
 
@@ -192,9 +199,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * This method is used to visualize the current phases rectangle and the current search rectangle.
      * Adds their values to move
      *
-     * @param move
-     * @param currentRectanglePoints
-     * @param phaseRectanglePoints
      * @return the input with the visualisations of the current phase and the search rectangle added
      */
     protected SearchPath addState(SearchPath move, Coordinate[] currentRectanglePoints, Coordinate[] phaseRectanglePoints) {
@@ -259,14 +263,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * If the hint-line goes through AD and BC, the biggest axis parallel-rectangle which
      * lies in ABCD and where the treasure could be located due to the information gained by the hint, is returned.
      * Otherwise the return value is null.
-     *
-     * @param A
-     * @param B
-     * @param C
-     * @param D
-     * @param hint
-     * @param hintLine
-     * @return
      */
     protected Point[] splitRectangleHorizontally(Point A, Point B, Point C, Point D, HalfPlaneHint hint,
                                                  LineSegment hintLine) {
@@ -326,13 +322,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     /**
      * A specific rectangle scanner for this strategy, in case of StrategyFromPaper, the standard rectangleScanSpecificForStrategy from
      * RoutinesFromPaper is used (this method is required for the MinimumRectangleStrategy which inherits from this class.)
-     *
-     * @param rectangleCorner1
-     * @param rectangleCorner2
-     * @param rectangleCorner3
-     * @param rectangleCorner4
-     * @param move
-     * @return
      */
     protected SearchPath specificRectangleScan(Coordinate rectangleCorner1, Coordinate rectangleCorner2,
                                                Coordinate rectangleCorner3, Coordinate rectangleCorner4, SearchPath move) {
@@ -342,13 +331,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     /**
      * A specific rectangle scanner for this strategy, in case of StrategyFromPaper, the standard rectangleScanSpecificForStrategy from
      * RoutinesFromPaper is used (this method is required for the MinimumRectangleStrategy which inherits from this class.)
-     *
-     * @param rectangleCorner1
-     * @param rectangleCorner2
-     * @param rectangleCorner3
-     * @param rectangleCorner4
-     * @param move
-     * @return
      */
     protected SearchPath specificRectangleScan(Point rectangleCorner1, Point rectangleCorner2,
                                                Point rectangleCorner3, Point rectangleCorner4, SearchPath move) {
@@ -362,14 +344,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * If the hint-line goes through AB and CD, the biggest axis-parallel rectangle which
      * lies in ABCD and where the treasure could be located due to the information gained by the hint, is returned.
      * Otherwise the return value is null.
-     *
-     * @param A
-     * @param B
-     * @param C
-     * @param D
-     * @param hint
-     * @param hintLine
-     * @return
      */
     protected Point[] splitRectangleVertically(Point A, Point B, Point C, Point D, HalfPlaneHint hint,
                                                LineSegment hintLine) {
@@ -421,7 +395,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
      * Increments the phase-field and updates ABCD accordingly.
      * Then adds the step to the center of the new rectangle ABCD to move.
      *
-     * @param move
      * @return the parameter move with the center of the new ABCD added
      */
     private SearchPath incrementPhase(SearchPath move) {
@@ -440,8 +413,6 @@ public class StrategyFromPaper implements Searcher<HalfPlaneHint> {
     /**
      * Returnes the rectangle of the current phase, by using the current phase index (equates to j in the paper or
      * the phase-field in this implementation)
-     *
-     * @return
      */
     protected Coordinate[] currentPhaseRectangle() {
         return phaseRectangle(phase);

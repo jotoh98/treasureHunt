@@ -19,7 +19,7 @@ import static com.treasure.hunt.strategy.hint.impl.HalfPlaneHint.Direction.up;
  * A special ase of {@link AngleHint} with 180 degrees or {@link Math#PI} radians,
  * defining a {@link HalfPlane} in which the treasure lies
  *
- * @author bsen
+ * @author Rank
  */
 
 public class HalfPlaneHint extends AngleHint {
@@ -47,10 +47,6 @@ public class HalfPlaneHint extends AngleHint {
     /**
      * This constructor can be used when unsure whether pointOne or pointTwo is the right/left point of the
      * hint but the direction of the hint is known.
-     *
-     * @param pointOne
-     * @param pointTwo
-     * @param direction
      */
     public HalfPlaneHint(Coordinate pointOne, Coordinate pointTwo, Direction direction) {
         super(new Coordinate(), new Coordinate(), new Coordinate());
@@ -204,6 +200,10 @@ public class HalfPlaneHint extends AngleHint {
         }
     }
 
+    /**
+     * Returns either the center or the right point
+     * The point with the lower y value gets returned.
+     */
     public Coordinate getLowerHintPoint() {
         if (getCenter().getY() < getRight().getY()) {
             return getCenter();
@@ -212,6 +212,10 @@ public class HalfPlaneHint extends AngleHint {
         }
     }
 
+    /**
+     * Returns either the center or the right point
+     * The point with the higher y value gets returned.
+     */
     public Coordinate getUpperHintPoint() {
         if (getCenter().getY() < getRight().getY()) {
             return getRight();
@@ -220,11 +224,17 @@ public class HalfPlaneHint extends AngleHint {
         }
     }
 
+    /**
+     * @return true if the treasure is above this hints line, false otherwise
+     */
     public boolean pointsUpwards() {
         return (getDirection() == Direction.left && getLowerHintPoint().getX() < getUpperHintPoint().getX()) ||
                 (getDirection() == Direction.right && getLowerHintPoint().getX() > getUpperHintPoint().getX());
     }
 
+    /**
+     * @return true if the treasure is below this hints line, false otherwise
+     */
     public boolean pointsDownwards() {
         return (getDirection() == Direction.left && getLowerHintPoint().getX() > getUpperHintPoint().getX()) ||
                 (getDirection() == Direction.right && getLowerHintPoint().getX() < getUpperHintPoint().getX());
