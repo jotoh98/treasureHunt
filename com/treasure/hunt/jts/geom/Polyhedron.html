@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -190,17 +190,31 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>org.locationtech.jts.geom.Geometry</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getConvexHull()">getConvexHull</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Convex hull of the (potentially unbound) polyhedron.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#inside(org.locationtech.jts.geom.Coordinate)">inside</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;c)</code></th>
 <td class="colLast">
 <div class="block">Tests, if a <code>Coordinate</code> lays inside of the polyhedron.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resolve()">resolve</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Resolve the vertex-representation from the half-plane representation.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setUnboundExtend(double)">setUnboundExtend</a></span>&#8203;(double&nbsp;unboundExtend)</code></th>
+<td class="colLast">
+<div class="block">Factor of the extend of the unbound section.</div>
 </td>
 </tr>
 </table>
@@ -293,7 +307,7 @@ extends java.lang.Object</pre>
 <a id="inside(org.locationtech.jts.geom.Coordinate)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>inside</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;inside&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;c)</pre>
@@ -304,6 +318,28 @@ extends java.lang.Object</pre>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>whether the tested coordinate lays inside of the polyhedron</dd>
 </dl>
+</li>
+</ul>
+<a id="getConvexHull()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getConvexHull</h4>
+<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Geometry&nbsp;getConvexHull()</pre>
+<div class="block">Convex hull of the (potentially unbound) polyhedron.
+ By default extend the polyhedron 10 length units into the unbound region.
+ This extension factor can be manipulated using <a href="#unboundExtend"><code>unboundExtend</code></a>.</div>
+</li>
+</ul>
+<a id="setUnboundExtend(double)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>setUnboundExtend</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setUnboundExtend&#8203;(double&nbsp;unboundExtend)</pre>
+<div class="block">Factor of the extend of the unbound section.</div>
 </li>
 </ul>
 </li>

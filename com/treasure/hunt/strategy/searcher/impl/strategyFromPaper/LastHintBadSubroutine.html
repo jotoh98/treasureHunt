@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -175,6 +175,26 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBasicTransformation()">getBasicTransformation</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>org.locationtech.jts.geom.Coordinate[]</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCurrentRectangle()">getCurrentRectangle</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>org.locationtech.jts.geom.LineSegment</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getL1DoubleApos()">getL1DoubleApos</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="StrategyFromPaper.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">StrategyFromPaper</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStrategy()">getStrategy</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lastHintBadSubroutine(com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,com.treasure.hunt.strategy.searcher.SearchPath,boolean)">lastHintBadSubroutine</a></span>&#8203;(<a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a>&nbsp;currentHint,
                      <a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a>&nbsp;lastBadHint,
@@ -230,7 +250,7 @@ extends java.lang.Object</pre>
 <a id="lastHintBadSubroutine(com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,com.treasure.hunt.strategy.searcher.SearchPath,boolean)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>lastHintBadSubroutine</h4>
 <pre class="methodSignature">public&nbsp;<a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;lastHintBadSubroutine&#8203;(<a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a>&nbsp;currentHint,
@@ -250,6 +270,42 @@ extends java.lang.Object</pre>
 <dd>The move to scan various areas so that A,B,C and D can be updated to a smaller rectangle (or the treasure
  is found)</dd>
 </dl>
+</li>
+</ul>
+<a id="getBasicTransformation()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getBasicTransformation</h4>
+<pre class="methodSignature">public&nbsp;int&nbsp;getBasicTransformation()</pre>
+</li>
+</ul>
+<a id="getCurrentRectangle()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCurrentRectangle</h4>
+<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Coordinate[]&nbsp;getCurrentRectangle()</pre>
+</li>
+</ul>
+<a id="getL1DoubleApos()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getL1DoubleApos</h4>
+<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.LineSegment&nbsp;getL1DoubleApos()</pre>
+</li>
+</ul>
+<a id="getStrategy()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getStrategy</h4>
+<pre class="methodSignature">public&nbsp;<a href="StrategyFromPaper.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">StrategyFromPaper</a>&nbsp;getStrategy()</pre>
 </li>
 </ul>
 </li>

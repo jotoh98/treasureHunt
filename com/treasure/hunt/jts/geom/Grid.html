@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -163,6 +163,11 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">Grid</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr class="rowColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(boolean,boolean)">Grid</a></span>&#8203;(boolean&nbsp;horizontalVisible,
+    boolean&nbsp;verticalVisible)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -182,6 +187,34 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isHorizontalVisible()">isHorizontalVisible</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Whether or not horizontal grid lines are rendered.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isVerticalVisible()">isVerticalVisible</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Whether or not vertical grid lines are rendered.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setHorizontalVisible(boolean)">setHorizontalVisible</a></span>&#8203;(boolean&nbsp;horizontalVisible)</code></th>
+<td class="colLast">
+<div class="block">Whether or not horizontal grid lines are rendered.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setVerticalVisible(boolean)">setVerticalVisible</a></span>&#8203;(boolean&nbsp;verticalVisible)</code></th>
+<td class="colLast">
+<div class="block">Whether or not vertical grid lines are rendered.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>java.awt.Shape</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toShape(com.treasure.hunt.jts.awt.AdvancedShapeWriter)">toShape</a></span>&#8203;(<a href="../awt/AdvancedShapeWriter.html" title="class in com.treasure.hunt.jts.awt">AdvancedShapeWriter</a>&nbsp;shapeWriter)</code></th>
 <td class="colLast">
@@ -212,6 +245,16 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
+<a id="&lt;init&gt;(boolean,boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>Grid</h4>
+<pre>public&nbsp;Grid&#8203;(boolean&nbsp;horizontalVisible,
+            boolean&nbsp;verticalVisible)</pre>
+</li>
+</ul>
 <a id="&lt;init&gt;()">
 <!--   -->
 </a>
@@ -234,7 +277,7 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <a id="toShape(com.treasure.hunt.jts.awt.AdvancedShapeWriter)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>toShape</h4>
 <pre class="methodSignature">public&nbsp;java.awt.Shape&nbsp;toShape&#8203;(<a href="../awt/AdvancedShapeWriter.html" title="class in com.treasure.hunt.jts.awt">AdvancedShapeWriter</a>&nbsp;shapeWriter)</pre>
@@ -247,6 +290,46 @@ implements <a href="Shapeable.html" title="interface in com.treasure.hunt.jts.ge
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>shape from grid</dd>
 </dl>
+</li>
+</ul>
+<a id="isHorizontalVisible()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isHorizontalVisible</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isHorizontalVisible()</pre>
+<div class="block">Whether or not horizontal grid lines are rendered.</div>
+</li>
+</ul>
+<a id="setHorizontalVisible(boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setHorizontalVisible</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setHorizontalVisible&#8203;(boolean&nbsp;horizontalVisible)</pre>
+<div class="block">Whether or not horizontal grid lines are rendered.</div>
+</li>
+</ul>
+<a id="isVerticalVisible()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isVerticalVisible</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isVerticalVisible()</pre>
+<div class="block">Whether or not vertical grid lines are rendered.</div>
+</li>
+</ul>
+<a id="setVerticalVisible(boolean)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>setVerticalVisible</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setVerticalVisible&#8203;(boolean&nbsp;verticalVisible)</pre>
+<div class="block">Whether or not vertical grid lines are rendered.</div>
 </li>
 </ul>
 </li>

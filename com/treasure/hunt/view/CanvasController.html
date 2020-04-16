@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -208,21 +208,31 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#initialize()">initialize</a></span>()</code></th>
+<td class="colFirst"><code>javafx.scene.canvas.Canvas</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCanvas()">getCanvas</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#makeCanvasResizable()">makeCanvasResizable</a></span>()</code></th>
+<td class="colFirst"><code><a href="../jts/awt/PointTransformation.html" title="class in com.treasure.hunt.jts.awt">PointTransformation</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTransformation()">getTransformation</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onCanvasClicked(javafx.scene.input.MouseEvent)">onCanvasClicked</a></span>&#8203;(javafx.scene.input.MouseEvent&nbsp;mouseEvent)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#initialize()">initialize</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#makeCanvasResizable()">makeCanvasResizable</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onCanvasClicked(javafx.scene.input.MouseEvent)">onCanvasClicked</a></span>&#8203;(javafx.scene.input.MouseEvent&nbsp;mouseEvent)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onCanvasDragged(javafx.scene.input.MouseEvent)">onCanvasDragged</a></span>&#8203;(javafx.scene.input.MouseEvent&nbsp;mouseEvent)</code></th>
 <td class="colLast">
@@ -230,19 +240,19 @@ extends java.lang.Object</pre>
  and moves over the canvas</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onCanvasZoom(javafx.scene.input.ScrollEvent)">onCanvasZoom</a></span>&#8203;(javafx.scene.input.ScrollEvent&nbsp;scrollEvent)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onMouseLifted(javafx.scene.input.MouseEvent)">onMouseLifted</a></span>&#8203;(javafx.scene.input.MouseEvent&nbsp;mouseEvent)</code></th>
 <td class="colLast">
 <div class="block">Handler for when the mouse press event on the canvas ends.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setGameManager(javafx.beans.property.ObjectProperty)">setGameManager</a></span>&#8203;(javafx.beans.property.ObjectProperty&lt;<a href="../game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a>&gt;&nbsp;gameManager)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -399,10 +409,28 @@ extends java.lang.Object</pre>
 <a id="setGameManager(javafx.beans.property.ObjectProperty)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>setGameManager</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setGameManager&#8203;(javafx.beans.property.ObjectProperty&lt;<a href="../game/GameManager.html" title="class in com.treasure.hunt.game">GameManager</a>&gt;&nbsp;gameManager)</pre>
+</li>
+</ul>
+<a id="getCanvas()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCanvas</h4>
+<pre class="methodSignature">public&nbsp;javafx.scene.canvas.Canvas&nbsp;getCanvas()</pre>
+</li>
+</ul>
+<a id="getTransformation()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getTransformation</h4>
+<pre class="methodSignature">public&nbsp;<a href="../jts/awt/PointTransformation.html" title="class in com.treasure.hunt.jts.awt">PointTransformation</a>&nbsp;getTransformation()</pre>
 </li>
 </ul>
 </li>

@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -221,13 +221,20 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>javafx.beans.binding.BooleanBinding</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSomethingChanged()">getSomethingChanged</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Binding for when a setting has changed.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#initialize()">initialize</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Setup of the settings window.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#save()">save</a></span>()</code></th>
 <td class="colLast">
@@ -341,12 +348,22 @@ extends java.lang.Object</pre>
 <a id="save()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>save</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;save()</pre>
 <div class="block">Save action overrides the settings.
  Thus invalidating the "something-changed" bindings.</div>
+</li>
+</ul>
+<a id="getSomethingChanged()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getSomethingChanged</h4>
+<pre class="methodSignature">public&nbsp;javafx.beans.binding.BooleanBinding&nbsp;getSomethingChanged()</pre>
+<div class="block">Binding for when a setting has changed.</div>
 </li>
 </ul>
 </li>
