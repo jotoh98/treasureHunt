@@ -27,14 +27,14 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
 var activeTableTab = "activeTableTab";
 var pathtoroot = "../../../../../";
-var useModuleDirectories = false;
+var useModuleDirectories = true;
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -176,122 +176,60 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>protected boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#canEqual(java.lang.Object)">canEqual</a></span>&#8203;(java.lang.Object&nbsp;other)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#canvasDiameter()">canvasDiameter</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#diameter()">diameter</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get the length of the diagonal of the boundary rectangle</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#equals(java.lang.Object)">equals</a></span>&#8203;(java.lang.Object&nbsp;o)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>javafx.beans.property.DoubleProperty</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCanvasHeight()">getCanvasHeight</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Bound canvas height property.</div>
-</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>javafx.beans.property.DoubleProperty</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCanvasWidth()">getCanvasWidth</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Bound canvas width property.</div>
-</td>
-</tr>
-<tr id="i6" class="altColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;org.locationtech.jts.geom.Coordinate&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCoordinates()">getCoordinates</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>org.locationtech.jts.math.Vector2D</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLeftUpper()">getLeftUpper</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMaxX()">getMaxX</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMaxY()">getMaxY</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMinX()">getMinX</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMinY()">getMinY</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>org.locationtech.jts.math.Vector2D</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRightLower()">getRightLower</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i13" class="rowColor">
-<td class="colFirst"><code><a href="PointTransformation.html" title="class in com.treasure.hunt.jts.awt">PointTransformation</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTransform()">getTransform</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Link to the related point transformation.</div>
-</td>
-</tr>
-<tr id="i14" class="altColor">
-<td class="colFirst"><code>int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hashCode()">hashCode</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i15" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;org.locationtech.jts.geom.Coordinate&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#intersections(org.locationtech.jts.geom.LineSegment)">intersections</a></span>&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;lineSegment)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i16" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setCanvasHeight(javafx.beans.property.DoubleProperty)">setCanvasHeight</a></span>&#8203;(javafx.beans.property.DoubleProperty&nbsp;canvasHeight)</code></th>
-<td class="colLast">
-<div class="block">Bound canvas height property.</div>
-</td>
-</tr>
-<tr id="i17" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setCanvasWidth(javafx.beans.property.DoubleProperty)">setCanvasWidth</a></span>&#8203;(javafx.beans.property.DoubleProperty&nbsp;canvasWidth)</code></th>
-<td class="colLast">
-<div class="block">Bound canvas width property.</div>
-</td>
-</tr>
-<tr id="i18" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setTransform(com.treasure.hunt.jts.awt.PointTransformation)">setTransform</a></span>&#8203;(<a href="PointTransformation.html" title="class in com.treasure.hunt.jts.awt">PointTransformation</a>&nbsp;transform)</code></th>
-<td class="colLast">
-<div class="block">Link to the related point transformation.</div>
-</td>
-</tr>
-<tr id="i19" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;org.locationtech.jts.geom.LineSegment&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toLineSegments()">toLineSegments</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i20" class="altColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toString()">toString</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -300,7 +238,7 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
-<code>clone, finalize, getClass, notify, notifyAll, wait, wait, wait</code></li>
+<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
 </ul>
 </li>
 </ul>
@@ -437,118 +375,10 @@ public&nbsp;java.util.List&lt;org.locationtech.jts.geom.Coordinate&gt;&nbsp;getC
 <a id="intersections(org.locationtech.jts.geom.LineSegment)">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>intersections</h4>
 <pre class="methodSignature">public&nbsp;java.util.List&lt;org.locationtech.jts.geom.Coordinate&gt;&nbsp;intersections&#8203;(org.locationtech.jts.geom.LineSegment&nbsp;lineSegment)</pre>
-</li>
-</ul>
-<a id="getTransform()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getTransform</h4>
-<pre class="methodSignature">public&nbsp;<a href="PointTransformation.html" title="class in com.treasure.hunt.jts.awt">PointTransformation</a>&nbsp;getTransform()</pre>
-<div class="block">Link to the related point transformation.</div>
-</li>
-</ul>
-<a id="getCanvasWidth()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getCanvasWidth</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.property.DoubleProperty&nbsp;getCanvasWidth()</pre>
-<div class="block">Bound canvas width property.</div>
-</li>
-</ul>
-<a id="getCanvasHeight()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getCanvasHeight</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.property.DoubleProperty&nbsp;getCanvasHeight()</pre>
-<div class="block">Bound canvas height property.</div>
-</li>
-</ul>
-<a id="setTransform(com.treasure.hunt.jts.awt.PointTransformation)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setTransform</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setTransform&#8203;(<a href="PointTransformation.html" title="class in com.treasure.hunt.jts.awt">PointTransformation</a>&nbsp;transform)</pre>
-<div class="block">Link to the related point transformation.</div>
-</li>
-</ul>
-<a id="setCanvasWidth(javafx.beans.property.DoubleProperty)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setCanvasWidth</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setCanvasWidth&#8203;(javafx.beans.property.DoubleProperty&nbsp;canvasWidth)</pre>
-<div class="block">Bound canvas width property.</div>
-</li>
-</ul>
-<a id="setCanvasHeight(javafx.beans.property.DoubleProperty)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setCanvasHeight</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setCanvasHeight&#8203;(javafx.beans.property.DoubleProperty&nbsp;canvasHeight)</pre>
-<div class="block">Bound canvas height property.</div>
-</li>
-</ul>
-<a id="equals(java.lang.Object)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>equals</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;equals&#8203;(java.lang.Object&nbsp;o)</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code>equals</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
-</dl>
-</li>
-</ul>
-<a id="canEqual(java.lang.Object)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>canEqual</h4>
-<pre class="methodSignature">protected&nbsp;boolean&nbsp;canEqual&#8203;(java.lang.Object&nbsp;other)</pre>
-</li>
-</ul>
-<a id="hashCode()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>hashCode</h4>
-<pre class="methodSignature">public&nbsp;int&nbsp;hashCode()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code>hashCode</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
-</dl>
-</li>
-</ul>
-<a id="toString()">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>toString</h4>
-<pre class="methodSignature">public&nbsp;java.lang.String&nbsp;toString()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code>toString</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
-</dl>
 </li>
 </ul>
 </li>

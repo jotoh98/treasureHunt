@@ -27,14 +27,14 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
 var activeTableTab = "activeTableTab";
 var pathtoroot = "../../../../";
-var useModuleDirectories = false;
+var useModuleDirectories = true;
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -235,145 +235,70 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 </td>
 </tr>
 <tr id="i7" class="rowColor">
-<td class="colFirst"><code>javafx.collections.ObservableMap&lt;java.lang.String,&#8203;<a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAdditional()">getAdditional</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Contains additional <a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryItem</code></a>'s which does not belong to the strategies,
- like the <a href="../jts/geom/Grid.html" title="class in com.treasure.hunt.jts.geom"><code>Grid</code></a> or <a href="../strategy/geom/GeometryType.html#HIGHLIGHTER"><code>GeometryType.HIGHLIGHTER</code></a>;</div>
-</td>
-</tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code>javafx.beans.property.BooleanProperty</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBeatThreadRunning()">getBeatThreadRunning</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code>javafx.beans.property.BooleanProperty</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getFinishedProperty()">getFinishedProperty</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i10" class="altColor">
-<td class="colFirst"><code>javafx.beans.binding.ObjectBinding&lt;<a href="Turn.html" title="class in com.treasure.hunt.game">Turn</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLastMoveBinding()">getLastMoveBinding</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i11" class="rowColor">
-<td class="colFirst"><code>javafx.beans.binding.ObjectBinding&lt;org.locationtech.jts.geom.Point&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLastPointBinding()">getLastPointBinding</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i12" class="altColor">
-<td class="colFirst"><code>javafx.beans.binding.ObjectBinding&lt;org.locationtech.jts.geom.Point&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLastTreasureBindings()">getLastTreasureBindings</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i13" class="rowColor">
-<td class="colFirst"><code>javafx.beans.binding.BooleanBinding</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLatestStepViewedBinding()">getLatestStepViewedBinding</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i14" class="altColor">
-<td class="colFirst"><code>javafx.beans.binding.IntegerBinding</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMoveSizeBinding()">getMoveSizeBinding</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i15" class="rowColor">
-<td class="colFirst"><code>javafx.beans.binding.ObjectBinding&lt;java.util.List&lt;<a href="../analysis/StatisticObject.html" title="class in com.treasure.hunt.analysis">StatisticObject</a>&gt;&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStatistics()">getStatistics</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i16" class="altColor">
-<td class="colFirst"><code>javafx.beans.binding.ObjectBinding&lt;java.util.List&lt;<a href="../strategy/geom/StatusMessageItem.html" title="class in com.treasure.hunt.strategy.geom">StatusMessageItem</a>&gt;&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStatusMessageItemsBinding()">getStatusMessageItemsBinding</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i17" class="rowColor">
-<td class="colFirst"><code>javafx.beans.binding.BooleanBinding</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStepBackwardImpossibleBinding()">getStepBackwardImpossibleBinding</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i18" class="altColor">
-<td class="colFirst"><code>javafx.beans.binding.BooleanBinding</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStepForwardImpossibleBinding()">getStepForwardImpossibleBinding</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i19" class="rowColor">
-<td class="colFirst"><code>javafx.collections.ObservableList&lt;<a href="Turn.html" title="class in com.treasure.hunt.game">Turn</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTurns()">getTurns</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Contains the "gameHistory".</div>
-</td>
-</tr>
-<tr id="i20" class="altColor">
-<td class="colFirst"><code>javafx.beans.property.IntegerProperty</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getViewIndex()">getViewIndex</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i21" class="rowColor">
 <td class="colFirst"><code>java.util.stream.Stream&lt;<a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getVisibleGeometries()">getVisibleGeometries</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get visible geometry items.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="Turn.html" title="class in com.treasure.hunt.game">Turn</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getVisibleTurns()">getVisibleTurns</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#init()">init</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Initializes the internal <a href="GameEngine.html" title="class in com.treasure.hunt.game"><code>GameEngine</code></a></div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isLatestStepViewed()">isLatestStepViewed</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#next()">next</a></span>()</code></th>
 <td class="colLast">
 <div class="block">(Simulates) and shows the next <a href="Turn.html" title="class in com.treasure.hunt.game"><code>Turn</code></a>, if the game is not finished.</div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#previous()">previous</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Shows the simulation-state, before the last <a href="Turn.html" title="class in com.treasure.hunt.game"><code>Turn</code></a>.</div>
 </td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#read(com.esotericsoftware.kryo.Kryo,com.esotericsoftware.kryo.io.Input)">read</a></span>&#8203;(com.esotericsoftware.kryo.Kryo&nbsp;kryo,
     com.esotericsoftware.kryo.io.Input&nbsp;input)</code></th>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#removeAdditional(java.lang.String)">removeAdditional</a></span>&#8203;(java.lang.String&nbsp;key)</code></th>
 <td class="colLast">
 <div class="block">Remove an additional <a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryItem</code></a> from the rendering queue.</div>
 </td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>protected boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#slowApproachExit()">slowApproachExit</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Tests, if the last few steps of the searcher approach the treasure fast enough.</div>
 </td>
 </tr>
-<tr id="i30" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stopBeat()">stopBeat</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Stops the beating thread from executing <a href="#next()"><code>next()</code></a>.</div>
 </td>
 </tr>
-<tr id="i31" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#write(com.esotericsoftware.kryo.Kryo,com.esotericsoftware.kryo.io.Output)">write</a></span>&#8203;(com.esotericsoftware.kryo.Kryo&nbsp;kryo,
      com.esotericsoftware.kryo.io.Output&nbsp;output)</code></th>
@@ -678,7 +603,7 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <a id="slowApproachExit()">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>slowApproachExit</h4>
 <pre class="methodSignature">protected&nbsp;boolean&nbsp;slowApproachExit()</pre>
@@ -688,135 +613,6 @@ implements com.esotericsoftware.kryo.KryoSerializable, com.esotericsoftware.kryo
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>whether the game exits early because of the searcher not progressing fast enough</dd>
 </dl>
-</li>
-</ul>
-<a id="getTurns()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getTurns</h4>
-<pre class="methodSignature">public&nbsp;javafx.collections.ObservableList&lt;<a href="Turn.html" title="class in com.treasure.hunt.game">Turn</a>&gt;&nbsp;getTurns()</pre>
-<div class="block">Contains the "gameHistory".</div>
-</li>
-</ul>
-<a id="getAdditional()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getAdditional</h4>
-<pre class="methodSignature">public&nbsp;javafx.collections.ObservableMap&lt;java.lang.String,&#8203;<a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt;&nbsp;getAdditional()</pre>
-<div class="block">Contains additional <a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryItem</code></a>'s which does not belong to the strategies,
- like the <a href="../jts/geom/Grid.html" title="class in com.treasure.hunt.jts.geom"><code>Grid</code></a> or <a href="../strategy/geom/GeometryType.html#HIGHLIGHTER"><code>GeometryType.HIGHLIGHTER</code></a>;</div>
-</li>
-</ul>
-<a id="getBeatThreadRunning()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getBeatThreadRunning</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.property.BooleanProperty&nbsp;getBeatThreadRunning()</pre>
-</li>
-</ul>
-<a id="getFinishedProperty()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getFinishedProperty</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.property.BooleanProperty&nbsp;getFinishedProperty()</pre>
-</li>
-</ul>
-<a id="getViewIndex()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getViewIndex</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.property.IntegerProperty&nbsp;getViewIndex()</pre>
-</li>
-</ul>
-<a id="getLatestStepViewedBinding()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getLatestStepViewedBinding</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.binding.BooleanBinding&nbsp;getLatestStepViewedBinding()</pre>
-</li>
-</ul>
-<a id="getLastMoveBinding()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getLastMoveBinding</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.binding.ObjectBinding&lt;<a href="Turn.html" title="class in com.treasure.hunt.game">Turn</a>&gt;&nbsp;getLastMoveBinding()</pre>
-</li>
-</ul>
-<a id="getLastTreasureBindings()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getLastTreasureBindings</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.binding.ObjectBinding&lt;org.locationtech.jts.geom.Point&gt;&nbsp;getLastTreasureBindings()</pre>
-</li>
-</ul>
-<a id="getLastPointBinding()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getLastPointBinding</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.binding.ObjectBinding&lt;org.locationtech.jts.geom.Point&gt;&nbsp;getLastPointBinding()</pre>
-</li>
-</ul>
-<a id="getMoveSizeBinding()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getMoveSizeBinding</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.binding.IntegerBinding&nbsp;getMoveSizeBinding()</pre>
-</li>
-</ul>
-<a id="getStepForwardImpossibleBinding()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getStepForwardImpossibleBinding</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.binding.BooleanBinding&nbsp;getStepForwardImpossibleBinding()</pre>
-</li>
-</ul>
-<a id="getStepBackwardImpossibleBinding()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getStepBackwardImpossibleBinding</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.binding.BooleanBinding&nbsp;getStepBackwardImpossibleBinding()</pre>
-</li>
-</ul>
-<a id="getStatistics()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getStatistics</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.binding.ObjectBinding&lt;java.util.List&lt;<a href="../analysis/StatisticObject.html" title="class in com.treasure.hunt.analysis">StatisticObject</a>&gt;&gt;&nbsp;getStatistics()</pre>
-</li>
-</ul>
-<a id="getStatusMessageItemsBinding()">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>getStatusMessageItemsBinding</h4>
-<pre class="methodSignature">public&nbsp;javafx.beans.binding.ObjectBinding&lt;java.util.List&lt;<a href="../strategy/geom/StatusMessageItem.html" title="class in com.treasure.hunt.strategy.geom">StatusMessageItem</a>&gt;&gt;&nbsp;getStatusMessageItemsBinding()</pre>
 </li>
 </ul>
 </li>

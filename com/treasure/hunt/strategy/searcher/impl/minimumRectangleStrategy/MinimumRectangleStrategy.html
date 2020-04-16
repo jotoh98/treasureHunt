@@ -27,14 +27,14 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
 var activeTableTab = "activeTableTab";
 var pathtoroot = "../../../../../../../";
-var useModuleDirectories = false;
+var useModuleDirectories = true;
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -253,49 +253,22 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>org.locationtech.jts.geom.Geometry</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCurrentMultiPolygon()">getCurrentMultiPolygon</a></span>()</code></th>
-<td class="colLast">
-<div class="block">This points represent the polygon where the treasure must lie in if it is in the current search rectangle,
- according to all obtained hints.</div>
-</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>org.locationtech.jts.geom.Polygon</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHintPolygon()">getHintPolygon</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>java.util.List&lt;<a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getObtainedHints()">getObtainedHints</a></span>()</code></th>
-<td class="colLast">
-<div class="block">received after the last update of the phase's rectangle</div>
-</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>org.locationtech.jts.geom.Polygon</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getVisitedPolygon()">getVisitedPolygon</a></span>()</code></th>
-<td class="colLast">
-<div class="block">The polygon the player already has seen because he was there.</div>
-</td>
-</tr>
-<tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#init(org.locationtech.jts.geom.Point)">init</a></span>&#8203;(org.locationtech.jts.geom.Point&nbsp;searcherStartPosition)</code></th>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#move()">move</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Use this to perform a initial move, without a hint given.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#move(com.treasure.hunt.strategy.hint.impl.HalfPlaneHint)">move</a></span>&#8203;(<a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a>&nbsp;hint)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>protected <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#returnHandlingMinimumRectangleStrategy(com.treasure.hunt.strategy.searcher.SearchPath)">returnHandlingMinimumRectangleStrategy</a></span>&#8203;(<a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</code></th>
 <td class="colLast">
@@ -308,7 +281,7 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
  - status messages of quality of hints get added</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>protected <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#specificRectangleScan(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,com.treasure.hunt.strategy.searcher.SearchPath)">specificRectangleScan</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner1,
                      org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner2,
@@ -452,7 +425,7 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 <a id="specificRectangleScan(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,com.treasure.hunt.strategy.searcher.SearchPath)">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>specificRectangleScan</h4>
 <pre class="methodSignature">protected&nbsp;<a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;specificRectangleScan&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;rectangleCorner1,
@@ -468,47 +441,6 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 <dd><code><a href="../strategyFromPaper/StrategyFromPaper.html#specificRectangleScan(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,com.treasure.hunt.strategy.searcher.SearchPath)">specificRectangleScan</a></code>&nbsp;in class&nbsp;<code><a href="../strategyFromPaper/StrategyFromPaper.html" title="class in com.treasure.hunt.strategy.searcher.impl.strategyFromPaper">StrategyFromPaper</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 </dl>
-</li>
-</ul>
-<a id="getObtainedHints()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getObtainedHints</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a>&gt;&nbsp;getObtainedHints()</pre>
-<div class="block">received after the last update of the phase's rectangle</div>
-</li>
-</ul>
-<a id="getCurrentMultiPolygon()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getCurrentMultiPolygon</h4>
-<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Geometry&nbsp;getCurrentMultiPolygon()</pre>
-<div class="block">This points represent the polygon where the treasure must lie in if it is in the current search rectangle,
- according to all obtained hints.
- If this List is empty, the treasure is not in the current search rectangle.</div>
-</li>
-</ul>
-<a id="getHintPolygon()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getHintPolygon</h4>
-<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Polygon&nbsp;getHintPolygon()</pre>
-</li>
-</ul>
-<a id="getVisitedPolygon()">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>getVisitedPolygon</h4>
-<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Polygon&nbsp;getVisitedPolygon()</pre>
-<div class="block">The polygon the player already has seen because he was there.</div>
 </li>
 </ul>
 </li>

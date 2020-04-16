@@ -27,14 +27,14 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10};
+var data = {"i0":10,"i1":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
 var activeTableTab = "activeTableTab";
 var pathtoroot = "../../../../../../";
-var useModuleDirectories = false;
+var useModuleDirectories = true;
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -181,87 +181,12 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>double</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAbsoluteAreaCutoff()">getAbsoluteAreaCutoff</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>org.locationtech.jts.geom.Geometry</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAreaAfterHint()">getAreaAfterHint</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>org.locationtech.jts.geom.Geometry</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAreaBeforeHint()">getAreaBeforeHint</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>double</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDistanceFromNormalAngleLineToTreasure()">getDistanceFromNormalAngleLineToTreasure</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>double</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDistanceFromResultingCentroidToTreasure()">getDistanceFromResultingCentroidToTreasure</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code><a href="../../hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHint()">getHint</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>double</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRating()">getRating</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>double</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRelativeAreaCutoff()">getRelativeAreaCutoff</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code>javafx.util.Pair&lt;org.locationtech.jts.geom.Coordinate,&#8203;java.lang.Double&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getWorstConstantPoint()">getWorstConstantPoint</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isBadHint()">isBadHint</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i10" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBadHint(boolean)">setBadHint</a></span>&#8203;(boolean&nbsp;isBadHint)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i11" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setDistanceFromNormalAngleLineToTreasure(double)">setDistanceFromNormalAngleLineToTreasure</a></span>&#8203;(double&nbsp;distanceFromNormalAngleLineToTreasure)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i12" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setDistanceFromResultingCentroidToTreasure(double)">setDistanceFromResultingCentroidToTreasure</a></span>&#8203;(double&nbsp;distanceFromResultingCentroidToTreasure)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i13" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setRating(double)">setRating</a></span>&#8203;(double&nbsp;rating)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i14" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setWorstConstantPoint(javafx.util.Pair)">setWorstConstantPoint</a></span>&#8203;(javafx.util.Pair&lt;org.locationtech.jts.geom.Coordinate,&#8203;java.lang.Double&gt;&nbsp;worstConstantPoint)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i15" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setWorstConstantPoint(org.locationtech.jts.geom.Coordinate,java.lang.Double)">setWorstConstantPoint</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;c,
                      java.lang.Double&nbsp;constant)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toString()">toString</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -336,146 +261,11 @@ extends java.lang.Object</pre>
 <a id="setWorstConstantPoint(org.locationtech.jts.geom.Coordinate,java.lang.Double)">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>setWorstConstantPoint</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setWorstConstantPoint&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;c,
                                   java.lang.Double&nbsp;constant)</pre>
-</li>
-</ul>
-<a id="getHint()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getHint</h4>
-<pre class="methodSignature">public&nbsp;<a href="../../hint/impl/AngleHint.html" title="class in com.treasure.hunt.strategy.hint.impl">AngleHint</a>&nbsp;getHint()</pre>
-</li>
-</ul>
-<a id="getAreaBeforeHint()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getAreaBeforeHint</h4>
-<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Geometry&nbsp;getAreaBeforeHint()</pre>
-</li>
-</ul>
-<a id="getAreaAfterHint()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getAreaAfterHint</h4>
-<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Geometry&nbsp;getAreaAfterHint()</pre>
-</li>
-</ul>
-<a id="getAbsoluteAreaCutoff()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getAbsoluteAreaCutoff</h4>
-<pre class="methodSignature">public&nbsp;double&nbsp;getAbsoluteAreaCutoff()</pre>
-</li>
-</ul>
-<a id="getRelativeAreaCutoff()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getRelativeAreaCutoff</h4>
-<pre class="methodSignature">public&nbsp;double&nbsp;getRelativeAreaCutoff()</pre>
-</li>
-</ul>
-<a id="getDistanceFromNormalAngleLineToTreasure()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getDistanceFromNormalAngleLineToTreasure</h4>
-<pre class="methodSignature">public&nbsp;double&nbsp;getDistanceFromNormalAngleLineToTreasure()</pre>
-</li>
-</ul>
-<a id="setDistanceFromNormalAngleLineToTreasure(double)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setDistanceFromNormalAngleLineToTreasure</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setDistanceFromNormalAngleLineToTreasure&#8203;(double&nbsp;distanceFromNormalAngleLineToTreasure)</pre>
-</li>
-</ul>
-<a id="getDistanceFromResultingCentroidToTreasure()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getDistanceFromResultingCentroidToTreasure</h4>
-<pre class="methodSignature">public&nbsp;double&nbsp;getDistanceFromResultingCentroidToTreasure()</pre>
-</li>
-</ul>
-<a id="setDistanceFromResultingCentroidToTreasure(double)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setDistanceFromResultingCentroidToTreasure</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setDistanceFromResultingCentroidToTreasure&#8203;(double&nbsp;distanceFromResultingCentroidToTreasure)</pre>
-</li>
-</ul>
-<a id="isBadHint()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>isBadHint</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;isBadHint()</pre>
-</li>
-</ul>
-<a id="setBadHint(boolean)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setBadHint</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setBadHint&#8203;(boolean&nbsp;isBadHint)</pre>
-</li>
-</ul>
-<a id="getWorstConstantPoint()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getWorstConstantPoint</h4>
-<pre class="methodSignature">public&nbsp;javafx.util.Pair&lt;org.locationtech.jts.geom.Coordinate,&#8203;java.lang.Double&gt;&nbsp;getWorstConstantPoint()</pre>
-</li>
-</ul>
-<a id="setWorstConstantPoint(javafx.util.Pair)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setWorstConstantPoint</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setWorstConstantPoint&#8203;(javafx.util.Pair&lt;org.locationtech.jts.geom.Coordinate,&#8203;java.lang.Double&gt;&nbsp;worstConstantPoint)</pre>
-</li>
-</ul>
-<a id="getRating()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getRating</h4>
-<pre class="methodSignature">public&nbsp;double&nbsp;getRating()</pre>
-</li>
-</ul>
-<a id="setRating(double)">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>setRating</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setRating&#8203;(double&nbsp;rating)</pre>
 </li>
 </ul>
 </li>
