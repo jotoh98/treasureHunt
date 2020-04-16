@@ -8,27 +8,30 @@ import org.locationtech.jts.math.Vector2D;
 import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.RoutinesFromPaper.meanderThroughLines;
 
 /**
+ * Implements some alternatives to the RectangleScan-Routine used by the paper "Deterministic Treasure Hunt in the
+ * Plane with Angular Hints" from Bouchard et al.
+ *
  * @author Rank
  */
 public class RectangleScanEnhanced {
-    MinimumRectangleStrategy strategy;
+    MinimumRectangleSearcher strategy;
 
-    public RectangleScanEnhanced(MinimumRectangleStrategy strategy) {
+    public RectangleScanEnhanced(MinimumRectangleSearcher strategy) {
         this.strategy = strategy;
     }
 
     /**
      * Meanders through the rectangle to scan it like the RectangleScan Routine from the paper but uses fewer distance
      *
-     * @param a
-     * @param b
-     * @param c
-     * @param d
-     * @param searchPath
-     * @return
+     * @param a    a corner of the rectangle which is to be scanned, neighboring d and b
+     * @param b    a corner of the rectangle which is to be scanned, neighboring a and c
+     * @param c    a corner of the rectangle which is to be scanned, neighboring b and d
+     * @param d    a corner of the rectangle which is to be scanned, neighboring c and a
+     * @param move the search-path the scan should be added to
+     * @return the resulting search-path
      */
     public static SearchPath rectangleScanEnhanced(Coordinate a, Coordinate b, Coordinate c, Coordinate d,
-                                                   SearchPath searchPath) {
+                                                   SearchPath move) {
         if (a.distance(b) > a.distance(d)) {
             Coordinate temp = a;
             a = d;
@@ -40,19 +43,27 @@ public class RectangleScanEnhanced {
         if (numberOfPointsInOneLine == 1) {
             Vector2D aToBHalf = new Vector2D(a, b);
             aToBHalf = aToBHalf.divide(2);
-            searchPath.addPoint(JTSUtils.createPoint(a.x + aToBHalf.getX()
+            move.addPoint(JTSUtils.createPoint(a.x + aToBHalf.getX()
                     , a.y + aToBHalf.getY()));
-            searchPath.addPoint(JTSUtils.createPoint(d.x + aToBHalf.getX(),
+            move.addPoint(JTSUtils.createPoint(d.x + aToBHalf.getX(),
                     d.y + aToBHalf.getY()
             ));
-            return searchPath;
+            return move;
         }
 
         Point[] a_k = lineOfPointsWithDistanceAtMostTwo(numberOfPointsInOneLine, a, b);
         Point[] b_k = lineOfPointsWithDistanceAtMostTwo(numberOfPointsInOneLine, d, c);
-        return meanderThroughLines(a_k, b_k, numberOfPointsInOneLine - 1, searchPath);
+        return meanderThroughLines(a_k, b_k, numberOfPointsInOneLine - 1, move);
     }
 
+    /**
+     * Returns a list of points on the line-segment from p1 to p2
+     * The first point is in distance 1 to p1 and the last point is in distance 1 to p2.
+     * The other points go consecutive from the first to the last point and have equal distances to their neighboring
+     * points. There are numberOfPointsOnLine points in this returned list.
+     *
+     * @param numberOfPointsOnLine the number of points in the returned list
+     */
     static private Point[] lineOfPointsWithDistanceAtMostTwo(int numberOfPointsOnLine, Coordinate p1, Coordinate p2) {
         if (numberOfPointsOnLine <= 1) {
             throw new IllegalArgumentException("numberOfPointsOnLine must be bigger than 1 but equals " + numberOfPointsOnLine);
@@ -76,13 +87,25 @@ public class RectangleScanEnhanced {
         return res;
     }
 
-    SearchPath rectangleScanMinimal(Coordinate rectangleCorner1, Coordinate rectangleCorner2,
-                                    Coordinate rectangleCorner3, Coordinate rectangleCorner4, SearchPath move) {
+    /**
+     * Replaces RectangleScan and does so by only scanning the minimum to the rectangle abcd parallel rectangle
+     * which covers all areas not seen and not excludable by hints, inside the current phase rectangle and the input rectangle.
+     * It then uses EnhancedRectangleScan to scan this rectangle.
+     *
+     * @param a    a corner of the rectangle which is to be scanned, neighboring d and b
+     * @param b    a corner of the rectangle which is to be scanned, neighboring a and c
+     * @param c    a corner of the rectangle which is to be scanned, neighboring b and d
+     * @param d    a corner of the rectangle which is to be scanned, neighboring c and a
+     * @param move the search-path the scan should be added to
+     * @return the resulting search-path
+     */
+    SearchPath rectangleScanMinimal(Coordinate a, Coordinate b,
+                                    Coordinate c, Coordinate d, SearchPath move) {
         TransformForAxisParallelism transformerForRectangleAxisParallelism =
-                new TransformForAxisParallelism(new LineSegment(rectangleCorner1, rectangleCorner2));
+                new TransformForAxisParallelism(new LineSegment(a, b));
         strategy.updateVisitedPolygon(move);
         Polygon rectanglePolygon = JTSUtils.GEOMETRY_FACTORY.createPolygon(new Coordinate[]{
-                rectangleCorner1, rectangleCorner2, rectangleCorner3, rectangleCorner4, rectangleCorner1});
+                a, b, c, d, a});
 
         Geometry newAreaToScan = strategy.getCurrentMultiPolygon().intersection(rectanglePolygon);
 

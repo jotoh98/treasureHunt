@@ -9,6 +9,8 @@ import com.treasure.hunt.strategy.searcher.SearchPath;
 import com.treasure.hunt.utils.JTSUtils;
 
 /**
+ * Gets used by StrategyFromPaper to output some useful status messages
+ *
  * @author Rank
  */
 public class StatusMessages {
@@ -43,9 +45,18 @@ public class StatusMessages {
                     "For more information please look in the paper."
     );
 
+    /**
+     * Can be used by lastHintBadSubroutine to add the description of the case used in it.
+     * It also adds a visualisation of L1'' when needed.
+     *
+     * @param move                  the search-path this status message should be added to
+     * @param basicTransformation   the basicTransformation of the current configuration
+     * @param caseIndex             the caseIndex as used in LastHintBadSubroutine.lastHintBadSubroutine
+     * @param lastHintBadSubroutine the calling class
+     */
     static void addCaseDescriptionToStatus(SearchPath move, int basicTransformation, int caseIndex,
                                            LastHintBadSubroutine lastHintBadSubroutine) {
-        String[] transformedRectangle = getLettersOfTransformedRectangle(basicTransformation);
+        String[] transformedRectangle = getCharactersOfTransformedRectangle(basicTransformation);
         String statusMessage = "Let ABCD be the previous rectangle's corners, with\n" +
                 "A being the corner on the top left,\n" +
                 "B being the corner on the top right,\n" +
@@ -159,17 +170,17 @@ public class StatusMessages {
                 GeometryType.L1_DOUBLE_APOS));
     }
 
-    private static String[] getLettersOfTransformedRectangle(int basicTransformation) {
-        /**
-         * The rectangle got transformed by phi (with basicTransformation as index)
-         * The old rectangle gets called ABCD in the following, with A being the corner-point on the top left,
-         * B being the point on the top right, etc.
-         * In the following transformedRectangle[0] is the top left corner from the transformed rectangle
-         * (this could be A,B,C or D dependant on the basicTransformation's value)
-         * transformedRectangle[0] is the top left corner,
-         * transformedRectangle[1] is the top right corner,
-         * transformedRectangle[2] is the bottom right corner and
-         * transformedRectangle[3] is the bottom left corner.
+    private static String[] getCharactersOfTransformedRectangle(int basicTransformation) {
+        /*
+          The rectangle got transformed by phi (with basicTransformation as index)
+          The old rectangle gets called ABCD in the following, with A being the corner-point on the top left,
+          B being the point on the top right, etc.
+          In the following transformedRectangle[0] is the top left corner from the transformed rectangle
+          (this could be A,B,C or D dependant on the basicTransformation's value)
+          transformedRectangle[0] is the top left corner,
+          transformedRectangle[1] is the top right corner,
+          transformedRectangle[2] is the bottom right corner and
+          transformedRectangle[3] is the bottom left corner.
          */
         String transformedRectangleString;
         String[] transformedRectangle;

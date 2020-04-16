@@ -15,8 +15,8 @@ import static com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.Geometr
 import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
 
 /**
- * For an explanation what each method does, it is recommended to look in the paper (Deterministic Treasure Hunt in the
- * Plane with Angular Hints from Bouchard et al.).
+ * For an explanation what each method does, it is recommended to look in the paper ("Deterministic Treasure Hunt in the
+ * Plane with Angular Hints" from Bouchard et al.).
  * There the same symbols are used.
  * The functionality of rectangleScan is explained there on page 3.
  * Phi, rho, sigma and the basic-transformation are explained on pages 7ff.
@@ -50,27 +50,20 @@ public class RoutinesFromPaper {
      * It adds the Points to searchPath so that the player sees all points in the rectangle ABCD.
      * Unlike the paper it does not add the point where the procedure started to the search-path.
      *
-     * @param A
-     * @param B
-     * @param C
-     * @param D
+     * @param A a corner of the rectangle which is to be scanned, neighboring d and b
+     * @param B a corner of the rectangle which is to be scanned, neighboring a and c
+     * @param C a corner of the rectangle which is to be scanned, neighboring b and d
+     * @param D a corner of the rectangle which is to be scanned, neighboring c and a
      * @param searchPath   the searchPath the rectangle scan path gets added to
      * @param lastPosition when the searchPath is empty, it is assumed that this was the point where the procedure
      *                     rectangleScan got started and the searcher returns there afterwards
-     * @return
+     * @return the search-path with the added scan
      */
     public static SearchPath rectangleScan(Point A, Point B, Point C, Point D, SearchPath searchPath, Point lastPosition) {
         return rectangleScan(A.getCoordinate(), B.getCoordinate(), C.getCoordinate(), D.getCoordinate(), searchPath, lastPosition);
     }
 
     /**
-     * @param A
-     * @param B
-     * @param C
-     * @param D
-     * @param searchPath
-     * @param lastPosition
-     * @return
      * @see RoutinesFromPaper#rectangleScan(Point, Point, Point, Point, SearchPath, Point)
      */
     public static SearchPath rectangleScan(Coordinate A, Coordinate B, Coordinate C, Coordinate D, SearchPath searchPath, Point lastPosition) {

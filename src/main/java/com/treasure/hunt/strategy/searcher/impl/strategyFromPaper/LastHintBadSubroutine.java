@@ -15,6 +15,9 @@ import static com.treasure.hunt.utils.JTSUtils.GEOMETRY_FACTORY;
 import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
 
 /**
+ * Implements the "else"-part of the first if-condition in Algorithm 3 (Function ReduceRectangle(R))
+ * in the paper "Deterministic Treasure Hunt in the Plane with Angular Hints" from Bouchard et al.
+ *
  * @author Rank
  */
 public class LastHintBadSubroutine {
@@ -134,10 +137,10 @@ public class LastHintBadSubroutine {
      * The function equals the "else"-part of the first if-condition in Algorithm 3 (Function ReduceRectangle(R))
      * in the paper.
      *
-     * @param currentHint
-     * @param lastBadHint
-     * @param move
-     * @param changeABCD
+     * @param currentHint the hint gotten last by the calling strategy
+     * @param lastBadHint the hint gotten before the currentHint by the calling strategy
+     * @param move        the move the steps get added to
+     * @param changeABCD  true if ABCD should be changed, false if the strategy does so by itself
      * @return The move to scan various areas so that A,B,C and D can be updated to a smaller rectangle (or the treasure
      * is found)
      */

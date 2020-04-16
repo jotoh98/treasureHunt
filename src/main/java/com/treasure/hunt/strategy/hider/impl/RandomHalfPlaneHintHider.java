@@ -20,7 +20,6 @@ import org.locationtech.jts.geom.Point;
  * @author Rank
  */
 @Preference(name = PreferenceService.MAX_TREASURE_DISTANCE, value = 100)
-@Preference(name = PreferenceService.TREASURE_DISTANCE, value = 100)
 @Preference(name = PreferenceService.MIN_TREASURE_DISTANCE, value = 100)
 public class RandomHalfPlaneHintHider implements Hider<HalfPlaneHint> {
     HalfPlaneHint lastHint = null;

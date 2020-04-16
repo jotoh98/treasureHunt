@@ -41,12 +41,9 @@ public class GeometricUtils {
     }
 
     /**
-     * Coordinate of rect are rounded in the precision model grid and reordered so tha rect[0] is the upper left point,
-     * rect[1] is the upper right point, rect[2] is the bottom right point and rect[3] is the bottom left point.
+     * Coordinate of rect are reordered so tha rect[0] is the upper left point, rect[1] is the upper right point,
+     * rect[2] is the bottom right point and rect[3] is the bottom left point.
      * If the rectangle is not parallel to the x and y axis, an error is thrown.
-     *
-     * @param rect
-     * @return
      */
     static Coordinate[] arrangeRectangle(Coordinate[] rect) {
         assertRectangle(rect);

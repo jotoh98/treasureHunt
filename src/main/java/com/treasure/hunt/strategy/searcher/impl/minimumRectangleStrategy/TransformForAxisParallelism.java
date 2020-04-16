@@ -9,6 +9,9 @@ import org.locationtech.jts.geom.*;
 import org.locationtech.jts.geom.util.AffineTransformation;
 
 /**
+ * For more information what internal and external refers to please look in the documentation of MinimumRectangleSearcher
+ * @see MinimumRectangleSearcher
+ *
  * @author Rank
  */
 public class TransformForAxisParallelism {
@@ -35,8 +38,6 @@ public class TransformForAxisParallelism {
     /**
      * Creates a transformer where the line line in internal coordinate is parallel to the x-axis and
      * the point line.p0 is (0,0) in internal coordinates.
-     *
-     * @param line
      */
     public TransformForAxisParallelism(LineSegment line) {
         this.internalCenterInExternalRepresentation = JTSUtils.GEOMETRY_FACTORY.createPoint(line.p0);

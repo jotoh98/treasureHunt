@@ -13,7 +13,9 @@ import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.LastHintBadSub
 import com.treasure.hunt.strategy.searcher.impl.strategyFromPaper.StrategyFromPaper;
 import com.treasure.hunt.utils.JTSUtils;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.*;
+import org.locationtech.jts.operation.buffer.BufferParameters;
 import org.locationtech.jts.util.AssertionFailedException;
 
 import java.util.ArrayList;
@@ -62,14 +64,12 @@ import static com.treasure.hunt.utils.JTSUtils.lineWayIntersection;
  *
  * @author Rank
  */
-public class MinimumRectangleStrategy extends StrategyFromPaper implements Searcher<HalfPlaneHint> {
+@Slf4j
+public class MinimumRectangleSearcher extends StrategyFromPaper implements Searcher<HalfPlaneHint> {
     Point realSearcherStartPosition;
     RectangleScanEnhanced rectangleScanEnhanced = new RectangleScanEnhanced(this);
     private boolean firstMoveWithHint = true;
     private TransformForAxisParallelism transformer;
-    /**
-     * received after the last update of the phase's rectangle
-     */
     @Getter
     private List<HalfPlaneHint> obtainedHints; // stored in internal coordinates
     /**
@@ -235,6 +235,10 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         return returnHandlingMinimumRectangleStrategy(goodHintSubroutine());
     }
 
+    /**
+     * Reduces hintPolygon and currentMultiPolygon, by excluding the area hint can exclude.
+     * @param hint a received hint (in internal representation)
+     */
     void reducePolygons(HalfPlaneHint hint) {
         if (hintPolygon == null) {
             currentMultiPolygon = null;
@@ -243,11 +247,19 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
             if (hintPolygon == null || currentMultiPolygonIsEmpty()) {
                 currentMultiPolygon = null;
             } else {
-                currentMultiPolygon = hintPolygon.difference(visitedPolygon);
+                try {
+                    currentMultiPolygon = hintPolygon.difference(visitedPolygon);
+                } catch (TopologyException e) {
+                    log.info("Due to precision error, the strategy is exiting.");
+                    throw e;
+                }
             }
         }
     }
 
+    /**
+     * @return the search-path to go in case the hint was good
+     */
     SearchPath goodHintSubroutine() {
         SearchPath move = new SearchPath();
         currentHintQuality = HintQuality.good;
@@ -257,6 +269,13 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         return move;
     }
 
+    /**
+     * Increments the phase (possibly multiple times) until the currentMultiPolygon of this phase is not empty.
+     * Then it moves to the middle of the new current rectangle (which gets determined by the currentMultiPolygon).
+     *
+     * @param move the search-path the moves should be added to
+     * @return the search-path with the appropriate moves added
+     */
     SearchPath setNewPhaseAndMove(SearchPath move) {
         phaseGotIncrementedThisMove = true;
         if (!currentMultiPolygonIsEmpty()) {
@@ -282,6 +301,10 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         return move;
     }
 
+    /**
+     * @param hintInInternal the current hint in internal representation
+     * @return true if the hint is good, false otherwise
+     */
     boolean hintIsGood(HalfPlaneHint hintInInternal) {
         LineSegment hintLine = hintInInternal.getHalfPlaneLine();
         LineSegment AB = new LineSegment(searchAreaCornerA.getCoordinate(), searchAreaCornerB.getCoordinate());
@@ -309,14 +332,23 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
         return true;
     }
 
-
-    void updateVisitedPolygon(SearchPath move) {// lastLocation has to be set right
-        visitedPolygon = (Polygon) visitedPolygon.union(visitedPolygon(lastLocation, move));
+    /**
+     * Adds the areas seen by move to the visitedPolygon
+     */
+    void updateVisitedPolygon(SearchPath move) {
+        Polygon newVisitedPolygon = (Polygon) visitedPolygon.union(visitedPolygon(lastLocation, move));
         if (hintPolygon != null && !currentMultiPolygonIsEmpty()) {
-            currentMultiPolygon = hintPolygon.difference(visitedPolygon);
+            try {
+                currentMultiPolygon = hintPolygon.difference(newVisitedPolygon);
+            } catch (TopologyException e) {
+                newVisitedPolygon = (Polygon) visitedPolygon.union(visitedPolygon(lastLocation, move, BufferParameters.CAP_FLAT));
+                log.info("due to precision problem, the seen area of the player gets calculated different");
+            }
         } else {
             currentMultiPolygon = null;
         }
+
+        visitedPolygon = newVisitedPolygon;
     }
 
     /**
@@ -424,6 +456,9 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
                 move);
     }
 
+    /**
+     * @return the current rectangle in internal representation
+     */
     private Coordinate[] searchRectangle() {
         return new Coordinate[]{searchAreaCornerA.getCoordinate(), searchAreaCornerB.getCoordinate(),
                 searchAreaCornerC.getCoordinate(), searchAreaCornerD.getCoordinate()};
@@ -444,10 +479,17 @@ public class MinimumRectangleStrategy extends StrategyFromPaper implements Searc
                 searchAreaCornerC.getCoordinate(), searchAreaCornerD.getCoordinate(), move);
     }
 
+    /**
+     * @return true if the currentMultiPolygon is empty, false otherwise
+     */
     private boolean currentMultiPolygonIsEmpty() {
         return currentMultiPolygon == null || JTSUtils.doubleEqual(currentMultiPolygon.getArea(), 0);
     }
 
+    /**
+     * Does set searchAreaCornerA, searchAreaCornerB, etc. so that the searchRectangle covers all areas in currentMultiPolygon
+     * and is parallel to the phase rectangle
+     */
     private void setABCDinStrategy() {
         if (currentMultiPolygonIsEmpty()) {
             searchAreaCornerA = null;
