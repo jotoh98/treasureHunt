@@ -133,8 +133,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">RoutinesFromPaper</span>
 extends java.lang.Object</pre>
-<div class="block">For an explanation what each method does, it is recommended to look in the paper (Deterministic Treasure Hunt in the
- Plane with Angular Hints from Bouchard et al.).
+<div class="block">For an explanation what each method does, it is recommended to look in the paper ("Deterministic Treasure Hunt in the
+ Plane with Angular Hints" from Bouchard et al.).
  There the same symbols are used.
  The functionality of rectangleScan is explained there on page 3.
  Phi, rho, sigma and the basic-transformation are explained on pages 7ff.</div>
@@ -229,14 +229,15 @@ extends java.lang.Object</pre>
  Unlike the paper it does not add the point where the procedure started to the search-path.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>A</code> - </dd>
-<dd><code>B</code> - </dd>
-<dd><code>C</code> - </dd>
-<dd><code>D</code> - </dd>
+<dd><code>A</code> - a corner of the rectangle which is to be scanned, neighboring d and b</dd>
+<dd><code>B</code> - a corner of the rectangle which is to be scanned, neighboring a and c</dd>
+<dd><code>C</code> - a corner of the rectangle which is to be scanned, neighboring b and d</dd>
+<dd><code>D</code> - a corner of the rectangle which is to be scanned, neighboring c and a</dd>
 <dd><code>searchPath</code> - the searchPath the rectangle scan path gets added to</dd>
 <dd><code>lastPosition</code> - when the searchPath is empty, it is assumed that this was the point where the procedure
                      rectangleScan got started and the searcher returns there afterwards</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
+<dd>the search-path with the added scan</dd>
 </dl>
 </li>
 </ul>
@@ -253,14 +254,6 @@ extends java.lang.Object</pre>
                                        <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath,
                                        org.locationtech.jts.geom.Point&nbsp;lastPosition)</pre>
 <dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>A</code> - </dd>
-<dd><code>B</code> - </dd>
-<dd><code>C</code> - </dd>
-<dd><code>D</code> - </dd>
-<dd><code>searchPath</code> - </dd>
-<dd><code>lastPosition</code> - </dd>
-<dt><span class="returnLabel">Returns:</span></dt>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="#rectangleScan(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.searcher.SearchPath,org.locationtech.jts.geom.Point)"><code>rectangleScan(Point, Point, Point, Point, SearchPath, Point)</code></a></dd>
 </dl>

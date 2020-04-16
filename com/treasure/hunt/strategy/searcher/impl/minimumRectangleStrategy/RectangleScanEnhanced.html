@@ -133,6 +133,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">RectangleScanEnhanced</span>
 extends java.lang.Object</pre>
+<div class="block">Implements some alternatives to the RectangleScan-Routine used by the paper "Deterministic Treasure Hunt in the
+ Plane with Angular Hints" from Bouchard et al.</div>
 </li>
 </ul>
 </div>
@@ -153,7 +155,7 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.MinimumRectangleStrategy)">RectangleScanEnhanced</a></span>&#8203;(<a href="MinimumRectangleStrategy.html" title="class in com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy">MinimumRectangleStrategy</a>&nbsp;strategy)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.MinimumRectangleSearcher)">RectangleScanEnhanced</a></span>&#8203;(<a href="MinimumRectangleSearcher.html" title="class in com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy">MinimumRectangleSearcher</a>&nbsp;strategy)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -180,7 +182,7 @@ extends java.lang.Object</pre>
                      org.locationtech.jts.geom.Coordinate&nbsp;b,
                      org.locationtech.jts.geom.Coordinate&nbsp;c,
                      org.locationtech.jts.geom.Coordinate&nbsp;d,
-                     <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath)</code></th>
+                     <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</code></th>
 <td class="colLast">
 <div class="block">Meanders through the rectangle to scan it like the RectangleScan Routine from the paper but uses fewer distance</div>
 </td>
@@ -209,13 +211,13 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.MinimumRectangleStrategy)">
+<a id="&lt;init&gt;(com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy.MinimumRectangleSearcher)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>RectangleScanEnhanced</h4>
-<pre>public&nbsp;RectangleScanEnhanced&#8203;(<a href="MinimumRectangleStrategy.html" title="class in com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy">MinimumRectangleStrategy</a>&nbsp;strategy)</pre>
+<pre>public&nbsp;RectangleScanEnhanced&#8203;(<a href="MinimumRectangleSearcher.html" title="class in com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy">MinimumRectangleSearcher</a>&nbsp;strategy)</pre>
 </li>
 </ul>
 </li>
@@ -238,16 +240,17 @@ extends java.lang.Object</pre>
                                                org.locationtech.jts.geom.Coordinate&nbsp;b,
                                                org.locationtech.jts.geom.Coordinate&nbsp;c,
                                                org.locationtech.jts.geom.Coordinate&nbsp;d,
-                                               <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath)</pre>
+                                               <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</pre>
 <div class="block">Meanders through the rectangle to scan it like the RectangleScan Routine from the paper but uses fewer distance</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>a</code> - </dd>
-<dd><code>b</code> - </dd>
-<dd><code>c</code> - </dd>
-<dd><code>d</code> - </dd>
-<dd><code>searchPath</code> - </dd>
+<dd><code>a</code> - a corner of the rectangle which is to be scanned, neighboring d and b</dd>
+<dd><code>b</code> - a corner of the rectangle which is to be scanned, neighboring a and c</dd>
+<dd><code>c</code> - a corner of the rectangle which is to be scanned, neighboring b and d</dd>
+<dd><code>d</code> - a corner of the rectangle which is to be scanned, neighboring c and a</dd>
+<dd><code>move</code> - the search-path the scan should be added to</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
+<dd>the resulting search-path</dd>
 </dl>
 </li>
 </ul>

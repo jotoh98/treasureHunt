@@ -133,6 +133,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">LastHintBadSubroutine</span>
 extends java.lang.Object</pre>
+<div class="block">Implements the "else"-part of the first if-condition in Algorithm 3 (Function ReduceRectangle(R))
+ in the paper "Deterministic Treasure Hunt in the Plane with Angular Hints" from Bouchard et al.</div>
 </li>
 </ul>
 </div>
@@ -242,10 +244,10 @@ extends java.lang.Object</pre>
  in the paper.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>currentHint</code> - </dd>
-<dd><code>lastBadHint</code> - </dd>
-<dd><code>move</code> - </dd>
-<dd><code>changeABCD</code> - </dd>
+<dd><code>currentHint</code> - the hint gotten last by the calling strategy</dd>
+<dd><code>lastBadHint</code> - the hint gotten before the currentHint by the calling strategy</dd>
+<dd><code>move</code> - the move the steps get added to</dd>
+<dd><code>changeABCD</code> - true if ABCD should be changed, false if the strategy does so by itself</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The move to scan various areas so that A,B,C and D can be updated to a smaller rectangle (or the treasure
  is found)</dd>

@@ -136,7 +136,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 <dl>
 <dt>Direct Known Subclasses:</dt>
-<dd><code><a href="../minimumRectangleStrategy/MinimumRectangleStrategy.html" title="class in com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy">MinimumRectangleStrategy</a></code></dd>
+<dd><code><a href="../minimumRectangleStrategy/MinimumRectangleSearcher.html" title="class in com.treasure.hunt.strategy.searcher.impl.minimumRectangleStrategy">MinimumRectangleSearcher</a></code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">StrategyFromPaper</span>
@@ -332,7 +332,6 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 <tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#move(com.treasure.hunt.strategy.hint.impl.HalfPlaneHint)">move</a></span>&#8203;(<a href="../../../hint/impl/HalfPlaneHint.html" title="class in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint</a>&nbsp;hint)</code></th>
-<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>protected org.locationtech.jts.geom.Coordinate[]</code></td>
@@ -588,7 +587,6 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 <li class="blockList">
 <h4>move</h4>
 <pre class="methodSignature">public&nbsp;<a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move()</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../Searcher.html#move()">Searcher</a></code></span></div>
 <div class="block">Use this to perform a initial move, without a hint given.
  This is for the case, the searcher starts. (as he does normally)</div>
 <dl>
@@ -637,10 +635,6 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 <div class="block">This method is used to visualize the current phases rectangle and the current search rectangle.
  Adds their values to move</div>
 <dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>move</code> - </dd>
-<dd><code>currentRectanglePoints</code> - </dd>
-<dd><code>phaseRectanglePoints</code> - </dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the input with the visualisations of the current phase and the search rectangle added</dd>
 </dl>
@@ -672,16 +666,6 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
  If the hint-line goes through AD and BC, the biggest axis parallel-rectangle which
  lies in ABCD and where the treasure could be located due to the information gained by the hint, is returned.
  Otherwise the return value is null.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>A</code> - </dd>
-<dd><code>B</code> - </dd>
-<dd><code>C</code> - </dd>
-<dd><code>D</code> - </dd>
-<dd><code>hint</code> - </dd>
-<dd><code>hintLine</code> - </dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-</dl>
 </li>
 </ul>
 <a id="specificRectangleScan(org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,org.locationtech.jts.geom.Coordinate,com.treasure.hunt.strategy.searcher.SearchPath)">
@@ -697,15 +681,6 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
                                            <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</pre>
 <div class="block">A specific rectangle scanner for this strategy, in case of StrategyFromPaper, the standard rectangleScanSpecificForStrategy from
  RoutinesFromPaper is used (this method is required for the MinimumRectangleStrategy which inherits from this class.)</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>rectangleCorner1</code> - </dd>
-<dd><code>rectangleCorner2</code> - </dd>
-<dd><code>rectangleCorner3</code> - </dd>
-<dd><code>rectangleCorner4</code> - </dd>
-<dd><code>move</code> - </dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-</dl>
 </li>
 </ul>
 <a id="specificRectangleScan(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.searcher.SearchPath)">
@@ -721,15 +696,6 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
                                            <a href="../../SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;move)</pre>
 <div class="block">A specific rectangle scanner for this strategy, in case of StrategyFromPaper, the standard rectangleScanSpecificForStrategy from
  RoutinesFromPaper is used (this method is required for the MinimumRectangleStrategy which inherits from this class.)</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>rectangleCorner1</code> - </dd>
-<dd><code>rectangleCorner2</code> - </dd>
-<dd><code>rectangleCorner3</code> - </dd>
-<dd><code>rectangleCorner4</code> - </dd>
-<dd><code>move</code> - </dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-</dl>
 </li>
 </ul>
 <a id="splitRectangleVertically(org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,org.locationtech.jts.geom.Point,com.treasure.hunt.strategy.hint.impl.HalfPlaneHint,org.locationtech.jts.geom.LineSegment)">
@@ -749,16 +715,6 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
  If the hint-line goes through AB and CD, the biggest axis-parallel rectangle which
  lies in ABCD and where the treasure could be located due to the information gained by the hint, is returned.
  Otherwise the return value is null.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>A</code> - </dd>
-<dd><code>B</code> - </dd>
-<dd><code>C</code> - </dd>
-<dd><code>D</code> - </dd>
-<dd><code>hint</code> - </dd>
-<dd><code>hintLine</code> - </dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-</dl>
 </li>
 </ul>
 <a id="currentPhaseRectangle()">
@@ -770,9 +726,6 @@ implements <a href="../../Searcher.html" title="interface in com.treasure.hunt.s
 <pre class="methodSignature">protected&nbsp;org.locationtech.jts.geom.Coordinate[]&nbsp;currentPhaseRectangle()</pre>
 <div class="block">Returnes the rectangle of the current phase, by using the current phase index (equates to j in the paper or
  the phase-field in this implementation)</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-</dl>
 </li>
 </ul>
 <a id="phaseRectangle(int)">

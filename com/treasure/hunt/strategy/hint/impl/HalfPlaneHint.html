@@ -289,7 +289,10 @@ extends <a href="AngleHint.html" title="class in com.treasure.hunt.strategy.hint
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLowerHintPoint()">getLowerHintPoint</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns either the center or the right point
+ The point with the lower y value gets returned.</div>
+</td>
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
@@ -299,7 +302,10 @@ extends <a href="AngleHint.html" title="class in com.treasure.hunt.strategy.hint
 <tr id="i10" class="altColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUpperHintPoint()">getUpperHintPoint</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns either the center or the right point
+ The point with the higher y value gets returned.</div>
+</td>
 </tr>
 <tr id="i11" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
@@ -379,12 +385,6 @@ extends <a href="AngleHint.html" title="class in com.treasure.hunt.strategy.hint
                      <a href="HalfPlaneHint.Direction.html" title="enum in com.treasure.hunt.strategy.hint.impl">HalfPlaneHint.Direction</a>&nbsp;direction)</pre>
 <div class="block">This constructor can be used when unsure whether pointOne or pointTwo is the right/left point of the
  hint but the direction of the hint is known.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>pointOne</code> - </dd>
-<dd><code>pointTwo</code> - </dd>
-<dd><code>direction</code> - </dd>
-</dl>
 </li>
 </ul>
 </li>
@@ -499,6 +499,8 @@ extends <a href="AngleHint.html" title="class in com.treasure.hunt.strategy.hint
 <li class="blockList">
 <h4>getLowerHintPoint</h4>
 <pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Coordinate&nbsp;getLowerHintPoint()</pre>
+<div class="block">Returns either the center or the right point
+ The point with the lower y value gets returned.</div>
 </li>
 </ul>
 <a id="getUpperHintPoint()">
@@ -508,6 +510,8 @@ extends <a href="AngleHint.html" title="class in com.treasure.hunt.strategy.hint
 <li class="blockList">
 <h4>getUpperHintPoint</h4>
 <pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Coordinate&nbsp;getUpperHintPoint()</pre>
+<div class="block">Returns either the center or the right point
+ The point with the higher y value gets returned.</div>
 </li>
 </ul>
 <a id="pointsUpwards()">
@@ -517,6 +521,10 @@ extends <a href="AngleHint.html" title="class in com.treasure.hunt.strategy.hint
 <li class="blockList">
 <h4>pointsUpwards</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;pointsUpwards()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if the treasure is above this hints line, false otherwise</dd>
+</dl>
 </li>
 </ul>
 <a id="pointsDownwards()">
@@ -526,6 +534,10 @@ extends <a href="AngleHint.html" title="class in com.treasure.hunt.strategy.hint
 <li class="blockList">
 <h4>pointsDownwards</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;pointsDownwards()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if the treasure is below this hints line, false otherwise</dd>
+</dl>
 </li>
 </ul>
 </li>
