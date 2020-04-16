@@ -75,6 +75,10 @@ test {
     useJUnitPlatform()
 }
 
+javadoc{
+    options.addBooleanOption "-no-module-directories", true
+}
+
 javafx {
     version = "${javafxVersion}"
     modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.swing']
