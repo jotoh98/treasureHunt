@@ -14,6 +14,6 @@ See [here](https://www.youtube.com/watch?v=qEq7801pCDQ).
     6. In the gradle tab at the right click the refresh symbol
     7. Click on play(Run the Main.java)
 
-# Presentation
-[here](https://docs.google.com/presentation/d/e/2PACX-1vQFTUJNbWm25DyWGoSpLmcESkpRpLZGp3Gj8VJBpgsXnP0I-QIWyP-Zg2v6sTXrkq3ubRYrvJgDuEet/pub?start=true&loop=false&delayms=40000)
-
+# Dokumentation
+[Presentation](https://docs.google.com/presentation/d/e/2PACX-1vQFTUJNbWm25DyWGoSpLmcESkpRpLZGp3Gj8VJBpgsXnP0I-QIWyP-Zg2v6sTXrkq3ubRYrvJgDuEet/pub?start=true&loop=false&delayms=40000)
+[Dokumentation in German](https://docs.google.com/document/d/e/2PACX-1vRhLjcNzPc2_tVMj-Q8izg95tT1ap_s2hOkeuO0fenFCswuNEKP4R70_mZzIaMOgbKdCqVLkpBzz7C8/pub)
