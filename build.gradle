@@ -1,6 +1,7 @@
 plugins {
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.8'
+    id "io.freefair.lombok" version "5.0.0-rc6"
 }
 
 repositories {
@@ -30,9 +31,7 @@ println "Platform is: ${javafxPlatform}"
 
 dependencies {
 
-    compileOnly 'org.projectlombok:lombok:1.18.10'
     testCompileOnly 'org.projectlombok:lombok:1.18.10'
-    annotationProcessor 'org.projectlombok:lombok:1.18.10'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.10'
     implementation 'org.jetbrains:annotations:13.0'
     implementation 'org.locationtech.jts:jts-core:1.16.1'
@@ -74,6 +73,16 @@ distTar {
 test {
     useJUnitPlatform()
 }
+
+javadoc{
+    options.addBooleanOption "-no-module-directories", true
+}
+
+lombok {
+    version = "1.18.10"
+}
+
+generateLombokConfig.enabled = false
 
 javafx {
     version = "${javafxVersion}"
