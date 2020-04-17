@@ -27,14 +27,14 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
 var activeTableTab = "activeTableTab";
 var pathtoroot = "../../../../../";
-var useModuleDirectories = true;
+var useModuleDirectories = false;
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -229,13 +229,34 @@ extends org.locationtech.jts.awt.ShapeWriter</pre>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="CanvasBoundary.html" title="class in com.treasure.hunt.jts.awt">CanvasBoundary</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBoundary()">getBoundary</a></span>()</code></th>
+<td class="colLast">
+<div class="block">The boundary of the associated <code>Canvas</code>.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="PointTransformation.html" title="class in com.treasure.hunt.jts.awt">PointTransformation</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPointTransformation()">getPointTransformation</a></span>()</code></th>
+<td class="colLast">
+<div class="block">The <a href="PointTransformation.html" title="class in com.treasure.hunt.jts.awt"><code>PointTransformation</code></a> transforming a source <code>Coordinate</code>.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBoundary(com.treasure.hunt.jts.awt.CanvasBoundary)">setBoundary</a></span>&#8203;(<a href="CanvasBoundary.html" title="class in com.treasure.hunt.jts.awt">CanvasBoundary</a>&nbsp;boundary)</code></th>
+<td class="colLast">
+<div class="block">The boundary of the associated <code>Canvas</code>.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>java.awt.Shape</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toShape(java.lang.Object)">toShape</a></span>&#8203;(java.lang.Object&nbsp;object)</code></th>
 <td class="colLast">
 <div class="block">Wrapper function for <code>ShapeWriter.toShape(Geometry)</code> to extend functionality for <a href="../geom/Shapeable.html" title="interface in com.treasure.hunt.jts.geom"><code>Shapeable</code></a> instances.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#transform(org.locationtech.jts.geom.Coordinate,java.awt.geom.Point2D)">transform</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;src,
          java.awt.geom.Point2D&nbsp;dest)</code></th>
@@ -371,7 +392,7 @@ extends org.locationtech.jts.awt.ShapeWriter</pre>
 <a id="createArc(org.locationtech.jts.geom.Coordinate,double,double,double)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>createArc</h4>
 <pre class="methodSignature">public&nbsp;java.awt.geom.Arc2D&nbsp;createArc&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;center,
@@ -388,6 +409,38 @@ extends org.locationtech.jts.awt.ShapeWriter</pre>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>transformed open <code>Arc2D</code></dd>
 </dl>
+</li>
+</ul>
+<a id="getPointTransformation()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getPointTransformation</h4>
+<pre class="methodSignature">public&nbsp;<a href="PointTransformation.html" title="class in com.treasure.hunt.jts.awt">PointTransformation</a>&nbsp;getPointTransformation()</pre>
+<div class="block">The <a href="PointTransformation.html" title="class in com.treasure.hunt.jts.awt"><code>PointTransformation</code></a> transforming a source <code>Coordinate</code>.</div>
+</li>
+</ul>
+<a id="setBoundary(com.treasure.hunt.jts.awt.CanvasBoundary)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setBoundary</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setBoundary&#8203;(<a href="CanvasBoundary.html" title="class in com.treasure.hunt.jts.awt">CanvasBoundary</a>&nbsp;boundary)</pre>
+<div class="block">The boundary of the associated <code>Canvas</code>.
+ Enables boundary specific shapes like endless lines, grids etc.</div>
+</li>
+</ul>
+<a id="getBoundary()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getBoundary</h4>
+<pre class="methodSignature">public&nbsp;<a href="CanvasBoundary.html" title="class in com.treasure.hunt.jts.awt">CanvasBoundary</a>&nbsp;getBoundary()</pre>
+<div class="block">The boundary of the associated <code>Canvas</code>.
+ Enables boundary specific shapes like endless lines, grids etc.</div>
 </li>
 </ul>
 </li>

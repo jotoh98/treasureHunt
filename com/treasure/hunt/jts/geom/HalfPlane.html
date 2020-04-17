@@ -27,14 +27,14 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":10,"i2":10};
+var data = {"i0":10,"i1":10,"i2":9,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
 var activeTableTab = "activeTableTab";
 var pathtoroot = "../../../../../";
-var useModuleDirectories = true;
+var useModuleDirectories = false;
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -243,6 +243,16 @@ extends <a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>protected boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#canEqual(java.lang.Object)">canEqual</a></span>&#8203;(java.lang.Object&nbsp;other)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#equals(java.lang.Object)">equals</a></span>&#8203;(java.lang.Object&nbsp;o)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static <a href="HalfPlane.html" title="class in com.treasure.hunt.jts.geom">HalfPlane</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#from(org.locationtech.jts.math.Vector2D,double)">from</a></span>&#8203;(org.locationtech.jts.math.Vector2D&nbsp;normal,
     double&nbsp;scalar)</code></th>
@@ -250,7 +260,12 @@ extends <a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>
 <div class="block">Construct a HalfPlane with its normal vector and its scalar.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hashCode()">hashCode</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#inside(org.locationtech.jts.geom.Coordinate)">inside</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;c)</code></th>
 <td class="colLast">
@@ -261,7 +276,7 @@ extends <a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>
  &lang; a, x &rang; &ge; b.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.awt.Shape</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toShape(com.treasure.hunt.jts.awt.AdvancedShapeWriter)">toShape</a></span>&#8203;(<a href="../awt/AdvancedShapeWriter.html" title="class in com.treasure.hunt.jts.awt">AdvancedShapeWriter</a>&nbsp;shapeWriter)</code></th>
 <td class="colLast">
@@ -288,7 +303,7 @@ extends <a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.locationtech.jts.geom.LineSegment</h3>
-<code>angle, closestPoint, closestPoints, compareTo, distance, distance, distancePerpendicular, equals, equalsTopo, getCoordinate, hashCode, isHorizontal, isVertical, lineIntersection, maxX, maxY, midPoint, midPoint, minX, minY, normalize, orientationIndex, orientationIndex, pointAlong, pointAlongOffset, project, project, projectionFactor, reverse, segmentFraction, setCoordinates, setCoordinates, toGeometry, toString</code></li>
+<code>angle, closestPoint, closestPoints, compareTo, distance, distance, distancePerpendicular, equalsTopo, getCoordinate, isHorizontal, isVertical, lineIntersection, maxX, maxY, midPoint, midPoint, minX, minY, normalize, orientationIndex, orientationIndex, pointAlong, pointAlongOffset, project, project, projectionFactor, reverse, segmentFraction, setCoordinates, setCoordinates, toGeometry, toString</code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -404,7 +419,7 @@ extends <a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>
 <a id="toShape(com.treasure.hunt.jts.awt.AdvancedShapeWriter)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>toShape</h4>
 <pre class="methodSignature">public&nbsp;java.awt.Shape&nbsp;toShape&#8203;(<a href="../awt/AdvancedShapeWriter.html" title="class in com.treasure.hunt.jts.awt">AdvancedShapeWriter</a>&nbsp;shapeWriter)</pre>
@@ -420,6 +435,41 @@ extends <a href="Line.html" title="class in com.treasure.hunt.jts.geom">Line</a>
 <dd>rendering shape</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../utils/JTSUtils.html#getBoundaryIntersections(com.treasure.hunt.jts.awt.CanvasBoundary,org.locationtech.jts.geom.LineSegment)"><code>JTSUtils.getBoundaryIntersections(CanvasBoundary, LineSegment)</code></a></dd>
+</dl>
+</li>
+</ul>
+<a id="equals(java.lang.Object)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>equals</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;equals&#8203;(java.lang.Object&nbsp;o)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code>equals</code>&nbsp;in class&nbsp;<code>org.locationtech.jts.geom.LineSegment</code></dd>
+</dl>
+</li>
+</ul>
+<a id="canEqual(java.lang.Object)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>canEqual</h4>
+<pre class="methodSignature">protected&nbsp;boolean&nbsp;canEqual&#8203;(java.lang.Object&nbsp;other)</pre>
+</li>
+</ul>
+<a id="hashCode()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>hashCode</h4>
+<pre class="methodSignature">public&nbsp;int&nbsp;hashCode()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code>hashCode</code>&nbsp;in class&nbsp;<code>org.locationtech.jts.geom.LineSegment</code></dd>
 </dl>
 </li>
 </ul>

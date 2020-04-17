@@ -27,14 +27,14 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10};
+var data = {"i0":10,"i1":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
 var activeTableTab = "activeTableTab";
 var pathtoroot = "../../../../../../";
-var useModuleDirectories = true;
+var useModuleDirectories = false;
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -213,6 +213,11 @@ extends <a href="../Hint.html" title="class in com.treasure.hunt.strategy.hint">
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code><a href="../../../jts/geom/Circle.html" title="class in com.treasure.hunt.jts.geom">Circle</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCircle()">getCircle</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGeometryItems()">getGeometryItems</a></span>()</code></th>
 </tr>
@@ -222,7 +227,14 @@ extends <a href="../Hint.html" title="class in com.treasure.hunt.strategy.hint">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;com.treasure.hunt.strategy.hint.<a href="../Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a></h3>
-<code><a href="../Hint.html#addAdditionalItem(com.treasure.hunt.strategy.geom.GeometryItem)">addAdditionalItem</a>, <a href="../Hint.html#canEqual(java.lang.Object)">canEqual</a>, <a href="../Hint.html#equals(java.lang.Object)">equals</a>, <a href="../Hint.html#hashCode()">hashCode</a>, <a href="../Hint.html#toString()">toString</a></code></li>
+<code><a href="../Hint.html#addAdditionalItem(com.treasure.hunt.strategy.geom.GeometryItem)">addAdditionalItem</a>, <a href="../Hint.html#canEqual(java.lang.Object)">canEqual</a>, <a href="../Hint.html#equals(java.lang.Object)">equals</a>, <a href="../Hint.html#getAdditionalGeometryItems()">getAdditionalGeometryItems</a>, <a href="../Hint.html#hashCode()">hashCode</a>, <a href="../Hint.html#toString()">toString</a></code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.com.treasure.hunt.strategy.geom.HintAndMovement">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;com.treasure.hunt.strategy.geom.<a href="../../geom/HintAndMovement.html" title="class in com.treasure.hunt.strategy.geom">HintAndMovement</a></h3>
+<code><a href="../../geom/HintAndMovement.html#getStatusMessageItemsToBeAdded()">getStatusMessageItemsToBeAdded</a>, <a href="../../geom/HintAndMovement.html#getStatusMessageItemsToBeRemoved()">getStatusMessageItemsToBeRemoved</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -289,7 +301,7 @@ extends <a href="../Hint.html" title="class in com.treasure.hunt.strategy.hint">
 <a id="getGeometryItems()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getGeometryItems</h4>
 <pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt;&nbsp;getGeometryItems()</pre>
@@ -299,6 +311,15 @@ extends <a href="../Hint.html" title="class in com.treasure.hunt.strategy.hint">
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a list of this hints <a href="../../geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom"><code>GeometryItem</code></a> objects.</dd>
 </dl>
+</li>
+</ul>
+<a id="getCircle()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getCircle</h4>
+<pre class="methodSignature">public&nbsp;<a href="../../../jts/geom/Circle.html" title="class in com.treasure.hunt.jts.geom">Circle</a>&nbsp;getCircle()</pre>
 </li>
 </ul>
 </li>

@@ -27,14 +27,14 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
 var activeTableTab = "activeTableTab";
 var pathtoroot = "../../../../";
-var useModuleDirectories = true;
+var useModuleDirectories = false;
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -154,7 +154,9 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">Turn</a></span>()</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(com.treasure.hunt.strategy.hint.Hint,com.treasure.hunt.strategy.searcher.SearchPath,org.locationtech.jts.geom.Point)">Turn</a></span>&#8203;(<a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;hint,
+    <a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath,
+    org.locationtech.jts.geom.Point&nbsp;treasureLocation)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -180,6 +182,27 @@ extends java.lang.Object</pre>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGeometryItems()">getGeometryItems</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code><a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHint()">getHint</a></span>()</code></th>
+<td class="colLast">
+<div class="block">The <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a> the <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> gave.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code><a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSearchPath()">getSearchPath</a></span>()</code></th>
+<td class="colLast">
+<div class="block">The <a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a> the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> did.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>org.locationtech.jts.geom.Point</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTreasureLocation()">getTreasureLocation</a></span>()</code></th>
+<td class="colLast">
+<div class="block">The current location of the treasure.</div>
+</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -204,13 +227,15 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;()">
+<a id="&lt;init&gt;(com.treasure.hunt.strategy.hint.Hint,com.treasure.hunt.strategy.searcher.SearchPath,org.locationtech.jts.geom.Point)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>Turn</h4>
-<pre>public&nbsp;Turn()</pre>
+<pre>public&nbsp;Turn&#8203;(<a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;hint,
+            <a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;searchPath,
+            org.locationtech.jts.geom.Point&nbsp;treasureLocation)</pre>
 </li>
 </ul>
 </li>
@@ -226,7 +251,7 @@ extends java.lang.Object</pre>
 <a id="getGeometryItems()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getGeometryItems</h4>
 <pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../strategy/geom/GeometryItem.html" title="class in com.treasure.hunt.strategy.geom">GeometryItem</a>&lt;?&gt;&gt;&nbsp;getGeometryItems()</pre>
@@ -234,6 +259,36 @@ extends java.lang.Object</pre>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a list of all geometryItems of this.</dd>
 </dl>
+</li>
+</ul>
+<a id="getHint()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getHint</h4>
+<pre class="methodSignature">public&nbsp;<a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint">Hint</a>&nbsp;getHint()</pre>
+<div class="block">The <a href="../strategy/hint/Hint.html" title="class in com.treasure.hunt.strategy.hint"><code>Hint</code></a> the <a href="../strategy/hider/Hider.html" title="interface in com.treasure.hunt.strategy.hider"><code>Hider</code></a> gave.</div>
+</li>
+</ul>
+<a id="getSearchPath()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSearchPath</h4>
+<pre class="methodSignature">public&nbsp;<a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher">SearchPath</a>&nbsp;getSearchPath()</pre>
+<div class="block">The <a href="../strategy/searcher/SearchPath.html" title="class in com.treasure.hunt.strategy.searcher"><code>SearchPath</code></a> the <a href="../strategy/searcher/Searcher.html" title="interface in com.treasure.hunt.strategy.searcher"><code>Searcher</code></a> did.</div>
+</li>
+</ul>
+<a id="getTreasureLocation()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getTreasureLocation</h4>
+<pre class="methodSignature">public&nbsp;org.locationtech.jts.geom.Point&nbsp;getTreasureLocation()</pre>
+<div class="block">The current location of the treasure.</div>
 </li>
 </ul>
 </li>

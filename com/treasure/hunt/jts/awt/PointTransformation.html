@@ -27,14 +27,14 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
 var activeTableTab = "activeTableTab";
 var pathtoroot = "../../../../../";
-var useModuleDirectories = true;
+var useModuleDirectories = false;
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -199,6 +199,12 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">PointTransformation</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr class="rowColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(javafx.beans.property.DoubleProperty,javafx.beans.property.ObjectProperty,org.locationtech.jts.math.Vector2D)">PointTransformation</a></span>&#8203;(javafx.beans.property.DoubleProperty&nbsp;scaleProperty,
+                   javafx.beans.property.ObjectProperty&lt;org.locationtech.jts.math.Vector2D&gt;&nbsp;offsetProperty,
+                   org.locationtech.jts.math.Vector2D&nbsp;boundarySize)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -219,36 +225,55 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>org.locationtech.jts.math.Vector2D</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getOffset()">getOffset</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBoundarySize()">getBoundarySize</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>org.locationtech.jts.math.Vector2D</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getOffset()">getOffset</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>javafx.beans.property.ObjectProperty&lt;org.locationtech.jts.math.Vector2D&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getOffsetProperty()">getOffsetProperty</a></span>()</code></th>
+<td class="colLast">
+<div class="block">The offset translates the source coordinates additive in <a href="#transform(org.locationtech.jts.geom.Coordinate)"><code>transform(Coordinate)</code></a>.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getScale()">getScale</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>javafx.beans.property.DoubleProperty</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getScaleProperty()">getScaleProperty</a></span>()</code></th>
+<td class="colLast">
+<div class="block">The scale translates the source coordinates multiplicative in <a href="#transform(org.locationtech.jts.geom.Coordinate)"><code>transform(Coordinate)</code></a>.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#revert(double,double)">revert</a></span>&#8203;(double&nbsp;x,
       double&nbsp;y)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#revert(org.locationtech.jts.geom.Coordinate)">revert</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;src)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#revertX(double)">revertX</a></span>&#8203;(double&nbsp;x)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#revertY(double)">revertY</a></span>&#8203;(double&nbsp;y)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#scaleOffset(double,org.locationtech.jts.math.Vector2D)">scaleOffset</a></span>&#8203;(double&nbsp;gamma,
            org.locationtech.jts.math.Vector2D&nbsp;point)</code></th>
@@ -256,7 +281,7 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 <div class="block">Scale the offset relative keeping a point as scaling source.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#scaleRelative(double,org.locationtech.jts.math.Vector2D)">scaleRelative</a></span>&#8203;(double&nbsp;gamma,
              org.locationtech.jts.math.Vector2D&nbsp;point)</code></th>
@@ -264,24 +289,29 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 <div class="block">Scales the canvas and keeps a certain point centered.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBoundarySize(org.locationtech.jts.math.Vector2D)">setBoundarySize</a></span>&#8203;(org.locationtech.jts.math.Vector2D&nbsp;boundarySize)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setOffset(org.locationtech.jts.math.Vector2D)">setOffset</a></span>&#8203;(org.locationtech.jts.math.Vector2D&nbsp;offset)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setScale(double)">setScale</a></span>&#8203;(double&nbsp;scale)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>org.locationtech.jts.geom.Coordinate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#transform(org.locationtech.jts.geom.Coordinate)">transform</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;src)</code></th>
 <td class="colLast">
 <div class="block">Transform method between <code>Coordinate</code>s.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#transform(org.locationtech.jts.geom.Coordinate,java.awt.geom.Point2D)">transform</a></span>&#8203;(org.locationtech.jts.geom.Coordinate&nbsp;src,
          java.awt.geom.Point2D&nbsp;dest)</code></th>
@@ -289,12 +319,12 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 <div class="block">Main transform method necessary for extending <code>PointTransformation</code>.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#transformX(double)">transformX</a></span>&#8203;(double&nbsp;x)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#transformY(double)">transformY</a></span>&#8203;(double&nbsp;y)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -372,6 +402,17 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
+<a id="&lt;init&gt;(javafx.beans.property.DoubleProperty,javafx.beans.property.ObjectProperty,org.locationtech.jts.math.Vector2D)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>PointTransformation</h4>
+<pre>public&nbsp;PointTransformation&#8203;(javafx.beans.property.DoubleProperty&nbsp;scaleProperty,
+                           javafx.beans.property.ObjectProperty&lt;org.locationtech.jts.math.Vector2D&gt;&nbsp;offsetProperty,
+                           org.locationtech.jts.math.Vector2D&nbsp;boundarySize)</pre>
+</li>
+</ul>
 <a id="&lt;init&gt;()">
 <!--   -->
 </a>
@@ -535,7 +576,7 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 <a id="scaleOffset(double,org.locationtech.jts.math.Vector2D)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>scaleOffset</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;scaleOffset&#8203;(double&nbsp;gamma,
@@ -546,6 +587,44 @@ implements org.locationtech.jts.awt.PointTransformation</pre>
 <dd><code>gamma</code> - factor of new scale</dd>
 <dd><code>point</code> - scaling source point</dd>
 </dl>
+</li>
+</ul>
+<a id="getScaleProperty()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getScaleProperty</h4>
+<pre class="methodSignature">public&nbsp;javafx.beans.property.DoubleProperty&nbsp;getScaleProperty()</pre>
+<div class="block">The scale translates the source coordinates multiplicative in <a href="#transform(org.locationtech.jts.geom.Coordinate)"><code>transform(Coordinate)</code></a>.</div>
+</li>
+</ul>
+<a id="getOffsetProperty()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getOffsetProperty</h4>
+<pre class="methodSignature">public&nbsp;javafx.beans.property.ObjectProperty&lt;org.locationtech.jts.math.Vector2D&gt;&nbsp;getOffsetProperty()</pre>
+<div class="block">The offset translates the source coordinates additive in <a href="#transform(org.locationtech.jts.geom.Coordinate)"><code>transform(Coordinate)</code></a>.</div>
+</li>
+</ul>
+<a id="setBoundarySize(org.locationtech.jts.math.Vector2D)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setBoundarySize</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setBoundarySize&#8203;(org.locationtech.jts.math.Vector2D&nbsp;boundarySize)</pre>
+</li>
+</ul>
+<a id="getBoundarySize()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getBoundarySize</h4>
+<pre class="methodSignature">public&nbsp;org.locationtech.jts.math.Vector2D&nbsp;getBoundarySize()</pre>
 </li>
 </ul>
 </li>

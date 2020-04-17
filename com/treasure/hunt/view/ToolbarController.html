@@ -27,14 +27,14 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
 var activeTableTab = "activeTableTab";
 var pathtoroot = "../../../../";
-var useModuleDirectories = true;
+var useModuleDirectories = false;
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -213,6 +213,16 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>javafx.scene.control.ToggleGroup</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getFirstGroup()">getFirstGroup</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>javafx.scene.control.ToggleGroup</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSecondGroup()">getSecondGroup</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>javafx.beans.binding.BooleanBinding</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#visibleBinding()">visibleBinding</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -303,10 +313,28 @@ extends java.lang.Object</pre>
 <a id="visibleBinding()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>visibleBinding</h4>
 <pre class="methodSignature">public&nbsp;javafx.beans.binding.BooleanBinding&nbsp;visibleBinding()</pre>
+</li>
+</ul>
+<a id="getFirstGroup()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getFirstGroup</h4>
+<pre class="methodSignature">public&nbsp;javafx.scene.control.ToggleGroup&nbsp;getFirstGroup()</pre>
+</li>
+</ul>
+<a id="getSecondGroup()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getSecondGroup</h4>
+<pre class="methodSignature">public&nbsp;javafx.scene.control.ToggleGroup&nbsp;getSecondGroup()</pre>
 </li>
 </ul>
 </li>
